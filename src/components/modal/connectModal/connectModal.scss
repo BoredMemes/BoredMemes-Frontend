@@ -1,0 +1,194 @@
+@import '../../../global.scss';
+.connectModal {
+  position: fixed;
+  width: 100%;
+  height: 100vh;
+  top: 0;
+  left: 0;
+  align-items: center;
+  justify-content: center;
+  background-color: rgba(0, 0, 0, 0.61);
+  z-index: 5;
+  display: none;
+  opacity: 1;
+  &.active {
+    display: flex;
+  }
+  .modelContent {
+    z-index: 5;
+    width: 22rem;
+    margin: auto;
+    display: flex;
+    align-items: center;
+    justify-content: flex-start;
+    flex-direction: column;
+    position: relative;
+    opacity: 1;
+    box-shadow: 0px 0px 3px #000;
+    border-radius: 10px;
+    padding-bottom: 1rem;
+    background-color: #fff;
+    @include mobile_potrait {
+      width: 20rem;
+    }
+    @include mobile_landscape {
+    }
+    
+    .connectWalletHeader {
+      width: 100%;
+      height: 5rem;
+      border-bottom: 1px solid #ddd;
+      border-top-left-radius: 2rem;
+      border-top-right-radius: 2rem;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      @include mobile_potrait {
+        border-top-left-radius: 1rem;
+        border-top-right-radius: 1rem;
+      }
+      @include mobile_landscape {
+        border-top-left-radius: 1rem;
+        border-top-right-radius: 1rem;
+      }
+      .connectWalletTitle {
+        color: #000;
+        font-size: 2rem;
+        padding-left: 20px;
+        @include mobile_potrait {
+          font-size: 1.5rem;
+        }
+      }
+      .connectModalCloseButton {
+        font-size: 2rem;
+        font-weight: 600;
+        border: none;
+        background-color: #00000000;
+        border-radius: 16px;
+        cursor: pointer;
+        color: #000;
+        margin-right: 20px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        transition: all 0.3s ease;
+        &:hover {
+          animation: closeAni 0.5s ease 0s infinite;
+          @keyframes closeAni {
+            0% {
+              transform: translateX(0);
+            }
+            50% {
+              transform: translateX(0.5rem);
+            }
+            100% {
+              transform: translateX(0);
+            }
+          }
+        }
+      }
+    }
+
+    .connectWalletWrapper {
+      width: 100%;
+      display: flex;
+      align-items: center;
+      justify-content: flex-start;
+      flex-direction: column;
+      .connectModalBtn {
+        display: flex;
+        cursor: pointer;
+        width: calc(100% - 3rem);
+        padding-left: 0.5rem;
+        padding-right: 0.5rem;
+        padding-top: 0.5rem;
+        padding-bottom: 0.5rem;
+        margin-top: 0.8rem;
+        display: flex;
+        position: relative;
+
+        &:hover {
+          .left {
+            .icon {
+              img {
+                filter: drop-shadow(3px 3px 5px #000);
+              }
+            }
+          }
+          .middle {
+            h2 {
+              text-shadow: 2px 2px 5px #000;
+            }
+          }
+        }
+        .btn_bg {
+          position: absolute;
+          width: 100%;
+          left: 0;
+          height: 100%;
+          top: 0;
+        }
+        .left {
+          flex: 0.2;
+          margin-top: 0rem;
+          z-index: 1;
+          .icon {
+            width: 3.5rem;
+            height: 3.5rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 50%;
+            @include mobile_potrait {
+              width: 3rem;
+              height: 3rem;
+            }
+            @include mobile_landscape {
+              width: 3rem;
+              height: 3rem;
+            }
+            img {
+              width: 80%;
+              height: 80%;
+              transition: all 0.3s ease;
+              filter: drop-shadow(2px 2px 0px #000);
+            }
+          }
+        }
+        .middle {
+          flex: 0.8;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          flex-direction: column;
+          margin-top: 0rem;
+          z-index: 1;
+
+          h2 {
+            font-size: 1.3rem;
+            width: 90%;
+            color: #555;
+            transition: all 0.3s ease;
+            @include mobile_potrait {
+              font-size: 1.2rem;
+            }
+            @include mobile_landscape {
+              font-size: 1.2rem;
+            }
+          }
+          p {
+            font-size: 1rem;
+            width: 90%;
+            color: #999;
+            @include mobile_potrait {
+              font-size: 0.8rem;
+            }
+            @include mobile_landscape {
+              font-size: 0.8rem;
+            }
+          }
+        }
+      }
+    }
+  }
+}
