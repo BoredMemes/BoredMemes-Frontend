@@ -1,0 +1,74 @@
+{
+  "parser": "babel-eslint",
+  "parserOptions": {
+    "parser": "@typescript-eslint/parser",
+    "ecmaVersion": 8,
+    "sourceType": "module",
+    "ecmaFeatures": {
+      "legacyDecorators": true
+    }
+  },
+  "settings": {
+    "import/resolver": {
+      "node": {
+        "paths": ["src"],
+        "extensions": [".js", ".jsx", ".ts", ".tsx"]
+      }
+    }
+  },
+  "env": {
+    "browser": true
+  },
+  "globals": {
+    "fetch": false,
+    "requestAnimationFrame": false
+  },
+  "rules": {
+    "arrow-parens": 0,
+    "strict": 0,
+    "semi": 2,
+    "no-undef": 0,
+    "react/jsx-props-no-spreading": 0,
+    "react/forbid-prop-types": 0,
+    "max-len": [
+      "error",
+      {
+        "code": 120,
+        "comments": 120,
+        "ignoreUrls": true
+      }
+    ],
+    "template-curly-spacing": "off",
+    "indent": [
+      "error",
+      4,
+      {
+        "SwitchCase": 1,
+        "ignoredNodes": ["TemplateLiteral"]
+      }
+    ],
+    "react/jsx-filename-extension": [
+      1,
+      {
+        "extensions": [".js", ".jsx", ".ts"]
+      }
+    ],
+    "react/jsx-child-element-spacing": 0,
+    "react/jsx-one-expression-per-line": 0,
+    "import/no-unresolved": 0,
+    "no-tabs": 0,
+    "no-param-reassign": [
+      2,
+      {
+        "props": false
+      }
+    ],
+    "no-console": 0,
+    "import/no-extraneous-dependencies": 0,
+    "class-methods-use-this": 0,
+    "jsx-a11y/anchor-is-valid": 0,
+    "jsx-a11y/label-has-associated-control": 0,
+    "object-curly-newline": 0,
+    "no-plusplus": 0
+  }
+}
