@@ -10,6 +10,7 @@ import CommunityFeed from 'containers/CommunityFeed';
 import Bookmarks from 'containers/Bookmarks';
 import Miner from 'containers/Miner';
 import Stake from 'containers/Stake';
+import EditProfile from 'containers/EditProfile';
 
 const Routes = () => (
   <>
@@ -23,7 +24,9 @@ const Routes = () => (
         <Route exact path="/miner" component={Miner} />
         <Route path="/stake" component={Stake} />
         <Route exact path="/settings" component={Setting} />
-        <Route path="/detail/:tokenID" component={Setting} />
+        <Route path="/edit_profile" component={EditProfile} />
+
+        {/* <Route path="/detail/:tokenID" component={Setting} />EditProfile */}
 
         {/* <Route exact path="/" render={() => <Redirect to="/home" />} /> */}
 

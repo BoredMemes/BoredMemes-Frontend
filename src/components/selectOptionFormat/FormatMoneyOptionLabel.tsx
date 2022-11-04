@@ -23,7 +23,7 @@ const FormatMoneyOptionLabel = ({ value, label, customAbbreviation }) => (
 				}
 			</div> 
 		</div>
-		<div style={{color: "#727272", fontWeight: "bold", paddingLeft: "10px"}}>{label}</div>
+		<div style={{color: "#727272", fontWeight: 500, paddingLeft: "10px"}}>{label}</div>
 	</div>
 );
 

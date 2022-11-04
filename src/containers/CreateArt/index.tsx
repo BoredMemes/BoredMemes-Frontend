@@ -103,7 +103,8 @@ const CreateArt = () => {
   const transitions = ['width', 'height', 'opacity', 'background'];
 
   const [description, setDescription] = useState(null);
-  const [ratio, setRatio] = useState(-1);
+  const [ratio, setRatio] = useState(0);
+  const [ratioCard, setRatioCard] = useState('up');
   const [packID, setPackID] = useState(-1);
   const [telegramChecked, setTelegramChecked] = useState(false);
   const [twitterChecked, setTwitterChecked] = useState(false);
@@ -130,6 +131,11 @@ const CreateArt = () => {
   const onGotoCommunityFeed = () => {
     setResultModal(false)
     history.push('/community_feed')
+  }
+
+  const onClickRatioCard = (id:number, card : string) => {
+    setRatio(id)
+    setRatioCard(card)
   }
   return (
     <>
@@ -161,18 +167,25 @@ const CreateArt = () => {
               <div className="ratioContent" style={{width : expand ? '100%' : 'auto'}}>
                 {!isTabletOrMobile ? 
                   <>
-                    <div className="ratioMain">  
-                      <div className="heart"><img src="/assets/icons/crown_icon.svg" alt="" /></div> 1:1
-                    </div>
+                  {ratioCard === 'up' ? 
+                    <div className="ratioMain" style={{height : `${(64 * myData[ratio]?.b)/myData[ratio]?.a}px`}}>  
+                      <div className="heart"><img src="/assets/icons/crown_icon.svg" alt="" /></div> {myData[ratio]?.a}:{myData[ratio]?.b}
+                    </div>:
+                    <div className="ratioMain" style={{height : `${(64 * myData[ratio]?.b1)/myData[ratio]?.a1}px`}}>  
+                    <div className="heart"><img src="/assets/icons/crown_icon.svg" alt="" /></div> {myData[ratio]?.a1}:{myData[ratio]?.b1}
+                  </div>}
                     <Expand open={expand} duration={300} styles={styles} transitions={transitions}>
                       <div className="ratioList" style={{width : expand ? '100%' : '0px'}}>
                         {myData.map((d, k)=>(
-                          <div className="col" onClick={()=>setRatio(k)} key = {k}>
-                            <div className="ratio" style={{height : `${(45 * d.b)/d.a}px`, background : ratio === k ?"#E4CCFD":"#D4D4D4" }}> 
-                              {ratio === k && <div className="heart"><img src="/assets/icons/heart_icon_01.svg" alt="" /></div>}
+                          <div className="col" key = {k}>
+                            <div className="ratio"  onClick={()=>onClickRatioCard(k, 'up')} style={{height : `${(45 * d.b)/d.a}px`, background : ratio === k && ratioCard === 'up' ?"#E4CCFD":"#D4D4D4" }}> 
+                              {ratio === k && ratioCard === 'up' && <div className="heart"><img src="/assets/icons/heart_icon_01.svg" alt="" /></div>}
                               {d.a}:{d.b}
                             </div>
-                            <div className="ratio" style={{height : `${(45 * d.b1)/d.a1}px`}}> {d.a1}:{d.b1}</div>
+                            <div className="ratio"  onClick={()=>onClickRatioCard(k, 'down')} style={{height : `${(45 * d.b1)/d.a1}px`, background : ratio === k && ratioCard === 'down' ?"#E4CCFD":"#D4D4D4"}}>
+                              {ratio === k && ratioCard === 'down' && <div className="heart"><img src="/assets/icons/heart_icon_01.svg" alt="" /></div>}
+                              {d.a1}:{d.b1}
+                            </div>
                           </div>
                         ))}
                       
@@ -183,21 +196,27 @@ const CreateArt = () => {
                     </div>
                   </>:
                   <>
-                    <div className="ratioMain">  
-                      <div className="heart"><img src="/assets/icons/crown_icon.svg" alt="" /></div> 1:1
-                    </div>
+                    {ratioCard === 'up' ? 
+                    <div className="ratioMain" style={{height : `${(50 * myData[ratio]?.b)/myData[ratio]?.a}px`}}>  
+                      <div className="heart"><img src="/assets/icons/crown_icon.svg" alt="" /></div> {myData[ratio]?.a}:{myData[ratio]?.b}
+                    </div>:
+                    <div className="ratioMain" style={{height : `${(50 * myData[ratio]?.b1)/myData[ratio]?.a1}px`}}>  
+                    <div className="heart"><img src="/assets/icons/crown_icon.svg" alt="" /></div> {myData[ratio]?.a1}:{myData[ratio]?.b1}
+                  </div>}
                     <div className="showBtn" onClick={()=>setExpand(!expand)}>
                       <img src="/assets/icons/arrow_down_icon.svg" alt="" style={{ transform: expand ? 'rotate(180deg)' : 'rotate(0deg)' }}/>
                     </div>
                     <Expand open={expand} duration={300} styles={styles} transitions={transitions}>
                       <div className="ratioList" style={{width : expand ? '100%' : '0px'}}>
                         {myData.map((d, k)=>(
-                          <div className="col" onClick={()=>setRatio(k)}>
-                            <div className="ratio" style={{height : `${(35 * d.b)/d.a}px`, background : ratio === k ?"#E4CCFD":"#D4D4D4" }}> 
-                              {ratio === k && <div className="heart"><img src="/assets/icons/heart_icon_01.svg" alt="" /></div>}
+                          <div className="col" >
+                            <div className="ratio" onClick={()=>onClickRatioCard(k, 'up')} style={{height : `${(35 * d.b)/d.a}px`, background : ratio === k && ratioCard === 'up' ?"#E4CCFD":"#D4D4D4" }}> 
+                              {ratio === k  && ratioCard === 'up' && <div className="heart"><img src="/assets/icons/heart_icon_01.svg" alt="" /></div>}
                               {d.a}:{d.b}
                             </div>
-                            <div className="ratio" style={{height : `${(45 * d.b1)/d.a1}px`}}> {d.a1}:{d.b1}</div>
+                            <div className="ratio" onClick={()=>onClickRatioCard(k, 'down')} style={{height : `${(35 * d.b1)/d.a1}px`, background : ratio === k && ratioCard === 'down' ?"#E4CCFD":"#D4D4D4"}}>
+                            {ratio === k && ratioCard === 'down' && <div className="heart"><img src="/assets/icons/heart_icon_01.svg" alt="" /></div>}
+                            {d.a1}:{d.b1}</div>
                           </div>
                         ))}
                       

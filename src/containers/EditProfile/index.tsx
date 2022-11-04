@@ -10,7 +10,7 @@ import TextInput from 'components/Forms/TextInput';
 import CheckBox from 'components/Forms/CheckBox';
 import Modal from 'components/modal';
 
-const Setting = () => {
+const EditProfile = () => {
   const classes = useStyles();
 
   const [telegramChecked, setTelegramChecked] = useState(false);
@@ -93,7 +93,7 @@ const Setting = () => {
       <div className={classes.root}>
         <div className={`${classes.content} mainContainer`}>
           <div className={classes.top}>
-            <h1>Settings</h1>
+            <h1>Edit Profile</h1>
           </div>
           <form noValidate onSubmit={onSubmit} >
             <div className={`${classes.panel} panel`}>
@@ -398,4 +398,4 @@ const Setting = () => {
   );
 };
 
-export default Setting;
+export default EditProfile;

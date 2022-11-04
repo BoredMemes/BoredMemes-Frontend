@@ -74,6 +74,15 @@ export const useStyles = makeStyles(theme => ({
       marginBottom : 20,
     },
   },
+  loadingImg: {
+    width : 30,
+    height : 30,
+    animation: 'loadingAni 1s linear 0s infinite forwards',
+    [theme.breakpoints.down('xs')]: {
+      width : 30,
+      height : 30,
+    },
+  },
   myCheck: {
     width: '100%',
     background: '#fff',
@@ -345,15 +354,6 @@ export const useStyles = makeStyles(theme => ({
           height : 18,
         },
       },
-    },
-  },
-  loadingImg: {
-    width : 30,
-    height : 30,
-    animation: 'loadingAni 1s linear 0s infinite forwards',
-    [theme.breakpoints.down('xs')]: {
-      width : 30,
-      height : 30,
     },
   },
   modalContent: {

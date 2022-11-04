@@ -72,6 +72,11 @@ export const useStyles = makeStyles(theme => ({
       '& .socialLinks': {
         display: 'flex',
         alignItems: 'center',
+        gridTemplateColumns: 'auto auto auto',
+        gap: 20,
+        [theme.breakpoints.down('xs')]: {
+          gap: 10,
+        },
         '& a' :{
           marginRight: 7,
           fontSize: 26,

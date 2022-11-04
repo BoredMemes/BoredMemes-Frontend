@@ -17,7 +17,7 @@ const customStyles = {
     ...base,
     // fontSize: 'min(0.8vw, 13px)',
     fontSize: '0.8vw',
-    fontWeight: 'bold',
+    fontWeight: '500 !important',
     borderRadius: '50px',
     border: '1px solid #ddd !important',
     boxShadow: 'none',
@@ -55,10 +55,12 @@ const customStyles = {
       fontSize: 18,
     },
     color: state.isSelected ? 'white' : '#93989A !important',
+    background: state.isSelected ? '#a9e3ff' : '#00000000 !important',
     '@media screen and (max-width: 768px) and (orientation: portrait)': {
       fontSize: 14,
     },
     ':hover': {
+      background: '#00000022 !important',
       color: '#93989A !important',
     },
     ':active': {
@@ -93,8 +95,6 @@ export default function Topbar({ menuOpen, setMenuOpen }: MenuType) {
   const options = [
     { value: "eth", label: "ETHEREUM", customAbbreviation: "eth" },
     { value: "bin", label: "BINANCE", customAbbreviation: "bin" },
-    { value: "usd", label: "USD", customAbbreviation: "usd" },
-    { value: "eur", label: "EUR", customAbbreviation: "eur" },
 ];
 const onChange = (e)=>{
   console.log(e.value, BoredMBalance)
