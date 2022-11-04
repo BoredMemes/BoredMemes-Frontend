@@ -139,9 +139,12 @@ const Setting = () => {
                       updatePreview({ userName: val });
                     }}
                   />
-                  <ErrorAlert title="A userame is required !" show={formSubmit && !userName} />
+                  {/* <ErrorAlert title="A username is required !" show={formSubmit && !userName} />
                   <ErrorAlert title={`Username ${name} is available.`} show={false} alertType = 'success' />
-                  <ErrorAlert title={`Username ${name} is already taken.`} show={false} alertType = 'warning'/>
+                  <ErrorAlert title={`Username ${name} is already taken.`} show={false} alertType = 'warning'/> */}
+                  <ErrorAlert title="A username is required !" show={true} />
+                  <ErrorAlert title={`Username ${name} is available.`} show={true} alertType = 'success' />
+                  <ErrorAlert title={`Username ${name} is already taken.`} show={true} alertType = 'warning'/>
                 </Grid>
               </Grid>
             </div>
