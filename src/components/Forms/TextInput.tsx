@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import clsx from 'clsx';
 import { makeStyles, Theme } from '@material-ui/core/styles';
 import { FieldValues, UseFormRegister } from 'react-hook-form';
@@ -143,6 +143,10 @@ const TextInput = ({
     setVal(data);
     onChangeData && onChangeData(data);
   };
+  
+  useEffect(() => {
+    if (value && value !== "")changeHandler(value);
+  }, [value])
 
   return (
     <div className={clsx(classes.wrapper, wrapperClass)}>
@@ -151,7 +155,7 @@ const TextInput = ({
       <OutlinedInput
         className={`${clsx(classes.root, className)} ${startIcon === '@' ? classes.back1:''}`}
         placeholder={placeholder}
-        defaultValue={val}
+        value={val}
         onChange={e => {
           changeHandler(e.currentTarget.value);
         }}

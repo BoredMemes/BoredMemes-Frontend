@@ -2,184 +2,17 @@ import { useStyles } from './style';
 import Masonry from 'react-masonry-css';
 import ProductCard1 from 'components/Cards/ProductCard1';
 import Filter from 'components/Filter/Filter';
-import { useEffect, useState } from 'react';
+import { useContext, useEffect, useState } from 'react';
 import ViewModal from 'components/modal/viewModal/ViewModal';
+import axios from 'axios';
+import Web3WalletContext from 'hooks/Web3ReactManager';
+import { useAuthState } from 'context/authContext';
+import { toast } from 'react-toastify';
 
-const myData = [
-  {
-    id: 0,
-    img: '/assets/imgs/img_01.png',
-    type: 'new',
-    name: '',
-    commentType : 3,
-    isBookmark : true,
-  },
-  
-  {
-    id: 1,
-    img: '/assets/imgs/img_02.png',
-    type: 'new',
-    name: '',
-    commentType : -1,
-    isBookmark : false,
-  },
- 
-  {
-    id: 2,
-    img: '/assets/imgs/img_03.png',
-    type: 'new',
-    name: '',
-    commentType : 2,
-    isBookmark : false,
-  },
-  
-  {
-    id: 3,
-    img: '/assets/imgs/img_04.png',
-    type: 'new',
-    name: '',
-    commentType : -1,
-    isBookmark : false,
-  },
-  {
-    id: 4,
-    img: '/assets/imgs/img_05.png',
-    type: 'new',
-    name: '',
-    commentType : -1,
-    isBookmark : false,
-  },
-  {
-    id: 5,
-    img: '/assets/imgs/img_06.png',
-    type: 'new',
-    name: '',
-    commentType : -1,
-    isBookmark : true,
-  },
-  {
-    id: 6,
-    img: '/assets/imgs/img_07.png',
-    type: 'new',
-    name: '',
-    commentType : 1,
-    isBookmark : false,
-  },
-  {
-    id: 7,
-    img: '/assets/imgs/img_08.png',
-    type: 'new',
-    name: '',
-    commentType : -1,
-    isBookmark : false,
-  },
-  {
-    id: 8,
-    img: '/assets/imgs/img_09.png',
-    type: 'new',
-    name: '',
-    commentType : -1,
-    isBookmark : false,
-  },
-  {
-    id: 9,
-    img: '/assets/imgs/img_10.png',
-    type: 'new',
-    name: '',
-    commentType : -1,
-    isBookmark : false,
-  },
-  {
-    id: 10,
-    img: '/assets/imgs/img_11.png',
-    type: 'new',
-    name: '',
-    commentType : -1,
-    isBookmark : false,
-  },
-  {
-    id: 11,
-    img: '/assets/imgs/img_12.png',
-    type: 'new',
-    name: '',
-    commentType : -1,
-    isBookmark : false,
-  },
-  {
-    id: 12,
-    img: '/assets/imgs/img_08.png',
-    type: 'hot',
-    name: '',
-    commentType : -1,
-    isBookmark : false,
-  },
-  {
-    id: 13,
-    img: '/assets/imgs/img_09.png',
-    type: 'hot',
-    name: '',
-    commentType : -1,
-    isBookmark : false,
-  },
-  {
-    id: 14,
-    img: '/assets/imgs/img_10.png',
-    type: 'hot',
-    name: '',
-    commentType : -1,
-    isBookmark : false,
-  },
-  {
-    id: 15,
-    img: '/assets/imgs/img_04.png',
-    type: 'oldest',
-    name: '',
-    commentType : -1,
-    isBookmark : false,
-  },
-  {
-    id: 16,
-    img: '/assets/imgs/img_05.png',
-    type: 'oldest',
-    name: '',
-    commentType : -1,
-    isBookmark : false,
-  },
-  {
-    id: 17,
-    img: '/assets/imgs/img_04.png',
-    type: 'top',
-    name: '',
-    commentType : 3,
-    isBookmark : false,
-  },
-  {
-    id: 18,
-    img: '/assets/imgs/img_05.png',
-    type: 'top',
-    name: '',
-    commentType : 3,
-    isBookmark : false,
-  },
-  {
-    id: 19,
-    img: '/assets/imgs/img_06.png',
-    type: 'top',
-    name: '',
-    commentType : 3,
-    isBookmark : false,
-  },
-  {
-    id: 20,
-    img: '/assets/imgs/img_07.png',
-    type: 'top',
-    name: '',
-    commentType : 3,
-    isBookmark : false,
-  },
-];
 const CommunityFeed = () => {
   const classes = useStyles();
+  const { loginStatus, account, library } = useContext(Web3WalletContext)
+  const { user } = useAuthState();
   const breakpointColumnsObj = {
     // default: 4,
     3840: 8,
@@ -195,10 +28,36 @@ const CommunityFeed = () => {
   const [filter, setFilter] = useState('new');
   const [searchStr, setSearchStr] = useState('');
   const [myArt, setMyArt] = useState<any[]>([]);
+  
   useEffect(() => {
-    let filteredData = myData.filter(d=> d.type === filter)
-    setMyArt(filteredData)
-  }, [filter]);
+    if (loginStatus){
+      fetchItems();
+    }
+  }, [loginStatus])
+
+  const fetchItems = async () => {
+    let paramsData = {
+    }
+
+    axios.get("/api/item", {params : paramsData})
+      .then((res) => {
+        console.log(res.data.items)
+        setMyArt(res.data.items);
+      }).catch((e) => {
+        console.log(e.message);
+        toast.error(e.message);
+      })
+  }
+
+  const updateArts = (item) => {
+    const newArts = myArt.map((art, key) => {
+      if (art.tokenId === item.tokenId){
+        return item;
+      }
+      return art;
+    })
+    setMyArt(newArts);
+  }
 
   useEffect(() => {
   }, [searchStr]);
@@ -224,7 +83,7 @@ const CommunityFeed = () => {
             columnClassName={classes.gridColumn}
           >
             {myArt.map((d, i) => (
-              <ProductCard1 key={i} product={d} onShow ={()=>onShow(d)}/>
+              <ProductCard1 key={i} updateArts={updateArts} item={d} onShow ={()=>onShow(d)}/>
             ))}
           </Masonry>
         </div>

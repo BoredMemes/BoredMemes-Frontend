@@ -1,7 +1,6 @@
 import { BrowserRouter as Switch, Route } from 'react-router-dom';
 import Layout from 'components/Layout';
 
-import Setting from 'containers/Settings';
 import MyArt from 'containers/MyArt';
 
 import ScrollToTop from 'utils/scrollToTop';
@@ -23,7 +22,7 @@ const Routes = () => (
         <Route exact path="/bookmarks" component={Bookmarks} />
         <Route exact path="/miner" component={Miner} />
         <Route path="/stake" component={Stake} />
-        <Route exact path="/settings" component={Setting} />
+        <Route exact path="/settings" component={EditProfile} />
         <Route path="/edit_profile" component={EditProfile} />
 
         {/* <Route path="/detail/:tokenID" component={Setting} />EditProfile */}

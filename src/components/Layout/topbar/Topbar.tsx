@@ -1,6 +1,6 @@
 import { useWeb3React } from '@web3-react/core';
 import ConnectModal from 'components/modal/connectModal/ConnectModal';
-import { useEffect, useState } from 'react';
+import { useContext, useEffect, useState } from 'react';
 import { HashLink } from 'react-router-hash-link';
 import { getBalanceOfBoredM } from 'utils/contracts';
 import { truncateWalletString } from 'utils';
@@ -8,6 +8,8 @@ import './topbar.scss';
 import FormatMoneyOptionLabel from '../../selectOptionFormat/FormatMoneyOptionLabel';
 import Select from "react-select";
 import AccountModal from 'components/modal/accountModal/AccountModal';
+import Web3WalletContext from 'hooks/Web3ReactManager';
+import { useAuthState } from 'context/authContext';
 type MenuType = {
   menuOpen?: boolean;
   setMenuOpen?(flag: boolean): void;
@@ -79,18 +81,17 @@ export default function Topbar({ menuOpen, setMenuOpen }: MenuType) {
   const [showConnectModal, setShowConnectModal] = useState(false);
   const [showAcountModal, setShowAcountModal] = useState(false);
 
-  const [loginStatus, setLoginStatus] = useState(false);
-  const { connector, library, chainId, account, active } = useWeb3React();
+  const { loginStatus, account, library, chainId } = useContext(Web3WalletContext)
+  const { user } = useAuthState();
+
   let [BoredMBalance, setBoredMBalance] = useState('0.00');
   useEffect(() => {
-    const isLoggedin = account && active && chainId === parseInt(process.env.REACT_APP_NETWORK_ID, 10);
-    setLoginStatus(isLoggedin);
-    if (isLoggedin) {
+    if (loginStatus) {
       getBalanceOfBoredM(chainId, library, account).then(balance => {
         setBoredMBalance(balance.toFixed(2));
       });
     }
-  }, [connector, library, account, active, chainId]);
+  }, [loginStatus]);
 
   const options = [
     { value: "eth", label: "ETHEREUM", customAbbreviation: "eth" },
@@ -125,7 +126,7 @@ const onChange = (e)=>{
           </div>
           {loginStatus && 
           <HashLink to="/">
-          <img src='/assets/avatars/avatar_01.png' alt="" className='avatar' />
+          <img src={user?.logo_url} alt="" className='avatar' />
         </HashLink>
         }
 

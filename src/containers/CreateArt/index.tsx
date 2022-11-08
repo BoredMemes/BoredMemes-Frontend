@@ -1,5 +1,5 @@
 import { useStyles } from './style';
-import { useState } from 'react';
+import { useContext, useEffect, useState } from 'react';
 import InputField from 'components/Forms/InputField';
 import Expand from 'react-expand-animated';
 import CheckBox from 'components/Forms/CheckBox';
@@ -8,6 +8,11 @@ import FilledButton from 'components/Buttons/FilledButton';
 import Modal from 'components/modal';
 import { useHistory } from 'react-router-dom';
 import { useMediaQuery } from 'react-responsive';
+import Web3WalletContext from 'hooks/Web3ReactManager';
+import { toast } from 'react-toastify';
+import axios from 'axios';
+import { arrayify, hashMessage } from 'ethers/lib/utils';
+import { onMintArtItem } from 'utils/contracts';
 const myData = [
   {
     a: 1,
@@ -75,50 +80,103 @@ const cardData = [
   {
     name: 'Silver Pack',
     price: 25,
-    img : '/assets/icons/silver.png',
+    img: '/assets/icons/silver.png',
     count: 1,
   },
   {
     name: 'Gold Pack',
     price: 45,
-    img : '/assets/icons/gold.png',
+    img: '/assets/icons/gold.png',
     count: 3,
   },
   {
     name: 'Premium Pack',
     price: 85,
-    img : '/assets/icons/premium.png',
+    img: '/assets/icons/premium.png',
     count: 5,
   },
 ];
 const CreateArt = () => {
+  const { loginStatus, account, library } = useContext(Web3WalletContext)
   const classes = useStyles();
   const isTabletOrMobile = useMediaQuery({ query: 'screen and (max-width: 640px) and (orientation:portrait)' })
-  
+
   const [expand, setExpand] = useState(false);
   const styles = {
-    open: { width: isTabletOrMobile ? '100%':'calc(100% - 180px)', overflow : 'hidden', overflowX:'scroll',},
-    close: { width: '0%', height : '0px' },
+    open: { width: isTabletOrMobile ? '100%' : 'calc(100% - 180px)', overflow: 'hidden', overflowX: 'scroll', },
+    close: { width: '0%', height: '0px' },
   };
   const transitions = ['width', 'height', 'opacity', 'background'];
 
   const [description, setDescription] = useState(null);
+  const [artRatio, setArtRatio] = useState("");
   const [ratio, setRatio] = useState(0);
   const [ratioCard, setRatioCard] = useState('up');
-  const [packID, setPackID] = useState(-1);
+  const [packID, setPackID] = useState(0);
   const [telegramChecked, setTelegramChecked] = useState(false);
   const [twitterChecked, setTwitterChecked] = useState(false);
-  
+
 
   const [processingModal, setProcessingModal] = useState(false);
   const [resultModal, setResultModal] = useState(false);
 
   const onGetArt = async () => {
+    if (!loginStatus) {
+      toast.error("Please connect your wallet correctly!");
+      return;
+    }
+
+    if (!description || artRatio === "") {
+      toast.error("The more detailed information is needed.")
+      return;
+    }
+
+    if (twitterChecked && telegramChecked) {
+      return toast.error("One of both is recommended.");
+    }
     setProcessingModal(true)
-    setTimeout(() => {
-      setProcessingModal(false)
-      setResultModal(true)
-    }, 1000);
+    try{
+      const timestamp = Math.floor(new Date().getTime() / 1000);
+      const msg = await library.getSigner().signMessage(arrayify(hashMessage(account.toLowerCase() + "-" + timestamp)));
+      let paramsData = {
+        address : account.toLowerCase(),
+        timestamp : timestamp,
+        message: msg,
+        description : description,
+        ratio : artRatio,
+        packId : packID,
+        isTwitterNotify : twitterChecked,
+        isTelegramNotify: telegramChecked
+      }
+      axios.post("/api/addart", paramsData)
+        .then(async (res) => {          
+          if (res.data.message === "success"){
+            console.log("Request ID : ", res.data.reqId);
+            const isMinted = await onMintArtItem(library.getSigner(), res.data.reqId, packID);
+            if (isMinted){
+              toast.success("Your Art is requested successfully");
+            }
+            setProcessingModal(false);
+          }else toast.error("Failed");
+        }).catch((e) => {
+          setProcessingModal(false);
+          toast.error(e.message);
+        })
+    }catch(e){
+      console.log("Sign Message Error : " , e);
+      setProcessingModal(false);
+    }
+    
+    // setSigned(msg && msg !== "")
+    // setSignMsg(msg);
+    // setTimestamp(timestamp);
+
+
+    // setProcessingModal(true)
+    // setTimeout(() => {
+    //   setProcessingModal(false)
+    //   setResultModal(true)
+    // }, 1000);
   }
 
   const history = useHistory()
@@ -133,7 +191,8 @@ const CreateArt = () => {
     history.push('/community_feed')
   }
 
-  const onClickRatioCard = (id:number, card : string) => {
+  const onClickRatioCard = (id: number, _ratio: string, card: string) => {
+    setArtRatio(_ratio);
     setRatio(id)
     setRatioCard(card)
   }
@@ -144,85 +203,85 @@ const CreateArt = () => {
           <h1>BoredM Miner</h1>
         </div>
         <div className={classes.content}>
-        <div className={`${classes.step} step`}>
-          <div className={classes.stepLeft}>
-              <div className="circle" style={{background : description ? '#F8B4E4' : '#d4d4d4'}}>1</div>
-              <div className="leftLine"  style={{background : description ? '#F8B4E4' : '#d4d4d4'}}></div>
+          <div className={`${classes.step} step`}>
+            <div className={classes.stepLeft}>
+              <div className="circle" style={{ background: description ? '#F8B4E4' : '#d4d4d4' }}>1</div>
+              <div className="leftLine" style={{ background: description ? '#F8B4E4' : '#d4d4d4' }}></div>
               <h3>Image description</h3>
               <p>Add your image description. The more detailed, the more accurate the ai will be.</p>
             </div>
             <div className={classes.stepContent}>
-              <InputField isMulti label = "Image description" onChangeData={(e)=>setDescription(e)}/>
+              <InputField isMulti label="Image description" onChangeData={(e) => setDescription(e)} />
             </div>
           </div>
 
           <div className={`${classes.step} step`}>
             <div className={classes.stepLeft}>
-              <div className="circle" style={{background : ratio !==-1 ? '#F8B4E4' : '#d4d4d4'}}>2</div>
-              <div className="leftLine" style={{background : ratio !==-1 ? '#F8B4E4' : '#d4d4d4'}}></div>
+              <div className="circle" style={{ background: ratio !== -1 ? '#F8B4E4' : '#d4d4d4' }}>2</div>
+              <div className="leftLine" style={{ background: ratio !== -1 ? '#F8B4E4' : '#d4d4d4' }}></div>
               <h3>Aspect ratio</h3>
               <p>Image dimension.</p>
             </div>
             <div className={classes.stepContent}>
-              <div className="ratioContent" style={{width : expand ? '100%' : 'auto'}}>
-                {!isTabletOrMobile ? 
+              <div className="ratioContent" style={{ width: expand ? '100%' : 'auto' }}>
+                {!isTabletOrMobile ?
                   <>
-                  {ratioCard === 'up' ? 
-                    <div className="ratioMain" style={{height : `${(64 * myData[ratio]?.b)/myData[ratio]?.a}px`}}>  
-                      <div className="heart"><img src="/assets/icons/crown_icon.svg" alt="" /></div> {myData[ratio]?.a}:{myData[ratio]?.b}
-                    </div>:
-                    <div className="ratioMain" style={{height : `${(64 * myData[ratio]?.b1)/myData[ratio]?.a1}px`}}>  
-                    <div className="heart"><img src="/assets/icons/crown_icon.svg" alt="" /></div> {myData[ratio]?.a1}:{myData[ratio]?.b1}
-                  </div>}
+                    {ratioCard === 'up' ?
+                      <div className="ratioMain" style={{ height: `${(64 * myData[ratio]?.b) / myData[ratio]?.a}px` }}>
+                        <div className="heart"><img src="/assets/icons/crown_icon.svg" alt="" /></div> {myData[ratio]?.a}:{myData[ratio]?.b}
+                      </div> :
+                      <div className="ratioMain" style={{ height: `${(64 * myData[ratio]?.b1) / myData[ratio]?.a1}px` }}>
+                        <div className="heart"><img src="/assets/icons/crown_icon.svg" alt="" /></div> {myData[ratio]?.a1}:{myData[ratio]?.b1}
+                      </div>}
                     <Expand open={expand} duration={300} styles={styles} transitions={transitions}>
-                      <div className="ratioList" style={{width : expand ? '100%' : '0px'}}>
-                        {myData.map((d, k)=>(
-                          <div className="col" key = {k}>
-                            <div className="ratio"  onClick={()=>onClickRatioCard(k, 'up')} style={{height : `${(45 * d.b)/d.a}px`, background : ratio === k && ratioCard === 'up' ?"#E4CCFD":"#D4D4D4" }}> 
+                      <div className="ratioList" style={{ width: expand ? '100%' : '0px' }}>
+                        {myData.map((d, k) => (
+                          <div className="col" key={k}>
+                            <div className="ratio" onClick={() => onClickRatioCard(k, d.a + ":" + d.b, 'up')} style={{ height: `${(45 * d.b) / d.a}px`, background: ratio === k && ratioCard === 'up' ? "#E4CCFD" : "#D4D4D4" }}>
                               {ratio === k && ratioCard === 'up' && <div className="heart"><img src="/assets/icons/heart_icon_01.svg" alt="" /></div>}
                               {d.a}:{d.b}
                             </div>
-                            <div className="ratio"  onClick={()=>onClickRatioCard(k, 'down')} style={{height : `${(45 * d.b1)/d.a1}px`, background : ratio === k && ratioCard === 'down' ?"#E4CCFD":"#D4D4D4"}}>
+                            <div className="ratio" onClick={() => onClickRatioCard(k, d.a1 + ":" + d.b1, 'down')} style={{ height: `${(45 * d.b1) / d.a1}px`, background: ratio === k && ratioCard === 'down' ? "#E4CCFD" : "#D4D4D4" }}>
                               {ratio === k && ratioCard === 'down' && <div className="heart"><img src="/assets/icons/heart_icon_01.svg" alt="" /></div>}
                               {d.a1}:{d.b1}
                             </div>
                           </div>
                         ))}
-                      
+
                       </div>
                     </Expand>
-                    <div className="showBtn" onClick={()=>setExpand(!expand)}>
-                      <img src="/assets/icons/arrow_down_icon.svg" alt="" style={{ transform: expand ? 'rotate(180deg)' : 'rotate(0deg)' }}/>
+                    <div className="showBtn" onClick={() => setExpand(!expand)}>
+                      <img src="/assets/icons/arrow_down_icon.svg" alt="" style={{ transform: expand ? 'rotate(180deg)' : 'rotate(0deg)' }} />
                     </div>
-                  </>:
+                  </> :
                   <>
-                    {ratioCard === 'up' ? 
-                    <div className="ratioMain" style={{height : `${(50 * myData[ratio]?.b)/myData[ratio]?.a}px`}}>  
-                      <div className="heart"><img src="/assets/icons/crown_icon.svg" alt="" /></div> {myData[ratio]?.a}:{myData[ratio]?.b}
-                    </div>:
-                    <div className="ratioMain" style={{height : `${(50 * myData[ratio]?.b1)/myData[ratio]?.a1}px`}}>  
-                    <div className="heart"><img src="/assets/icons/crown_icon.svg" alt="" /></div> {myData[ratio]?.a1}:{myData[ratio]?.b1}
-                  </div>}
-                    <div className="showBtn" onClick={()=>setExpand(!expand)}>
-                      <img src="/assets/icons/arrow_down_icon.svg" alt="" style={{ transform: expand ? 'rotate(180deg)' : 'rotate(0deg)' }}/>
+                    {ratioCard === 'up' ?
+                      <div className="ratioMain" style={{ height: `${(50 * myData[ratio]?.b) / myData[ratio]?.a}px` }}>
+                        <div className="heart"><img src="/assets/icons/crown_icon.svg" alt="" /></div> {myData[ratio]?.a}:{myData[ratio]?.b}
+                      </div> :
+                      <div className="ratioMain" style={{ height: `${(50 * myData[ratio]?.b1) / myData[ratio]?.a1}px` }}>
+                        <div className="heart"><img src="/assets/icons/crown_icon.svg" alt="" /></div> {myData[ratio]?.a1}:{myData[ratio]?.b1}
+                      </div>}
+                    <div className="showBtn" onClick={() => setExpand(!expand)}>
+                      <img src="/assets/icons/arrow_down_icon.svg" alt="" style={{ transform: expand ? 'rotate(180deg)' : 'rotate(0deg)' }} />
                     </div>
                     <Expand open={expand} duration={300} styles={styles} transitions={transitions}>
-                      <div className="ratioList" style={{width : expand ? '100%' : '0px'}}>
-                        {myData.map((d, k)=>(
+                      <div className="ratioList" style={{ width: expand ? '100%' : '0px' }}>
+                        {myData.map((d, k) => (
                           <div className="col" >
-                            <div className="ratio" onClick={()=>onClickRatioCard(k, 'up')} style={{height : `${(35 * d.b)/d.a}px`, background : ratio === k && ratioCard === 'up' ?"#E4CCFD":"#D4D4D4" }}> 
-                              {ratio === k  && ratioCard === 'up' && <div className="heart"><img src="/assets/icons/heart_icon_01.svg" alt="" /></div>}
+                            <div className="ratio" onClick={() => onClickRatioCard(k, d.a + ":" + d.b, 'up')} style={{ height: `${(35 * d.b) / d.a}px`, background: ratio === k && ratioCard === 'up' ? "#E4CCFD" : "#D4D4D4" }}>
+                              {ratio === k && ratioCard === 'up' && <div className="heart"><img src="/assets/icons/heart_icon_01.svg" alt="" /></div>}
                               {d.a}:{d.b}
                             </div>
-                            <div className="ratio" onClick={()=>onClickRatioCard(k, 'down')} style={{height : `${(35 * d.b1)/d.a1}px`, background : ratio === k && ratioCard === 'down' ?"#E4CCFD":"#D4D4D4"}}>
-                            {ratio === k && ratioCard === 'down' && <div className="heart"><img src="/assets/icons/heart_icon_01.svg" alt="" /></div>}
-                            {d.a1}:{d.b1}</div>
+                            <div className="ratio" onClick={() => onClickRatioCard(k, d.a1 + ":" + d.b1, 'down')} style={{ height: `${(35 * d.b1) / d.a1}px`, background: ratio === k && ratioCard === 'down' ? "#E4CCFD" : "#D4D4D4" }}>
+                              {ratio === k && ratioCard === 'down' && <div className="heart"><img src="/assets/icons/heart_icon_01.svg" alt="" /></div>}
+                              {d.a1}:{d.b1}</div>
                           </div>
                         ))}
-                      
+
                       </div>
                     </Expand>
-                    
+
                   </>
                 }
               </div>
@@ -231,28 +290,28 @@ const CreateArt = () => {
 
           <div className={`${classes.step} step`}>
             <div className={classes.stepLeft}>
-              <div className="circle" style={{background : packID !==-1 ? '#F8B4E4' : '#d4d4d4'}}>3</div>
-              <div className="leftLine" style={{background : packID !==-1 ? '#F8B4E4' : '#d4d4d4'}}></div>
+              <div className="circle" style={{ background: packID !== -1 ? '#F8B4E4' : '#d4d4d4' }}>3</div>
+              <div className="leftLine" style={{ background: packID !== -1 ? '#F8B4E4' : '#d4d4d4' }}></div>
               <h3>Package</h3>
               <p>1, 3 or 5 iterations.</p>
             </div>
             <div className={classes.stepContent}>
               <div className="cards">
-                {cardData.map((d, k)=>(
-                  <div className="card" onClick={()=>setPackID(k)} key = {k}>
+                {cardData.map((d, k) => (
+                  <div className="card" onClick={() => setPackID(k)} key={k}>
                     {packID === k && <div className="heart"><img src="/assets/icons/crown_icon.svg" alt="" /></div>}
                     <span><h3>{d.name}</h3> <h3>{d.price}USD</h3></span>
-                    <span><h4>Paid in ETH</h4> <button style={{ background : k === 1 ?"#E4CCFD":"#D4D4D4" }}><img src={d.img} alt="" /> {d.count} image</button></span>
+                    <span><h4>Paid in ETH</h4> <button style={{ background: k === 1 ? "#E4CCFD" : "#D4D4D4" }}><img src={d.img} alt="" /> {d.count} image</button></span>
                   </div>
                 ))}
-               
+
               </div>
             </div>
           </div>
 
           <div className={`${classes.step} step`}>
             <div className={classes.stepLeft}>
-              <div className="circle"  style={{background : (twitterChecked || telegramChecked) ? '#F8B4E4' : '#d4d4d4'}}>4</div>
+              <div className="circle" style={{ background: (twitterChecked || telegramChecked) ? '#F8B4E4' : '#d4d4d4' }}>4</div>
               <h3>Your details</h3>
               <p>Notification will be sent to your twitter or telegram.</p>
             </div>
@@ -260,18 +319,18 @@ const CreateArt = () => {
               <div className="row">
                 <div className="input-div">
                   <div className={`${classes.myCheck} myCheck`}>
-                    <CheckBox onChange={setTwitterChecked}/>
+                    <CheckBox onChange={setTwitterChecked} />
                     <h3>Twitter Notification</h3>
                     <i className="fab fa-twitter"></i>
                   </div>
                   <div className={`${classes.myCheck} myCheck`}>
-                    <CheckBox onChange={setTelegramChecked}/>
+                    <CheckBox onChange={setTelegramChecked} />
                     <h3>Telegram Notification</h3>
                     <i className="fab fa-telegram"></i>
                   </div>
-                  <ErrorAlert title="One of both is recommanded. Add username in user settings." show={ twitterChecked && telegramChecked} alertType = 'warning' />
+                  <ErrorAlert title="One of both is recommended. Add username in user settings." show={twitterChecked && telegramChecked} alertType='warning' />
                 </div>
-                <FilledButton label={'Get Art'}  handleClick={onGetArt}/>
+                <FilledButton disabled={processingModal} label={'Get Art'} handleClick={onGetArt} />
               </div>
             </div>
           </div>
@@ -280,57 +339,57 @@ const CreateArt = () => {
         </div>
       </div>
 
-      <Modal 
-        show={processingModal} 
-        maxWidth = 'sm'
+      <Modal
+        show={processingModal}
+        maxWidth='sm'
         children={<>
-        <div className={classes.modal}>
-          <div className={classes.modalTop}>
-            <span>
-              <img src="/assets/logo.png" alt="" />
-              <h4>Your transaction is beeing processed</h4>
-            </span>
-            <button className="closeBtn" onClick={()=> setProcessingModal(false)}><img src="/assets/icons/close_icon.svg" alt="" /></button>
-          </div>
-          <div className={classes.modalContent}>
-            <span>
-              <img src="/assets/icons/2.png" alt="" />
-            </span>
-            <div className="warning">
-              <img src="/assets/icons/warning_icon.svg" alt="" />
-              <p>Validate your transaction to continue.</p>
+          <div className={classes.modal}>
+            <div className={classes.modalTop}>
+              <span>
+                <img src="/assets/logo.png" alt="" />
+                <h4>Your transaction is beeing processed</h4>
+              </span>
+              <button className="closeBtn" onClick={() => setProcessingModal(false)}><img src="/assets/icons/close_icon.svg" alt="" /></button>
             </div>
-          </div>
-          
-        </div>
+            <div className={classes.modalContent}>
+              <span>
+                <img src="/assets/icons/2.png" alt="" />
+              </span>
+              <div className="warning">
+                <img src="/assets/icons/warning_icon.svg" alt="" />
+                <p>Validate your transaction to continue.</p>
+              </div>
+            </div>
 
-        </>}        
+          </div>
+
+        </>}
       />
 
-      <Modal 
-        show={resultModal} 
-        maxWidth = 'sm'
+      <Modal
+        show={resultModal}
+        maxWidth='sm'
         children={<>
-        <div className={classes.modal}>
-          <div className={classes.modalTop}>
-            <span>
-              <img src="/assets/logo.png" alt="" />
-              <h4>Congratulation, Your art is coming your way!</h4>
-            </span>
-            <button className="closeBtn" onClick={()=>setResultModal(false)}><img src="/assets/icons/close_icon.svg" alt="" /></button>
+          <div className={classes.modal}>
+            <div className={classes.modalTop}>
+              <span>
+                <img src="/assets/logo.png" alt="" />
+                <h4>Congratulation, Your art is coming your way!</h4>
+              </span>
+              <button className="closeBtn" onClick={() => setResultModal(false)}><img src="/assets/icons/close_icon.svg" alt="" /></button>
+            </div>
+            <div className={classes.modalContent}>
+              <span>
+                <p>An experienced ai artist is reviewing your image description, you’ll get notified once your art is ready.</p>
+              </span>
+            </div>
+            <div className={classes.modalBtns}>
+              <FilledButton label={'May Art'} color='secondary' handleClick={onGotoMyArt} />
+              <FilledButton label={'Community Feed'} handleClick={onGotoCommunityFeed} />
+            </div>
           </div>
-          <div className={classes.modalContent}>
-            <span>
-              <p>An experienced ai artist is reviewing your image description, you’ll get notified once your art is ready.</p>
-            </span>
-          </div>
-          <div className={classes.modalBtns}>
-            <FilledButton label={'May Art'} color = 'secondary'handleClick={onGotoMyArt}/>
-            <FilledButton label={'Community Feed'}handleClick={onGotoCommunityFeed}/>
-          </div>
-        </div>
 
-        </>}        
+        </>}
       />
     </>
   );

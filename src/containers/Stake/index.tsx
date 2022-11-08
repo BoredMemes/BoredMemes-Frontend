@@ -1,11 +1,57 @@
 import FilledButton from 'components/Buttons/FilledButton';
 import { useStyles } from './style';
-import { useState } from 'react';
+import { useContext, useEffect, useState } from 'react';
 import Expand from 'react-expand-animated';
 import Modal from 'components/modal';
 import CheckLock from 'components/Forms/CheckLock';
+import { getBalanceOfBoredM, getStakingInfo, onBoredMClaim, onBoredMStake, onBoredMUnStake } from 'utils/contracts';
+import Web3WalletContext from 'hooks/Web3ReactManager';
+import { toast } from 'react-toastify';
+import { NFTStakingInfo } from 'utils/types';
+import axios from 'axios';
 const Stake = () => {
   const classes = useStyles();
+  const { loginStatus, chainId, account, library } = useContext(Web3WalletContext)
+
+  useEffect(() => {
+    if (loginStatus){
+      getPrices();
+      onStakingInfo();
+    }
+  }, [loginStatus, account, chainId, library])
+
+  const [ ethPrice, setEthPrice ] = useState(0);
+  const [ boredmPrice, setBoredMPrice ] = useState(0);
+  const getPrices = async () => {
+    axios.get("/api/getrates")
+      .then((res) => {
+        setEthPrice(res.data.eth);
+        setBoredMPrice(res.data.boredm)
+      }).catch((err) => {
+        console.log(err);
+      })
+  }
+
+  const [ nftStakingInfo, setNftStakingInfo ] = useState<NFTStakingInfo>({
+    tDividETH: 0,
+    tStakedBoredM: 0,
+    mStakedBoredM: 0,
+    mEarnedETH: 0,
+    mClaimedETH: 0,
+    mClaimableETH: 0,
+    tDividETHLock: 0,
+    tStakedBoredMLock: 0,
+    mStakedBoredMLock: 0,
+    mEarnedETHLock: 0,
+    mClaimedETHLock: 0,
+    mClaimableETHLock: 0,
+    mPercentFree: 10,
+    mPercentLock: 90
+  });
+  const onStakingInfo = async () => {
+    const _info = await getStakingInfo(account, chainId, library.getSigner());
+    if (_info)setNftStakingInfo(_info);
+  }
 
   const [minerList, setMinerList] = useState<number[]>([0]);
   const onAddMiner = () => {
@@ -13,67 +59,126 @@ const Stake = () => {
   }
 
   const [boredMExpand, setBoredMExpand] = useState(true);
-  const [minerExpand, setMinerExpand] = useState(false);
+  const [minerExpand, setMinerExpand] = useState(true);
 
   const styles = {
-    open: { width: '100%'},
-    close: { width: '100%'},
+    open: { width: '100%' },
+    close: { width: '100%' },
   };
   const transitions = ['width', 'height', 'opacity', 'background'];
 
-  // modal Functions
+  //--------------------Stake Part-----------------//
+  const [ isFree, setFree ] = useState(false);
+  const [stakeModal, setStakeModal] = useState(false);
+  const [ balance, setBalance ] = useState(0);
   const [amountStak, setAmountStak] = useState(0);
-  
   const [progressStak, setProgressStak] = useState(50);
-
-  const onChangeValStake = async (e : any) => {
-    console.log(e.target.value)
-    if(e.target.value === null || e.target.value ==='' ){
+  const onStake = async () => {
+    if (loginStatus){
+      const toast_load_id = toast.loading("Staking...");
+      const isStaked = await onBoredMStake(account, amountStak, chainId, library.getSigner(), isFree);
+      toast.dismiss(toast_load_id);
+      if (isStaked){
+        toast.success("Staked " + amountStak + " $BoredM Successfully.")
+        onCancelStake();
+        onStakingInfo();
+      }
+    }
+  }
+  const onCancelStake = () => {
+    setProgressStak(50);
+    setStakeModal(false);
+  }  
+  const onStakeModal = (_isFree) => {
+    setFree(_isFree);
+    setStakeModal(true);
+  }
+  useEffect(() => {
+    if (loginStatus && stakeModal){
+      getBalance()
+    }
+  }, [loginStatus, stakeModal])
+  const getBalance = async () => {
+    const _balance = await getBalanceOfBoredM(chainId, library.getSigner(), account);
+    setBalance(_balance);
+  }
+  const onChangeValStake = async (e: any) => {
+    if (e.target.value === null || e.target.value === '') {
       setAmountStak(0);
-    }else{
+    } else {
       setAmountStak(parseFloat(e.target.value));
     }
   }
-
+  useEffect(() => {
+    if (progressStak >= 0 && stakeModal){
+      setAmountStak(balance * progressStak / 100);
+    }
+  }, [progressStak, stakeModal, balance])
   const onMaxStak = async () => {
-    setAmountStak(10)
+    setAmountStak(balance)
   }
-
-  const [amountWithdraw, setAmountWithdraw] = useState(0);
   
+  //-----------------------Withdraw Part-------------------//
+  const [ isWithdrawFree, setIsWithdrawFree ] = useState(false);
+  const [withdrawModal, setWithdrawModal] = useState(false);
+  const [amountWithdraw, setAmountWithdraw] = useState(0);
   const [progressWithdraw, setProgressWithdraw] = useState(50);
-
-  const onChangeValWithdraw = async (e : any) => {
-    console.log(e.target.value)
-    if(e.target.value === null || e.target.value ==='' ){
+  const onWithdraw = async () => {
+    if (loginStatus){
+      const toast_load_id = toast.loading("UnStaking...");
+      const isUnStaked = await onBoredMUnStake(account, amountWithdraw, chainId, library.getSigner(), isWithdrawFree);
+      toast.dismiss(toast_load_id);
+      if (isUnStaked){
+        toast.success("Withrawn " + amountWithdraw + " $BoredM Successfully.")
+        onCancelWithdraw();
+        onStakingInfo();
+      }
+    }
+  }
+  const onCancelWithdraw = () => {
+    setProgressWithdraw(50);
+    setWithdrawModal(false);
+  }
+  const onWithdrawModal = async (_isFree) => {
+    setIsWithdrawFree(_isFree);
+    setWithdrawModal(true);
+  }
+  const onChangeValWithdraw = async (e: any) => {
+    if (e.target.value === null || e.target.value === '') {
       setAmountWithdraw(0);
-    }else{
+    } else {
       setAmountWithdraw(parseFloat(e.target.value));
     }
   }
-
   const onMaxWithdraw = async () => {
-    setAmountWithdraw(10)
+    setAmountWithdraw(isWithdrawFree ? nftStakingInfo?.mStakedBoredM : nftStakingInfo?.mStakedBoredMLock)
+  }
+  useEffect(() => {
+    if (progressWithdraw >= 0 && withdrawModal){
+      setAmountWithdraw( (isWithdrawFree ? nftStakingInfo.mStakedBoredM : nftStakingInfo.mStakedBoredMLock) * progressWithdraw / 100);
+    }
+  }, [progressWithdraw, withdrawModal, nftStakingInfo])
+
+  //---------------------Harvest-------------------------//
+  const onHarvest = async (_isFree) => {
+    if (loginStatus){
+      const toast_load_id = toast.loading("Harvesting...");
+      const isClaimed = await onBoredMClaim(chainId, library.getSigner(), isFree);
+      toast.dismiss(toast_load_id);
+      if (isClaimed){
+        toast.success("Withrawn " + amountWithdraw + " $BoredM Successfully.")
+        onCancelWithdraw();
+        onStakingInfo();
+      }
+    }
   }
 
-  const [stakModal, setStakModal] = useState(false);
-  const [withdrawModal, setWithdrawModal] = useState(false);
-  const onStake = async () => {
-    setStakModal(false)
-  }
-
-  const onWithdraw = async () => {
-    setWithdrawModal(false)
-  }
-
-
-  
   return (
     <>
       <div className={classes.root}>
         <div className={`${classes.content} mainContainer`}>
           <div className={classes.top}>
-            <h1>BoredM Farm</h1>
+            <h1>BoredM Free Farm</h1>
           </div>
           <div className={`${classes.stakeCard} stakeCard`}>
             <div className="top">
@@ -81,144 +186,157 @@ const Stake = () => {
                 <li>
                   <img src="/assets/logo.png" alt="" />
                   <span>
-                    <h4>Stake $BoredM</h4>
-                    <p>$280,000</p>
+                    <h5>Total Dividend $ETH</h5>
+                    <p>{nftStakingInfo?.tDividETH.toLocaleString()}</p>
+                    <p><small>≈ ${(ethPrice * nftStakingInfo?.tDividETH).toLocaleString(undefined, {maximumFractionDigits:2})}</small></p>
                   </span>
                 </li>
 
                 <li>
                   <span>
-                    <h5>APR</h5>
-                    <p>12% / <img src="assets/icons/lock_icon.svg" alt="" /> 44%</p>
+                    <h5>Total Staked $BoredM</h5>
+                    <p>{nftStakingInfo?.tStakedBoredM.toLocaleString(undefined, {maximumFractionDigits:2})}</p>
+                    <p><small>≈ ${(boredmPrice * nftStakingInfo?.tStakedBoredM)}</small></p>
                   </span>
                 </li>
 
                 <li>
                   <span>
                     <h5>My staked $BoredM</h5>
-                    <p>7,836,923.44</p>
-                    <p><small>≈ $150,09</small></p>
+                    <p>{nftStakingInfo?.mStakedBoredM.toLocaleString(undefined, {maximumFractionDigits:2})}</p>
+                    <p><small>≈ ${(boredmPrice * nftStakingInfo?.mStakedBoredM)}</small></p>
                   </span>
                 </li>
                 <li>
                   <span>
-                  <h5>My Earned $ETH</h5>
-                    <p>0.15</p>
-                    <p><small>≈ $150,09</small></p>
+                    <h5>My Earned $ETH</h5>
+                    <p>{nftStakingInfo?.mEarnedETH.toLocaleString(undefined, {maximumFractionDigits:2})}</p>
+                    <p><small>≈ ${(ethPrice * nftStakingInfo?.mEarnedETH).toLocaleString(undefined, {maximumFractionDigits:2})}</small></p>
                   </span>
                 </li>
                 <li>
-                  <FilledButton label={'Stake'} handleClick = {()=>setStakModal(true)}/>
+                  <FilledButton label={'Stake'} handleClick={() => onStakeModal(true)} />
                 </li>
               </ul>
-              <div className="downBtn" onClick={()=>setBoredMExpand(!boredMExpand)}>
-                <img src="/assets/icons/arrow_down_icon.svg" alt="" style={{ transform: boredMExpand ? 'rotate(180deg)' : 'rotate(0deg)' }}/>
+              <div className="downBtn" onClick={() => setBoredMExpand(!boredMExpand)}>
+                <img src="/assets/icons/arrow_down_icon.svg" alt="" style={{ transform: boredMExpand ? 'rotate(180deg)' : 'rotate(0deg)' }} />
               </div>
             </div>
             <Expand open={boredMExpand} duration={300} styles={styles} transitions={transitions}>
               <div className="state" >
                 <ul>
-                 
+
                   <li>
                     <span>
-                      <h5>My staked $BoredM</h5>
-                      <p>7,836,923.44</p>
-                      <p><small>≈ $150,09</small></p>
+                      <h5>Claimed $ETH</h5>
+                      <p>{nftStakingInfo?.mClaimedETH.toLocaleString(undefined, {maximumFractionDigits:2})}</p>
+                      <p><small>≈ ${(ethPrice * nftStakingInfo?.mClaimedETH).toLocaleString(undefined, {maximumFractionDigits:2})}</small></p>
                     </span>
                   </li>
                   <li>
                     <span>
-                    <h5>My Earned $ETH</h5>
-                      <p>0.15</p>
-                      <p><small>≈ $150,09</small></p>
+                      <h5>Claimable $ETH</h5>
+                      <p>{nftStakingInfo?.mClaimableETH.toLocaleString(undefined, {maximumFractionDigits:2})}</p>
+                      <p><small>≈ ${(ethPrice * nftStakingInfo?.mClaimableETH).toLocaleString(undefined, {maximumFractionDigits:2})}</small></p>
                     </span>
                   </li>
                   <li>
-                    <FilledButton label={'Reinvest'} color = 'success'/>
-                    <FilledButton label={'Harvest'} color = 'secondary'/>
-                    <FilledButton label={'Withdraw'} handleClick = {()=>setWithdrawModal(true)}/>
+                    {/* <FilledButton label={'Reinvest'} color='success' /> */}
+                    {
+                      nftStakingInfo?.mClaimableETH > 0 && <FilledButton label={'Harvest'} color='secondary' handleClick={() => onHarvest(true)}/>
+                    }
+                    <FilledButton label={'Withdraw'} handleClick={() => onWithdrawModal(true)} />
                   </li>
                 </ul>
-                
+
               </div>
-              
+
             </Expand>
             {!boredMExpand && <p className='bottomTxt'>Stake $Other to earn.</p>}
           </div>
           <div className={classes.top}>
-            <h1>Other Farms</h1>
-            <FilledButton label={'Add your custom farm'} color = 'grey' handleClick={onAddMiner}/>
+            <h1>BoredM Lock Farms(30 days)</h1>
+            {/* <FilledButton label={'Add your custom farm'} color='grey' handleClick={onAddMiner} /> */}
           </div>
-          {minerList.map((d, k)=>(
-            <div className={`${classes.stakeCard} stakeCard`}  key = {k}>
+          {minerList.map((d, k) => (
+            <div className={`${classes.stakeCard} stakeCard`} key={k}>
               <div className="top">
                 <ul>
                   <li>
                     <img src="/assets/logo.png" alt="" />
                     <span>
-                      <h4>Stake $Other</h4>
-                      <p>$280,000</p>
+                      <h5>Total Dividend $ETH</h5>
+                      <p>{nftStakingInfo?.tDividETHLock.toLocaleString(undefined, {maximumFractionDigits:2})}</p>
+                      <p><small>≈ ${(ethPrice * nftStakingInfo?.tDividETHLock).toLocaleString(undefined, {maximumFractionDigits:2})}</small></p>
+                    </span>
+                  </li>
+                  <li>
+                    {/* <span>
+                      <h5>APR</h5>
+                      <p>12% / <img src="assets/icons/lock_icon.svg" alt="" /> 44%</p>
+                    </span> */}
+                    <span>
+                      <h5>Total Staked $BoredM</h5>
+                      <p>{nftStakingInfo?.tStakedBoredMLock.toLocaleString(undefined, {maximumFractionDigits:2})}</p>
+                      <p><small>≈ ${(boredmPrice * nftStakingInfo?.tStakedBoredMLock)}</small></p>
                     </span>
                   </li>
                   <li>
                     <span>
-                      <h5>APR</h5>
-                      <p>12% / <img src="assets/icons/lock_icon.svg" alt="" /> 44%</p>
+                      <h5>My staked $BoredM</h5>
+                      <p>{nftStakingInfo?.mStakedBoredMLock.toLocaleString(undefined, {maximumFractionDigits:2})}</p>
+                      <p><small>≈ ${(boredmPrice * nftStakingInfo?.mStakedBoredMLock)}</small></p>
                     </span>
                   </li>
                   <li>
-                      <span>
-                        <h5>My staked $other</h5>
-                        <p>0</p>
-                        <p><small>≈ $0</small></p>
-                      </span>
-                    </li>
-                    <li>
-                      <span>
-                      <h5>My Earned </h5>
-                        <p>0</p>
-                        <p><small>≈ $0</small></p>
-                      </span>
-                    </li>
+                    <span>
+                      <h5>My Earned $ETH</h5>
+                      <p>{nftStakingInfo?.mEarnedETHLock.toLocaleString(undefined, {maximumFractionDigits:2})}</p>
+                      <p><small>≈ ${(ethPrice * nftStakingInfo?.mEarnedETHLock).toLocaleString(undefined, {maximumFractionDigits:2})}</small></p>
+                    </span>
+                  </li>
                   <li>
-                    <FilledButton label={'Stake'} handleClick = {()=>setStakModal(true)}/>
+                    <FilledButton label={'Stake'} handleClick={() => onStakeModal(false)} />
                   </li>
                 </ul>
-                <div className="downBtn" onClick={()=>setMinerExpand(!minerExpand)}>
-                  <img src="/assets/icons/arrow_down_icon.svg" alt="" style={{ transform: minerExpand ? 'rotate(180deg)' : 'rotate(0deg)' }}/>
+                <div className="downBtn" onClick={() => setMinerExpand(!minerExpand)}>
+                  <img src="/assets/icons/arrow_down_icon.svg" alt="" style={{ transform: minerExpand ? 'rotate(180deg)' : 'rotate(0deg)' }} />
                 </div>
               </div>
               <Expand open={minerExpand} duration={300} styles={styles} transitions={transitions}>
                 <div className="state" >
                   <ul>
-                  
+
                     <li>
                       <span>
-                        <h5>My shares</h5>
-                        <p>0</p>
+                        <h5>Claimed $ETH</h5>
+                        <p>{nftStakingInfo?.mClaimedETHLock.toLocaleString(undefined, {maximumFractionDigits:2})}</p>
+                        <p><small>≈ ${(ethPrice * nftStakingInfo?.mClaimedETHLock).toLocaleString(undefined, {maximumFractionDigits:2})}</small></p>
                       </span>
                     </li>
                     <li>
                       <span>
-                      <h5>My Earned $BNB</h5>
-                        <p>0</p>
-                        <p><small>≈ $0</small></p>
+                        <h5>Claimable $ETH</h5>
+                        <p>{nftStakingInfo?.mClaimableETHLock.toLocaleString(undefined, {maximumFractionDigits:2})}</p>
+                        <p><small>≈ ${(ethPrice * nftStakingInfo?.mClaimableETHLock).toLocaleString(undefined, {maximumFractionDigits:2})}</small></p>
                       </span>
                     </li>
                     <li>
-                      <FilledButton label={'Reinvest'} color = 'success'/>
-                      <FilledButton label={'Harvest'} color = 'secondary'/>
-                      <FilledButton label={'Withdraw'} handleClick = {()=>setWithdrawModal(true)}/>
+                      {/* <FilledButton label={'Reinvest'} color='success' /> */}
+                      {
+                        nftStakingInfo?.mClaimableETHLock > 0 && <FilledButton label={'Harvest'} color='secondary' handleClick={() => onHarvest(false)}/>
+                      }
+                      <FilledButton label={'Withdraw'} handleClick={() => onWithdrawModal(false)} />
                     </li>
                   </ul>
-                  
+
                 </div>
-                
+
               </Expand>
               {!minerExpand && <p className='bottomTxt'>Stake $Other to earn.</p>}
             </div>
           ))}
-          
+
         </div>
         <div className={`${classes.right} mainContainer`}>
           <div className={classes.top}>
@@ -248,11 +366,11 @@ const Stake = () => {
           <div className={`${classes.rewardCard} rewardCard`}>
             <ul>
               <li>
-                
+
               </li>
               <li>
-                  <p>@ Ethereum Network</p>
-                  <h4>BoredM Stake</h4>
+                <p>@ Ethereum Network</p>
+                <h4>BoredM Stake</h4>
               </li>
             </ul>
 
@@ -269,28 +387,28 @@ const Stake = () => {
           <div className={classes.buyPanel}>
             <ul>
               <li>
-                <div className="balance" style={{backgroundImage : `url('/assets/imgs/Rectangle 29.png')`}}>
+                <div className="balance" style={{ backgroundImage: `url('/assets/imgs/Rectangle 29.png')` }}>
                   <h2>$BoredM </h2> <img src="/assets/icons/eth_icon_01.svg" alt="" /> <h2>0.0₉7036 ETH</h2>
                 </div>
-                
+
               </li>
               <li>
-                <a href="https://dextools.com/" className = "Dextools" target="_blank"rel="noreferrer"  style={{background : `#05A3C9`}}>
+                <a href="https://dextools.com/" className="Dextools" target="_blank" rel="noreferrer" style={{ background: `#05A3C9` }}>
                   Buy on Dextools
                   <img src="/assets/icons/dxtool_icon.svg" alt="" />
-                </a> 
+                </a>
               </li>
               <li>
-                <a href="https://uniswap.comm/" className = "Uniswap" target="_blank"rel="noreferrer" style={{background : `#D63371`}}>
+                <a href="https://uniswap.comm/" className="Uniswap" target="_blank" rel="noreferrer" style={{ background: `#D63371` }}>
                   Buy on Uniswap
                   <img src="/assets/icons/uniswap_icon.svg" alt="" />
-                </a> 
+                </a>
               </li>
               <li>
-                <a href="https://1inch.comm/" className = "1inch" target="_blank"rel="noreferrer" style={{background : `#101A2E`}}>
+                <a href="https://1inch.comm/" className="1inch" target="_blank" rel="noreferrer" style={{ background: `#101A2E` }}>
                   Buy on 1inch
                   <img src="/assets/icons/linch_icon.svg" alt="" />
-                </a> 
+                </a>
               </li>
             </ul>
 
@@ -298,158 +416,159 @@ const Stake = () => {
         </div>
       </div>
 
-      <Modal 
-        show={stakModal} 
-        maxWidth = 'sm'
+      <Modal
+        show={stakeModal}
+        maxWidth='sm'
         children={<>
-        <div className={classes.modal}>
-          <div className={classes.modalTop}>
-            <span>
-              <img src="/assets/logo.png" alt="" />
-              <div>
-              <h4>Stake $BoredM in Farm</h4>
-              <p>7,836,923.44 $BoredM staked</p>
-              </div>
-            </span>
-            <button className="closeBtn" onClick={()=>setStakModal(false)}><img src="/assets/icons/close_icon.svg" alt="" /></button>
-          </div>
-          <div className={classes.modalContent}>
-            <div className={`${classes.amount} input-span`}>
-              <input type="number" onChange={e=>onChangeValStake(e)} placeholder = {"Amount"} value={amountStak === 0 ? "Amount": amountStak}/>
-              <button onClick={onMaxStak}>Max</button>
-              </div>
-            <h5>Balance : </h5>
-            <div className={classes.progress}>
-              <div className="line">
-                <div style = {{background : '#9B51E0', width : `${progressStak}%`, height : '100%'}}></div>
-              </div>
-              <div className="node" onClick={()=>setProgressStak(0)} style = {{background : progressStak < 0? '#fff':'#9B51E0'}}>
-                {progressStak > 0? 
-                <img src="/assets/icons/check_icon.svg" alt="" />:
-                <div className="circle" style = {{background : progressStak === 0? '#fff':'#E0E0E7'}}></div>}
-              </div>
-              <div className="node" onClick={()=>setProgressStak(25)} style = {{background : progressStak < 25? '#fff':'#9B51E0'}}>
-              {progressStak > 25? 
-                <img src="/assets/icons/check_icon.svg" alt="" />:
-                <div className="circle" style = {{background : progressStak === 25? '#fff':'#E0E0E7'}}></div>}
-              </div>
-              <div className="node" onClick={()=>setProgressStak(50)} style = {{background : progressStak < 50? '#fff':'#9B51E0'}}>
-              {progressStak > 50? 
-                <img src="/assets/icons/check_icon.svg" alt="" />:
-                <div className="circle" style = {{background : progressStak === 50? '#fff':'#E0E0E7'}}></div>}
-              </div>
-              <div className="node" onClick={()=>setProgressStak(75)} style = {{background : progressStak < 75? '#fff':'#9B51E0'}}>
-              {progressStak > 75? 
-                <img src="/assets/icons/check_icon.svg" alt="" />:
-                <div className="circle" style = {{background : progressStak === 75? '#fff':'#E0E0E7'}}></div>}
-              </div>
-              <div className="node" onClick={()=>setProgressStak(100)} style = {{background : progressStak < 100? '#fff':'#9B51E0'}}>
-              {progressStak > 100? 
-                <img src="/assets/icons/check_icon.svg" alt="" />:
-                <div className="circle" style = {{background : progressStak === 100? '#fff':'#E0E0E7'}}></div>}
-              </div>
+          <div className={classes.modal}>
+            <div className={classes.modalTop}>
+              <span>
+                <img src="/assets/logo.png" alt="" />
+                <div>
+                  <h4>Total Staked $BoredM in Farm</h4>
+                  <p>{isFree ? nftStakingInfo?.tStakedBoredM : nftStakingInfo?.tStakedBoredMLock} $BoredM staked</p>
+                </div>
+              </span>
+              <button className="closeBtn" onClick={() => onCancelStake()}><img src="/assets/icons/close_icon.svg" alt="" /></button>
             </div>
+            <div className={classes.modalContent}>
+              <div className={`${classes.amount} input-span`}>
+                <input type="number" onChange={e => onChangeValStake(e)} placeholder={"Amount"} value={amountStak} />
+                <button onClick={onMaxStak}>Max</button>
+              </div>
+              <h5>Balance : {balance} $BoredM</h5>
+              <div className={classes.progress}>
+                <div className="line">
+                  <div style={{ background: '#9B51E0', width: `${progressStak}%`, height: '100%' }}></div>
+                </div>
+                <div className="node" onClick={() => setProgressStak(0)} style={{ background: progressStak < 0 ? '#fff' : '#9B51E0' }}>
+                  {progressStak > 0 ?
+                    <img src="/assets/icons/check_icon.svg" alt="" /> :
+                    <div className="circle" style={{ background: progressStak === 0 ? '#fff' : '#E0E0E7' }}></div>}
+                </div>
+                <div className="node" onClick={() => setProgressStak(25)} style={{ background: progressStak < 25 ? '#fff' : '#9B51E0' }}>
+                  {progressStak > 25 ?
+                    <img src="/assets/icons/check_icon.svg" alt="" /> :
+                    <div className="circle" style={{ background: progressStak === 25 ? '#fff' : '#E0E0E7' }}></div>}
+                </div>
+                <div className="node" onClick={() => setProgressStak(50)} style={{ background: progressStak < 50 ? '#fff' : '#9B51E0' }}>
+                  {progressStak > 50 ?
+                    <img src="/assets/icons/check_icon.svg" alt="" /> :
+                    <div className="circle" style={{ background: progressStak === 50 ? '#fff' : '#E0E0E7' }}></div>}
+                </div>
+                <div className="node" onClick={() => setProgressStak(75)} style={{ background: progressStak < 75 ? '#fff' : '#9B51E0' }}>
+                  {progressStak > 75 ?
+                    <img src="/assets/icons/check_icon.svg" alt="" /> :
+                    <div className="circle" style={{ background: progressStak === 75 ? '#fff' : '#E0E0E7' }}></div>}
+                </div>
+                <div className="node" onClick={() => setProgressStak(100)} style={{ background: progressStak < 100 ? '#fff' : '#9B51E0' }}>
+                  {progressStak > 100 ?
+                    <img src="/assets/icons/check_icon.svg" alt="" /> :
+                    <div className="circle" style={{ background: progressStak === 100 ? '#fff' : '#E0E0E7' }}></div>}
+                </div>
+              </div>
 
-            <div className={classes.progress}>
-              <div className="label">0%</div>
-              <div className="label ml-10">25%</div>
-              <div className="label ml-5">50%</div>
-              <div className="label ml-5">75%</div>
-              <div className="label">100%</div>
-            </div>
-            <br/>
-            
-            <div className={classes.lock}>
-              <CheckLock/>
-              <img src="/assets/icons/lock_icon.svg" alt="" />
-              <p>Lock $BoredM for access to</p>
-              <h6 style={{color : '#A8D2B8', background : '#A8D2B833'}}>80%</h6>
-              vs
-              <h6 style={{color : '#D39533', background : '#A8D2B833'}}>20%</h6>
-              <img src="/assets/icons/warning_icon_01.svg" alt="" />
-            </div>
+              <div className={classes.progress}>
+                <div className="label">0%</div>
+                <div className="label ml-10">25%</div>
+                <div className="label ml-5">50%</div>
+                <div className="label ml-5">75%</div>
+                <div className="label">100%</div>
+              </div>
+              <br />
+              {
 
-            <div className="warning">
-              <img src="/assets/icons/warning_icon.svg" alt="" />
-              <p>1% fee for withdrawing in the next 48h -72h. Depositing or reinvesting resets the time. 7% tax is applied for staking/unstaking. </p>
+              }
+              <div className={classes.lock}>
+                <CheckLock value={!isFree} disabled={true}/>
+                <img src="/assets/icons/lock_icon.svg" alt="" />
+                <p>Lock $BoredM for access to</p>
+                <h6 style={{ color: '#A8D2B8', background: '#A8D2B833' }}>{nftStakingInfo?.mPercentLock}%</h6>
+                vs
+                <h6 style={{ color: '#D39533', background: '#A8D2B833' }}>{nftStakingInfo?.mPercentFree}%</h6>
+                <img src="/assets/icons/warning_icon_01.svg" alt="" />
+              </div>
+
+              <div className="warning">
+                <img src="/assets/icons/warning_icon.svg" alt="" />
+                <p>1% fee for withdrawing in the next 48h -72h. Depositing or reinvesting resets the time. 7% tax is applied for staking/unstaking. </p>
+              </div>
+            </div>
+            <div className={classes.modalBtns}>
+              <FilledButton label={'Cancel'} color='secondary' handleClick={() => onCancelStake()} />
+              <FilledButton label={'Stake'} handleClick={onStake} />
             </div>
           </div>
-          <div className={classes.modalBtns}>
-            <FilledButton label={'Cancel'} color = 'secondary'handleClick={()=>setStakModal(false)}/>
-            <FilledButton label={'Stake'}handleClick={onStake}/>
-          </div>
-        </div>
-        </>}        
+        </>}
       />
 
-      <Modal 
-        show={withdrawModal} 
-        maxWidth = 'sm'
+      <Modal
+        show={withdrawModal}
+        maxWidth='sm'
         children={<>
-        <div className={classes.modal}>
-          <div className={classes.modalTop}>
-            <span>
-              <img src="/assets/logo.png" alt="" />
-              <div>
-              <h4>Withdraw from $BoredM in Farm</h4>
-              <p>7,836,923.44 $BoredM staked</p>
-              </div>
-            </span>
-            <button className="closeBtn" onClick={()=>setWithdrawModal(false)}><img src="/assets/icons/close_icon.svg" alt="" /></button>
-          </div>
-          <div className={classes.modalContent}>
-            <div className={`${classes.amount} input-span`}>
-              <input type="number" onChange={e=>onChangeValWithdraw(e)} placeholder = {"Amount"} value={amountWithdraw === 0 ? "Amount": amountWithdraw}/>
-              <button onClick={onMaxWithdraw}>Max</button>
-              </div>
-            <h5>Balance : </h5>
-            <div className={classes.progress}>
-              <div className="line">
-                <div style = {{background : '#9B51E0', width : `${progressWithdraw}%`, height : '100%'}}></div>
-              </div>
-              <div className="node" onClick={()=>setProgressWithdraw(0)} style = {{background : progressWithdraw < 0? '#fff':'#9B51E0'}}>
-                {progressWithdraw > 0? 
-                <img src="/assets/icons/check_icon.svg" alt="" />:
-                <div className="circle" style = {{background : progressWithdraw === 0? '#fff':'#E0E0E7'}}></div>}
-              </div>
-              <div className="node" onClick={()=>setProgressWithdraw(25)} style = {{background : progressWithdraw < 25? '#fff':'#9B51E0'}}>
-              {progressWithdraw > 25? 
-                <img src="/assets/icons/check_icon.svg" alt="" />:
-                <div className="circle" style = {{background : progressWithdraw === 25? '#fff':'#E0E0E7'}}></div>}
-              </div>
-              <div className="node" onClick={()=>setProgressWithdraw(50)} style = {{background : progressWithdraw < 50? '#fff':'#9B51E0'}}>
-              {progressWithdraw > 50? 
-                <img src="/assets/icons/check_icon.svg" alt="" />:
-                <div className="circle" style = {{background : progressWithdraw === 50? '#fff':'#E0E0E7'}}></div>}
-              </div>
-              <div className="node" onClick={()=>setProgressWithdraw(75)} style = {{background : progressWithdraw < 75? '#fff':'#9B51E0'}}>
-              {progressWithdraw > 75? 
-                <img src="/assets/icons/check_icon.svg" alt="" />:
-                <div className="circle" style = {{background : progressWithdraw === 75? '#fff':'#E0E0E7'}}></div>}
-              </div>
-              <div className="node" onClick={()=>setProgressWithdraw(100)} style = {{background : progressWithdraw < 100? '#fff':'#9B51E0'}}>
-              {progressWithdraw > 100? 
-                <img src="/assets/icons/check_icon.svg" alt="" />:
-                <div className="circle" style = {{background : progressWithdraw === 100? '#fff':'#E0E0E7'}}></div>}
-              </div>
+          <div className={classes.modal}>
+            <div className={classes.modalTop}>
+              <span>
+                <img src="/assets/logo.png" alt="" />
+                <div>
+                  <h4>Withdraw from $BoredM in Farm</h4>
+                  <p>{isWithdrawFree ? nftStakingInfo?.mStakedBoredM : nftStakingInfo?.mStakedBoredMLock} $BoredM staked</p>
+                </div>
+              </span>
+              <button className="closeBtn" onClick={() => onCancelWithdraw()}><img src="/assets/icons/close_icon.svg" alt="" /></button>
             </div>
+            <div className={classes.modalContent}>
+              <div className={`${classes.amount} input-span`}>
+                <input type="number" onChange={e => onChangeValWithdraw(e)} placeholder={"Amount"} value={amountWithdraw} />
+                <button onClick={onMaxWithdraw}>Max</button>
+              </div>
+              <div className={classes.progress}>
+                <div className="line">
+                  <div style={{ background: '#9B51E0', width: `${progressWithdraw}%`, height: '100%' }}></div>
+                </div>
+                <div className="node" onClick={() => setProgressWithdraw(0)} style={{ background: progressWithdraw < 0 ? '#fff' : '#9B51E0' }}>
+                  {progressWithdraw > 0 ?
+                    <img src="/assets/icons/check_icon.svg" alt="" /> :
+                    <div className="circle" style={{ background: progressWithdraw === 0 ? '#fff' : '#E0E0E7' }}></div>}
+                </div>
+                <div className="node" onClick={() => setProgressWithdraw(25)} style={{ background: progressWithdraw < 25 ? '#fff' : '#9B51E0' }}>
+                  {progressWithdraw > 25 ?
+                    <img src="/assets/icons/check_icon.svg" alt="" /> :
+                    <div className="circle" style={{ background: progressWithdraw === 25 ? '#fff' : '#E0E0E7' }}></div>}
+                </div>
+                <div className="node" onClick={() => setProgressWithdraw(50)} style={{ background: progressWithdraw < 50 ? '#fff' : '#9B51E0' }}>
+                  {progressWithdraw > 50 ?
+                    <img src="/assets/icons/check_icon.svg" alt="" /> :
+                    <div className="circle" style={{ background: progressWithdraw === 50 ? '#fff' : '#E0E0E7' }}></div>}
+                </div>
+                <div className="node" onClick={() => setProgressWithdraw(75)} style={{ background: progressWithdraw < 75 ? '#fff' : '#9B51E0' }}>
+                  {progressWithdraw > 75 ?
+                    <img src="/assets/icons/check_icon.svg" alt="" /> :
+                    <div className="circle" style={{ background: progressWithdraw === 75 ? '#fff' : '#E0E0E7' }}></div>}
+                </div>
+                <div className="node" onClick={() => setProgressWithdraw(100)} style={{ background: progressWithdraw < 100 ? '#fff' : '#9B51E0' }}>
+                  {progressWithdraw > 100 ?
+                    <img src="/assets/icons/check_icon.svg" alt="" /> :
+                    <div className="circle" style={{ background: progressWithdraw === 100 ? '#fff' : '#E0E0E7' }}></div>}
+                </div>
+              </div>
 
-            <div className={classes.progress}>
-              <div className="label">0%</div>
-              <div className="label ml-10">25%</div>
-              <div className="label ml-5">50%</div>
-              <div className="label ml-5">75%</div>
-              <div className="label">100%</div>
+              <div className={classes.progress}>
+                <div className="label">0%</div>
+                <div className="label ml-10">25%</div>
+                <div className="label ml-5">50%</div>
+                <div className="label ml-5">75%</div>
+                <div className="label">100%</div>
+              </div>
+              <br />
             </div>
-            <br/>
+            <div className={classes.modalBtns}>
+              <FilledButton label={'Cancel'} color='secondary' handleClick={() => onCancelWithdraw()} />
+              <FilledButton label={'Withdraw'} handleClick={onWithdraw} />
+            </div>
           </div>
-          <div className={classes.modalBtns}>
-            <FilledButton label={'Cancel'} color = 'secondary'handleClick={()=>setWithdrawModal(false)}/>
-            <FilledButton label={'Withdraw'}handleClick={onWithdraw}/>
-          </div>
-        </div>
 
-        </>}        
+        </>}
       />
     </>
   );

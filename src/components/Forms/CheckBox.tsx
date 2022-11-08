@@ -1,6 +1,6 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import clsx from 'clsx';
-import PropTypes from 'prop-types';
+import PropTypes, { bool } from 'prop-types';
 import { makeStyles } from '@material-ui/core/styles';
 import FormControlLabel from '@material-ui/core/FormControlLabel';
 import Checkbox from '@material-ui/core/Checkbox';
@@ -48,9 +48,18 @@ const CheckBox = ({
   label,
 }) => {
   const classes = useStyles();
+  const [ isChecked, setChecked ] = useState<boolean>(value);
   const handleChangeCheck = (event) => {
+    setChecked(event.target.checked);
     onChange(event.target.checked);
   };
+
+  useEffect(() => {
+    if (value){
+      setChecked(value);
+      onChange(value);
+    }
+  }, [value])
 
   return (
     <FormControlLabel
@@ -64,7 +73,7 @@ const CheckBox = ({
             <span className={clsx(classes.icon, classes.checkedIcon)} />
           )}
           icon={<span className={classes.icon} />}
-          value={value}
+          checked={isChecked}
           onChange={handleChangeCheck}
         />
       )}

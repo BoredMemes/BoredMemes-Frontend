@@ -2,87 +2,19 @@ import { useStyles } from './style';
 import Masonry from 'react-masonry-css';
 import ProductCard1 from 'components/Cards/ProductCard1';
 import Filter from 'components/Filter/Filter';
-import { useEffect, useState } from 'react';
+import { useContext, useEffect, useState } from 'react';
 import { HashLink } from 'react-router-hash-link';
 import ViewModal from 'components/modal/viewModal/ViewModal';
+import Web3WalletContext from 'hooks/Web3ReactManager';
+import { useAuthState } from 'context/authContext';
+import axios from 'axios';
+import { toast } from 'react-toastify';
 
-const myData = [
-  {
-    id: 0,
-    img: '/assets/imgs/img_01.png',
-    type: 'new',
-    name: '',
-    commentType : 3,
-    isBookmark : true,
-  },
-  {
-    id: 0,
-    img: '/assets/imgs/img_01.png',
-    type: 'oldest',
-    name: '',
-    commentType : 3,
-    isBookmark : true,
-  },
-  {
-    id: 1,
-    img: '/assets/imgs/img_02.png',
-    type: 'new',
-    name: '',
-    commentType : -1,
-    isBookmark : false,
-  },
-  {
-    id: 1,
-    img: '/assets/imgs/img_02.png',
-    type: 'hot',
-    name: '',
-    commentType : -1,
-    isBookmark : false,
-  },
-  {
-    id: 2,
-    img: '/assets/imgs/img_03.png',
-    type: 'new',
-    name: '',
-    commentType : 2,
-    isBookmark : false,
-  },
-  {
-    id: 2,
-    img: '/assets/imgs/img_03.png',
-    type: 'hot',
-    name: '',
-    commentType : 2,
-    isBookmark : false,
-  },
-  {
-    id: 3,
-    img: '/assets/imgs/img_04.png',
-    type: 'new',
-    name: '',
-    commentType : -1,
-    isBookmark : false,
-  },
-  {
-    id: 4,
-    img: '/assets/imgs/img_05.png',
-    type: 'new',
-    name: '',
-    commentType : -1,
-    isBookmark : false,
-  },
-  {
-    id: 4,
-    img: '/assets/imgs/img_05.png',
-    type: 'top',
-    name: '',
-    commentType : -1,
-    isBookmark : false,
-  },
-];
 const MyArt = () => {
   const classes = useStyles();
-  // const { theme } = useContext(ThemeContext)
+  const { loginStatus, account, library } = useContext(Web3WalletContext)
+  const { user } = useAuthState();
+
   const breakpointColumnsObj = {
     // default: 4,
     3840: 8,
@@ -98,10 +30,37 @@ const MyArt = () => {
   const [filter, setFilter] = useState('new');
   const [searchStr, setSearchStr] = useState('');
   const [myArt, setMyArt] = useState<any[]>([]);
+
   useEffect(() => {
-    let filteredData = myData.filter(d=> d.type === filter)
-    setMyArt(filteredData)
-  }, [filter]);
+    if (loginStatus){
+      fetchItems();
+    }
+  }, [loginStatus])
+
+  const fetchItems = async () => {
+    let paramsData = {
+      owner : account.toLowerCase()
+    }
+
+    axios.get("/api/item", {params : paramsData})
+      .then((res) => {
+        console.log(res.data.items)
+        setMyArt(res.data.items);
+      }).catch((e) => {
+        console.log(e.message);
+        toast.error(e.message);
+      })
+  }
+
+  const updateArts = (item) => {
+    const newArts = myArt.map((art, key) => {
+      if (art.tokenId === item.tokenId){
+        return item;
+      }
+      return art;
+    })
+    setMyArt(newArts);
+  }
 
   useEffect(() => {
   }, [searchStr]);
@@ -112,24 +71,25 @@ const MyArt = () => {
     setShowModal(true)
     setData(d)
   }
+
   return (
     <>
       <div className={`${classes.root} mainContainer`}>
         <div className={classes.top}>
           <div className="avatar">
-            <img src="/assets/avatars/avatar_01.png" alt="" />
+            <img src={user?.logo_url} alt="" />
             <span>
-              <h3>User Name</h3>
-              <p>User description</p>
+              <h3>{user?.name}</h3>
+              <p>{user?.bio}</p>
             </span>
           </div>
           <div className="right">
             <div className="follows">
               <div className="socialLinks">
-                <a href="http://twitter.gg/" className = "twitter" target="_blank"rel="noreferrer">
+                <a href={"http://twitter.com/" + user?.social_twitter_id} className = "twitter" target="_blank"rel="noreferrer">
                   <i className="fab fa-twitter"></i>
                 </a> 
-                <a href="https://t.m/" className = "telegram" target="_blank"rel="noreferrer">
+                <a href={"https://t.me/" + user?.social_telegram_id} className = "telegram" target="_blank"rel="noreferrer">
                   <i className="fab fa-telegram"> </i>
                 </a> 
               </div>
@@ -146,8 +106,8 @@ const MyArt = () => {
             className={classes.masonry}
             columnClassName={classes.gridColumn}
           >
-            {myArt.map((d, i) => (
-              <ProductCard1 key={i} product={d} onShow = {()=>onShow(d)}/>
+            {myArt.map((item, key) => (
+              <ProductCard1 key={key} updateArts={updateArts} item={item} onShow = {()=>onShow(item)}/>
             ))}
           </Masonry>
         </div>

@@ -1,29 +1,40 @@
 import FilledButton from 'components/Buttons/FilledButton';
 import { useStyles } from './style';
-import toast from 'react-hot-toast';
+import { toast } from "react-toastify";
 import { useWeb3React } from '@web3-react/core';
-import { useEffect, useState } from 'react';
+import { useContext, useEffect, useRef, useState } from 'react';
 import Grid from '@material-ui/core/Grid';
 import UploadFile from '../../components/Forms/UploadFile';
 import ErrorAlert from '../../components/Widgets/ErrorAlert';
 import TextInput from 'components/Forms/TextInput';
 import CheckBox from 'components/Forms/CheckBox';
 import Modal from 'components/modal';
+import axios from 'axios';
+import { arrayify, hashMessage } from 'ethers/lib/utils';
+import { ethers } from 'ethers';
+import Web3WalletContext from 'hooks/Web3ReactManager';
+import { useAuthState } from 'context/authContext';
 
 const EditProfile = () => {
+
+  const { loginStatus, account, library } = useContext(Web3WalletContext)
+  const { user } = useAuthState();
   const classes = useStyles();
 
+  const [isChanged, setChanged] = useState(false);
   const [telegramChecked, setTelegramChecked] = useState(false);
   const [twitterChecked, setTwitterChecked] = useState(false);
 
   const [formSubmit, setFormSubmit] = useState(false);
-  const [nftAsset, setNFTAsset] = useState(null);
-  const [nftAssetType, setNFTAssetType] = useState('');
-  const [name, setName] = useState(null);
-  const [userName, setUserName] = useState(null);
-  const [description, setNFTDescription] = useState(null);
-  const [twitter, setTwitter] = useState(null);
-  const [telegram, setTelegram] = useState(null);
+  const [nftAsset, setNFTAsset] = useState(undefined);
+  const [nftAssetType, setNFTAssetType] = useState('image');
+  const [name, setName] = useState("");
+  const [userName, setUserName] = useState("");
+  const [description, setNFTDescription] = useState("");
+  const [twitter, setTwitter] = useState("");
+  const [telegram, setTelegram] = useState("");
+
+  const [signModal, setSignModal] = useState(false);
 
   function getExtension(filename) {
     var parts = filename.split('.');
@@ -55,38 +66,95 @@ const EditProfile = () => {
   }
 
   const onChangeNFTAsset = async asset => {
-    console.log(asset)
     setNFTAsset(asset);
     setNFTAssetType(getAssetType(asset.name));
   };
-
-  const onSubmit = async data => {
+  const [isSigned, setSigned] = useState(false);
+  const [signMsg, setSignMsg] = useState("");
+  const [curTimestamp, setTimestamp] = useState(0);
+  const onSubmit = async () => {
     setFormSubmit(true);
     if (!account || !library) {
       toast.error('Please connect your wallet correctly!');
       return;
     }
+    if (userName === '' && user?.username == '')return;
+    if (twitterChecked && telegramChecked)return;
 
-    if (!name || !telegram || !description || !twitter) {
-      return;
-    }
-
-    if (nftAssetType === '') {
-      toast.error('Not Supported Content!');
-      return;
-    }
+    setSignModal(true)
+    const timestamp = Math.floor(new Date().getTime() / 1000);
+    const msg = await library.getSigner().signMessage(arrayify(hashMessage(account.toLowerCase() + "-" + timestamp)));
+    setSigned(msg && msg !== "")
+    setSignMsg(msg);
+    setTimestamp(timestamp);
   };
 
-  const [loginStatus, setLoginStatus] = useState(false);
-  const { connector, library, chainId, account, active } = useWeb3React();
+  const closeProfile = async () => {
+    setSignModal(false);
+    setSigned(false);
+    setSignMsg("")
+    setTimestamp(0);
+  }
+
+  const updateProfile = async () => {
+    if (!signMsg && !curTimestamp) return;
+
+    let formData = new FormData();
+    formData.append('file', nftAsset);
+    formData.append("address", account.toLowerCase());
+    formData.append("timestamp", curTimestamp.toString());
+    formData.append("message", signMsg);
+    formData.append("name", name);
+    formData.append("username", userName === "" ? user?.username : userName);
+    formData.append("description", description);
+    formData.append("twitter", twitter);
+    formData.append("telegram", telegram);
+    formData.append("telegramChecked", telegramChecked.toString());
+    formData.append("twitterChecked", twitterChecked.toString());
+    axios.post("/api/user/update", formData, {
+      headers: {
+        "Content-Type" : "multipart/form-data",
+      }
+    })
+      .then((res) => {
+        console.log(res.data);
+        closeProfile();
+        if (res.data.message === "success"){
+          toast.success("Saved Successfully.")
+          window.location.href = "/";
+        }
+      }).catch((err) => {
+        console.log(err);
+        closeProfile();
+        toast.error(err.message);
+
+      })
+  }
+
+  const [isAvailable, setAvailable] = useState(true);
+  const [isNameLoading, setNameLoading] = useState(false);
+  function checkUserName() {
+    if (!loginStatus)return;
+    setNameLoading(true);
+    axios.get("/api/user/checkname", { params: { username: userName, address: account.toLowerCase() } })
+      .then((res) => {
+        setAvailable(res.data.status);
+        setNameLoading(false);
+      }).catch((err) => {
+        console.log(err);
+        setAvailable(true);
+        setNameLoading(false);
+      })
+  }
+  
   useEffect(() => {
-    const isLoggedin = account && active && chainId === parseInt(process.env.REACT_APP_NETWORK_ID, 10);
-    setLoginStatus(isLoggedin);
-  }, [connector, library, account, active, chainId]);
-
-  function updatePreview(item) {}
-
-  const [signModal, setSignModal] = useState(false);
+    if (isNameLoading) return;
+    if (userName === "") return;
+    let _delay = setTimeout(() => {
+      checkUserName();
+    }, 2000);
+    return () => clearTimeout(_delay);
+  }, [userName])
 
   return (
     <>
@@ -95,196 +163,179 @@ const EditProfile = () => {
           <div className={classes.top}>
             <h1>Edit Profile</h1>
           </div>
-          <form noValidate onSubmit={onSubmit} >
-            <div className={`${classes.panel} panel`}>
-              <Grid container justifyContent="space-between" spacing={4} >
-                <Grid item md={4} xs={12} >
-                  <h2>Enter your details.</h2>
-                </Grid>
-                <Grid item md={8} xs={12}>
-                  <TextInput
-                    name="name"
-                    disabled={!loginStatus}
-                    className={classes.myInput}
-                    error={formSubmit && !name}
-                    wrapperClass={classes.formWrapper}
-                    label={<>Name <span>Optional</span></>}
-                    placeholder={'Name'}
-                    onChangeData={val => {
-                      setName(val);
-                      updatePreview({ name: val });
-                    }}
-                  />
-                  <ErrorAlert title="A Name is required !" show={formSubmit && !name} />
-                  <ErrorAlert title={`Name ${name} is available.`} show={name} alertType = 'success' />
-                  <ErrorAlert title={`Name ${name} is already taken.`} show={false} alertType = 'warning'/>
-                </Grid>
+          {/* <form noValidate onSubmit={onSubmit} > */}
+          <div className={`${classes.panel} panel`}>
+            <Grid container justifyContent="space-between" spacing={4} >
+              <Grid item md={4} xs={12} >
+                <h2>Enter your details.</h2>
               </Grid>
-              <br/>
-              <Grid container justifyContent="space-between" spacing={4}>
-                <Grid item md={4} xs={12}>
-                </Grid>
-                <Grid item md={8} xs={12}>
-                  <TextInput
-                    name="username"
-                    disabled={!loginStatus}
-                    className={classes.myInput}
-                    error={formSubmit && !userName}
-                    wrapperClass={classes.formWrapper}
-                    startIcon={"@"}
-                    endIcon={<><img src="/assets/icons/2.png" alt="" className={classes.loadingImg}/></>}
-                    label={'Username'}
-                    placeholder={'Username'}
-                    onChangeData={val => {
-                      setUserName(val);
-                      updatePreview({ userName: val });
-                    }}
-                  />
-                  {/* <ErrorAlert title="A username is required !" show={formSubmit && !userName} />
-                  <ErrorAlert title={`Username ${name} is available.`} show={false} alertType = 'success' />
-                  <ErrorAlert title={`Username ${name} is already taken.`} show={false} alertType = 'warning'/> */}
-                  <ErrorAlert title="A username is required !" show={true} />
-                  <ErrorAlert title={`Username ${name} is available.`} show={true} alertType = 'success' />
-                  <ErrorAlert title={`Username ${name} is already taken.`} show={true} alertType = 'warning'/>
-                </Grid>
+              <Grid item md={8} xs={12}>
+                <TextInput
+                  name="name"
+                  disabled={!loginStatus}
+                  className={classes.myInput}
+                  error={formSubmit && !name}
+                  wrapperClass={classes.formWrapper}
+                  label={<>Name <span>Optional</span></>}
+                  placeholder={'Name'}
+                  value={user?.name}
+                  onChangeData={val => {
+                    setName(val);
+                  }}
+                />
               </Grid>
-            </div>
-
-            <div className={`${classes.panel} panel`}>
-              <Grid container justifyContent="space-between" spacing={4}>
-                <Grid item md={4} xs={12}>
-                  <h2>Add a short bio.</h2>
-                </Grid>
-                <Grid item md={8} xs={12}>
-                  <TextInput
-                    name="bio"
-                    disabled={!loginStatus}
-                    className={classes.myInput}
-                    error={formSubmit && !description}
-                    wrapperClass={classes.formWrapper}
-                    label={<>Enter a short bio <span>Optional</span></>}
-                    isMulti
-                    footer={<span>0/200</span>}
-                    placeholder={'Enter a short bio'}
-                    onChangeData={val => {
-                      setNFTDescription(val);
-                      updatePreview({ name: val });
-                    }}
-                  />
-                  <ErrorAlert title="Bio is required !" show={formSubmit && !description} />
-                </Grid>
+            </Grid>
+            <br />
+            <Grid container justifyContent="space-between" spacing={4}>
+              <Grid item md={4} xs={12}>
               </Grid>
-
-            </div>
-
-            <div className={`${classes.panel} panel`}>
-              <Grid container justifyContent="space-between" spacing={4}>
-                <Grid item md={4} xs={12}>
-                  <h2>Upload a profile image.</h2>
-                  <p>Recommended size:</p>
-                  <p>1000x1000px.</p>
-                  <p>JPG, PNG, or GIF.</p>
-                  <p>10MB max size.</p>
-                </Grid>
-                <Grid item md={8} xs={12}>
-                  <h3 className={classes.label}>Profile image <span>Optional</span></h3>
-                  <UploadFile
-                    label="Upload"
-                    dispalyAsset
-                    fileName={nftAsset?.name}
-                    fileSize = {nftAsset?.size}
-                    onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
-                      if (e.target.files && e.target.files[0]) {
-                        onChangeNFTAsset(e.target.files[0]);
-                        updatePreview({
-                          assetType: getAssetType(e.target.files[0].name),
-                          assetUrl: URL.createObjectURL(e.target.files[0]),
-                        });
-                      }
-                    }}
-                  />
-                   <ErrorAlert title="Please select the Profile Image!" show={formSubmit && !nftAsset} />
-                </Grid>
+              <Grid item md={8} xs={12}>
+                <TextInput
+                  name="username"
+                  disabled={!loginStatus}
+                  className={classes.myInput}
+                  error={formSubmit && !userName}
+                  wrapperClass={classes.formWrapper}
+                  startIcon={"@"}
+                  endIcon={isNameLoading && <><img src="/assets/icons/2.png" alt="" className={classes.loadingImg} /></>}
+                  label={'Username'}
+                  placeholder={'Username'}
+                  value={user?.username}
+                  onChangeData={val => { if (val !== user?.username)setUserName(val); }}
+                />
+                <ErrorAlert title="A username is required !" show={userName === "" && user?.username === ""} />
+                <ErrorAlert title={`Username ${userName} is available.`} show={!isNameLoading && userName !== "" && isAvailable} alertType='success' />
+                <ErrorAlert title={`Username ${userName} is already taken.`} show={!isNameLoading && userName !== "" && !isAvailable} alertType='warning' />
               </Grid>
+            </Grid>
+          </div>
 
-            </div>
-
-            <div className={`${classes.panel} panel`}>
-              <Grid container justifyContent="space-between" spacing={4}>
-                <Grid item md={4} xs={12}>
-                  <h2>Verify your profile.</h2>
-                  <p>Show the Bored memes community that your profile is authentic.</p>
-                </Grid>
-                <Grid item md={8} xs={12}>
-                  <TextInput
-                    name="twitter"
-                    disabled={!loginStatus}
-                    className={classes.myInput}
-                    error={formSubmit && !twitter}
-                    wrapperClass={classes.formWrapper}
-                    startIcon={"@"}
-                    endIcon = {<i className="fab fa-twitter"></i>}
-                    label={<> <span></span> <span>Recommended</span></>}
-                    placeholder={'@Username'}
-                    onChangeData={val => {
-                      setTwitter(val);
-                      updatePreview({ name: val });
-                    }}
-                  />
-                  <ErrorAlert title="User name is required !" show={formSubmit && !twitter} />
-                  <ErrorAlert title={`User name ${twitter} is available.`} show={false} alertType = 'success' />
-                  <ErrorAlert title={`User name ${twitter} is already taken.`} show={false} alertType = 'warning'/>
-
-
-                  <TextInput
-                    name="telegram"
-                    disabled={!loginStatus}
-                    className={classes.myInput}
-                    error={formSubmit && !telegram}
-                    wrapperClass={classes.formWrapper}
-                    startIcon={"@"}
-                    endIcon = {<i className="fab fa-telegram"></i>}
-                    placeholder={'@Username'}
-                    onChangeData={val => {
-                      setTelegram(val);
-                      updatePreview({ name: val });
-                    }}
-                  />
-                  <ErrorAlert title="User name is required !" show={formSubmit && !telegram} />
-                  <ErrorAlert title={`User name ${telegram} is available.`} show={false} alertType = 'success' />
-                  <ErrorAlert title={`User name ${telegram} is already taken.`} show={false} alertType = 'warning'/>
-                </Grid>
+          <div className={`${classes.panel} panel`}>
+            <Grid container justifyContent="space-between" spacing={4}>
+              <Grid item md={4} xs={12}>
+                <h2>Add a short bio.</h2>
               </Grid>
-              
-            </div>
-
-            <div className={`${classes.panel} panel`}>
-              <Grid container justifyContent="space-between" spacing={4}>
-                <Grid item md={4} xs={12}>
-                  <h2>Art creation Notifications.</h2>
-                  <p>Receive twitter and/or telegram notifications when your custom art are ready.</p>
-                </Grid>
-                <Grid item md={8} xs={12}>
-                  <h3 className={classes.label}><span></span> <span>Recommended</span></h3>
-                  <div className={`${classes.myCheck} myCheck`}>
-                    <CheckBox onChange={setTwitterChecked}/>
-                    <h3>Twitter Notification</h3>
-                    <i className="fab fa-twitter"></i>
-                  </div>
-                  <div className={`${classes.myCheck} myCheck`}>
-                    <CheckBox onChange={setTelegramChecked}/>
-                    <h3>Telegram Notification</h3>
-                    <i className="fab fa-telegram"></i>
-                  </div>
-                  <ErrorAlert title="One of both is recommanded." show={ twitterChecked && telegramChecked} alertType = 'warning' />
-                </Grid>
+              <Grid item md={8} xs={12}>
+                <TextInput
+                  name="bio"
+                  disabled={!loginStatus}
+                  className={classes.myInput}
+                  error={formSubmit && !description}
+                  wrapperClass={classes.formWrapper}
+                  label={<>Enter a short bio <span>Optional</span></>}
+                  isMulti
+                  footer={<span>0/200</span>}
+                  placeholder={'Enter a short bio'}
+                  value={user?.bio}
+                  onChangeData={val => {
+                    setNFTDescription(val);
+                  }}
+                />
               </Grid>
-              
-            </div>
-            
-          </form>
-          <FilledButton label={'Save Changes'} className={classes.saveButton} handleClick = {()=>setSignModal(true)}/>
-          
+            </Grid>
+
+          </div>
+
+          <div className={`${classes.panel} panel`}>
+            <Grid container justifyContent="space-between" spacing={4}>
+              <Grid item md={4} xs={12}>
+                <h2>Upload a profile image.</h2>
+                <p>Recommended size:</p>
+                <p>1000x1000px.</p>
+                <p>JPG, PNG, or GIF.</p>
+                <p>10MB max size.</p>
+              </Grid>
+              <Grid item md={8} xs={12}>
+                <h3 className={classes.label}>Profile image <span>Optional</span></h3>
+                <UploadFile
+                  label="Upload"
+                  dispalyAsset
+                  defaultAsset={user?.logo_url}
+                  defaultAssetType="Image"
+                  fileName={nftAsset?.name}
+                  fileSize={nftAsset?.size}
+                  onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
+                    if (e.target.files && e.target.files[0]) {
+                      onChangeNFTAsset(e.target.files[0]);
+                    }
+                  }}
+                />
+              </Grid>
+            </Grid>
+
+          </div>
+
+          <div className={`${classes.panel} panel`}>
+            <Grid container justifyContent="space-between" spacing={4}>
+              <Grid item md={4} xs={12}>
+                <h2>Verify your profile.</h2>
+                <p>Show the Bored memes community that your profile is authentic.</p>
+              </Grid>
+              <Grid item md={8} xs={12}>
+                <TextInput
+                  name="twitter"
+                  disabled={!loginStatus}
+                  className={classes.myInput}
+                  error={formSubmit && !twitter}
+                  wrapperClass={classes.formWrapper}
+                  startIcon={"@"}
+                  endIcon={<i className="fab fa-twitter"></i>}
+                  label={<> <span></span> <span>Recommended</span></>}
+                  placeholder={'@Username'}
+                  value={user?.social_twitter_id}
+                  onChangeData={val => {
+                    setTwitter(val);
+                  }}
+                />
+                <TextInput
+                  name="telegram"
+                  disabled={!loginStatus}
+                  className={classes.myInput}
+                  error={formSubmit && !telegram}
+                  wrapperClass={classes.formWrapper}
+                  startIcon={"@"}
+                  endIcon={<i className="fab fa-telegram"></i>}
+                  placeholder={'@Username'}
+                  value={user?.social_telegram_id}
+                  onChangeData={val => {
+                    setTelegram(val);
+                  }}
+                />
+              </Grid>
+            </Grid>
+
+          </div>
+
+          <div className={`${classes.panel} panel`}>
+            <Grid container justifyContent="space-between" spacing={4}>
+              <Grid item md={4} xs={12}>
+                <h2>Art creation Notifications.</h2>
+                <p>Receive twitter and/or telegram notifications when your custom art are ready.</p>
+              </Grid>
+              <Grid item md={8} xs={12}>
+                <h3 className={classes.label}><span></span> <span>Recommended</span></h3>
+                <div className={`${classes.myCheck} myCheck`}>
+                  <CheckBox value={user?.is_twitter_notify} onChange={(checked) => {
+                    setTwitterChecked(checked);
+                  }} />
+                  <h3>Twitter Notification</h3>
+                  <i className="fab fa-twitter"></i>
+                </div>
+                <div className={`${classes.myCheck} myCheck`}>
+                  <CheckBox value={user?.is_telegram_notify} onChange={(checked) => {
+                    setTelegramChecked(checked);
+                  }} />
+                  <h3>Telegram Notification</h3>
+                  <i className="fab fa-telegram"></i>
+                </div>
+                <ErrorAlert title="One of both is recommanded." show={twitterChecked && telegramChecked} alertType='warning' />
+              </Grid>
+            </Grid>
+
+          </div>
+          <FilledButton label={'Save Changes'} className={classes.saveButton} handleClick={() => onSubmit()} />
+
+
         </div>
         <div className={`${classes.right} mainContainer`}>
           <div className={classes.top}>
@@ -314,11 +365,11 @@ const EditProfile = () => {
           <div className={`${classes.rewardCard} rewardCard`}>
             <ul>
               <li>
-                
+
               </li>
               <li>
-                  <p>@ Ethereum Network</p>
-                  <h4>BoredM Stake</h4>
+                <p>@ Ethereum Network</p>
+                <h4>BoredM Stake</h4>
               </li>
             </ul>
 
@@ -335,28 +386,28 @@ const EditProfile = () => {
           <div className={classes.buyPanel}>
             <ul>
               <li>
-                <div className="balance" style={{backgroundImage : `url('/assets/imgs/Rectangle 29.png')`}}>
+                <div className="balance" style={{ backgroundImage: `url('/assets/imgs/Rectangle 29.png')` }}>
                   <h2>$BoredM </h2> <img src="/assets/icons/eth_icon_01.svg" alt="" /> <h2>0.0₉7036 ETH</h2>
                 </div>
-                
+
               </li>
               <li>
-                <a href="https://dextools.com/" className = "Dextools" target="_blank"rel="noreferrer"  style={{background : `#05A3C9`}}>
+                <a href="https://dextools.com/" className="Dextools" target="_blank" rel="noreferrer" style={{ background: `#05A3C9` }}>
                   Buy on Dextools
                   <img src="/assets/icons/dxtool_icon.svg" alt="" />
-                </a> 
+                </a>
               </li>
               <li>
-                <a href="https://uniswap.comm/" className = "Uniswap" target="_blank"rel="noreferrer" style={{background : `#D63371`}}>
+                <a href="https://uniswap.comm/" className="Uniswap" target="_blank" rel="noreferrer" style={{ background: `#D63371` }}>
                   Buy on Uniswap
                   <img src="/assets/icons/uniswap_icon.svg" alt="" />
-                </a> 
+                </a>
               </li>
               <li>
-                <a href="https://1inch.comm/" className = "1inch" target="_blank"rel="noreferrer" style={{background : `#101A2E`}}>
+                <a href="https://1inch.comm/" className="1inch" target="_blank" rel="noreferrer" style={{ background: `#101A2E` }}>
                   Buy on 1inch
                   <img src="/assets/icons/linch_icon.svg" alt="" />
-                </a> 
+                </a>
               </li>
             </ul>
 
@@ -364,35 +415,38 @@ const EditProfile = () => {
         </div>
       </div>
 
-      
-      <Modal 
-        show={signModal} 
-        maxWidth = 'sm'
+
+      <Modal
+        show={signModal}
+        maxWidth='sm'
         children={<>
-        <div className={classes.modal}>
-          <div className={classes.modalTop}>
-            <span>
-              <img src="/assets/logo.png" alt="" />
-              <h4>Sign the message in your wallet to continue</h4>
-            </span>
-            <button className="closeBtn" onClick={()=>setSignModal(false)}><img src="/assets/icons/close_icon.svg" alt="" /></button>
-          </div>
-          <div className={classes.modalContent}>
-            <span>
-              <img src="/assets/icons/2.png" alt="" />
-            </span>
-            <div className="warning">
-              <img src="/assets/icons/warning_icon.svg" alt="" />
-              <p>Bored Memes uses this signature to verify that you’re the owner of this Ethereum address.</p>
+          <div className={classes.modal}>
+            <div className={classes.modalTop}>
+              <span>
+                <img src="/assets/logo.png" alt="" />
+                <h4>Sign the message in your wallet to continue</h4>
+              </span>
+              <button className="closeBtn" onClick={() => setSignModal(false)}><img src="/assets/icons/close_icon.svg" alt="" /></button>
+            </div>
+            <div className={classes.modalContent}>
+              {
+                !isSigned && <span>
+                  <img src="/assets/icons/2.png" alt="" />
+                </span>
+              }
+
+              <div className="warning">
+                <img src="/assets/icons/warning_icon.svg" alt="" />
+                <p>Bored Memes uses this signature to verify that you’re the owner of this Ethereum address.</p>
+              </div>
+            </div>
+            <div className={classes.modalBtns}>
+              <FilledButton label={'Disconnect'} color='secondary' handleClick={(e) => {closeProfile();}}/>
+              <FilledButton label={'Continue'} disabled={!isSigned} handleClick={(e) => { updateProfile(); }} />
             </div>
           </div>
-          <div className={classes.modalBtns}>
-            <FilledButton label={'Disconnect'} color = 'secondary'/>
-            <FilledButton label={'Continue'}/>
-          </div>
-        </div>
 
-        </>}        
+        </>}
       />
     </>
   );

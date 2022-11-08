@@ -32,6 +32,7 @@ export const useStyles = makeStyles(theme => ({
       display: 'flex',
       alignItems: 'center',
       '& img': {
+        borderRadius: '50%',
         width: 40,
         height: 40,
       },

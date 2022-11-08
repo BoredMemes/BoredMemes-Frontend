@@ -2,112 +2,18 @@ import { useStyles } from './style';
 import Masonry from 'react-masonry-css';
 import ProductCard1 from 'components/Cards/ProductCard1';
 import Filter from 'components/Filter/Filter';
-import { useEffect, useState } from 'react';
+import { useContext, useEffect, useState } from 'react';
 import ViewModal from 'components/modal/viewModal/ViewModal';
+import Web3WalletContext from 'hooks/Web3ReactManager';
+import { useAuthState } from 'context/authContext';
+import axios from 'axios';
+import { toast } from 'react-toastify';
 
-const myData = [
-  {
-    id: 0,
-    img: '/assets/imgs/img_01.png',
-    type: 'new',
-    name: '',
-    commentType : 3,
-    isBookmark : true,
-  },
-  
-  {
-    id: 1,
-    img: '/assets/imgs/img_02.png',
-    type: 'hot',
-    name: '',
-    commentType : -1,
-    isBookmark : true,
-  },
- 
-  {
-    id: 2,
-    img: '/assets/imgs/img_03.png',
-    type: 'hot',
-    name: '',
-    commentType : 2,
-    isBookmark : false,
-  },
-  
-  {
-    id: 3,
-    img: '/assets/imgs/img_04.png',
-    type: 'oldest',
-    name: '',
-    commentType : -1,
-    isBookmark : true,
-  },
-  {
-    id: 4,
-    img: '/assets/imgs/img_05.png',
-    type: 'oldest',
-    name: '',
-    commentType : -1,
-    isBookmark : true,
-  },
-  {
-    id: 5,
-    img: '/assets/imgs/img_06.png',
-    type: 'new',
-    name: '',
-    commentType : -1,
-    isBookmark : true,
-  },
-  {
-    id: 6,
-    img: '/assets/imgs/img_07.png',
-    type: 'top',
-    name: '',
-    commentType : 1,
-    isBookmark : true,
-  },
-  {
-    id: 7,
-    img: '/assets/imgs/img_08.png',
-    type: 'top',
-    name: '',
-    commentType : -1,
-    isBookmark : true,
-  },
-  {
-    id: 8,
-    img: '/assets/imgs/img_09.png',
-    type: 'top',
-    name: '',
-    commentType : -1,
-    isBookmark : true,
-  },
-  {
-    id: 9,
-    img: '/assets/imgs/img_10.png',
-    type: 'new',
-    name: '',
-    commentType : -1,
-    isBookmark : true,
-  },
-  {
-    id: 10,
-    img: '/assets/imgs/img_11.png',
-    type: 'hot',
-    name: '',
-    commentType : -1,
-    isBookmark : true,
-  },
-  {
-    id: 11,
-    img: '/assets/imgs/img_12.png',
-    type: 'hot',
-    name: '',
-    commentType : -1,
-    isBookmark : true,
-  },
-];
 const Bookmarks = () => {
   const classes = useStyles();
+  const { loginStatus, account, library } = useContext(Web3WalletContext)
+  const { user } = useAuthState();
+
   const breakpointColumnsObj = {
     // default: 4,
     3840: 8,
@@ -123,10 +29,35 @@ const Bookmarks = () => {
   const [filter, setFilter] = useState('new');
   const [searchStr, setSearchStr] = useState('');
   const [myArt, setMyArt] = useState<any[]>([]);
+  
   useEffect(() => {
-    let filteredData = myData.filter(d=> d.type === filter)
-    setMyArt(filteredData)
-  }, [filter]);
+    if (loginStatus){
+      fetchItems();
+    }
+  }, [loginStatus])
+
+  const fetchItems = async () => {
+    let paramsData = {
+      bookmarks : account.toLowerCase()
+    }
+
+    axios.get("/api/item", {params : paramsData})
+      .then((res) => {
+        console.log(res.data.items)
+        setMyArt(res.data.items);
+      }).catch((e) => {
+        console.log(e.message);
+        toast.error(e.message);
+      })
+  }
+
+  const updateArts = (item) => {
+    const newArts = [];
+    for (const art of myArt){
+      if (art.tokenId !== item.tokenId)newArts.push(art);
+    }
+    setMyArt([...newArts]);
+  }
 
   useEffect(() => {
   }, [searchStr]);
@@ -152,7 +83,7 @@ const Bookmarks = () => {
             columnClassName={classes.gridColumn}
           >
             {myArt.map((d, i) => (
-              <ProductCard1 key={i} product={d} onShow ={()=>onShow(d)}/>
+              <ProductCard1 key={i} updateArts={updateArts} item={d} onShow ={()=>onShow(d)}/>
             ))}
           </Masonry>
         </div>

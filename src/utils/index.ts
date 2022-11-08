@@ -1,10 +1,12 @@
 import { Contract } from '@ethersproject/contracts';
 import BoredMNFTABI from 'contracts/BoredMNFT.json';
-import BoredMABI from 'contracts/BoredM.json';
+import BoredMMarketABI from 'contracts/BoredMMarket.json';
+import BoredMTokenABI from 'contracts/BoredMToken.json';
+import BoredMStakingABI from 'contracts/BoredMStaking.json';
 
 export const Networks = {
   MainNet: 56,
-  TestNet: 97,
+  TestNet: 5,
 };
 
 export const CONTRACTS_BY_NETWORK = {
@@ -13,20 +15,36 @@ export const CONTRACTS_BY_NETWORK = {
       address: '0x3307028F79422CA0517368807A78f3111b294403',
       abi: BoredMNFTABI,
     },
-    BoredM: {
+    BoredMMarket: {
       address: '0x64619f611248256F7F4b72fE83872F89d5d60d64',
-      abi: BoredMABI,
+      abi: BoredMMarketABI,
     },
+    BoredMToken: {
+      address: '',
+      abi: BoredMTokenABI
+    },
+    BoredMStaking: {
+      address: '',
+      abi: BoredMStakingABI
+    }
   },
   [Networks.TestNet]: {
     BoredMNFT: {
-      address: '0xD1e75A04aA1F380Ed7aC4f30D20E1c5c4876b05C',
+      address: '0x5D9c49a55492F2b6e71EEdDC9F49460B8c4Aa6d8',
       abi: BoredMNFTABI,
     },
-    BoredM: {
-      address: '0x06E5F340E11c3771a3f172bFeE1152535e6366B8',
-      abi: BoredMABI,
+    BoredMMarket: {
+      address: '0x07279B444a022D0547336992076243c9d86d206a',
+      abi: BoredMMarketABI,
     },
+    BoredMToken: {
+      address: '0x6b55A11fe85920aD8174e1d4FE701ecf4b1E482A',
+      abi: BoredMTokenABI
+    },
+    BoredMStaking: {
+      address: '0x8b4196629F23A0dA3A4976b01b261bFB8360e600',
+      abi: BoredMStakingABI
+    }
   },
 };
 

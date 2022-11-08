@@ -2,6 +2,8 @@ import useAuth from 'hooks/useAuth';
 import './connectModal.scss';
 import Bounce from 'react-reveal/Bounce';
 import { useEffect, useState } from 'react';
+import { ConnectorNames } from 'utils/web3React';
+import { connectorLocalStorageKey } from 'hooks';
 interface Props {
   showConnectModal: boolean;
   setShowConnectModal?: any;
@@ -10,15 +12,18 @@ const ConnectModal: React.FC<Props> = ({ showConnectModal, setShowConnectModal }
   const { login } = useAuth();
 
   const connectMetamask = () => {
-    login(1);
+    login(ConnectorNames.Injected);
+    window.localStorage.setItem(connectorLocalStorageKey, ConnectorNames.Injected);
     setShowConnectModal(false);
   };
   const connectWalletConnector = () => {
-    login(2);
+    login(ConnectorNames.WalletConnect);
+    window.localStorage.setItem(connectorLocalStorageKey, ConnectorNames.WalletConnect);
     setShowConnectModal(false);
   };
   const connectCoinbase = () => {
-    login(3);
+    login(ConnectorNames.WalletLink);
+    window.localStorage.setItem(connectorLocalStorageKey, ConnectorNames.WalletLink);
     setShowConnectModal(false);
   };
 

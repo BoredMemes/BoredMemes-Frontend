@@ -1,8 +1,8 @@
 import './accountModal.scss'
 import Bounce  from 'react-reveal/Bounce';
 import { useEffect, useRef, useState } from 'react';
+import { toast } from "react-toastify";
 import useAuth from 'hooks/useAuth';
-import toast from 'react-hot-toast';
 import { truncateWalletString } from 'utils';
 import { useWeb3React } from '@web3-react/core';
 interface Props {

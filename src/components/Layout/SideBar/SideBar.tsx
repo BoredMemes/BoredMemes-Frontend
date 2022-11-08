@@ -3,18 +3,14 @@ import { useContext, useEffect, useState } from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import './style.scss';
 import ThemeContext from "theme/ThemeContext"
+import Web3WalletContext from 'hooks/Web3ReactManager';
 type MenuType = {
   menuOpen?: boolean;
   setMenuOpen?(flag: boolean): void;
 };
 export default function SideBar({ menuOpen, setMenuOpen }: MenuType) {
-  const [loginStatus, setLoginStatus] = useState(false);
-  const { connector, library, chainId, account, active } = useWeb3React();
-  useEffect(() => {
-    const isLoggedin = account && active && chainId === parseInt(process.env.REACT_APP_NETWORK_ID, 10);
-    setLoginStatus(isLoggedin);
-    
-  }, [connector, library, account, active, chainId]);
+
+  const { loginStatus, account, library } = useContext(Web3WalletContext)
 
   const [navId, setNavId] = useState('');
   const search = useLocation();
@@ -60,7 +56,7 @@ export default function SideBar({ menuOpen, setMenuOpen }: MenuType) {
       <div className="sideFooter"  onClick={() => setMenuOpen(false)}>
         <ul>
           <li className={navId.indexOf('settings') >= 0 ? 'selected' : ''}>
-            <Link to="/settings"><img src="/assets/icons/setting_icon.svg" alt="" /> Settings</Link>
+            <Link to="/edit_profile"><img src="/assets/icons/setting_icon.svg" alt="" /> Settings</Link>
           </li>
         </ul>
         <div className={`change_theme`}>
