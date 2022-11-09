@@ -109,7 +109,7 @@ const CreateArt = () => {
   const transitions = ['width', 'height', 'opacity', 'background'];
 
   const [description, setDescription] = useState(null);
-  const [artRatio, setArtRatio] = useState("");
+  const [artRatio, setArtRatio] = useState("1:1");
   const [ratio, setRatio] = useState(0);
   const [ratioCard, setRatioCard] = useState('up');
   const [packID, setPackID] = useState(0);

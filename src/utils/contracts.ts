@@ -58,7 +58,8 @@ export async function onMintArtItem(provider, reqId, packId) {
     await tx.wait(1);
     return true;
   } catch (e) {
-    toast.error(JSON.parse(JSON.stringify(e))["reason"].replace("execution reverted: ", ""));
+    const revertMsg = JSON.parse(JSON.stringify(e))["reason"];
+    if (revertMsg)toast.error(revertMsg.replace("execution reverted: ", ""));
     return false;
   }
 }
@@ -84,7 +85,8 @@ export async function approveTokenForStaking(chainId, signer) {
     await approve_tx.wait(1);
     return true;
   } catch (e) {
-    toast.error(JSON.parse(JSON.stringify(e))["reason"].replace("execution reverted: ", ""));
+    const revertMsg = JSON.parse(JSON.stringify(e))["reason"];
+    if (revertMsg)toast.error(revertMsg.replace("execution reverted: ", ""));
     return false;
   }
 }
@@ -122,7 +124,8 @@ export async function getStakingInfo(account, chainId, provider) {
     console.log(nftStakingInfo);
     return nftStakingInfo;
   } catch (e) {
-    toast.error(JSON.parse(JSON.stringify(e))["reason"].replace("execution reverted: ", ""));
+    const revertMsg = JSON.parse(JSON.stringify(e))["reason"];
+    if (revertMsg)toast.error(revertMsg.replace("execution reverted: ", ""));
     return false;
   }
 }
@@ -142,7 +145,8 @@ export async function onBoredMStake(account, amount, chainId, provider, isFree) 
     }
   } catch (e) {
     console.log(e);
-    toast.error(JSON.parse(JSON.stringify(e))["reason"].replace("execution reverted: ", ""));
+    const revertMsg = JSON.parse(JSON.stringify(e))["reason"];
+    if (revertMsg)toast.error(revertMsg.replace("execution reverted: ", ""));
     return false;
   }
 }
@@ -160,7 +164,8 @@ export async function onBoredMUnStake(account, amount, chainId, provider, isFree
     }
   } catch (e) {
     console.log(e);
-    toast.error(JSON.parse(JSON.stringify(e))["reason"].replace("execution reverted: ", ""));
+    const revertMsg = JSON.parse(JSON.stringify(e))["reason"];
+    if (revertMsg)toast.error(revertMsg.replace("execution reverted: ", ""));
     return false;
   }
 }
@@ -173,7 +178,53 @@ export async function onBoredMClaim(chainId, provider, isFree) {
     return true;
   } catch (e) {
     console.log(e);
-    toast.error(JSON.parse(JSON.stringify(e))["reason"].replace("execution reverted: ", ""));
+    const revertMsg = JSON.parse(JSON.stringify(e))["reason"];
+    if (revertMsg)toast.error(revertMsg.replace("execution reverted: ", ""));
+    return false;
+  }
+}
+
+export async function onMyBuyShares(refAddress, chainId, provider) {
+  try {
+    const stakingContract = getContractObj('BNBStaking', chainId, provider);
+    console.log(stakingContract.address);
+    const tx = await stakingContract.buyShares(refAddress, {
+      value: ethers.utils.parseEther("0.005")
+    });
+    await tx.wait(1)
+    return true;
+  } catch (e) {
+    console.log(e);
+    const revertMsg = JSON.parse(JSON.stringify(e))["reason"];
+    if (revertMsg)toast.error(revertMsg.replace("execution reverted: ", ""));
+    return false;
+  }
+}
+
+export async function onSellShares(chainId, provider) {
+  try {
+    const stakingContract = getContractObj('BNBStaking', chainId, provider);
+    const tx = await stakingContract.sellShares();
+    await tx.wait(1)
+    return true;
+  } catch (e) {
+    console.log(e);
+    const revertMsg = JSON.parse(JSON.stringify(e))["reason"];
+    if (revertMsg)toast.error(revertMsg.replace("execution reverted: ", ""));
+    return false;
+  }
+}
+
+export async function onInvest(refAddress, chainId, provider) {
+  try {
+    const stakingContract = getContractObj('BNBStaking', chainId, provider);
+    const tx = await stakingContract.Invest(refAddress);
+    await tx.wait(1)
+    return true;
+  } catch (e) {
+    console.log(e);
+    const revertMsg = JSON.parse(JSON.stringify(e))["reason"];
+    if (revertMsg)toast.error(revertMsg.replace("execution reverted: ", ""));
     return false;
   }
 }

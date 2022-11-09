@@ -220,9 +220,10 @@ const PropertyCard1 = ({ item, onShow, updateArts }: PropsType) => {
   }
 
   const copyHandle = () => {
+    if (item?.description === "")return;
     let textarea = document.createElement("textarea");
-    //textarea.textContent = item?.description;
-    textarea.textContent = "dfghjkl;";
+    textarea.textContent = item?.description;
+    //textarea.textContent = "dfghjkl;";
     textarea.style.position = "fixed"; // Prevent scrolling to bottom of page in Microsoft Edge.
     document.body.appendChild(textarea);
     textarea.select();
@@ -261,7 +262,7 @@ const PropertyCard1 = ({ item, onShow, updateArts }: PropsType) => {
     <div className={`${classes.productWrapper} card1`}>
       <div className="top" onClick={onShow}>
         {
-          item?.assetUrl && item?.assetUrl !== "" ? <img src={item?.assetUrl || '/assets/imgs/img_01.png'} alt="" /> :
+          item?.assetUrl && item?.assetUrl !== "" ? <img src={item?.assetUrl} alt="" /> :
             <div>
               Awaiting Design
             </div>

@@ -68,8 +68,10 @@ const MyArt = () => {
   const [showModal, setShowModal] = useState(false)
   const [data, setData] = useState(null)
   const onShow = (d:any)=>{
-    setShowModal(true)
-    setData(d)
+    if (d?.itemStatus && d?.isRequested){
+      setShowModal(true)
+      setData(d)
+    }
   }
 
   return (
@@ -112,7 +114,7 @@ const MyArt = () => {
           </Masonry>
         </div>
       </div>
-      <ViewModal showModal={showModal} setShowModal={setShowModal} product = {data} />
+      <ViewModal updateArts={updateArts} showModal={showModal} setShowModal={setShowModal} item = {data} />
     </>
   );
 };

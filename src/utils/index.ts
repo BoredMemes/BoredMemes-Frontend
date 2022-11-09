@@ -3,6 +3,7 @@ import BoredMNFTABI from 'contracts/BoredMNFT.json';
 import BoredMMarketABI from 'contracts/BoredMMarket.json';
 import BoredMTokenABI from 'contracts/BoredMToken.json';
 import BoredMStakingABI from 'contracts/BoredMStaking.json';
+import BNBStakingABI from 'contracts/BNBStaking.json';
 
 export const Networks = {
   MainNet: 56,
@@ -26,6 +27,10 @@ export const CONTRACTS_BY_NETWORK = {
     BoredMStaking: {
       address: '',
       abi: BoredMStakingABI
+    },
+    BNBStaking: {
+      address: '0x103d252e285f7Cfb198a555B82D0314F815A71E9',
+      abi: BNBStakingABI
     }
   },
   [Networks.TestNet]: {
@@ -44,6 +49,10 @@ export const CONTRACTS_BY_NETWORK = {
     BoredMStaking: {
       address: '0x8b4196629F23A0dA3A4976b01b261bFB8360e600',
       abi: BoredMStakingABI
+    },
+    BNBStaking: {
+      address: '0xA64868b1ac6Ca8aF22E25a362aBBAc265ACD983B',
+      abi: BNBStakingABI
     }
   },
 };
