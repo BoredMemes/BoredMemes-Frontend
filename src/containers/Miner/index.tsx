@@ -110,7 +110,7 @@ const Miner = () => {
           </div>
           <div className={classes.top}>
             <h1>Other Miner</h1>
-            <FilledButton label={'Add your custom Miner'} color = 'grey' handleClick={onAddMiner} className='addBtn'/>
+            {/* <FilledButton label={'Add your custom Miner'} color = 'grey' handleClick={onAddMiner} className='addBtn'/> */}
           </div>
           {minerList.map((d, k)=>(
             <div className={`${classes.stakeCard} stakeCard`} key = {k}>
