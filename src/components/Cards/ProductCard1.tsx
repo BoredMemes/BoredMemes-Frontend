@@ -222,7 +222,7 @@ const PropertyCard1 = ({ item, onShow, updateArts }: PropsType) => {
       return toast.error("Please connect your wallet correctly.");
     }
     let paramsData = {
-      address: account.toLowerCase(),
+      address: account?.toLowerCase(),
       tokenId: item?.tokenId,
       collection: item?.itemCollection
     }
@@ -322,7 +322,7 @@ const PropertyCard1 = ({ item, onShow, updateArts }: PropsType) => {
           </div>}
           */}
           <div className="smallBtn ml-3" onClick={() => handleBookmark(item)}>
-            {(item?.bookmarks && item?.bookmarks.includes(account.toLowerCase())) ?
+            {(item?.bookmarks && item?.bookmarks.includes(account?.toLowerCase())) ?
               <img src="/assets/icons/bookmark_full_icon.svg" alt="" /> :
               <img src="/assets/icons/bookmark_line_icon.svg" alt="" />}
           </div>

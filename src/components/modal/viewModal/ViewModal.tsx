@@ -41,7 +41,7 @@ const ViewModal: React.FC<Props> = ({ updateArts, showModal, setShowModal, item 
       return toast.error("Please connect your wallet correctly.");
     }
     let paramsData = {
-      address: account.toLowerCase(),
+      address: account?.toLowerCase(),
       tokenId: item?.tokenId,
       collection: item?.itemCollection
     }

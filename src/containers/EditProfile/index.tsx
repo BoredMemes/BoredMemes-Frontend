@@ -83,7 +83,7 @@ const EditProfile = () => {
 
     setSignModal(true)
     const timestamp = Math.floor(new Date().getTime() / 1000);
-    const msg = await library.getSigner().signMessage(arrayify(hashMessage(account.toLowerCase() + "-" + timestamp)));
+    const msg = await library.getSigner().signMessage(arrayify(hashMessage(account?.toLowerCase() + "-" + timestamp)));
     setSigned(msg && msg !== "")
     setSignMsg(msg);
     setTimestamp(timestamp);
@@ -101,7 +101,7 @@ const EditProfile = () => {
 
     let formData = new FormData();
     formData.append('file', nftAsset);
-    formData.append("address", account.toLowerCase());
+    formData.append("address", account?.toLowerCase());
     formData.append("timestamp", curTimestamp.toString());
     formData.append("message", signMsg);
     formData.append("name", name);
@@ -136,7 +136,7 @@ const EditProfile = () => {
   function checkUserName() {
     if (!loginStatus)return;
     setNameLoading(true);
-    axios.get("/api/user/checkname", { params: { username: userName, address: account.toLowerCase() } })
+    axios.get("/api/user/checkname", { params: { username: userName, address: account?.toLowerCase() } })
       .then((res) => {
         setAvailable(res.data.status);
         setNameLoading(false);

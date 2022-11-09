@@ -38,7 +38,7 @@ const Bookmarks = () => {
 
   const fetchItems = async () => {
     let paramsData = {
-      bookmarks : account.toLowerCase()
+      bookmarks : account?.toLowerCase()
     }
 
     axios.get("/api/item", {params : paramsData})

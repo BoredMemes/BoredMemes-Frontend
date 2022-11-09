@@ -39,7 +39,7 @@ const MyArt = () => {
 
   const fetchItems = async () => {
     let paramsData = {
-      owner : account.toLowerCase()
+      owner : account?.toLowerCase()
     }
 
     axios.get("/api/item", {params : paramsData})

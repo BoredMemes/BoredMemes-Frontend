@@ -137,9 +137,9 @@ const CreateArt = () => {
     setProcessingModal(true)
     try{
       const timestamp = Math.floor(new Date().getTime() / 1000);
-      const msg = await library.getSigner().signMessage(arrayify(hashMessage(account.toLowerCase() + "-" + timestamp)));
+      const msg = await library.getSigner().signMessage(arrayify(hashMessage(account?.toLowerCase() + "-" + timestamp)));
       let paramsData = {
-        address : account.toLowerCase(),
+        address : account?.toLowerCase(),
         timestamp : timestamp,
         message: msg,
         description : description,
