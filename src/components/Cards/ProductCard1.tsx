@@ -21,6 +21,7 @@ const useStyles = makeStyles(theme => ({
     position: 'relative',
     '@media screen and (max-width: 768px) and (orientation: portrait)': {
       maxWidth: '90vw',
+      minWidth: '70vw',
     },
     '& .top': {
       display: 'flex',
@@ -32,6 +33,12 @@ const useStyles = makeStyles(theme => ({
         width: '100%',
         minHeight: '13vw',
         objectFit: 'cover',
+        '@media screen and (max-width: 768px) and (orientation: portrait)': {
+          minHeight: '40vw',
+          display : 'flex',
+          alignItems: 'center',
+          justifyContent: 'center',
+        },
       },
       '& div': {
         width: '100%',
@@ -40,7 +47,16 @@ const useStyles = makeStyles(theme => ({
         fontSize: 14,
         textAlign: 'center',
         color: '#727272',
-        backgroundColor: '#D9D9D9'
+        backgroundColor: '#D9D9D9',
+        display : 'flex',
+          alignItems: 'center',
+          justifyContent: 'center',
+        '@media screen and (max-width: 768px) and (orientation: portrait)': {
+          minHeight: '40vw',
+          display : 'flex',
+          alignItems: 'center',
+          justifyContent: 'center',
+        },
       },
     },
 
