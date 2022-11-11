@@ -6,7 +6,8 @@ import Modal from 'components/modal';
 import Web3WalletContext from 'hooks/Web3ReactManager';
 import { toast } from 'react-toastify';
 import { ethers } from 'ethers';
-import { onInvest, onMyBuyShares, onSellShares } from 'utils/contracts';
+import { getBalanceOfBNB, getBNBStakingInfo, onInvest, onMyBuyShares, onSellShares } from 'utils/contracts';
+import { BNBStakingInfo } from 'utils/types';
 const Miner = () => {
   const classes = useStyles();
   const { loginStatus, chainId, account, library } = useContext(Web3WalletContext)
@@ -16,8 +17,7 @@ const Miner = () => {
     setMinerList(oldArray => [...oldArray, 0]);
   }
 
-
-  const [boredMExpand, setBoredMExpand] = useState(true);
+  const [boredMExpand, setBoredMExpand] = useState(false);
   const [minerExpand, setMinerExpand] = useState(false);
 
   const styles = {
@@ -29,7 +29,29 @@ const Miner = () => {
   const [buyModal, setBuyModal] = useState(false);
   const [amount, setAmount] = useState(0);
   const [progress, setProgress] = useState(50);
-  
+
+  const [bnbStakingInfo, setBNBStakingInfo] = useState<BNBStakingInfo>({
+    balance: 0,
+    myShares: 0,
+    myEarnedBNB: 0,
+  })
+  const [bnbBalance, setBNBBalance ] = useState(0);
+  useEffect(() => {
+    if (loginStatus) {
+      onBNBStakingInfo();
+    }
+  }, [loginStatus, account, chainId, library])
+
+  const onBNBStakingInfo = async () => {
+    const _info = await getBNBStakingInfo(account, chainId, library);
+    if (_info) setBNBStakingInfo(_info);
+  }
+
+  const getBNBBalance = async () => {
+    const bnbBalance = await getBalanceOfBNB(library, account);
+    setBNBBalance(bnbBalance);
+  }
+
   const onHarvest = async () => {
     if (loginStatus) {
       const toast_load_id = toast.loading("Claiming...");
@@ -38,20 +60,20 @@ const Miner = () => {
       if (isStaked) {
         toast.success("Bought " + amount + " Successfully.")
         onCancelBuyShares();
-        //onStakingInfo();
+        onBNBStakingInfo();
       }
     }
   }
-  
+
   const onTokenInvest = async () => {
     if (loginStatus) {
-      const toast_load_id = toast.loading("Staking...");
+      const toast_load_id = toast.loading("Investing...");
       const isStaked = await onInvest(ethers.constants.AddressZero, chainId, library.getSigner());
       toast.dismiss(toast_load_id);
       if (isStaked) {
         toast.success("Bought " + amount + " Successfully.")
         onCancelBuyShares();
-        //onStakingInfo();
+        onBNBStakingInfo();
       }
     }
   }
@@ -65,7 +87,7 @@ const Miner = () => {
       if (isStaked) {
         toast.success("Bought " + amount + " Successfully.")
         onCancelBuyShares();
-        //onStakingInfo();
+        onBNBStakingInfo();
       }
     }
   }
@@ -73,6 +95,12 @@ const Miner = () => {
     setProgress(50);
     setBuyModal(false);
   }
+
+  useEffect(() => {
+    if (loginStatus && buyModal) {
+      getBNBBalance();
+    }
+  }, [loginStatus, buyModal])
 
   const onChangeVal = async (e: any) => {
     if (e.target.value === null || e.target.value === '') {
@@ -83,13 +111,14 @@ const Miner = () => {
   }
   useEffect(() => {
     if (progress >= 0 && buyModal) {
-      //setAmount(balance * progress / 100);
+      setAmount(bnbBalance * progress / 100);
     }
-  }, [progress, buyModal])
+  }, [progress, buyModal, bnbBalance])
   const onMax = async () => {
-    //setAmount(balance)
+    setAmount(bnbBalance)
   }
 
+  //--------------------Stake Part-----------------//
   return (
     <>
       <div className={classes.root}>
@@ -104,22 +133,22 @@ const Miner = () => {
                   <img src="/assets/logo.png" alt="" />
                   <span>
                     <h4>BoredM Shares</h4>
-                    <p>$BNB { }</p>
+                    <p>{bnbStakingInfo?.balance.toLocaleString()}$BNB</p>
                     {/* total balance */}
                   </span>
                 </li>
                 <li>
                   <span>
-                    {/* Share Rewards */}
                     <h5>My Shares</h5>
-                    <p>7,836,923.44</p>
+                    <p>{bnbStakingInfo?.myShares.toLocaleString()} $BNB</p>
+                    {/* <p><small>≈ $150,09</small></p> */}
                   </span>
                 </li>
                 <li>
                   <span>
                     <h5>My Earned $BNB</h5>
-                    <p>0.5</p>
-                    <p><small>≈ $150,09</small></p>
+                    <p>{bnbStakingInfo?.myEarnedBNB.toLocaleString()} $BNB</p>
+                    {/* <p><small>≈ $150,09</small></p> */}
                   </span>
                 </li>
                 <li>
@@ -130,26 +159,26 @@ const Miner = () => {
                 <img src="/assets/icons/arrow_down_icon.svg" alt="" style={{ transform: boredMExpand ? 'rotate(180deg)' : 'rotate(0deg)' }} />
               </div>
             </div>
-            <Expand open={boredMExpand} duration={300} styles={styles} transitions={transitions}>
+            <Expand open={boredMExpand && bnbStakingInfo?.myShares > 0} duration={300} styles={styles} transitions={transitions}>
               <div className="state" >
                 <ul>
-
                   <li>
                     <span>
-                      <h5>My shares</h5>
-                      <p>284,783</p>
+                      <h5>My Shares</h5>
+                      <p>{bnbStakingInfo?.myShares.toLocaleString()} $BNB</p>
+                      {/* <p><small>≈ $150,09</small></p> */}
                     </span>
                   </li>
                   <li>
                     <span>
-                      <h5>My Invest</h5>
-                      <p>0.5</p>
-                      <p><small>≈ $150,09</small></p>
+                      <h5>My Earned $BNB</h5>
+                      <p>{bnbStakingInfo?.myEarnedBNB.toLocaleString()} $BNB</p>
+                      {/* <p><small>≈ $150,09</small></p> */}
                     </span>
                   </li>
                   <li>
-                    <FilledButton label={'Reinvest'} color='success' handleClick={() => onTokenInvest()}/>
-                    <FilledButton label={'Harvest'} color='secondary' handleClick={() => onHarvest()}/>
+                    <FilledButton label={'Reinvest'} color='success' handleClick={() => onTokenInvest()} />
+                    <FilledButton label={'Harvest'} color='secondary' handleClick={() => onHarvest()} />
                     <FilledButton label={'Buy Shares'} handleClick={() => setBuyModal(true)} />
                   </li>
                 </ul>
@@ -157,13 +186,13 @@ const Miner = () => {
               </div>
 
             </Expand>
-            {!boredMExpand && <p className='bottomTxt'>Buy Other shares to earn.</p>}
+            {boredMExpand && bnbStakingInfo?.myShares == 0 && <p className='bottomTxt'>Buy Other shares to earn.</p>}
           </div>
-          {/* <div className={classes.top}>
+          <div className={classes.top}>
             <h1>Other Miner</h1>
             <FilledButton label={'Add your custom Miner'} color = 'grey' handleClick={onAddMiner} className='addBtn'/>
           </div>
-          {minerList.map((d, k)=>(
+          {/* {minerList.map((d, k)=>(
             <div className={`${classes.stakeCard} stakeCard`} key = {k}>
               <div className="top">
                 <ul>
@@ -246,13 +275,13 @@ const Miner = () => {
                 <p><small>Your total rewards</small></p>
               </li>
               <li>
-                <h5>1.3 <span>BNB</span></h5>
+                <h5>{bnbStakingInfo?.myEarnedBNB.toLocaleString()} <span>BNB</span></h5>
               </li>
             </ul>
 
           </div>
 
-          <div className={`${classes.rewardCard} rewardCard`}>
+          {/* <div className={`${classes.rewardCard} rewardCard`}>
             <ul>
               <li>
 
@@ -272,7 +301,7 @@ const Miner = () => {
               </li>
             </ul>
 
-          </div>
+          </div> */}
           <div className={classes.buyPanel}>
             <ul>
               <li>
@@ -322,7 +351,7 @@ const Miner = () => {
                 <input type="number" onChange={e => onChangeVal(e)} placeholder={"Amount"} value={amount === 0 ? "Amount" : amount} />
                 <button onClick={onMax}>Max</button>
               </span>
-              <h5>Balance : </h5>
+              <h5>Balance : {bnbBalance.toLocaleString(undefined, { maximumFractionDigits: 2 })} $BNB</h5>
               <div className={classes.progress}>
                 <div className="line">
                   <div style={{ background: '#9B51E0', width: `${progress}%`, height: '100%' }}></div>

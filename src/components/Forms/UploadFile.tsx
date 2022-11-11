@@ -118,7 +118,6 @@ const UploadFile = forwardRef<Ref<any>, FileInputProps>(
     const classes = useStyles({ fileAssetType });
 
     useEffect(() => {
-      console.log(defaultAsset);
       setFileAsset(defaultAsset);
       setFileAssetType(defaultAssetType);
     }, [defaultAsset, defaultAssetType]);

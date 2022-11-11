@@ -100,7 +100,9 @@ const EditProfile = () => {
     if (!signMsg && !curTimestamp) return;
 
     let formData = new FormData();
-    formData.append('file', nftAsset);
+    console.log(nftAsset);
+    if (nftAsset !== undefined)formData.append('file', nftAsset);
+    else formData.append('logo_url', user?.logo_url);
     formData.append("address", account?.toLowerCase());
     formData.append("timestamp", curTimestamp.toString());
     formData.append("message", signMsg);
@@ -111,6 +113,7 @@ const EditProfile = () => {
     formData.append("telegram", telegram);
     formData.append("telegramChecked", telegramChecked.toString());
     formData.append("twitterChecked", twitterChecked.toString());
+    console.log(formData);
     axios.post("/api/user/update", formData, {
       headers: {
         "Content-Type" : "multipart/form-data",
@@ -121,7 +124,7 @@ const EditProfile = () => {
         closeProfile();
         if (res.data.message === "success"){
           toast.success("Saved Successfully.")
-          window.location.href = "/";
+          //window.location.href = "/";
         }
       }).catch((err) => {
         console.log(err);

@@ -12,7 +12,8 @@ import Web3WalletContext from 'hooks/Web3ReactManager';
 import { toast } from 'react-toastify';
 import axios from 'axios';
 import { arrayify, hashMessage } from 'ethers/lib/utils';
-import { onMintArtItem } from 'utils/contracts';
+import { getMintInfo, onMintArtItem } from 'utils/contracts';
+import { useAuthState } from 'context/authContext';
 const myData = [
   {
     a: 1,
@@ -98,6 +99,7 @@ const cardData = [
 ];
 const CreateArt = () => {
   const { loginStatus, account, library } = useContext(Web3WalletContext)
+  const { user } = useAuthState();
   const classes = useStyles();
   const isTabletOrMobile = useMediaQuery({ query: 'screen and (max-width: 640px) and (orientation:portrait)' })
 
@@ -116,9 +118,18 @@ const CreateArt = () => {
   const [telegramChecked, setTelegramChecked] = useState(false);
   const [twitterChecked, setTwitterChecked] = useState(false);
 
-
   const [processingModal, setProcessingModal] = useState(false);
   const [resultModal, setResultModal] = useState(false);
+
+  const [ packPrices, setPackPrices ] = useState([]);
+  useEffect(() => {
+    if (loginStatus)getMintingInfo();
+  }, [loginStatus])
+
+  const getMintingInfo = async () => {
+    const _packPrices = await getMintInfo(library.getSigner());
+    setPackPrices(_packPrices);
+  }
 
   const onGetArt = async () => {
     if (!loginStatus) {
@@ -152,8 +163,9 @@ const CreateArt = () => {
         .then(async (res) => {          
           if (res.data.message === "success"){
             console.log("Request ID : ", res.data.reqId);
-            const isMinted = await onMintArtItem(library.getSigner(), res.data.reqId, packID);
+            const isMinted = await onMintArtItem(library.getSigner(), res.data.reqId, packID, packPrices[packID]);
             if (isMinted){
+              setResultModal(true)
               toast.success("Your Art is requested successfully");
             }
             setProcessingModal(false);
@@ -300,8 +312,8 @@ const CreateArt = () => {
                 {cardData.map((d, k) => (
                   <div className="card" onClick={() => setPackID(k)} key={k}>
                     {packID === k && <div className="heart"><img src="/assets/icons/crown_icon.svg" alt="" /></div>}
-                    <span><h3>{d.name}</h3> <h3>{d.price}USD</h3></span>
-                    <span><h4>Paid in ETH</h4> <button style={{ background: k === 1 ? "#E4CCFD" : "#D4D4D4" }}><img src={d.img} alt="" /> {d.count} image</button></span>
+                    <span><h3>{d.name}</h3> <h3>{packPrices[k]}ETH</h3></span>
+                    <span><h4>Paid in ETH</h4> <button style={{ background: k === packID ? "#E4CCFD" : "#D4D4D4" }}><img src={d.img} alt="" /> {d.count} image</button></span>
                   </div>
                 ))}
 
@@ -319,12 +331,12 @@ const CreateArt = () => {
               <div className="row">
                 <div className="input-div">
                   <div className={`${classes.myCheck} myCheck`}>
-                    <CheckBox onChange={setTwitterChecked} />
+                    <CheckBox value={user?.is_twitter_notify} onChange={setTwitterChecked} />
                     <h3>Twitter Notification</h3>
                     <i className="fab fa-twitter"></i>
                   </div>
                   <div className={`${classes.myCheck} myCheck`}>
-                    <CheckBox onChange={setTelegramChecked} />
+                    <CheckBox value={user?.is_telegram_notify} onChange={setTelegramChecked} />
                     <h3>Telegram Notification</h3>
                     <i className="fab fa-telegram"></i>
                   </div>
@@ -384,7 +396,7 @@ const CreateArt = () => {
               </span>
             </div>
             <div className={classes.modalBtns}>
-              <FilledButton label={'May Art'} color='secondary' handleClick={onGotoMyArt} />
+              <FilledButton label={'My Art'} color='secondary' handleClick={onGotoMyArt} />
               <FilledButton label={'Community Feed'} handleClick={onGotoCommunityFeed} />
             </div>
           </div>

@@ -11,7 +11,13 @@ export interface NFTStakingInfo {
     mEarnedETHLock: number;
     mClaimedETHLock: number;
     mClaimableETHLock: number;
+    mTimestampLock: number;
     mPercentFree: number;
     mPercentLock: number;
+}
 
+export interface BNBStakingInfo {
+    balance: number;
+    myShares: number;
+    myEarnedBNB: number;
 }

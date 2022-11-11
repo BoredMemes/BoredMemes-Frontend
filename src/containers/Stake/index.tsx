@@ -4,7 +4,7 @@ import { useContext, useEffect, useState } from 'react';
 import Expand from 'react-expand-animated';
 import Modal from 'components/modal';
 import CheckLock from 'components/Forms/CheckLock';
-import { getBalanceOfBoredM, getStakingInfo, onBoredMClaim, onBoredMStake, onBoredMUnStake } from 'utils/contracts';
+import { getBalanceOfBoredM, getBNBStakingInfo, getStakingInfo, onBoredMClaim, onBoredMStake, onBoredMUnStake } from 'utils/contracts';
 import Web3WalletContext from 'hooks/Web3ReactManager';
 import { toast } from 'react-toastify';
 import { NFTStakingInfo } from 'utils/types';
@@ -14,14 +14,14 @@ const Stake = () => {
   const { loginStatus, chainId, account, library } = useContext(Web3WalletContext)
 
   useEffect(() => {
-    if (loginStatus){
+    if (loginStatus) {
       getPrices();
       onStakingInfo();
     }
   }, [loginStatus, account, chainId, library])
 
-  const [ ethPrice, setEthPrice ] = useState(0);
-  const [ boredmPrice, setBoredMPrice ] = useState(0);
+  const [ethPrice, setEthPrice] = useState(0);
+  const [boredmPrice, setBoredMPrice] = useState(0);
   const getPrices = async () => {
     axios.get("/api/getrates")
       .then((res) => {
@@ -32,7 +32,7 @@ const Stake = () => {
       })
   }
 
-  const [ nftStakingInfo, setNftStakingInfo ] = useState<NFTStakingInfo>({
+  const [nftStakingInfo, setNftStakingInfo] = useState<NFTStakingInfo>({
     tDividETH: 0,
     tStakedBoredM: 0,
     mStakedBoredM: 0,
@@ -45,12 +45,13 @@ const Stake = () => {
     mEarnedETHLock: 0,
     mClaimedETHLock: 0,
     mClaimableETHLock: 0,
+    mTimestampLock: 0,
     mPercentFree: 10,
     mPercentLock: 90
   });
   const onStakingInfo = async () => {
     const _info = await getStakingInfo(account, chainId, library.getSigner());
-    if (_info)setNftStakingInfo(_info);
+    if (_info) setNftStakingInfo(_info);
   }
 
   const [minerList, setMinerList] = useState<number[]>([0]);
@@ -58,7 +59,7 @@ const Stake = () => {
     setMinerList(oldArray => [...oldArray, 0]);
   }
 
-  const [boredMExpand, setBoredMExpand] = useState(true);
+  const [boredMExpand, setBoredMExpand] = useState(false);
   const [minerExpand, setMinerExpand] = useState(true);
 
   const styles = {
@@ -68,17 +69,17 @@ const Stake = () => {
   const transitions = ['width', 'height', 'opacity', 'background'];
 
   //--------------------Stake Part-----------------//
-  const [ isFree, setFree ] = useState(false);
+  const [isFree, setFree] = useState(false);
   const [stakeModal, setStakeModal] = useState(false);
-  const [ balance, setBalance ] = useState(0);
+  const [balance, setBalance] = useState(0);
   const [amountStak, setAmountStak] = useState(0);
   const [progressStak, setProgressStak] = useState(50);
   const onStake = async () => {
-    if (loginStatus){
+    if (loginStatus) {
       const toast_load_id = toast.loading("Staking...");
       const isStaked = await onBoredMStake(account, amountStak, chainId, library.getSigner(), isFree);
       toast.dismiss(toast_load_id);
-      if (isStaked){
+      if (isStaked) {
         toast.success("Staked " + amountStak + " $BoredM Successfully.")
         onCancelStake();
         onStakingInfo();
@@ -88,13 +89,13 @@ const Stake = () => {
   const onCancelStake = () => {
     setProgressStak(50);
     setStakeModal(false);
-  }  
+  }
   const onStakeModal = (_isFree) => {
     setFree(_isFree);
     setStakeModal(true);
   }
   useEffect(() => {
-    if (loginStatus && stakeModal){
+    if (loginStatus && stakeModal) {
       getBalance()
     }
   }, [loginStatus, stakeModal])
@@ -110,25 +111,25 @@ const Stake = () => {
     }
   }
   useEffect(() => {
-    if (progressStak >= 0 && stakeModal){
+    if (progressStak >= 0 && stakeModal) {
       setAmountStak(balance * progressStak / 100);
     }
   }, [progressStak, stakeModal, balance])
   const onMaxStak = async () => {
     setAmountStak(balance)
   }
-  
+
   //-----------------------Withdraw Part-------------------//
-  const [ isWithdrawFree, setIsWithdrawFree ] = useState(false);
+  const [isWithdrawFree, setIsWithdrawFree] = useState(false);
   const [withdrawModal, setWithdrawModal] = useState(false);
   const [amountWithdraw, setAmountWithdraw] = useState(0);
   const [progressWithdraw, setProgressWithdraw] = useState(50);
   const onWithdraw = async () => {
-    if (loginStatus){
+    if (loginStatus) {
       const toast_load_id = toast.loading("UnStaking...");
       const isUnStaked = await onBoredMUnStake(account, amountWithdraw, chainId, library.getSigner(), isWithdrawFree);
       toast.dismiss(toast_load_id);
-      if (isUnStaked){
+      if (isUnStaked) {
         toast.success("Withrawn " + amountWithdraw + " $BoredM Successfully.")
         onCancelWithdraw();
         onStakingInfo();
@@ -154,18 +155,18 @@ const Stake = () => {
     setAmountWithdraw(isWithdrawFree ? nftStakingInfo?.mStakedBoredM : nftStakingInfo?.mStakedBoredMLock)
   }
   useEffect(() => {
-    if (progressWithdraw >= 0 && withdrawModal){
-      setAmountWithdraw( (isWithdrawFree ? nftStakingInfo.mStakedBoredM : nftStakingInfo.mStakedBoredMLock) * progressWithdraw / 100);
+    if (progressWithdraw >= 0 && withdrawModal) {
+      setAmountWithdraw((isWithdrawFree ? nftStakingInfo.mStakedBoredM : nftStakingInfo.mStakedBoredMLock) * progressWithdraw / 100);
     }
   }, [progressWithdraw, withdrawModal, nftStakingInfo])
 
   //---------------------Harvest-------------------------//
   const onHarvest = async (_isFree) => {
-    if (loginStatus){
+    if (loginStatus) {
       const toast_load_id = toast.loading("Harvesting...");
       const isClaimed = await onBoredMClaim(chainId, library.getSigner(), isFree);
       toast.dismiss(toast_load_id);
-      if (isClaimed){
+      if (isClaimed) {
         toast.success("Withrawn " + amountWithdraw + " $BoredM Successfully.")
         onCancelWithdraw();
         onStakingInfo();
@@ -178,7 +179,7 @@ const Stake = () => {
       <div className={classes.root}>
         <div className={`${classes.content} mainContainer`}>
           <div className={classes.top}>
-            <h1>BoredM Free Farm</h1>
+            <h1>BoredM Farm</h1>
           </div>
           <div className={`${classes.stakeCard} stakeCard`}>
             <div className="top">
@@ -187,64 +188,64 @@ const Stake = () => {
                   <img src="/assets/logo.png" alt="" />
                   <span>
                     <h5>Total Dividend $ETH</h5>
-                    <p>{nftStakingInfo?.tDividETH.toLocaleString()}</p>
-                    <p><small>≈ ${(ethPrice * nftStakingInfo?.tDividETH).toLocaleString(undefined, {maximumFractionDigits:2})}</small></p>
+                    <p>{(nftStakingInfo?.tDividETH + nftStakingInfo?.tDividETHLock).toLocaleString()}</p>
+                    <p><small>≈ ${(ethPrice * (nftStakingInfo?.tDividETH + nftStakingInfo?.tDividETHLock)).toLocaleString(undefined, { maximumFractionDigits: 2 })}</small></p>
                   </span>
                 </li>
 
                 <li>
                   <span>
                     <h5>Total Staked $BoredM</h5>
-                    <p>{nftStakingInfo?.tStakedBoredM.toLocaleString(undefined, {maximumFractionDigits:2})}</p>
-                    <p><small>≈ ${(boredmPrice * nftStakingInfo?.tStakedBoredM)}</small></p>
+                    <p>{
+                      (nftStakingInfo?.tStakedBoredM + nftStakingInfo?.tStakedBoredMLock).toLocaleString(undefined, { maximumFractionDigits: 2 })
+                    }</p>
+                    <p><small>≈ ${(boredmPrice * (nftStakingInfo?.tStakedBoredM + nftStakingInfo?.tStakedBoredMLock))}</small></p>
                   </span>
                 </li>
 
                 <li>
                   <span>
                     <h5>My staked $BoredM</h5>
-                    <p>{nftStakingInfo?.mStakedBoredM.toLocaleString(undefined, {maximumFractionDigits:2})}</p>
-                    <p><small>≈ ${(boredmPrice * nftStakingInfo?.mStakedBoredM)}</small></p>
+                    <p>{(nftStakingInfo?.mStakedBoredM + nftStakingInfo?.mStakedBoredMLock).toLocaleString(undefined, { maximumFractionDigits: 2 })}</p>
+                    <p><small>≈ ${(boredmPrice * (nftStakingInfo?.mStakedBoredM + nftStakingInfo?.mStakedBoredMLock))}</small></p>
                   </span>
                 </li>
                 <li>
                   <span>
                     <h5>My Earned $ETH</h5>
-                    <p>{nftStakingInfo?.mEarnedETH.toLocaleString(undefined, {maximumFractionDigits:2})}</p>
-                    <p><small>≈ ${(ethPrice * nftStakingInfo?.mEarnedETH).toLocaleString(undefined, {maximumFractionDigits:2})}</small></p>
+                    <p>{(nftStakingInfo?.mEarnedETH + nftStakingInfo?.mEarnedETHLock).toLocaleString(undefined, { maximumFractionDigits: 2 })}</p>
+                    <p><small>≈ ${(ethPrice * (nftStakingInfo?.mEarnedETH + nftStakingInfo?.mEarnedETHLock)).toLocaleString(undefined, { maximumFractionDigits: 2 })}</small></p>
                   </span>
                 </li>
                 <li>
-                  <FilledButton label={'Stake'} handleClick={() => onStakeModal(true)} />
+                  <FilledButton label={'Stake'} handleClick={() => setStakeModal(true)} />
                 </li>
               </ul>
               <div className="downBtn" onClick={() => setBoredMExpand(!boredMExpand)}>
                 <img src="/assets/icons/arrow_down_icon.svg" alt="" style={{ transform: boredMExpand ? 'rotate(180deg)' : 'rotate(0deg)' }} />
               </div>
             </div>
-            <Expand open={boredMExpand} duration={300} styles={styles} transitions={transitions}>
+            <Expand open={boredMExpand && (nftStakingInfo?.tStakedBoredM + nftStakingInfo?.tStakedBoredMLock) > 0} duration={300} styles={styles} transitions={transitions}>
               <div className="state" >
                 <ul>
 
                   <li>
                     <span>
                       <h5>Claimed $ETH</h5>
-                      <p>{nftStakingInfo?.mClaimedETH.toLocaleString(undefined, {maximumFractionDigits:2})}</p>
-                      <p><small>≈ ${(ethPrice * nftStakingInfo?.mClaimedETH).toLocaleString(undefined, {maximumFractionDigits:2})}</small></p>
+                      <p>{(nftStakingInfo?.mClaimedETH + nftStakingInfo?.mClaimedETHLock).toLocaleString(undefined, { maximumFractionDigits: 2 })}</p>
+                      <p><small>≈ ${(ethPrice * (nftStakingInfo?.mClaimedETH + nftStakingInfo?.mClaimedETHLock)).toLocaleString(undefined, { maximumFractionDigits: 2 })}</small></p>
                     </span>
                   </li>
                   <li>
                     <span>
                       <h5>Claimable $ETH</h5>
-                      <p>{nftStakingInfo?.mClaimableETH.toLocaleString(undefined, {maximumFractionDigits:2})}</p>
-                      <p><small>≈ ${(ethPrice * nftStakingInfo?.mClaimableETH).toLocaleString(undefined, {maximumFractionDigits:2})}</small></p>
+                      <p>{(nftStakingInfo?.mClaimableETH + nftStakingInfo?.mClaimableETHLock).toLocaleString(undefined, { maximumFractionDigits: 2 })}</p>
+                      <p><small>≈ ${(ethPrice * (nftStakingInfo?.mClaimableETH + nftStakingInfo?.mClaimableETHLock)).toLocaleString(undefined, { maximumFractionDigits: 2 })}</small></p>
                     </span>
                   </li>
                   <li>
                     {/* <FilledButton label={'Reinvest'} color='success' /> */}
-                    {
-                      nftStakingInfo?.mClaimableETH > 0 && <FilledButton label={'Harvest'} color='secondary' handleClick={() => onHarvest(true)}/>
-                    }
+                    <FilledButton disabled={(nftStakingInfo?.mClaimableETH + nftStakingInfo?.mClaimableETHLock) <= 0} label={'Harvest'} color='secondary' handleClick={() => onHarvest(true)} />
                     <FilledButton label={'Withdraw'} handleClick={() => onWithdrawModal(true)} />
                   </li>
                 </ul>
@@ -252,13 +253,13 @@ const Stake = () => {
               </div>
 
             </Expand>
-            {!boredMExpand && <p className='bottomTxt'>Stake $Other to earn.</p>}
+            {boredMExpand && (nftStakingInfo?.tStakedBoredM + nftStakingInfo?.tStakedBoredMLock) == 0 && <p className='bottomTxt'>Stake $Other to earn.</p>}
           </div>
           <div className={classes.top}>
-            <h1>BoredM Lock Farms(30 days)</h1>
-            {/* <FilledButton label={'Add your custom farm'} color='grey' handleClick={onAddMiner} /> */}
+            <h1>Other Farms (coming soon)</h1>
+            <FilledButton label={'Add your custom farm'} color='grey' handleClick={onAddMiner} />
           </div>
-          {minerList.map((d, k) => (
+          {/* {minerList.map((d, k) => (
             <div className={`${classes.stakeCard} stakeCard`} key={k}>
               <div className="top">
                 <ul>
@@ -266,33 +267,33 @@ const Stake = () => {
                     <img src="/assets/logo.png" alt="" />
                     <span>
                       <h5>Total Dividend $ETH</h5>
-                      <p>{nftStakingInfo?.tDividETHLock.toLocaleString(undefined, {maximumFractionDigits:2})}</p>
-                      <p><small>≈ ${(ethPrice * nftStakingInfo?.tDividETHLock).toLocaleString(undefined, {maximumFractionDigits:2})}</small></p>
+                      <p>{nftStakingInfo?.tDividETHLock.toLocaleString(undefined, { maximumFractionDigits: 2 })}</p>
+                      <p><small>≈ ${(ethPrice * nftStakingInfo?.tDividETHLock).toLocaleString(undefined, { maximumFractionDigits: 2 })}</small></p>
                     </span>
                   </li>
                   <li>
-                    {/* <span>
+                    <span>
                       <h5>APR</h5>
                       <p>12% / <img src="assets/icons/lock_icon.svg" alt="" /> 44%</p>
-                    </span> */}
+                    </span> 
                     <span>
                       <h5>Total Staked $BoredM</h5>
-                      <p>{nftStakingInfo?.tStakedBoredMLock.toLocaleString(undefined, {maximumFractionDigits:2})}</p>
+                      <p>{nftStakingInfo?.tStakedBoredMLock.toLocaleString(undefined, { maximumFractionDigits: 2 })}</p>
                       <p><small>≈ ${(boredmPrice * nftStakingInfo?.tStakedBoredMLock)}</small></p>
                     </span>
                   </li>
                   <li>
                     <span>
                       <h5>My staked $BoredM</h5>
-                      <p>{nftStakingInfo?.mStakedBoredMLock.toLocaleString(undefined, {maximumFractionDigits:2})}</p>
+                      <p>{nftStakingInfo?.mStakedBoredMLock.toLocaleString(undefined, { maximumFractionDigits: 2 })}</p>
                       <p><small>≈ ${(boredmPrice * nftStakingInfo?.mStakedBoredMLock)}</small></p>
                     </span>
                   </li>
                   <li>
                     <span>
                       <h5>My Earned $ETH</h5>
-                      <p>{nftStakingInfo?.mEarnedETHLock.toLocaleString(undefined, {maximumFractionDigits:2})}</p>
-                      <p><small>≈ ${(ethPrice * nftStakingInfo?.mEarnedETHLock).toLocaleString(undefined, {maximumFractionDigits:2})}</small></p>
+                      <p>{nftStakingInfo?.mEarnedETHLock.toLocaleString(undefined, { maximumFractionDigits: 2 })}</p>
+                      <p><small>≈ ${(ethPrice * nftStakingInfo?.mEarnedETHLock).toLocaleString(undefined, { maximumFractionDigits: 2 })}</small></p>
                     </span>
                   </li>
                   <li>
@@ -310,22 +311,20 @@ const Stake = () => {
                     <li>
                       <span>
                         <h5>Claimed $ETH</h5>
-                        <p>{nftStakingInfo?.mClaimedETHLock.toLocaleString(undefined, {maximumFractionDigits:2})}</p>
-                        <p><small>≈ ${(ethPrice * nftStakingInfo?.mClaimedETHLock).toLocaleString(undefined, {maximumFractionDigits:2})}</small></p>
+                        <p>{nftStakingInfo?.mClaimedETHLock.toLocaleString(undefined, { maximumFractionDigits: 2 })}</p>
+                        <p><small>≈ ${(ethPrice * nftStakingInfo?.mClaimedETHLock).toLocaleString(undefined, { maximumFractionDigits: 2 })}</small></p>
                       </span>
                     </li>
                     <li>
                       <span>
                         <h5>Claimable $ETH</h5>
-                        <p>{nftStakingInfo?.mClaimableETHLock.toLocaleString(undefined, {maximumFractionDigits:2})}</p>
-                        <p><small>≈ ${(ethPrice * nftStakingInfo?.mClaimableETHLock).toLocaleString(undefined, {maximumFractionDigits:2})}</small></p>
+                        <p>{nftStakingInfo?.mClaimableETHLock.toLocaleString(undefined, { maximumFractionDigits: 2 })}</p>
+                        <p><small>≈ ${(ethPrice * nftStakingInfo?.mClaimableETHLock).toLocaleString(undefined, { maximumFractionDigits: 2 })}</small></p>
                       </span>
                     </li>
                     <li>
-                      {/* <FilledButton label={'Reinvest'} color='success' /> */}
-                      {
-                        nftStakingInfo?.mClaimableETHLock > 0 && <FilledButton label={'Harvest'} color='secondary' handleClick={() => onHarvest(false)}/>
-                      }
+                      <FilledButton label={'Reinvest'} color='success' />
+                      <FilledButton disabled={nftStakingInfo?.mClaimableETH <= 0} label={'Harvest'} color='secondary' handleClick={() => onHarvest(true)} />
                       <FilledButton label={'Withdraw'} handleClick={() => onWithdrawModal(false)} />
                     </li>
                   </ul>
@@ -333,16 +332,16 @@ const Stake = () => {
                 </div>
 
               </Expand>
-              {!minerExpand && <p className='bottomTxt'>Stake $Other to earn.</p>}
+              {!minerExpand && <p className='bottomTxt'>Stake $Other to earn.</p>
             </div>
-          ))}
+          ))} */}
 
         </div>
         <div className={`${classes.right} mainContainer`}>
           <div className={classes.top}>
             <h1>Highlights</h1>
           </div>
-          <div className={`${classes.rewardCard} rewardCard`}>
+          {/* <div className={`${classes.rewardCard} rewardCard`}>
             <ul>
               <li>
               </li>
@@ -357,11 +356,11 @@ const Stake = () => {
                 <p><small>Your total rewards</small></p>
               </li>
               <li>
-                <h5>1.3 <span>BNB</span></h5>
+                <h5>{} <span>BNB</span></h5>
               </li>
             </ul>
 
-          </div>
+          </div> */}
 
           <div className={`${classes.rewardCard} rewardCard`}>
             <ul>
@@ -379,7 +378,7 @@ const Stake = () => {
                 <p><small>Your total rewards</small></p>
               </li>
               <li>
-                <h5>1.3 <span>ETH</span></h5>
+                <h5>{(nftStakingInfo?.mEarnedETH + nftStakingInfo?.mEarnedETHLock).toLocaleString(undefined, { maximumFractionDigits: 2 })} <span>ETH</span></h5>
               </li>
             </ul>
 
@@ -480,7 +479,7 @@ const Stake = () => {
 
               }
               <div className={classes.lock}>
-                <CheckLock value={!isFree} disabled={true}/>
+                <CheckLock disabled={false} onChange={(checked) => setFree(!checked)}/>
                 <img src="/assets/icons/lock_icon.svg" alt="" />
                 <p>Lock $BoredM for access to</p>
                 <h6 style={{ color: '#A8D2B8', background: '#A8D2B833' }}>{nftStakingInfo?.mPercentLock}%</h6>

@@ -54,7 +54,7 @@ const CheckLock = ({
   const classes = useStyles();
   const [ isChecked, setChecked ] = useState<boolean>(value);
   const handleChangeCheck = (event) => {
-    setChecked(value);
+    setChecked(event.target.checked);
     onChange(event.target.checked);
   };
 
