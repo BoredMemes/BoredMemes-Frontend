@@ -124,6 +124,7 @@ export const useStyles = makeStyles(theme => ({
           },
           '& p': {
             fontSize : 16,
+            display : 'flex',
             [theme.breakpoints.down('xs')]: {
               fontSize : 12,
             },
@@ -210,6 +211,7 @@ export const useStyles = makeStyles(theme => ({
           },
           '& p': {
             fontSize : 14,
+            display : 'flex',
           },
           '& button': {
             [theme.breakpoints.down('xs')]: {

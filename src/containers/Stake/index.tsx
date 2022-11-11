@@ -9,6 +9,7 @@ import Web3WalletContext from 'hooks/Web3ReactManager';
 import { toast } from 'react-toastify';
 import { NFTStakingInfo } from 'utils/types';
 import axios from 'axios';
+import Tooltip from 'components/Widgets/Tooltip';
 const Stake = () => {
   const classes = useStyles();
   const { loginStatus, chainId, account, library } = useContext(Web3WalletContext)
@@ -188,7 +189,16 @@ const Stake = () => {
                   <img src="/assets/logo.png" alt="" />
                   <span>
                     <h5>Total Dividend $ETH</h5>
-                    <p>{(nftStakingInfo?.tDividETH + nftStakingInfo?.tDividETHLock).toLocaleString()}</p>
+                    <p>
+                      {(nftStakingInfo?.tDividETH + nftStakingInfo?.tDividETHLock).toLocaleString()} 
+                      <Tooltip 
+                        text = {
+                        <>
+                          <p>7,836,925.44 $BoredM - Unlockable now</p>
+                          <p>7,836,925.44 $BoredM - Unlocks the 10/11/2022 at 7:30 am</p>
+                        </>}
+                      />
+                    </p>
                     <p><small>≈ ${(ethPrice * (nftStakingInfo?.tDividETH + nftStakingInfo?.tDividETHLock)).toLocaleString(undefined, { maximumFractionDigits: 2 })}</small></p>
                   </span>
                 </li>
@@ -198,7 +208,15 @@ const Stake = () => {
                     <h5>Total Staked $BoredM</h5>
                     <p>{
                       (nftStakingInfo?.tStakedBoredM + nftStakingInfo?.tStakedBoredMLock).toLocaleString(undefined, { maximumFractionDigits: 2 })
-                    }</p>
+                    }
+                    <Tooltip 
+                        text = {
+                        <>
+                          <p>7,836,925.44 $BoredM - Unlockable now</p>
+                          <p>7,836,925.44 $BoredM - Unlocks the 10/11/2022 at 7:30 am</p>
+                        </>}
+                      />
+                      </p>
                     <p><small>≈ ${(boredmPrice * (nftStakingInfo?.tStakedBoredM + nftStakingInfo?.tStakedBoredMLock))}</small></p>
                   </span>
                 </li>
@@ -206,14 +224,32 @@ const Stake = () => {
                 <li>
                   <span>
                     <h5>My staked $BoredM</h5>
-                    <p>{(nftStakingInfo?.mStakedBoredM + nftStakingInfo?.mStakedBoredMLock).toLocaleString(undefined, { maximumFractionDigits: 2 })}</p>
+                    <p>
+                      {(nftStakingInfo?.mStakedBoredM + nftStakingInfo?.mStakedBoredMLock).toLocaleString(undefined, { maximumFractionDigits: 2 })}
+                      <Tooltip 
+                        text = {
+                        <>
+                          <p>7,836,925.44 $BoredM - Unlockable now</p>
+                          <p>7,836,925.44 $BoredM - Unlocks the 10/11/2022 at 7:30 am</p>
+                        </>}
+                      />
+                    </p>
                     <p><small>≈ ${(boredmPrice * (nftStakingInfo?.mStakedBoredM + nftStakingInfo?.mStakedBoredMLock))}</small></p>
                   </span>
                 </li>
                 <li>
                   <span>
                     <h5>My Earned $ETH</h5>
-                    <p>{(nftStakingInfo?.mEarnedETH + nftStakingInfo?.mEarnedETHLock).toLocaleString(undefined, { maximumFractionDigits: 2 })}</p>
+                    <p>
+                      {(nftStakingInfo?.mEarnedETH + nftStakingInfo?.mEarnedETHLock).toLocaleString(undefined, { maximumFractionDigits: 2 })}
+                      <Tooltip 
+                        text = {
+                        <>
+                          <p>7,836,925.44 $BoredM - Unlockable now</p>
+                          <p>7,836,925.44 $BoredM - Unlocks the 10/11/2022 at 7:30 am</p>
+                        </>}
+                      />
+                    </p>
                     <p><small>≈ ${(ethPrice * (nftStakingInfo?.mEarnedETH + nftStakingInfo?.mEarnedETHLock)).toLocaleString(undefined, { maximumFractionDigits: 2 })}</small></p>
                   </span>
                 </li>
@@ -232,14 +268,32 @@ const Stake = () => {
                   <li>
                     <span>
                       <h5>Claimed $ETH</h5>
-                      <p>{(nftStakingInfo?.mClaimedETH + nftStakingInfo?.mClaimedETHLock).toLocaleString(undefined, { maximumFractionDigits: 2 })}</p>
+                      <p>
+                        {(nftStakingInfo?.mClaimedETH + nftStakingInfo?.mClaimedETHLock).toLocaleString(undefined, { maximumFractionDigits: 2 })}
+                        <Tooltip 
+                          text = {
+                          <>
+                            <p>7,836,925.44 $BoredM - Unlockable now</p>
+                            <p>7,836,925.44 $BoredM - Unlocks the 10/11/2022 at 7:30 am</p>
+                          </>}
+                        />
+                      </p>
                       <p><small>≈ ${(ethPrice * (nftStakingInfo?.mClaimedETH + nftStakingInfo?.mClaimedETHLock)).toLocaleString(undefined, { maximumFractionDigits: 2 })}</small></p>
                     </span>
                   </li>
                   <li>
                     <span>
                       <h5>Claimable $ETH</h5>
-                      <p>{(nftStakingInfo?.mClaimableETH + nftStakingInfo?.mClaimableETHLock).toLocaleString(undefined, { maximumFractionDigits: 2 })}</p>
+                      <p>
+                        {(nftStakingInfo?.mClaimableETH + nftStakingInfo?.mClaimableETHLock).toLocaleString(undefined, { maximumFractionDigits: 2 })}
+                        <Tooltip 
+                          text = {
+                          <>
+                            <p>7,836,925.44 $BoredM - Unlockable now</p>
+                            <p>7,836,925.44 $BoredM - Unlocks the 10/11/2022 at 7:30 am</p>
+                          </>}
+                        />
+                      </p>
                       <p><small>≈ ${(ethPrice * (nftStakingInfo?.mClaimableETH + nftStakingInfo?.mClaimableETHLock)).toLocaleString(undefined, { maximumFractionDigits: 2 })}</small></p>
                     </span>
                   </li>
