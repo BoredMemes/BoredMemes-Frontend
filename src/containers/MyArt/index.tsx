@@ -42,7 +42,6 @@ const MyArt = () => {
       emoticonAddr : account?.toLowerCase(),
       owner : account?.toLowerCase()
     }
-
     axios.get("/api/item", {params : paramsData})
       .then((res) => {
         console.log(res.data.items)
