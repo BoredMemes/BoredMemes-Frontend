@@ -37,6 +37,7 @@ const CommunityFeed = () => {
 
   const fetchItems = async () => {
     let paramsData = {
+      emoticonAddr : account?.toLowerCase()
     }
 
     axios.get("/api/item", {params : paramsData})

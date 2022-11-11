@@ -38,6 +38,7 @@ const Bookmarks = () => {
 
   const fetchItems = async () => {
     let paramsData = {
+      emoticonAddr : account?.toLowerCase(),
       bookmarks : account?.toLowerCase()
     }
 
@@ -51,12 +52,21 @@ const Bookmarks = () => {
       })
   }
 
-  const updateArts = (item) => {
-    const newArts = [];
-    for (const art of myArt){
-      if (art.tokenId !== item.tokenId)newArts.push(art);
+  const updateArts = (item, isBookMark) => {
+    let newArts = [];
+    if (isBookMark){
+      for (const art of myArt){
+        if (art.tokenId !== item.tokenId)newArts.push(art);
+      }
+    }else{
+      newArts = myArt.map((art, key) => {
+        if (art.tokenId === item.tokenId){
+          return item;
+        }
+        return art;
+      })
     }
-    setMyArt([...newArts]);
+    setMyArt(newArts);
   }
 
   useEffect(() => {

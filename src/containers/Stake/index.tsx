@@ -10,6 +10,7 @@ import { toast } from 'react-toastify';
 import { NFTStakingInfo } from 'utils/types';
 import axios from 'axios';
 import Tooltip from 'components/Widgets/Tooltip';
+import moment from 'moment';
 const Stake = () => {
   const classes = useStyles();
   const { loginStatus, chainId, account, library } = useContext(Web3WalletContext)
@@ -194,8 +195,8 @@ const Stake = () => {
                       <Tooltip 
                         text = {
                         <>
-                          <p>7,836,925.44 $BoredM - Unlockable now</p>
-                          <p>7,836,925.44 $BoredM - Unlocks the 10/11/2022 at 7:30 am</p>
+                          <p>{nftStakingInfo?.tDividETH} $ETH - Unlockable now</p>
+                          <p>{nftStakingInfo?.tDividETHLock} $ETH - Unlocks the {moment(nftStakingInfo.mTimestampLock * 1000).format("MM/DD/YYYY")} at {moment(nftStakingInfo.mTimestampLock * 1000).format("h:mmA")}</p>
                         </>}
                       />
                     </p>
@@ -212,8 +213,8 @@ const Stake = () => {
                     <Tooltip 
                         text = {
                         <>
-                          <p>7,836,925.44 $BoredM - Unlockable now</p>
-                          <p>7,836,925.44 $BoredM - Unlocks the 10/11/2022 at 7:30 am</p>
+                          <p>{nftStakingInfo?.tStakedBoredM} $BoredM - Unlockable now</p>
+                          <p>{nftStakingInfo?.tStakedBoredMLock} $BoredM - Unlocks the {moment(nftStakingInfo.mTimestampLock * 1000).format("MM/DD/YYYY")} at {moment(nftStakingInfo.mTimestampLock * 1000).format("h:mmA")}</p>
                         </>}
                       />
                       </p>
@@ -229,8 +230,8 @@ const Stake = () => {
                       <Tooltip 
                         text = {
                         <>
-                          <p>7,836,925.44 $BoredM - Unlockable now</p>
-                          <p>7,836,925.44 $BoredM - Unlocks the 10/11/2022 at 7:30 am</p>
+                          <p>{nftStakingInfo?.mStakedBoredM} $BoredM - Unlockable now</p>
+                          <p>{nftStakingInfo?.mStakedBoredMLock} $BoredM - Unlocks the {moment(nftStakingInfo.mTimestampLock * 1000).format("MM/DD/YYYY")} at {moment(nftStakingInfo.mTimestampLock * 1000).format("h:mmA")}</p>
                         </>}
                       />
                     </p>
@@ -245,8 +246,8 @@ const Stake = () => {
                       <Tooltip 
                         text = {
                         <>
-                          <p>7,836,925.44 $BoredM - Unlockable now</p>
-                          <p>7,836,925.44 $BoredM - Unlocks the 10/11/2022 at 7:30 am</p>
+                          <p>{nftStakingInfo?.mEarnedETH} $ETH - Unlockable now</p>
+                          <p>{nftStakingInfo?.mEarnedETHLock} $ETH - Unlocks the {moment(nftStakingInfo.mTimestampLock * 1000).format("MM/DD/YYYY")} at {moment(nftStakingInfo.mTimestampLock * 1000).format("h:mmA")}</p>
                         </>}
                       />
                     </p>
@@ -273,9 +274,9 @@ const Stake = () => {
                         <Tooltip 
                           text = {
                           <>
-                            <p>7,836,925.44 $BoredM - Unlockable now</p>
-                            <p>7,836,925.44 $BoredM - Unlocks the 10/11/2022 at 7:30 am</p>
-                          </>}
+                            <p>{nftStakingInfo?.mClaimedETH} $ETH - Unlockable now</p>
+                            <p>{nftStakingInfo?.mClaimedETHLock} $ETH - Unlocks the {moment(nftStakingInfo.mTimestampLock * 1000).format("MM/DD/YYYY")} at {moment(nftStakingInfo.mTimestampLock * 1000).format("h:mmA")}</p>
+                        </>}
                         />
                       </p>
                       <p><small>≈ ${(ethPrice * (nftStakingInfo?.mClaimedETH + nftStakingInfo?.mClaimedETHLock)).toLocaleString(undefined, { maximumFractionDigits: 2 })}</small></p>
@@ -289,9 +290,9 @@ const Stake = () => {
                         <Tooltip 
                           text = {
                           <>
-                            <p>7,836,925.44 $BoredM - Unlockable now</p>
-                            <p>7,836,925.44 $BoredM - Unlocks the 10/11/2022 at 7:30 am</p>
-                          </>}
+                            <p>{nftStakingInfo?.mClaimableETH} $ETH - Unlockable now</p>
+                            <p>{nftStakingInfo?.mClaimableETHLock} $ETH - Unlocks the {moment(nftStakingInfo.mTimestampLock * 1000).format("MM/DD/YYYY")} at {moment(nftStakingInfo.mTimestampLock * 1000).format("h:mmA")}</p>
+                        </>}
                         />
                       </p>
                       <p><small>≈ ${(ethPrice * (nftStakingInfo?.mClaimableETH + nftStakingInfo?.mClaimableETHLock)).toLocaleString(undefined, { maximumFractionDigits: 2 })}</small></p>

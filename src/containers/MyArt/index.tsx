@@ -39,6 +39,7 @@ const MyArt = () => {
 
   const fetchItems = async () => {
     let paramsData = {
+      emoticonAddr : account?.toLowerCase(),
       owner : account?.toLowerCase()
     }
 

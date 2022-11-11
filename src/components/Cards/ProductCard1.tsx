@@ -229,7 +229,7 @@ const PropertyCard1 = ({ item, onShow, updateArts }: PropsType) => {
     axios.post("/api/item/bookmark", paramsData)
       .then((res) => {
         console.log(res.data.item);
-        updateArts(res.data.item);
+        updateArts(res.data.item, true);
       }).catch((e) => {
         console.log(e);
       })
@@ -274,6 +274,26 @@ const PropertyCard1 = ({ item, onShow, updateArts }: PropsType) => {
     })
   }
 
+  const handleEmoticon = (emoticonId) => {
+    if (loginStatus){
+      let paramsData = {
+        address: account?.toLowerCase(),
+        tokenId: item?.tokenId,
+        collection: item?.itemCollection,
+        emoticonId: emoticonId
+      }
+      axios.post("/api/item/emoticon", paramsData)
+        .then((res) => {
+          if (res.data.message === "success"){
+            item.emoticonId = emoticonId;
+            updateArts(item, false);
+          }          
+        }).catch((e) => {
+          console.log(e);
+        })
+    }
+  }
+
   return (
     <div className={`${classes.productWrapper} card1`}>
       <div className="top" onClick={onShow}>
@@ -304,23 +324,23 @@ const PropertyCard1 = ({ item, onShow, updateArts }: PropsType) => {
             </div>
           </div>
 
-          {/* {(product?.commentType === 0 || emoticon === 0) &&
+          {item?.emoticonId === 0 &&
           <div className="smallBtn ml-3">
              <img src="/assets/icons/image 185.png" alt="" />
           </div>}
-          {(product?.commentType === 1 || emoticon === 1) &&
+          {item?.emoticonId === 1 &&
           <div className="smallBtn ml-3">
             <img src="/assets/icons/Grimacing Face.png" alt="" />
           </div>}
-          {(product?.commentType === 2 || emoticon === 2) &&
+          {item?.emoticonId === 2 &&
           <div className="smallBtn ml-3">
             <img src="/assets/icons/Star-Struck.png" alt="" />
           </div>}
-          {(product?.commentType === 3 || emoticon === 3) &&
+          {item?.emoticonId === 3 &&
           <div className="smallBtn ml-3">
            <img src="/assets/icons/Smiling Face with Heart-Eyes.png" alt="" />
           </div>}
-          */}
+         
           <div className="smallBtn ml-3" onClick={() => handleBookmark(item)}>
             {(item?.bookmarks && item?.bookmarks.includes(account?.toLowerCase())) ?
               <img src="/assets/icons/bookmark_full_icon.svg" alt="" /> :
@@ -330,16 +350,16 @@ const PropertyCard1 = ({ item, onShow, updateArts }: PropsType) => {
           <div className="smallBtn ml-3 dropdown">
             <img src="/assets/icons/face_icon.svg" alt="" />
             <div className="drodownMenu1">
-              <div className="menuItem" onClick={() => setEmoticon(0)}>
+              <div className="menuItem" onClick={() => handleEmoticon(0)}>
                 <img src="/assets/icons/image 185.png" alt="" />
               </div>
-              <div className="menuItem" onClick={() => setEmoticon(1)}>
+              <div className="menuItem" onClick={() => handleEmoticon(1)}>
                 <img src="/assets/icons/Grimacing Face.png" alt="" />
               </div>
-              <div className="menuItem" onClick={() => setEmoticon(2)}>
+              <div className="menuItem" onClick={() => handleEmoticon(2)}>
                 <img src="/assets/icons/Star-Struck.png" alt="" />
               </div>
-              <div className="menuItem" onClick={() => setEmoticon(3)}>
+              <div className="menuItem" onClick={() => handleEmoticon(3)}>
                 <img src="/assets/icons/Smiling Face with Heart-Eyes.png" alt="" />
               </div>
             </div>
