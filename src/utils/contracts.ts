@@ -43,8 +43,8 @@ export async function getBalanceOfBNB(library, account) {
   }
 }
 
-export async function getMintInfo(provider) {
-  const nftContract = getContractObj("BoredMNFT", process.env.REACT_APP_NETWORK_ID, provider);
+export async function getMintInfo(chainId, provider) {
+  const nftContract = getContractObj("BoredMNFT", chainId, provider);
   try {
     const packPrices = await Promise.all([
       nftContract.SILVER_PACK_PRICE(),
@@ -64,8 +64,8 @@ export async function getMintInfo(provider) {
   }
 }
 
-export async function onMintArtItem(provider, reqId, packId, packPrice) {
-  const nftContract = getContractObj("BoredMNFT", process.env.REACT_APP_NETWORK_ID, provider);
+export async function onMintArtItem(chainId, provider, reqId, packId, packPrice) {
+  const nftContract = getContractObj("BoredMNFT", chainId, provider);
   try {
     const tx =
       packId == 0 ? await nftContract.mintSilverPack(reqId, { value: ethers.utils.parseEther(packPrice) }) :
@@ -111,7 +111,7 @@ export async function getStakingInfo(account, chainId, provider) {
   try {
     const BoredMContract = getContractObj('BoredMToken', chainId, provider);
     const BoredMDecimals = await BoredMContract.decimals();
-    const stakingContract = getContractObj("BoredMStaking", process.env.REACT_APP_NETWORK_ID, provider);
+    const stakingContract = getContractObj("BoredMStaking", chainId, provider);
     const [tDividETH, tStakedBoredM, myStakingInfo, tDividETHLock, tStakedBoredMLock, mPercentFree, mPercentLock] = await Promise.all([
       stakingContract.totalDividendsFree(),
       stakingContract.totalSharesFree(),

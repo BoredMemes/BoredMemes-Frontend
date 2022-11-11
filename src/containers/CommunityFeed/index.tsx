@@ -28,23 +28,28 @@ const CommunityFeed = () => {
   const [filter, setFilter] = useState('new');
   const [searchStr, setSearchStr] = useState('');
   const [myArt, setMyArt] = useState<any[]>([]);
-  
+  const [isLoaded, setIsLoaded] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
   useEffect(() => {
-    if (loginStatus){
+    if (!isLoaded && !isLoading){
+      setIsLoading(true)
       fetchItems();
     }
-  }, [loginStatus])
+  }, [isLoaded])
 
   const fetchItems = async () => {
     let paramsData = {
-      emoticonAddr : account?.toLowerCase()
+      emoticonAddr : loginStatus ? account?.toLowerCase() : undefined
     }
-
     axios.get("/api/item", {params : paramsData})
       .then((res) => {
         console.log(res.data.items)
         setMyArt(res.data.items);
+        setIsLoaded(true);
+        setIsLoading(false);
       }).catch((e) => {
+        setIsLoaded(false);
+        setIsLoading(false);
         console.log(e.message);
         toast.error(e.message);
       })

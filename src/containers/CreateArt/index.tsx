@@ -98,7 +98,7 @@ const cardData = [
   },
 ];
 const CreateArt = () => {
-  const { loginStatus, account, library } = useContext(Web3WalletContext)
+  const { loginStatus, chainId, account, library } = useContext(Web3WalletContext)
   const { user } = useAuthState();
   const classes = useStyles();
   const isTabletOrMobile = useMediaQuery({ query: 'screen and (max-width: 640px) and (orientation:portrait)' })
@@ -127,7 +127,7 @@ const CreateArt = () => {
   }, [loginStatus])
 
   const getMintingInfo = async () => {
-    const _packPrices = await getMintInfo(library.getSigner());
+    const _packPrices = await getMintInfo(chainId, library.getSigner());
     setPackPrices(_packPrices);
   }
 
@@ -163,7 +163,7 @@ const CreateArt = () => {
         .then(async (res) => {          
           if (res.data.message === "success"){
             console.log("Request ID : ", res.data.reqId);
-            const isMinted = await onMintArtItem(library.getSigner(), res.data.reqId, packID, packPrices[packID]);
+            const isMinted = await onMintArtItem(chainId, library.getSigner(), res.data.reqId, packID, packPrices[packID]);
             if (isMinted){
               setResultModal(true)
               toast.success("Your Art is requested successfully");
