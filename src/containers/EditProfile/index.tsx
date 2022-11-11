@@ -395,19 +395,19 @@ const EditProfile = () => {
 
               </li>
               <li>
-                <a href="https://dextools.com/" className="Dextools" target="_blank" rel="noreferrer" style={{ background: `#05A3C9` }}>
+                <a href="https://www.dextools.io/app/en/ether/pair-explorer/0x1ee2a47ec688a1b56afc9c0b134d9c555851cb4a" className="Dextools" target="_blank" rel="noreferrer" style={{ background: `#05A3C9` }}>
                   Buy on Dextools
                   <img src="/assets/icons/dxtool_icon.svg" alt="" />
                 </a>
               </li>
               <li>
-                <a href="https://uniswap.comm/" className="Uniswap" target="_blank" rel="noreferrer" style={{ background: `#D63371` }}>
+                <a href="https://app.uniswap.org/#/swap?outputCurrency=0x445d711C8974d80643745A4666803D255a589390" className="Uniswap" target="_blank" rel="noreferrer" style={{ background: `#D63371` }}>
                   Buy on Uniswap
                   <img src="/assets/icons/uniswap_icon.svg" alt="" />
                 </a>
               </li>
               <li>
-                <a href="https://1inch.comm/" className="1inch" target="_blank" rel="noreferrer" style={{ background: `#101A2E` }}>
+                <a href="https://app.1inch.io/#/1/unified/swap/ETH/BoredM" className="1inch" target="_blank" rel="noreferrer" style={{ background: `#101A2E` }}>
                   Buy on 1inch
                   <img src="/assets/icons/linch_icon.svg" alt="" />
                 </a>

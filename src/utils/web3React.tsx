@@ -7,7 +7,6 @@ import { WalletLinkConnector } from "@web3-react/walletlink-connector";
 const POLLING_INTERVAL = 12000;
 const rpcUrl = getNodeUrl();
 const chainId = parseInt(process.env.REACT_APP_NETWORK_ID, 10);
-const PORTIS_ID = process.env.REACT_APP_PORTIS_ID;
 
 export enum ConnectorNames {
   Injected = "Injected",

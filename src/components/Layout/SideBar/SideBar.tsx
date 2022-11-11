@@ -64,13 +64,13 @@ export default function SideBar({ menuOpen, setMenuOpen }: MenuType) {
           <button onClick={() => setTheme("dark")} className = {`${theme === 'dark'?"activeThemeBtn themeBtn":"themeBtn"}`}><img src="/assets/icons/dark_icon.svg" alt="" /> Dark</button>
         </div>
         <div className="socialLinks">
-          <a href="http://twitter.gg/" className = "twitter" target="_blank"rel="noreferrer">
+          <a href="http://twitter.com/boredmemesAi" className = "twitter" target="_blank"rel="noreferrer">
             <i className="fab fa-twitter"></i>
           </a> 
-          <a href="https://t.m/" className = "telegram" target="_blank"rel="noreferrer">
+          <a href="https://t.me/BoredMemesEntryPortal" className = "telegram" target="_blank"rel="noreferrer">
             <i className="fab fa-telegram"> </i>
           </a> 
-          <a href="https://medium.com/" className = "medium" target="_blank"rel="noreferrer">
+          <a href="https://f1af1y.medium.com/bored-memes-boredm-fad095f74b97" className = "medium" target="_blank"rel="noreferrer">
           <i className="fab fa-medium-m"></i>
           </a> 
         </div>

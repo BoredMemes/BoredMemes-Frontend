@@ -212,7 +212,7 @@ const CreateArt = () => {
     <>
       <div className={`${classes.root} mainContainer`}>
         <div className={classes.top}>
-          <h1>BoredM Miner</h1>
+          <h1>Create Art</h1>
         </div>
         <div className={classes.content}>
           <div className={`${classes.step} step`}>

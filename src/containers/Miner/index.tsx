@@ -8,13 +8,18 @@ import { toast } from 'react-toastify';
 import { ethers } from 'ethers';
 import { getBalanceOfBNB, getBNBStakingInfo, onInvest, onMyBuyShares, onSellShares } from 'utils/contracts';
 import { BNBStakingInfo } from 'utils/types';
+import axios from 'axios';
 const Miner = () => {
   const classes = useStyles();
   const { loginStatus, chainId, account, library } = useContext(Web3WalletContext)
 
   const [minerList, setMinerList] = useState<number[]>([0]);
   const onAddMiner = () => {
-    setMinerList(oldArray => [...oldArray, 0]);
+    let alink = document.createElement('a');
+    alink.href = "https://forms.gle/AajAubbTCXCxbRvZ8";
+    alink.setAttribute('target', '_blank');
+    alink.click();
+    //setMinerList(oldArray => [...oldArray, 0]);
   }
 
   const [boredMExpand, setBoredMExpand] = useState(false);
@@ -38,9 +43,22 @@ const Miner = () => {
   const [bnbBalance, setBNBBalance ] = useState(0);
   useEffect(() => {
     if (loginStatus) {
+      getPrices();
       onBNBStakingInfo();
     }
   }, [loginStatus, account, chainId, library])
+  
+  const [ethPrice, setEthPrice] = useState(0);
+  const [boredmPrice, setBoredMPrice] = useState(0);
+  const getPrices = async () => {
+    axios.get("/api/getrates")
+      .then((res) => {
+        setEthPrice(res.data.eth);
+        setBoredMPrice(res.data.boredm)
+      }).catch((err) => {
+        console.log(err);
+      })
+  }
 
   const onBNBStakingInfo = async () => {
     const _info = await getBNBStakingInfo(account, chainId, library);
@@ -306,7 +324,7 @@ const Miner = () => {
             <ul>
               <li>
                 <div className="balance" style={{ backgroundImage: `url('/assets/imgs/Rectangle 29.png')` }}>
-                  <h2>$BoredM </h2> <img src="/assets/icons/eth_icon_01.svg" alt="" /> <h2>0.0₉7036 ETH</h2>
+                  <h2>$BoredM </h2> <img src="/assets/icons/eth_icon_01.svg" alt="" /> <h2>{boredmPrice} ETH</h2>
                 </div>
 
               </li>

@@ -58,7 +58,11 @@ const Stake = () => {
 
   const [minerList, setMinerList] = useState<number[]>([0]);
   const onAddMiner = () => {
-    setMinerList(oldArray => [...oldArray, 0]);
+    let alink = document.createElement('a');
+    alink.href = "https://forms.gle/AajAubbTCXCxbRvZ8";
+    alink.setAttribute('target', '_blank');
+    alink.click();
+    //setMinerList(oldArray => [...oldArray, 0]);
   }
 
   const [boredMExpand, setBoredMExpand] = useState(false);
@@ -192,13 +196,13 @@ const Stake = () => {
                     <h5>Total Dividend $ETH</h5>
                     <p>
                       {(nftStakingInfo?.tDividETH + nftStakingInfo?.tDividETHLock).toLocaleString()} 
-                      <Tooltip 
+                      {/* <Tooltip 
                         text = {
                         <>
                           <p>{nftStakingInfo?.tDividETH} $ETH - Unlockable now</p>
                           <p>{nftStakingInfo?.tDividETHLock} $ETH - Unlocks the {moment(nftStakingInfo.mTimestampLock * 1000).format("MM/DD/YYYY")} at {moment(nftStakingInfo.mTimestampLock * 1000).format("h:mmA")}</p>
                         </>}
-                      />
+                      /> */}
                     </p>
                     <p><small>≈ ${(ethPrice * (nftStakingInfo?.tDividETH + nftStakingInfo?.tDividETHLock)).toLocaleString(undefined, { maximumFractionDigits: 2 })}</small></p>
                   </span>
@@ -213,8 +217,8 @@ const Stake = () => {
                     <Tooltip 
                         text = {
                         <>
-                          <p>{nftStakingInfo?.tStakedBoredM} $BoredM - Unlockable now</p>
-                          <p>{nftStakingInfo?.tStakedBoredMLock} $BoredM - Unlocks the {moment(nftStakingInfo.mTimestampLock * 1000).format("MM/DD/YYYY")} at {moment(nftStakingInfo.mTimestampLock * 1000).format("h:mmA")}</p>
+                          <p>{nftStakingInfo?.tStakedBoredM} $BoredM - Free</p>
+                          <p>{nftStakingInfo?.tStakedBoredMLock} $BoredM - Lock</p>
                         </>}
                       />
                       </p>
@@ -231,7 +235,7 @@ const Stake = () => {
                         text = {
                         <>
                           <p>{nftStakingInfo?.mStakedBoredM} $BoredM - Unlockable now</p>
-                          <p>{nftStakingInfo?.mStakedBoredMLock} $BoredM - Unlocks the {moment(nftStakingInfo.mTimestampLock * 1000).format("MM/DD/YYYY")} at {moment(nftStakingInfo.mTimestampLock * 1000).format("h:mmA")}</p>
+                          <p>{nftStakingInfo?.mStakedBoredMLock} $BoredM - Unlocks the {moment((nftStakingInfo.mTimestampLock + 30 * 24 * 3600) * 1000).format("MM/DD/YYYY")} at {moment(nftStakingInfo.mTimestampLock * 1000).format("h:mmA")}</p>
                         </>}
                       />
                     </p>
@@ -271,13 +275,13 @@ const Stake = () => {
                       <h5>Claimed $ETH</h5>
                       <p>
                         {(nftStakingInfo?.mClaimedETH + nftStakingInfo?.mClaimedETHLock).toLocaleString(undefined, { maximumFractionDigits: 2 })}
-                        <Tooltip 
+                        {/* <Tooltip 
                           text = {
                           <>
                             <p>{nftStakingInfo?.mClaimedETH} $ETH - Unlockable now</p>
                             <p>{nftStakingInfo?.mClaimedETHLock} $ETH - Unlocks the {moment(nftStakingInfo.mTimestampLock * 1000).format("MM/DD/YYYY")} at {moment(nftStakingInfo.mTimestampLock * 1000).format("h:mmA")}</p>
                         </>}
-                        />
+                        /> */}
                       </p>
                       <p><small>≈ ${(ethPrice * (nftStakingInfo?.mClaimedETH + nftStakingInfo?.mClaimedETHLock)).toLocaleString(undefined, { maximumFractionDigits: 2 })}</small></p>
                     </span>
@@ -442,7 +446,7 @@ const Stake = () => {
             <ul>
               <li>
                 <div className="balance" style={{ backgroundImage: `url('/assets/imgs/Rectangle 29.png')` }}>
-                  <h2>$BoredM </h2> <img src="/assets/icons/eth_icon_01.svg" alt="" /> <h2>0.0₉7036 ETH</h2>
+                  <h2>$BoredM </h2> <img src="/assets/icons/eth_icon_01.svg" alt="" /> <h2>{boredmPrice} ETH</h2>
                 </div>
 
               </li>
@@ -545,7 +549,7 @@ const Stake = () => {
 
               <div className="warning">
                 <img src="/assets/icons/warning_icon.svg" alt="" />
-                <p>1% fee for withdrawing in the next 48h -72h. Depositing or reinvesting resets the time. 7% tax is applied for staking/unstaking. </p>
+                <p>1% fee for withdrawing in the next 48h -72h. Depositing or reinvesting resets the time. 7% tax is applied for staking/unstaking. Staking with lock resets lock timer.</p>
               </div>
             </div>
             <div className={classes.modalBtns}>
