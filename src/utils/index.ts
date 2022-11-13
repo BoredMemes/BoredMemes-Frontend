@@ -35,7 +35,7 @@ export const CONTRACTS_BY_NETWORK = {
   },
   [Networks.TestNet]: {
     BoredMNFT: {
-      address: '0x5D9c49a55492F2b6e71EEdDC9F49460B8c4Aa6d8',
+      address: '0xc8Ce162eF2B15092Cf6eAfC22459CD2637207E7f',
       abi: BoredMNFTABI,
     },
     BoredMMarket: {

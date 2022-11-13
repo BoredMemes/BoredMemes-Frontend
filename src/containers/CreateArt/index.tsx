@@ -97,6 +97,8 @@ const cardData = [
     count: 5,
   },
 ];
+
+const notifyInfo = ["", "twitter", "telegram", "email"];
 const CreateArt = () => {
   const { loginStatus, chainId, account, library } = useContext(Web3WalletContext)
   const { user } = useAuthState();
@@ -115,15 +117,13 @@ const CreateArt = () => {
   const [ratio, setRatio] = useState(0);
   const [ratioCard, setRatioCard] = useState('up');
   const [packID, setPackID] = useState(0);
-  const [telegramChecked, setTelegramChecked] = useState(false);
-  const [twitterChecked, setTwitterChecked] = useState(false);
 
   const [processingModal, setProcessingModal] = useState(false);
   const [resultModal, setResultModal] = useState(false);
 
-  const [ packPrices, setPackPrices ] = useState([]);
+  const [packPrices, setPackPrices] = useState([]);
   useEffect(() => {
-    if (loginStatus)getMintingInfo();
+    if (loginStatus) getMintingInfo();
   }, [loginStatus])
 
   const getMintingInfo = async () => {
@@ -142,43 +142,42 @@ const CreateArt = () => {
       return;
     }
 
-    if (twitterChecked && telegramChecked) {
+    if (user?.is_telegram_notify && user?.is_twitter_notify && user?.is_email_notify) {
       return toast.error("One of both is recommended.");
     }
     setProcessingModal(true)
-    try{
+    try {
       const timestamp = Math.floor(new Date().getTime() / 1000);
       const msg = await library.getSigner().signMessage(arrayify(hashMessage(account?.toLowerCase() + "-" + timestamp)));
       let paramsData = {
-        address : account?.toLowerCase(),
-        timestamp : timestamp,
+        address: account?.toLowerCase(),
+        timestamp: timestamp,
         message: msg,
-        description : description,
-        ratio : artRatio,
-        packId : packID,
-        isTwitterNotify : twitterChecked,
-        isTelegramNotify: telegramChecked
+        description: description,
+        ratio: artRatio,
+        packId: packID,
+        notifyId: user?.notifyId,
       }
       axios.post("/api/addart", paramsData)
-        .then(async (res) => {          
-          if (res.data.message === "success"){
+        .then(async (res) => {
+          if (res.data.message === "success") {
             console.log("Request ID : ", res.data.reqId);
             const isMinted = await onMintArtItem(chainId, library.getSigner(), res.data.reqId, packID, packPrices[packID]);
-            if (isMinted){
+            if (isMinted) {
               setResultModal(true)
               toast.success("Your Art is requested successfully");
             }
             setProcessingModal(false);
-          }else toast.error("Failed");
+          } else toast.error("Failed");
         }).catch((e) => {
           setProcessingModal(false);
           toast.error(e.message);
         })
-    }catch(e){
-      console.log("Sign Message Error : " , e);
+    } catch (e) {
+      console.log("Sign Message Error : ", e);
       setProcessingModal(false);
     }
-    
+
     // setSigned(msg && msg !== "")
     // setSignMsg(msg);
     // setTimestamp(timestamp);
@@ -208,6 +207,11 @@ const CreateArt = () => {
     setRatio(id)
     setRatioCard(card)
   }
+
+  const onChangeSetting = () => {
+    history.push('/edit_profile');
+  }
+
   return (
     <>
       <div className={`${classes.root} mainContainer`}>
@@ -323,13 +327,20 @@ const CreateArt = () => {
 
           <div className={`${classes.step} step`}>
             <div className={classes.stepLeft}>
-              <div className="circle" style={{ background: (twitterChecked || telegramChecked) ? '#F8B4E4' : '#d4d4d4' }}>4</div>
+              <div className="circle" style={{ background: user?.notifyId > 0 ? '#F8B4E4' : '#d4d4d4' }}>4</div>
               <h3>Your details</h3>
-              <p>Notification will be sent to your twitter or telegram.</p>
+              <p>Notification will be sent to your {notifyInfo[user?.notifyId]}.</p>
             </div>
             <div className={classes.stepContent}>
               <div className="row">
+                <FilledButton disabled={false} label={'Change Notification Preference'} color='secondary' handleClick={() => onChangeSetting()} />
+                <FilledButton disabled={processingModal} label={'Get Art'} handleClick={onGetArt} />
+              </div>
+
+              {/* <div className="row">
+              
                 <div className="input-div">
+                
                   <div className={`${classes.myCheck} myCheck`}>
                     <CheckBox value={user?.is_twitter_notify} onChange={setTwitterChecked} />
                     <h3>Twitter Notification</h3>
@@ -342,8 +353,8 @@ const CreateArt = () => {
                   </div>
                   <ErrorAlert title="One of both is recommended. Add username in user settings." show={twitterChecked && telegramChecked} alertType='warning' />
                 </div>
-                <FilledButton disabled={processingModal} label={'Get Art'} handleClick={onGetArt} />
-              </div>
+                
+              </div> */}
             </div>
           </div>
           <p className={classes.footText}>All Image Descriptions Are Verified By An Experienced Artist To Provide Best Result Possible.</p>

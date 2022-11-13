@@ -128,7 +128,7 @@ export const useStyles = makeStyles(theme => ({
   stepContent: {
     width: 'calc(100% - 250px)',
     display: 'flex',
-    // justifyContent: 'center',
+    justifyContent: 'center',
     flexDirection: 'column',
     alignItems: 'flex-start',
     paddingLeft: theme.spacing(2),
@@ -357,7 +357,7 @@ export const useStyles = makeStyles(theme => ({
         width : 'calc(100% - 250px)',
         display: 'flex',
         alignItems: 'center',
-        justifyContent: 'center',
+        justifyContent: 'space-between;',
         flexDirection: 'row',
         flexWrap : 'wrap',
         position : 'relative',
@@ -374,12 +374,9 @@ export const useStyles = makeStyles(theme => ({
         minWidth : 200,
         [theme.breakpoints.down('xs')]: {
           marginTop : 20,
-        },
-        '&:hover':{
-          background : '#F400F599',
         }
       },
-    }
+    },
   },
   footText:{
     [theme.breakpoints.down('xs')]: {

@@ -228,14 +228,14 @@ const Stake = () => {
 
                 <li>
                   <span>
-                    <h5>My staked $BoredM</h5>
+                    <h5>My Staked $BoredM</h5>
                     <p>
                       {(nftStakingInfo?.mStakedBoredM + nftStakingInfo?.mStakedBoredMLock).toLocaleString(undefined, { maximumFractionDigits: 2 })}
                       <Tooltip 
                         text = {
                         <>
                           <p>{nftStakingInfo?.mStakedBoredM} $BoredM - Unlockable now</p>
-                          <p>{nftStakingInfo?.mStakedBoredMLock} $BoredM - Unlocks the {moment((nftStakingInfo.mTimestampLock + 30 * 24 * 3600) * 1000).format("MM/DD/YYYY")} at {moment(nftStakingInfo.mTimestampLock * 1000).format("h:mmA")}</p>
+                          <p>{nftStakingInfo?.mStakedBoredMLock} $BoredM - Unlocks the {moment((nftStakingInfo.mTimestampLock + 30 * 24 * 3600) * 1000).format("MMM DD YYYY")} at {moment(nftStakingInfo.mTimestampLock * 1000).format("h:mmA")}</p>
                         </>}
                       />
                     </p>
@@ -250,8 +250,8 @@ const Stake = () => {
                       <Tooltip 
                         text = {
                         <>
-                          <p>{nftStakingInfo?.mEarnedETH} $ETH - Unlockable now</p>
-                          <p>{nftStakingInfo?.mEarnedETHLock} $ETH - Unlocks the {moment(nftStakingInfo.mTimestampLock * 1000).format("MM/DD/YYYY")} at {moment(nftStakingInfo.mTimestampLock * 1000).format("h:mmA")}</p>
+                          <p>{nftStakingInfo?.mEarnedETH} $ETH - Free</p>
+                          <p>{nftStakingInfo?.mEarnedETHLock} $ETH - Lock</p>
                         </>}
                       />
                     </p>
@@ -291,13 +291,13 @@ const Stake = () => {
                       <h5>Claimable $ETH</h5>
                       <p>
                         {(nftStakingInfo?.mClaimableETH + nftStakingInfo?.mClaimableETHLock).toLocaleString(undefined, { maximumFractionDigits: 2 })}
-                        <Tooltip 
+                        {/* <Tooltip 
                           text = {
                           <>
                             <p>{nftStakingInfo?.mClaimableETH} $ETH - Unlockable now</p>
                             <p>{nftStakingInfo?.mClaimableETHLock} $ETH - Unlocks the {moment(nftStakingInfo.mTimestampLock * 1000).format("MM/DD/YYYY")} at {moment(nftStakingInfo.mTimestampLock * 1000).format("h:mmA")}</p>
                         </>}
-                        />
+                        /> */}
                       </p>
                       <p><small>≈ ${(ethPrice * (nftStakingInfo?.mClaimableETH + nftStakingInfo?.mClaimableETHLock)).toLocaleString(undefined, { maximumFractionDigits: 2 })}</small></p>
                     </span>

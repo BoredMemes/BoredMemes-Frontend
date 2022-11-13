@@ -21,9 +21,10 @@ const EditProfile = () => {
   const { user } = useAuthState();
   const classes = useStyles();
 
-  const [isChanged, setChanged] = useState(false);
   const [telegramChecked, setTelegramChecked] = useState(false);
   const [twitterChecked, setTwitterChecked] = useState(false);
+  const [emailChecked, setEmailChecked] = useState(false);
+  const [notifyId, setNotifyId] = useState(0);
 
   const [formSubmit, setFormSubmit] = useState(false);
   const [nftAsset, setNFTAsset] = useState(undefined);
@@ -33,6 +34,7 @@ const EditProfile = () => {
   const [description, setNFTDescription] = useState("");
   const [twitter, setTwitter] = useState("");
   const [telegram, setTelegram] = useState("");
+  const [email, setEmail] = useState("");
 
   const [signModal, setSignModal] = useState(false);
 
@@ -79,8 +81,8 @@ const EditProfile = () => {
       return;
     }
     if (userName === '' && user?.username == '')return;
-    if (twitterChecked && telegramChecked)return;
-
+    if (((twitterChecked ? 1 : 0) + (telegramChecked ? 1 : 0) + (emailChecked ? 1 :0)) > 1)return;
+    setNotifyId(twitterChecked ? 1 : telegramChecked ? 2 : 3);
     setSignModal(true)
     const timestamp = Math.floor(new Date().getTime() / 1000);
     const msg = await library.getSigner().signMessage(arrayify(hashMessage(account?.toLowerCase() + "-" + timestamp)));
@@ -100,7 +102,6 @@ const EditProfile = () => {
     if (!signMsg && !curTimestamp) return;
 
     let formData = new FormData();
-    console.log(nftAsset);
     if (nftAsset !== undefined)formData.append('file', nftAsset);
     else formData.append('logo_url', user?.logo_url);
     formData.append("address", account?.toLowerCase());
@@ -111,16 +112,14 @@ const EditProfile = () => {
     formData.append("description", description);
     formData.append("twitter", twitter);
     formData.append("telegram", telegram);
-    formData.append("telegramChecked", telegramChecked.toString());
-    formData.append("twitterChecked", twitterChecked.toString());
-    console.log(formData);
+    formData.append("email", email);
+    formData.append("notifyId", notifyId.toString());
     axios.post("/api/user/update", formData, {
       headers: {
         "Content-Type" : "multipart/form-data",
       }
     })
       .then((res) => {
-        console.log(res.data);
         closeProfile();
         if (res.data.message === "success"){
           toast.success("Saved Successfully.")
@@ -284,7 +283,7 @@ const EditProfile = () => {
                   startIcon={"@"}
                   endIcon={<i className="fab fa-twitter"></i>}
                   label={<> <span></span> <span>Recommended</span></>}
-                  placeholder={'@Username'}
+                  placeholder={'Twitter'}
                   value={user?.social_twitter_id}
                   onChangeData={val => {
                     setTwitter(val);
@@ -298,10 +297,24 @@ const EditProfile = () => {
                   wrapperClass={classes.formWrapper}
                   startIcon={"@"}
                   endIcon={<i className="fab fa-telegram"></i>}
-                  placeholder={'@Username'}
+                  placeholder={'Telegram'}
                   value={user?.social_telegram_id}
                   onChangeData={val => {
                     setTelegram(val);
+                  }}
+                />
+                <TextInput
+                  name="email"
+                  disabled={!loginStatus}
+                  className={classes.myInput}
+                  error={formSubmit && !email}
+                  wrapperClass={classes.formWrapper}
+                  startIcon={"@"}
+                  endIcon={<i className="fa fa-envelope"></i>}
+                  placeholder={'Email'}
+                  value={user?.social_email}
+                  onChangeData={val => {
+                    setEmail(val);
                   }}
                 />
               </Grid>
@@ -318,20 +331,27 @@ const EditProfile = () => {
               <Grid item md={8} xs={12}>
                 <h3 className={classes.label}><span></span> <span>Recommended</span></h3>
                 <div className={`${classes.myCheck} myCheck`}>
-                  <CheckBox value={user?.is_twitter_notify} onChange={(checked) => {
+                  <CheckBox value={user?.notifyId === 1} onChange={(checked) => {
                     setTwitterChecked(checked);
                   }} />
                   <h3>Twitter Notification</h3>
                   <i className="fab fa-twitter"></i>
                 </div>
                 <div className={`${classes.myCheck} myCheck`}>
-                  <CheckBox value={user?.is_telegram_notify} onChange={(checked) => {
+                  <CheckBox value={user?.notifyId === 2} onChange={(checked) => {
                     setTelegramChecked(checked);
                   }} />
                   <h3>Telegram Notification</h3>
                   <i className="fab fa-telegram"></i>
                 </div>
-                <ErrorAlert title="One of both is recommanded." show={twitterChecked && telegramChecked} alertType='warning' />
+                <div className={`${classes.myCheck} myCheck`}>
+                  <CheckBox value={user?.notifyId === 3} onChange={(checked) => {
+                    setEmailChecked(checked);
+                  }} />
+                  <h3>Email Notification</h3>
+                  <i className="fa fa-envelope"></i>
+                </div>
+                <ErrorAlert title="One of 3 is recommanded." show={((twitterChecked ? 1 : 0) + (telegramChecked ? 1 : 0) + (emailChecked ? 1 :0)) > 1 } alertType='warning' />
               </Grid>
             </Grid>
 

@@ -107,6 +107,12 @@ export const useStyles = makeStyles(theme => ({
       position : 'absolute',
       right : 15,
     },
+    '& .fa': {
+      color : '#1EA1F2',
+      fontSize : 25,
+      position : 'absolute',
+      right : 15,
+    },
   },
   right: {
     width: '280px',
