@@ -84,7 +84,7 @@ export const networks = {
 
 //export const currentNetwork = process.env.REACT_APP_BSC_NETWORK_ID : process.env.REACT_APP_ETH_NETWORK_ID;
 export function getCurrentNetwork(){
-  return window.localStorage.getItem(chainIdLocalStorageKey) || process.env.REACT_APP_BSC_NETWORK_ID;
+  return window.localStorage.getItem(chainIdLocalStorageKey) || process.env.REACT_APP_ETH_NETWORK_ID;
 }
 
 export const baseApiUrl = process.env.REACT_APP_API_URL;

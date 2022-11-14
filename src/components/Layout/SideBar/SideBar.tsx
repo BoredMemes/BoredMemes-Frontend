@@ -23,7 +23,7 @@ export default function SideBar({ menuOpen, setMenuOpen }: MenuType) {
   const { theme, setTheme } = useContext(ThemeContext)
   const onChangeRoute = (route) => {
     history.push(route);
-    const _chainId = route === "" ? process.env.REACT_APP_BSC_NETWORK_ID : process.env.REACT_APP_ETH_NETWORK_ID;
+    const _chainId = route === "miner" ? process.env.REACT_APP_BSC_NETWORK_ID : process.env.REACT_APP_ETH_NETWORK_ID;
     if (getCurrentNetwork() !== _chainId){
       switchNetwork();
       window.location.reload();
@@ -32,7 +32,7 @@ export default function SideBar({ menuOpen, setMenuOpen }: MenuType) {
   
   //switchNetwork();
   useEffect(() => {
-    window.localStorage.setItem(chainIdLocalStorageKey, path === "miner" || path === "" ? process.env.REACT_APP_BSC_NETWORK_ID : process.env.REACT_APP_ETH_NETWORK_ID);
+    window.localStorage.setItem(chainIdLocalStorageKey, path === "miner" ? process.env.REACT_APP_BSC_NETWORK_ID : process.env.REACT_APP_ETH_NETWORK_ID);
     switchNetwork();
   }, [path])
 
@@ -59,18 +59,18 @@ export default function SideBar({ menuOpen, setMenuOpen }: MenuType) {
 
         <h3>Rewards</h3>
         <ul>
-          <li className={path === '' ? 'selected' : ''}>
-            <div onClick={() => onChangeRoute("")}><img src="/assets/icons/miner_icon.svg" alt="" /> Miner</div>
+          <li className={path === 'miner' ? 'selected' : ''}>
+            <div onClick={() => onChangeRoute("miner")}><img src="/assets/icons/miner_icon.svg" alt="" /> Miner</div>
           </li>
-          <li className={path.indexOf('stake') >= 0 ? 'selected' : ''}>
-            <div onClick={() => onChangeRoute("stake")}><img src="/assets/icons/stake_icon.svg" alt="" /> Stake</div>
+          <li className={path === '' ? 'selected' : ''}>
+            <div onClick={() => onChangeRoute("")}><img src="/assets/icons/stake_icon.svg" alt="" /> Stake</div>
           </li>
         </ul>
 
       </div>
       <div className="sideFooter" onClick={() => setMenuOpen(false)}>
         <ul>
-          <li className={path.indexOf('settings') >= 0 ? 'selected' : ''}>
+          <li className={path.indexOf('edit_profile') >= 0 ? 'selected' : ''}>
             <div onClick={() => onChangeRoute("edit_profile")}><img src="/assets/icons/setting_icon.svg" alt="" /> Settings</div>
           </li>
         </ul>

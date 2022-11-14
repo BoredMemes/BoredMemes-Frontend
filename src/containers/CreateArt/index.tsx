@@ -206,7 +206,7 @@ const CreateArt = () => {
 
   const onGotoMyArt = () => {
     setResultModal(false)
-    history.push('/')
+    history.push('/my_art')
   }
 
   const onGotoCommunityFeed = () => {
@@ -346,7 +346,7 @@ const CreateArt = () => {
             </div>
             <div className={classes.stepContent}>
               <div className="row">
-                <FilledButton disabled={false} label={'Notification Preference'} color='primary' handleClick={() => onChangeSetting()} />
+                <FilledButton disabled={false} label={'Notification Preference'} color='grey' handleClick={() => onChangeSetting()} />
                 <FilledButton disabled={processingModal} label={'Get Art'} handleClick={onGetArt} />
               </div>
 
