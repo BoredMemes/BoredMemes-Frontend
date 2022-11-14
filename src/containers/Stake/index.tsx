@@ -451,7 +451,7 @@ const Stake = () => {
                 <p><small>Your total rewards</small></p>
               </li>
               <li>
-                <h5>{(nftStakingInfo?.mEarnedETH + nftStakingInfo?.mEarnedETHLock).toLocaleString(undefined, { maximumFractionDigits: 7 })} <span>ETH</span></h5>
+                <h5>{(nftStakingInfo?.mEarnedETH + nftStakingInfo?.mEarnedETHLock).toLocaleString(undefined, { maximumFractionDigits: 2 })} <span>ETH</span></h5>
               </li>
             </ul>
 

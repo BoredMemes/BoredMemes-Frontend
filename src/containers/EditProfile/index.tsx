@@ -364,7 +364,7 @@ const EditProfile = () => {
           <div className={classes.top}>
             <h1>Highlights</h1>
           </div>
-          <div className={`${classes.rewardCard} rewardCard`}>
+          {/* <div className={`${classes.rewardCard} rewardCard`}>
             <ul>
               <li>
               </li>
@@ -405,7 +405,7 @@ const EditProfile = () => {
               </li>
             </ul>
 
-          </div>
+          </div> */}
           <div className={classes.buyPanel}>
             <ul>
               <li>
