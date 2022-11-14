@@ -572,7 +572,7 @@ const Stake = () => {
       />
 
       <Modal
-        show={true}
+        show={withdrawModal}
         maxWidth='sm'
         children={<>
           <div className={classes.modal}>
