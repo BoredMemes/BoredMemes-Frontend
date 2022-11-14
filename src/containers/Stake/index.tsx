@@ -274,7 +274,7 @@ const Stake = () => {
                   <li>
                     <span>
                       <h5>Claimed $ETH</h5>
-                      <p>
+                      <p style={{display:'flex'}}>
                         {(nftStakingInfo?.mClaimedETH + nftStakingInfo?.mClaimedETHLock).toLocaleString(undefined, { maximumFractionDigits: 4 })}
                         {/* {(nftStakingInfo?.mClaimedETH + nftStakingInfo?.mClaimedETHLock)} */}
                         <MyTooltip
@@ -292,7 +292,7 @@ const Stake = () => {
                   <li>
                     <span>
                       <h5>Claimable $ETH ({isHarvestFree ? "Free" : "Lock"})</h5>
-                      <p>
+                      <p style={{display:'flex'}}>
                         {(isHarvestFree ? nftStakingInfo?.mClaimableETH : nftStakingInfo?.mClaimableETHLock).toLocaleString(undefined, { maximumFractionDigits: 4 })}
                         {/* {(nftStakingInfo?.mClaimableETH + nftStakingInfo?.mClaimableETHLock)} */}
                         <MyTooltip
