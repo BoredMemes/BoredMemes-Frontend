@@ -4,6 +4,9 @@ import { useHistory, useLocation } from 'react-router-dom';
 import './style.scss';
 import ThemeContext from "theme/ThemeContext"
 import Web3WalletContext from 'hooks/Web3ReactManager';
+import { chainIdLocalStorageKey} from 'hooks';
+import useAuth from 'hooks/useAuth';
+import { getCurrentNetwork } from 'utils';
 type MenuType = {
   menuOpen?: boolean;
   setMenuOpen?(flag: boolean): void;
@@ -11,20 +14,27 @@ type MenuType = {
 export default function SideBar({ menuOpen, setMenuOpen }: MenuType) {
 
   const { loginStatus, account, library } = useContext(Web3WalletContext)
+  const { switchNetwork } = useAuth();
 
   const search = useLocation();
   const path = search.pathname.replace('/', '');
   const history = useHistory();
 
   const { theme, setTheme } = useContext(ThemeContext)
-
   const onChangeRoute = (route) => {
-    if (route === "miner"){
-      history.push("");
-    }else{
-      history.push(route);
+    history.push(route);
+    const _chainId = route === "" ? process.env.REACT_APP_BSC_NETWORK_ID : process.env.REACT_APP_ETH_NETWORK_ID;
+    if (getCurrentNetwork() !== _chainId){
+      switchNetwork();
+      window.location.reload();
     }
   }
+  
+  //switchNetwork();
+  useEffect(() => {
+    window.localStorage.setItem(chainIdLocalStorageKey, path === "miner" || path === "" ? process.env.REACT_APP_BSC_NETWORK_ID : process.env.REACT_APP_ETH_NETWORK_ID);
+    switchNetwork();
+  }, [path])
 
   return (
     <div className="sideBar">
@@ -50,7 +60,7 @@ export default function SideBar({ menuOpen, setMenuOpen }: MenuType) {
         <h3>Rewards</h3>
         <ul>
           <li className={path === '' ? 'selected' : ''}>
-            <div onClick={() => onChangeRoute("miner")}><img src="/assets/icons/miner_icon.svg" alt="" /> Miner</div>
+            <div onClick={() => onChangeRoute("")}><img src="/assets/icons/miner_icon.svg" alt="" /> Miner</div>
           </li>
           <li className={path.indexOf('stake') >= 0 ? 'selected' : ''}>
             <div onClick={() => onChangeRoute("stake")}><img src="/assets/icons/stake_icon.svg" alt="" /> Stake</div>

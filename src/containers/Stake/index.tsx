@@ -16,7 +16,7 @@ const Stake = () => {
   const { loginStatus, chainId, account, library } = useContext(Web3WalletContext)
 
   useEffect(() => {
-    if (loginStatus) {
+    if (loginStatus && library) {
       getPrices();
       onStakingInfo();
     }
@@ -74,6 +74,7 @@ const Stake = () => {
   };
   const transitions = ['width', 'height', 'opacity', 'background'];
 
+  const [isHarvestFree, setHarvestFree] = useState(true);
   //--------------------Stake Part-----------------//
   const [isFree, setFree] = useState(false);
   const [stakeModal, setStakeModal] = useState(false);
@@ -95,10 +96,6 @@ const Stake = () => {
   const onCancelStake = () => {
     setProgressStak(50);
     setStakeModal(false);
-  }
-  const onStakeModal = (_isFree) => {
-    setFree(_isFree);
-    setStakeModal(true);
   }
   useEffect(() => {
     if (loginStatus && stakeModal) {
@@ -127,7 +124,7 @@ const Stake = () => {
   }
 
   //-----------------------Withdraw Part-------------------//
-  const [isWithdrawFree, setIsWithdrawFree] = useState(false);
+  const [isWithdrawFree, setIsWithdrawFree] = useState(true);
   const [withdrawModal, setWithdrawModal] = useState(false);
   const [amountWithdraw, setAmountWithdraw] = useState(0);
   const [progressWithdraw, setProgressWithdraw] = useState(50);
@@ -166,23 +163,21 @@ const Stake = () => {
     if (progressWithdraw >= 0 && withdrawModal) {
       setAmountWithdraw((isWithdrawFree ? nftStakingInfo.mStakedBoredM : nftStakingInfo.mStakedBoredMLock) * progressWithdraw / 100);
     }
-  }, [progressWithdraw, withdrawModal, nftStakingInfo])
+  }, [progressWithdraw, withdrawModal, nftStakingInfo, isWithdrawFree])
 
   //---------------------Harvest-------------------------//
   const onHarvest = async (_isFree) => {
     if (loginStatus) {
       const toast_load_id = toast.loading("Harvesting...");
-      const isClaimed = await onRewardClaim(chainId, library.getSigner(), isFree);
+      const isClaimed = await onRewardClaim(chainId, library.getSigner(), _isFree);
       toast.dismiss(toast_load_id);
       if (isClaimed) {
-        toast.success("Harvested " + amountWithdraw + " $ETH Successfully.")
+        toast.success("Harvested Successfully.")
         onCancelWithdraw();
         onStakingInfo();
       }
     }
   }
-  const [switchChecked1, setSwitchChecked1] = useState(false);
-  const [switchChecked2, setSwitchChecked2] = useState(false);
   return (
     <>
       <div className={classes.root}>
@@ -279,13 +274,13 @@ const Stake = () => {
                       <p>
                         {/* {(nftStakingInfo?.mClaimedETH + nftStakingInfo?.mClaimedETHLock).toLocaleString(undefined, { maximumFractionDigits: 2 })} */}
                         {(nftStakingInfo?.mClaimedETH + nftStakingInfo?.mClaimedETHLock)}
-                        {/* <Tooltip 
+                        <Tooltip 
                           text = {
                           <>
-                            <p>{nftStakingInfo?.mClaimedETH} $ETH - Unlockable now</p>
-                            <p>{nftStakingInfo?.mClaimedETHLock} $ETH - Unlocks the {moment(nftStakingInfo.mTimestampLock * 1000).format("MM/DD/YYYY")} at {moment(nftStakingInfo.mTimestampLock * 1000).format("h:mmA")}</p>
+                            <p>{nftStakingInfo?.mClaimedETH} $ETH - Free</p>
+                            <p>{nftStakingInfo?.mClaimedETHLock} $ETH - Lock</p>
                         </>}
-                        /> */}
+                        />
                       </p>
                       {/* <p><small>≈ ${(ethPrice * (nftStakingInfo?.mClaimedETH + nftStakingInfo?.mClaimedETHLock)).toLocaleString(undefined, { maximumFractionDigits: 2 })}</small></p> */}
                       <p><small>≈ ${(ethPrice * (nftStakingInfo?.mClaimedETH + nftStakingInfo?.mClaimedETHLock))}</small></p>
@@ -297,25 +292,27 @@ const Stake = () => {
                       <p>
                         {/* {(nftStakingInfo?.mClaimableETH + nftStakingInfo?.mClaimableETHLock).toLocaleString(undefined, { maximumFractionDigits: 2 })} */}
                         {(nftStakingInfo?.mClaimableETH + nftStakingInfo?.mClaimableETHLock)}
-                        {/* <Tooltip 
+                        <Tooltip 
                           text = {
                           <>
-                            <p>{nftStakingInfo?.mClaimableETH} $ETH - Unlockable now</p>
-                            <p>{nftStakingInfo?.mClaimableETHLock} $ETH - Unlocks the {moment(nftStakingInfo.mTimestampLock * 1000).format("MM/DD/YYYY")} at {moment(nftStakingInfo.mTimestampLock * 1000).format("h:mmA")}</p>
+                            <p>{nftStakingInfo?.mClaimableETH} $ETH - Free</p>
+                            <p>{nftStakingInfo?.mClaimableETHLock} $ETH - Lock</p>
                         </>}
-                        /> */}
+                        />
                       </p>
                       {/* <p><small>≈ ${(ethPrice * (nftStakingInfo?.mClaimableETH + nftStakingInfo?.mClaimableETHLock)).toLocaleString(undefined, { maximumFractionDigits: 2 })}</small></p> */}
                       <p><small>≈ ${(ethPrice * (nftStakingInfo?.mClaimableETH + nftStakingInfo?.mClaimableETHLock))}</small></p>
                     </span>
                   </li>
                   <li>
-                    <MaterialUISwitch onChange={e => setSwitchChecked1(e.target.checked)}/>
-                  
+                    <MaterialUISwitch onChange={e => setHarvestFree(!e.target.checked)}/>
                   </li>
                   <li>
                     {/* <FilledButton label={'Reinvest'} color='success' /> */}
-                    <FilledButton disabled={(nftStakingInfo?.mClaimableETH + nftStakingInfo?.mClaimableETHLock) <= 0} label={'Harvest'} color='secondary' handleClick={() => onHarvest(true)} />
+                    {
+                      isHarvestFree ? nftStakingInfo?.mClaimableETH > 0 && <FilledButton label={'Harvest'} color='secondary' handleClick={() => onHarvest(true)} /> :
+                      nftStakingInfo?.mClaimableETHLock > 0 && <FilledButton label={'Harvest'} color='secondary' handleClick={() => onHarvest(false)} />
+                    }                    
                     <FilledButton label={'Withdraw'} handleClick={() => onWithdrawModal(true)} />
                   </li>
                 </ul>
@@ -584,7 +581,7 @@ const Stake = () => {
                   <p>{isWithdrawFree ? nftStakingInfo?.mStakedBoredM : nftStakingInfo?.mStakedBoredMLock} $BoredM staked</p>
                 </div>
               </span>
-              <MaterialUISwitch onChange={e => setSwitchChecked2(e.target.checked)}/>
+              <MaterialUISwitch onChange={e => setIsWithdrawFree(!e.target.checked)}/>
               <button className="closeBtn" onClick={() => onCancelWithdraw()}><img src="/assets/icons/close_icon.svg" alt="" /></button>
             </div>
             <div className={classes.modalContent}>

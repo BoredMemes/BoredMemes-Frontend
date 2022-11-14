@@ -1,16 +1,16 @@
 // Set of helper functions to facilitate wallet setup
 
-import { networks } from "utils";
+import { getCurrentNetwork, networks } from "utils";
 
 /**
  * Prompt the user to add MATIC as a network on Metamask, or switch to MATIC if the wallet is on a different network
  * @returns {boolean} true if the setup succeeded, false otherwise
  */
 let windowObject = window;
-export const setupNetwork = async (newVariable) => {
+export const setupNetwork = async () => {
   const provider = windowObject.ethereum;
   if (provider) {
-    const chainId = parseInt(newVariable, 10);
+    const chainId = parseInt(getCurrentNetwork(), 10);
     try {
       await provider.request({
         method: "wallet_addEthereumChain",

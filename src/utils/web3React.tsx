@@ -2,10 +2,10 @@ import { InjectedConnector } from "@web3-react/injected-connector";
 import { WalletConnectConnector } from "@web3-react/walletconnect-connector";
 import { ethers } from "ethers";
 import { WalletLinkConnector } from "@web3-react/walletlink-connector";
-import { currentNetwork, networks } from "utils";
+import { getCurrentNetwork, networks } from "utils";
 
 const POLLING_INTERVAL = 12000;
-const chainId = parseInt(currentNetwork, 10);
+const chainId = parseInt(getCurrentNetwork(), 10);
 const rpcUrl = networks[chainId].NODES;
 
 export enum ConnectorNames {

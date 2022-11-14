@@ -87,10 +87,11 @@ export default function Topbar({ menuOpen, setMenuOpen }: MenuType) {
   const [networkOption, setNetworkOption] = useState(null);
 
   useEffect(() => {
-    if (loginStatus) {
+    if (loginStatus && chainId) {
+      //console.log("Chain ID : ", chainId);
       setNetworkOption(chainId === 5 ? options[0] : options[1])
     }
-  }, [loginStatus]);
+  }, [loginStatus, chainId]);
 
   const options = [
     { value: "eth", label: "ETHEREUM", customAbbreviation: "eth", chainId: 5 },

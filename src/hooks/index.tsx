@@ -7,6 +7,7 @@ import { setupNetwork } from "utils/wallet";
 
 export const NetworkContextName = "NETWORK";
 export const connectorLocalStorageKey = "BORED_MEMES_ConnectorId";
+export const chainIdLocalStorageKey = "BORED_MEMES_ChainId";
 
 export function useActiveWeb3React(): Web3ReactContextInterface<ethers.providers.Web3Provider> & {
   chainId?: number;
@@ -22,7 +23,7 @@ export function useEagerConnect() {
   const [tried, setTried] = useState(false);
   const connector = window.localStorage.getItem(connectorLocalStorageKey);
   useEffect(() => {
-    if (connector && connector !== ""){
+    if (connector && connector !== "") {
       const currentConnector = connectorsByName[connector];
       if (!window.ethereum) {
         window.open("https://metamask.app.link/dapp/app.boredmemes.ai/", "_blank", "noopener noreferrer");
@@ -37,7 +38,7 @@ export function useEagerConnect() {
                     setupNetwork().then((hasSetup) => {
                       if (hasSetup) activate(currentConnector);
                     });
-                  }else{
+                  } else {
                     window.localStorage.removeItem(connectorLocalStorageKey)
                   }
                   setTried(true);
@@ -52,7 +53,7 @@ export function useEagerConnect() {
         }
       }
     }
-    
+
   }, [activate, connector]); // intentionally only running on mount (make sure it's only mounted once :))
 
   // if the connection worked, wait until we get confirmation of that to flip the flag

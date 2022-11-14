@@ -1,7 +1,7 @@
 import { useWeb3React } from "@web3-react/core";
-import { useEagerConnect, useInactiveListener } from "hooks";
+import {  useEagerConnect, useInactiveListener} from "hooks";
 import { useState, createContext, useEffect } from "react"
-import { currentNetwork } from "utils";
+import { getCurrentNetwork } from "utils";
 
 const Web3WalletContext = createContext({
   loginStatus : false,
@@ -15,12 +15,12 @@ export default Web3WalletContext;
 
 export function Web3ReactManager({ children }) {
 
-  const { connector, library, account, active, chainId } = useWeb3React();
+  const { connector, library, account, active, chainId, activate } = useWeb3React();
   const [loginStatus, setLoginStatus] = useState(false);
   useEffect(() => {
-      const isLoggedin =
-          account && active && chainId === parseInt(currentNetwork, 10);
-      setLoginStatus(isLoggedin);
+    console.log("Chain ID : ", chainId)
+    const isLoggedin = account && active && chainId === parseInt(getCurrentNetwork(), 10);
+    setLoginStatus(isLoggedin);
   }, [connector, library, account, active, chainId]);
 
   const value = { loginStatus, setLoginStatus, account, library, chainId }
