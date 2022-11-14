@@ -210,7 +210,7 @@ export const useStyles = makeStyles(theme => ({
           '& h5': {
             color : '#727272',
           },
-          '& p': {
+          '& .val': {
             fontSize : 14,
             display : 'flex',
           },

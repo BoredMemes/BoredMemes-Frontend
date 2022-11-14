@@ -9,7 +9,7 @@ import Web3WalletContext from 'hooks/Web3ReactManager';
 import { toast } from 'react-toastify';
 import { NFTStakingInfo } from 'utils/types';
 import axios from 'axios';
-import Tooltip from 'components/Widgets/Tooltip';
+import MyTooltip from 'components/Widgets/MyTooltip';
 import moment from 'moment';
 const Stake = () => {
   const classes = useStyles();
@@ -195,13 +195,6 @@ const Stake = () => {
                     <h5>Total Dividend $ETH</h5>
                     <p>
                       {(nftStakingInfo?.tDividETH + nftStakingInfo?.tDividETHLock).toLocaleString(undefined, { maximumFractionDigits: 2 })}
-                      {/* <Tooltip 
-                        text = {
-                        <>
-                          <p>{nftStakingInfo?.tDividETH} $ETH - Unlockable now</p>
-                          <p>{nftStakingInfo?.tDividETHLock} $ETH - Unlocks the {moment(nftStakingInfo.mTimestampLock * 1000).format("MM/DD/YYYY")} at {moment(nftStakingInfo.mTimestampLock * 1000).format("h:mmA")}</p>
-                        </>}
-                      /> */}
                     </p>
                     <p><small>≈ ${(ethPrice * (nftStakingInfo?.tDividETH + nftStakingInfo?.tDividETHLock)).toLocaleString(undefined, { maximumFractionDigits: 2 })}</small></p>
                   </span>
@@ -218,7 +211,7 @@ const Stake = () => {
                     <div className='val'>{
                       (nftStakingInfo?.tStakedBoredM + nftStakingInfo?.tStakedBoredMLock).toLocaleString(undefined, { maximumFractionDigits: 2 })
                     }
-                      <Tooltip
+                      <MyTooltip
                         text={
                           <>
                             <p>{nftStakingInfo?.tStakedBoredM.toLocaleString(undefined, { maximumFractionDigits: 2 })} $BoredM - Free</p>
@@ -235,7 +228,7 @@ const Stake = () => {
                     <h5>My Staked $BoredM</h5>
                     <div className='val'>
                       {(nftStakingInfo?.mStakedBoredM + nftStakingInfo?.mStakedBoredMLock).toLocaleString(undefined, { maximumFractionDigits: 2 })}
-                      <Tooltip
+                      <MyTooltip
                         text={
                           <>
                             <p>{nftStakingInfo?.mStakedBoredM.toLocaleString(undefined, { maximumFractionDigits: 2 })} $BoredM - Unlockable now</p>
@@ -251,7 +244,7 @@ const Stake = () => {
                     <h5>My Earned $ETH</h5>
                     <div className='val'>
                       {(nftStakingInfo?.mEarnedETH + nftStakingInfo?.mEarnedETHLock).toLocaleString(undefined, { maximumFractionDigits: 2 })}
-                      <Tooltip
+                      <MyTooltip
                         text={
                           <>
                             <p>{nftStakingInfo?.mEarnedETH.toLocaleString(undefined, { maximumFractionDigits: 2 })} $ETH - Free</p>
@@ -280,7 +273,7 @@ const Stake = () => {
                       <p>
                         {(nftStakingInfo?.mClaimedETH + nftStakingInfo?.mClaimedETHLock).toLocaleString(undefined, { maximumFractionDigits: 2 })}
                         {/* {(nftStakingInfo?.mClaimedETH + nftStakingInfo?.mClaimedETHLock)} */}
-                        <Tooltip
+                        <MyTooltip
                           text={
                             <>
                               <p>{nftStakingInfo?.mClaimedETH.toLocaleString(undefined, { maximumFractionDigits: 2 })} $ETH - Free</p>
@@ -298,7 +291,7 @@ const Stake = () => {
                       <p>
                         {(nftStakingInfo?.mClaimableETH + nftStakingInfo?.mClaimableETHLock).toLocaleString(undefined, { maximumFractionDigits: 2 })}
                         {/* {(nftStakingInfo?.mClaimableETH + nftStakingInfo?.mClaimableETHLock)} */}
-                        <Tooltip
+                        <MyTooltip
                           text={
                             <>
                               <p>{nftStakingInfo?.mClaimableETH.toLocaleString(undefined, { maximumFractionDigits: 2 })} $ETH - Free</p>
@@ -559,7 +552,7 @@ const Stake = () => {
                 vs
                 <h6 style={{ color: '#D39533', background: '#A8D2B833' }}>{nftStakingInfo?.mPercentFree}%</h6>
                 {/* <img src="/assets/icons/warning_icon_01.svg" alt="" /> */}
-                <Tooltip
+                <MyTooltip
                   text={
                     <>
                       <p>The lock is applied for 30 days and gives you access to 90% of the total rewards. If you choose not to lock, your tokens are free to withdraw anytime and you get access to 10% of total rewards.</p>

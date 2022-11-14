@@ -6,6 +6,8 @@ import { getCurrentNetwork, networks } from "utils";
 
 const POLLING_INTERVAL = 12000;
 const chainId = parseInt(getCurrentNetwork(), 10);
+console.log(chainId);
+console.log(networks[chainId]);
 const rpcUrl = networks[chainId].NODES;
 
 export enum ConnectorNames {
