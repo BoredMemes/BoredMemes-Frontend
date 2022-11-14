@@ -266,8 +266,7 @@ const Stake = () => {
                 <img src="/assets/icons/arrow_down_icon.svg" alt="" style={{ transform: boredMExpand ? 'rotate(180deg)' : 'rotate(0deg)' }} />
               </div>
             </div>
-            {/* <Expand open={boredMExpand && (nftStakingInfo?.tStakedBoredM + nftStakingInfo?.tStakedBoredMLock) > 0} duration={300} styles={styles} transitions={transitions}></Expand> */}
-            <Expand open={boredMExpand} duration={300} styles={styles} transitions={transitions}>
+            <Expand open={boredMExpand && (nftStakingInfo?.tStakedBoredM + nftStakingInfo?.tStakedBoredMLock) > 0} duration={300} styles={styles} transitions={transitions}></Expand>
               <div className="state" >
                 <ul>
 
