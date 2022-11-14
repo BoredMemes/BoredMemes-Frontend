@@ -408,7 +408,7 @@ export const useStyles = makeStyles(theme => ({
     [theme.breakpoints.down('xs')]: {
     },
 
-    '& span': {
+    '& .topTitle': {
       display: 'flex',
       alignItems: 'center',
       marginRight : 10,

@@ -1,5 +1,5 @@
 import FilledButton from 'components/Buttons/FilledButton';
-import { AntSwitch, MaterialUISwitch, useStyles } from './style';
+import { MaterialUISwitch, useStyles } from './style';
 import { useContext, useEffect, useState } from 'react';
 import Expand from 'react-expand-animated';
 import Modal from 'components/modal';
@@ -181,7 +181,8 @@ const Stake = () => {
       }
     }
   }
-  const [sensitiveContent, setSensitiveContent] = useState(false);
+  const [switchChecked1, setSwitchChecked1] = useState(false);
+  const [switchChecked2, setSwitchChecked2] = useState(false);
   return (
     <>
       <div className={classes.root}>
@@ -309,7 +310,7 @@ const Stake = () => {
                     </span>
                   </li>
                   <li>
-                    <MaterialUISwitch onChange={e => setSensitiveContent(e.target.checked)}/>
+                    <MaterialUISwitch onChange={e => setSwitchChecked1(e.target.checked)}/>
                   
                   </li>
                   <li>
@@ -571,18 +572,19 @@ const Stake = () => {
       />
 
       <Modal
-        show={withdrawModal}
+        show={true}
         maxWidth='sm'
         children={<>
           <div className={classes.modal}>
             <div className={classes.modalTop}>
-              <span>
+              <span className='topTitle'>
                 <img src="/assets/logo.png" alt="" />
                 <div>
                   <h4>Withdraw from $BoredM in Farm</h4>
                   <p>{isWithdrawFree ? nftStakingInfo?.mStakedBoredM : nftStakingInfo?.mStakedBoredMLock} $BoredM staked</p>
                 </div>
               </span>
+              <MaterialUISwitch onChange={e => setSwitchChecked2(e.target.checked)}/>
               <button className="closeBtn" onClick={() => onCancelWithdraw()}><img src="/assets/icons/close_icon.svg" alt="" /></button>
             </div>
             <div className={classes.modalContent}>
