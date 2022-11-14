@@ -31,16 +31,17 @@ const CommunityFeed = () => {
   const [isLoaded, setIsLoaded] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   useEffect(() => {
-    if (!isLoaded && !isLoading){
+    if (!isLoaded && !isLoading && loginStatus){
       setIsLoading(true)
       fetchItems();
     }
-  }, [isLoaded])
+  }, [isLoaded, loginStatus])
 
   const fetchItems = async () => {
     let paramsData = {
       emoticonAddr : loginStatus ? account?.toLowerCase() : undefined
     }
+    console.log(paramsData);
     axios.get("/api/item", {params : paramsData})
       .then((res) => {
         console.log(res.data.items)
