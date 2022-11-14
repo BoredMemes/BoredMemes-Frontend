@@ -112,12 +112,16 @@ export async function getStakingInfo(account, chainId, provider) {
     const BoredMContract = getContractObj('BoredMToken', chainId, provider);
     const BoredMDecimals = await BoredMContract.decimals();
     const stakingContract = getContractObj("BoredMStaking", chainId, provider);
-    const [tDividETH, tStakedBoredM, myStakingInfo, tDividETHLock, tStakedBoredMLock, mPercentFree, mPercentLock] = await Promise.all([
+    const [tDividETH, tStakedBoredM, myStakingInfo, mClaimedETH, mClaimableETH, tDividETHLock, tStakedBoredMLock, mClaimedETHLock, mClaimableETHLock, mPercentFree, mPercentLock] = await Promise.all([
       stakingContract.totalDividendsFree(),
       stakingContract.totalSharesFree(),
       stakingContract.shares(account),
+      stakingContract.getClaimedRewardsFree(account),
+      stakingContract.getUnclaimedRewardsFree(account),
       stakingContract.totalDividendsLock(),
       stakingContract.totalSharesLock(),
+      stakingContract.getClaimedRewardsLock(account),
+      stakingContract.getUnclaimedRewardsLock(account),
       stakingContract.dividendsPercentFree(),
       stakingContract.dividendsPercentLock()
     ]);
@@ -125,15 +129,15 @@ export async function getStakingInfo(account, chainId, provider) {
       tDividETH: parseFloat(ethers.utils.formatEther(tDividETH)),
       tStakedBoredM: parseFloat(ethers.utils.formatUnits(tStakedBoredM, BoredMDecimals)),
       mStakedBoredM: parseFloat(ethers.utils.formatUnits(myStakingInfo.amountFree, BoredMDecimals)),
-      mEarnedETH: parseFloat(ethers.utils.formatEther(myStakingInfo.excludedFree)),
-      mClaimedETH: parseFloat(ethers.utils.formatEther(myStakingInfo.rewardConfirmedFree)),
-      mClaimableETH: parseFloat(ethers.utils.formatEther(myStakingInfo.rewardClaimedFree)),
+      mEarnedETH: parseFloat(ethers.utils.formatEther(mClaimedETH.add(mClaimableETH))),
+      mClaimedETH: parseFloat(ethers.utils.formatEther(mClaimedETH)),
+      mClaimableETH: parseFloat(ethers.utils.formatEther(mClaimableETH)),
       tDividETHLock: parseFloat(ethers.utils.formatEther(tDividETHLock)),
       tStakedBoredMLock: parseFloat(ethers.utils.formatUnits(tStakedBoredMLock, BoredMDecimals)),
       mStakedBoredMLock: parseFloat(ethers.utils.formatUnits(myStakingInfo.amountLock, BoredMDecimals)),
-      mEarnedETHLock: parseFloat(ethers.utils.formatEther(myStakingInfo.excludedLock)),
-      mClaimedETHLock: parseFloat(ethers.utils.formatEther(myStakingInfo.rewardConfirmedLock)),
-      mClaimableETHLock: parseFloat(ethers.utils.formatEther(myStakingInfo.rewardClaimedLock)),
+      mEarnedETHLock: parseFloat(ethers.utils.formatEther(mClaimedETHLock.add(mClaimableETHLock))),
+      mClaimedETHLock: parseFloat(ethers.utils.formatEther(mClaimedETHLock)),
+      mClaimableETHLock: parseFloat(ethers.utils.formatEther(mClaimableETHLock)),
       mTimestampLock: myStakingInfo.stakeTimestampLock.toNumber(),
       mPercentFree: mPercentFree.toNumber(),
       mPercentLock: mPercentLock.toNumber()
@@ -187,7 +191,7 @@ export async function onBoredMUnStake(account, amount, chainId, provider, isFree
   }
 }
 
-export async function onBoredMClaim(chainId, provider, isFree) {
+export async function onRewardClaim(chainId, provider, isFree) {
   try {
     const stakingContract = getContractObj('BoredMStaking', chainId, provider);
     const tx = isFree ? await stakingContract.claimRewardsFree() : await stakingContract.claimRewardsLock();

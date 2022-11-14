@@ -84,22 +84,20 @@ export default function Topbar({ menuOpen, setMenuOpen }: MenuType) {
   const { loginStatus, account, library, chainId } = useContext(Web3WalletContext)
   const { user } = useAuthState();
 
-  let [BoredMBalance, setBoredMBalance] = useState('0.00');
+  const [networkOption, setNetworkOption] = useState(null);
+
   useEffect(() => {
     if (loginStatus) {
-      getBalanceOfBoredM(chainId, library, account).then(balance => {
-        setBoredMBalance(balance.toFixed(2));
-      });
+      setNetworkOption(chainId === 5 ? options[0] : options[1])
     }
   }, [loginStatus]);
 
   const options = [
-    { value: "eth", label: "ETHEREUM", customAbbreviation: "eth" },
-    { value: "bin", label: "BINANCE", customAbbreviation: "bin" },
-];
-const onChange = (e)=>{
-  console.log(e.value, BoredMBalance)
-}
+    { value: "eth", label: "ETHEREUM", customAbbreviation: "eth", chainId: 5 },
+    { value: "bin", label: "BINANCE", customAbbreviation: "bin", chainId: 97 },
+  ];
+  const onChange = (e) => {
+  }
   return (
     <div className="nav-background">
       <div className="topbar">
@@ -111,24 +109,25 @@ const onChange = (e)=>{
         </div>
         <div className="btns">
           <Select
-            defaultValue={options[0]}
+            value={networkOption}
+            defaultValue={networkOption}
             formatOptionLabel={FormatMoneyOptionLabel}
             options={options}
             instanceId='chainSelect'
             className={`select-gray`}
-            onChange={(e)=>onChange(e)}
+            onChange={(e) => onChange(e)}
             isSearchable={false}
             isClearable={false}
             styles={customStyles}
           />
-          <div className="connectBtn" onClick={()=>!loginStatus ? setShowConnectModal(true): setShowAcountModal(true)}>
+          <div className="connectBtn" onClick={() => !loginStatus ? setShowConnectModal(true) : setShowAcountModal(true)}>
             {loginStatus ? truncateWalletString(account) : 'Connect Wallet'}
           </div>
-          {loginStatus && 
-          <HashLink to="/">
-          <img src={user?.logo_url} alt="" className='avatar' />
-        </HashLink>
-        }
+          {loginStatus &&
+            <HashLink to="/">
+              <img src={user?.logo_url} alt="" className='avatar' />
+            </HashLink>
+          }
 
         </div>
         <div className={menuOpen ? 'hamburger active' : 'hamburger'} onClick={() => setMenuOpen(!menuOpen)}>
@@ -137,7 +136,7 @@ const onChange = (e)=>{
           <span className="line3"></span>
         </div>
         <ConnectModal showConnectModal={showConnectModal} setShowConnectModal={setShowConnectModal} />
-        <AccountModal showAccountModal={showAcountModal} setShowAccountModal = {setShowAcountModal}/>
+        <AccountModal showAccountModal={showAcountModal} setShowAccountModal={setShowAcountModal} />
       </div>
     </div>
   );

@@ -1,6 +1,7 @@
 import { useWeb3React } from "@web3-react/core";
 import { useEagerConnect, useInactiveListener } from "hooks";
 import { useState, createContext, useEffect } from "react"
+import { currentNetwork } from "utils";
 
 const Web3WalletContext = createContext({
   loginStatus : false,
@@ -16,10 +17,9 @@ export function Web3ReactManager({ children }) {
 
   const { connector, library, account, active, chainId } = useWeb3React();
   const [loginStatus, setLoginStatus] = useState(false);
-  let newVariable = process.env.REACT_APP_NETWORK_ID;
   useEffect(() => {
       const isLoggedin =
-          account && active && chainId === parseInt(newVariable, 10);
+          account && active && chainId === parseInt(currentNetwork, 10);
       setLoginStatus(isLoggedin);
   }, [connector, library, account, active, chainId]);
 

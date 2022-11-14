@@ -4,6 +4,7 @@ import BoredMMarketABI from 'contracts/BoredMMarket.json';
 import BoredMTokenABI from 'contracts/BoredMToken.json';
 import BoredMStakingABI from 'contracts/BoredMStaking.json';
 import BNBStakingABI from 'contracts/BNBStaking.json';
+import { useLocation } from 'react-router-dom';
 
 export const Networks = {
   MainNet: 56,
@@ -57,7 +58,26 @@ export const CONTRACTS_BY_NETWORK = {
   },
 };
 
-export const currentNetwork = process.env.REACT_APP_NETWORK_ID;
+
+export const networks = {
+  [5] : {
+    NETWORK_ID : process.env.REACT_APP_ETH_NETWORK_ID,
+    CURRENCY : process.env.REACT_APP_ETH_CURRENCY,
+    NETWORK : process.env.REACT_APP_ETH_NETWORK,
+    BLOCK_EXPLORER : process.env.REACT_APP_ETH_BLOCK_EXPLORER,
+    NODES : process.env.REACT_APP_ETH_NODE_1,
+  },
+  [97] : {
+    NETWORK_ID : process.env.REACT_APP_BSC_NETWORK_ID,
+    CURRENCY : process.env.REACT_APP_BSC_CURRENCY,
+    NETWORK : process.env.REACT_APP_BSC_NETWORK,
+    BLOCK_EXPLORER : process.env.REACT_APP_BSC_BLOCK_EXPLORER,
+    NODES : process.env.REACT_APP_BSC_NODE_1,
+  }
+}
+
+//export const currentNetwork = path === "miner" ? process.env.REACT_APP_BSC_NETWORK_ID : process.env.REACT_APP_ETH_NETWORK_ID;
+export const currentNetwork = process.env.REACT_APP_ETH_NETWORK_ID;
 
 export const baseApiUrl = process.env.REACT_APP_API_URL;
 

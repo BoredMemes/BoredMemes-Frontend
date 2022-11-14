@@ -309,7 +309,7 @@ const EditProfile = () => {
                   className={classes.myInput}
                   error={formSubmit && !email}
                   wrapperClass={classes.formWrapper}
-                  startIcon={"@"}
+                  
                   endIcon={<i className="fa fa-envelope"></i>}
                   placeholder={'Email'}
                   value={user?.social_email}

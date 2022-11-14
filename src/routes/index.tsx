@@ -16,11 +16,11 @@ const Routes = () => (
     <Switch>
       <Layout>
         <ScrollToTop />
-        <Route exact path="/" component={MyArt} />
+        <Route exact path="/my_art" component={MyArt} />
         <Route exact path="/create_art" component={CreateArt} />
         <Route exact path="/community_feed" component={CommunityFeed} />
         <Route exact path="/bookmarks" component={Bookmarks} />
-        <Route exact path="/miner" component={Miner} />
+        <Route exact path="/" component={Miner} />
         <Route path="/stake" component={Stake} />
         <Route exact path="/settings" component={EditProfile} />
         <Route path="/edit_profile" component={EditProfile} />

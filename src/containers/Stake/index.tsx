@@ -4,7 +4,7 @@ import { useContext, useEffect, useState } from 'react';
 import Expand from 'react-expand-animated';
 import Modal from 'components/modal';
 import CheckLock from 'components/Forms/CheckLock';
-import { getBalanceOfBoredM, getBNBStakingInfo, getStakingInfo, onBoredMClaim, onBoredMStake, onBoredMUnStake } from 'utils/contracts';
+import { getBalanceOfBoredM, getBNBStakingInfo, getStakingInfo, onRewardClaim, onBoredMStake, onBoredMUnStake } from 'utils/contracts';
 import Web3WalletContext from 'hooks/Web3ReactManager';
 import { toast } from 'react-toastify';
 import { NFTStakingInfo } from 'utils/types';
@@ -122,7 +122,8 @@ const Stake = () => {
     }
   }, [progressStak, stakeModal, balance])
   const onMaxStak = async () => {
-    setAmountStak(balance)
+    //setAmountStak(balance)
+    setProgressStak(100);
   }
 
   //-----------------------Withdraw Part-------------------//
@@ -158,7 +159,8 @@ const Stake = () => {
     }
   }
   const onMaxWithdraw = async () => {
-    setAmountWithdraw(isWithdrawFree ? nftStakingInfo?.mStakedBoredM : nftStakingInfo?.mStakedBoredMLock)
+    setProgressWithdraw(100)
+    //setAmountWithdraw(isWithdrawFree ? nftStakingInfo?.mStakedBoredM : nftStakingInfo?.mStakedBoredMLock)
   }
   useEffect(() => {
     if (progressWithdraw >= 0 && withdrawModal) {
@@ -170,10 +172,10 @@ const Stake = () => {
   const onHarvest = async (_isFree) => {
     if (loginStatus) {
       const toast_load_id = toast.loading("Harvesting...");
-      const isClaimed = await onBoredMClaim(chainId, library.getSigner(), isFree);
+      const isClaimed = await onRewardClaim(chainId, library.getSigner(), isFree);
       toast.dismiss(toast_load_id);
       if (isClaimed) {
-        toast.success("Withrawn " + amountWithdraw + " $BoredM Successfully.")
+        toast.success("Harvested " + amountWithdraw + " $ETH Successfully.")
         onCancelWithdraw();
         onStakingInfo();
       }
@@ -275,7 +277,8 @@ const Stake = () => {
                     <span>
                       <h5>Claimed $ETH</h5>
                       <p>
-                        {(nftStakingInfo?.mClaimedETH + nftStakingInfo?.mClaimedETHLock).toLocaleString(undefined, { maximumFractionDigits: 2 })}
+                        {/* {(nftStakingInfo?.mClaimedETH + nftStakingInfo?.mClaimedETHLock).toLocaleString(undefined, { maximumFractionDigits: 2 })} */}
+                        {(nftStakingInfo?.mClaimedETH + nftStakingInfo?.mClaimedETHLock)}
                         {/* <Tooltip 
                           text = {
                           <>
@@ -284,14 +287,16 @@ const Stake = () => {
                         </>}
                         /> */}
                       </p>
-                      <p><small>≈ ${(ethPrice * (nftStakingInfo?.mClaimedETH + nftStakingInfo?.mClaimedETHLock)).toLocaleString(undefined, { maximumFractionDigits: 2 })}</small></p>
+                      {/* <p><small>≈ ${(ethPrice * (nftStakingInfo?.mClaimedETH + nftStakingInfo?.mClaimedETHLock)).toLocaleString(undefined, { maximumFractionDigits: 2 })}</small></p> */}
+                      <p><small>≈ ${(ethPrice * (nftStakingInfo?.mClaimedETH + nftStakingInfo?.mClaimedETHLock))}</small></p>
                     </span>
                   </li>
                   <li>
                     <span>
                       <h5>Claimable $ETH</h5>
                       <p>
-                        {(nftStakingInfo?.mClaimableETH + nftStakingInfo?.mClaimableETHLock).toLocaleString(undefined, { maximumFractionDigits: 2 })}
+                        {/* {(nftStakingInfo?.mClaimableETH + nftStakingInfo?.mClaimableETHLock).toLocaleString(undefined, { maximumFractionDigits: 2 })} */}
+                        {(nftStakingInfo?.mClaimableETH + nftStakingInfo?.mClaimableETHLock)}
                         {/* <Tooltip 
                           text = {
                           <>
@@ -300,7 +305,8 @@ const Stake = () => {
                         </>}
                         /> */}
                       </p>
-                      <p><small>≈ ${(ethPrice * (nftStakingInfo?.mClaimableETH + nftStakingInfo?.mClaimableETHLock)).toLocaleString(undefined, { maximumFractionDigits: 2 })}</small></p>
+                      {/* <p><small>≈ ${(ethPrice * (nftStakingInfo?.mClaimableETH + nftStakingInfo?.mClaimableETHLock)).toLocaleString(undefined, { maximumFractionDigits: 2 })}</small></p> */}
+                      <p><small>≈ ${(ethPrice * (nftStakingInfo?.mClaimableETH + nftStakingInfo?.mClaimableETHLock))}</small></p>
                     </span>
                   </li>
                   <li>
@@ -442,7 +448,7 @@ const Stake = () => {
                 <p><small>Your total rewards</small></p>
               </li>
               <li>
-                <h5>{(nftStakingInfo?.mEarnedETH + nftStakingInfo?.mEarnedETHLock).toLocaleString(undefined, { maximumFractionDigits: 2 })} <span>ETH</span></h5>
+                <h5>{(nftStakingInfo?.mEarnedETH + nftStakingInfo?.mEarnedETHLock).toLocaleString(undefined, { maximumFractionDigits: 7 })} <span>ETH</span></h5>
               </li>
             </ul>
 
@@ -456,19 +462,19 @@ const Stake = () => {
 
               </li>
               <li>
-                <a href="https://dextools.com/" className="Dextools" target="_blank" rel="noreferrer" style={{ background: `#05A3C9` }}>
+                <a href="https://www.dextools.io/app/en/ether/pair-explorer/0x1ee2a47ec688a1b56afc9c0b134d9c555851cb4a" className="Dextools" target="_blank" rel="noreferrer" style={{ background: `#05A3C9` }}>
                   Buy on Dextools
                   <img src="/assets/icons/dxtool_icon.svg" alt="" />
                 </a>
               </li>
               <li>
-                <a href="https://uniswap.comm/" className="Uniswap" target="_blank" rel="noreferrer" style={{ background: `#D63371` }}>
+                <a href="https://app.uniswap.org/#/swap?outputCurrency=0x445d711C8974d80643745A4666803D255a589390" className="Uniswap" target="_blank" rel="noreferrer" style={{ background: `#D63371` }}>
                   Buy on Uniswap
                   <img src="/assets/icons/uniswap_icon.svg" alt="" />
                 </a>
               </li>
               <li>
-                <a href="https://1inch.comm/" className="1inch" target="_blank" rel="noreferrer" style={{ background: `#101A2E` }}>
+                <a href="https://app.1inch.io/#/1/unified/swap/ETH/BoredM" className="1inch" target="_blank" rel="noreferrer" style={{ background: `#101A2E` }}>
                   Buy on 1inch
                   <img src="/assets/icons/linch_icon.svg" alt="" />
                 </a>

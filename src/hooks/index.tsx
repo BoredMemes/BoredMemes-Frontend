@@ -1,10 +1,9 @@
 import { ethers } from "ethers";
-import { useWeb3React as useWeb3ReactCore } from "@web3-react/core";
-// eslint-disable-next-line import/no-unresolved
+import { UnsupportedChainIdError, useWeb3React as useWeb3ReactCore } from "@web3-react/core";
 import { Web3ReactContextInterface } from "@web3-react/core/dist/types";
 import { useEffect, useState } from "react";
-import { isMobile } from "react-device-detect";
-import { injected } from "../utils/web3React";
+import { ConnectorNames, connectorsByName, injected } from "../utils/web3React";
+import { setupNetwork } from "utils/wallet";
 
 export const NetworkContextName = "NETWORK";
 export const connectorLocalStorageKey = "BORED_MEMES_ConnectorId";
@@ -21,31 +20,47 @@ declare let window: any;
 export function useEagerConnect() {
   const { activate, active } = useWeb3ReactCore(); // specifically using useWeb3ReactCore because of what this hook does
   const [tried, setTried] = useState(false);
-
+  const connector = window.localStorage.getItem(connectorLocalStorageKey);
   useEffect(() => {
-    injected.isAuthorized().then((isAuthorized) => {
-      const hasSignedIn = window.localStorage.getItem(connectorLocalStorageKey);
-      const { ethereum } = window;
-      if (isAuthorized && hasSignedIn) {
-        activate(injected, undefined, true).catch(() => {
-          setTried(true);
-        });
-      } else if (isMobile && ethereum && hasSignedIn) {
-        activate(injected, undefined, true).catch(() => {
-          setTried(true);
-        });
-      } else {
+    if (connector && connector !== ""){
+      const currentConnector = connectorsByName[connector];
+      if (!window.ethereum) {
+        window.open("https://metamask.app.link/dapp/app.boredmemes.ai/", "_blank", "noopener noreferrer");
         setTried(true);
+      } else {
+        if (connector === ConnectorNames.Injected) {
+          injected.isAuthorized()
+            .then((isAuthorized) => {
+              if (isAuthorized) {
+                activate(currentConnector, undefined, true).catch((error) => {
+                  if (error instanceof UnsupportedChainIdError) {
+                    setupNetwork().then((hasSetup) => {
+                      if (hasSetup) activate(currentConnector);
+                    });
+                  }else{
+                    window.localStorage.removeItem(connectorLocalStorageKey)
+                  }
+                  setTried(true);
+                });
+              } else {
+                setTried(true);
+              }
+            });
+        } else {
+          activate(currentConnector);
+          setTried(true);
+        }
       }
-    });
-  }, [activate]); // intentionally only running on mount (make sure it's only mounted once :))
+    }
+    
+  }, [activate, connector]); // intentionally only running on mount (make sure it's only mounted once :))
 
   // if the connection worked, wait until we get confirmation of that to flip the flag
   useEffect(() => {
-    if (active) {
+    if (!tried && active) {
       setTried(true);
     }
-  }, [active]);
+  }, [tried, active]);
 
   return tried;
 }

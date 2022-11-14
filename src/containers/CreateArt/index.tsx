@@ -346,7 +346,7 @@ const CreateArt = () => {
             </div>
             <div className={classes.stepContent}>
               <div className="row">
-                <FilledButton disabled={false} label={'Change Notification Preference'} color='secondary' handleClick={() => onChangeSetting()} />
+                <FilledButton disabled={false} label={'Notification Preference'} color='primary' handleClick={() => onChangeSetting()} />
                 <FilledButton disabled={processingModal} label={'Get Art'} handleClick={onGetArt} />
               </div>
 

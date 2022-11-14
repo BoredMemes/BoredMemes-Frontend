@@ -1,14 +1,13 @@
 // Set of helper functions to facilitate wallet setup
 
-import { nodes } from "./getRpcUrl";
+import { networks } from "utils";
 
 /**
  * Prompt the user to add MATIC as a network on Metamask, or switch to MATIC if the wallet is on a different network
  * @returns {boolean} true if the setup succeeded, false otherwise
  */
 let windowObject = window;
-export const setupNetwork = async () => {
-  const newVariable = process.env.REACT_APP_NETWORK_ID;
+export const setupNetwork = async (newVariable) => {
   const provider = windowObject.ethereum;
   if (provider) {
     const chainId = parseInt(newVariable, 10);
@@ -18,14 +17,14 @@ export const setupNetwork = async () => {
         params: [
           {
             chainId: `0x${chainId.toString(16)}`,
-            chainName: `${process.env.REACT_APP_NETWORK}`,
+            chainName: `${networks[chainId].NETWORK}`,
             nativeCurrency: {
-              name: `${process.env.REACT_APP_CURRENCY}`,
-              symbol: `${process.env.REACT_APP_CURRENCY}`,
+              name: `${networks[chainId].CURRENCY}`,
+              symbol: `${networks[chainId].CURRENCY}`,
               decimals: 18,
             },
-            rpcUrls: nodes,
-            blockExplorerUrls: [`${process.env.REACT_APP_BLOCK_EXPLORER}`],
+            rpcUrls: [networks[chainId].NODES],
+            blockExplorerUrls: [networks[chainId].BLOCK_EXPLORER],
           },
         ],
       });
