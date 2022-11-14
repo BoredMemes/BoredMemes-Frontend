@@ -194,9 +194,9 @@ const Stake = () => {
                   <span>
                     <h5>Total Dividend $ETH</h5>
                     <p>
-                      {(nftStakingInfo?.tDividETH + nftStakingInfo?.tDividETHLock).toLocaleString(undefined, { maximumFractionDigits: 2 })}
+                      {(nftStakingInfo?.tDividETH + nftStakingInfo?.tDividETHLock).toLocaleString(undefined, { maximumFractionDigits: 4 })}
                     </p>
-                    <p><small>≈ ${(ethPrice * (nftStakingInfo?.tDividETH + nftStakingInfo?.tDividETHLock)).toLocaleString(undefined, { maximumFractionDigits: 2 })}</small></p>
+                    <p><small>≈ ${(ethPrice * (nftStakingInfo?.tDividETH + nftStakingInfo?.tDividETHLock)).toLocaleString(undefined, { maximumFractionDigits: 4 })}</small></p>
                   </span>
                 </li>
                 <li>
@@ -209,17 +209,17 @@ const Stake = () => {
                   <span>
                     <h5>Total Staked $BoredM</h5>
                     <div className='val'>{
-                      (nftStakingInfo?.tStakedBoredM + nftStakingInfo?.tStakedBoredMLock).toLocaleString(undefined, { maximumFractionDigits: 2 })
+                      (nftStakingInfo?.tStakedBoredM + nftStakingInfo?.tStakedBoredMLock).toLocaleString(undefined, { maximumFractionDigits: 4 })
                     }
                       <MyTooltip
                         text={
                           <>
-                            <p>{nftStakingInfo?.tStakedBoredM.toLocaleString(undefined, { maximumFractionDigits: 2 })} $BoredM - Free</p>
-                            <p>{nftStakingInfo?.tStakedBoredMLock.toLocaleString(undefined, { maximumFractionDigits: 2 })} $BoredM - Lock</p>
+                            <p>{nftStakingInfo?.tStakedBoredM.toLocaleString(undefined, { maximumFractionDigits: 4 })} $BoredM - Free</p>
+                            <p>{nftStakingInfo?.tStakedBoredMLock.toLocaleString(undefined, { maximumFractionDigits: 4 })} $BoredM - Lock</p>
                           </>}
                       />
                     </div>
-                    <p><small>≈ ${(boredmPrice * (nftStakingInfo?.tStakedBoredM + nftStakingInfo?.tStakedBoredMLock)).toLocaleString(undefined, { maximumFractionDigits: 2 })}</small></p>
+                    <p><small>≈ ${(boredmPrice * (nftStakingInfo?.tStakedBoredM + nftStakingInfo?.tStakedBoredMLock)).toLocaleString(undefined, { maximumFractionDigits: 4 })}</small></p>
                   </span>
                 </li>
 
@@ -227,32 +227,32 @@ const Stake = () => {
                   <span>
                     <h5>My Staked $BoredM</h5>
                     <div className='val'>
-                      {(nftStakingInfo?.mStakedBoredM + nftStakingInfo?.mStakedBoredMLock).toLocaleString(undefined, { maximumFractionDigits: 2 })}
+                      {(nftStakingInfo?.mStakedBoredM + nftStakingInfo?.mStakedBoredMLock).toLocaleString(undefined, { maximumFractionDigits: 4 })}
                       <MyTooltip
                         text={
                           <>
-                            <p>{nftStakingInfo?.mStakedBoredM.toLocaleString(undefined, { maximumFractionDigits: 2 })} $BoredM - Unlockable now</p>
-                            <p>{nftStakingInfo?.mStakedBoredMLock.toLocaleString(undefined, { maximumFractionDigits: 2 })} $BoredM - Unlocks the {moment((nftStakingInfo.mTimestampLock + 30 * 24 * 3600) * 1000).format("MMM DD YYYY")} at {moment(nftStakingInfo.mTimestampLock * 1000).format("h:mmA")}</p>
+                            <p>{nftStakingInfo?.mStakedBoredM.toLocaleString(undefined, { maximumFractionDigits: 4 })} $BoredM - Unlockable now</p>
+                            <p>{nftStakingInfo?.mStakedBoredMLock.toLocaleString(undefined, { maximumFractionDigits: 4 })} $BoredM - Unlocks the {moment((nftStakingInfo.mTimestampLock + 30 * 24 * 3600) * 1000).format("MMM DD YYYY")} at {moment(nftStakingInfo.mTimestampLock * 1000).format("h:mmA")}</p>
                           </>}
                       />
                     </div>
-                    <p><small>≈ ${(boredmPrice * (nftStakingInfo?.mStakedBoredM + nftStakingInfo?.mStakedBoredMLock)).toLocaleString(undefined, { maximumFractionDigits: 2 })}</small></p>
+                    <p><small>≈ ${(boredmPrice * (nftStakingInfo?.mStakedBoredM + nftStakingInfo?.mStakedBoredMLock)).toLocaleString(undefined, { maximumFractionDigits: 4 })}</small></p>
                   </span>
                 </li>
                 <li>
                   <span>
                     <h5>My Earned $ETH</h5>
                     <div className='val'>
-                      {(nftStakingInfo?.mEarnedETH + nftStakingInfo?.mEarnedETHLock).toLocaleString(undefined, { maximumFractionDigits: 2 })}
+                      {(nftStakingInfo?.mEarnedETH + nftStakingInfo?.mEarnedETHLock).toLocaleString(undefined, { maximumFractionDigits: 4 })}
                       <MyTooltip
                         text={
                           <>
-                            <p>{nftStakingInfo?.mEarnedETH.toLocaleString(undefined, { maximumFractionDigits: 2 })} $ETH - Free</p>
-                            <p>{nftStakingInfo?.mEarnedETHLock.toLocaleString(undefined, { maximumFractionDigits: 2 })} $ETH - Lock</p>
+                            <p>{nftStakingInfo?.mEarnedETH.toLocaleString(undefined, { maximumFractionDigits: 4 })} $ETH - Free</p>
+                            <p>{nftStakingInfo?.mEarnedETHLock.toLocaleString(undefined, { maximumFractionDigits: 4 })} $ETH - Lock</p>
                           </>}
                       />
                     </div>
-                    <p><small>≈ ${(ethPrice * (nftStakingInfo?.mEarnedETH + nftStakingInfo?.mEarnedETHLock)).toLocaleString(undefined, { maximumFractionDigits: 2 })}</small></p>
+                    <p><small>≈ ${(ethPrice * (nftStakingInfo?.mEarnedETH + nftStakingInfo?.mEarnedETHLock)).toLocaleString(undefined, { maximumFractionDigits: 4 })}</small></p>
                   </span>
                 </li>
                 <li>
@@ -271,17 +271,17 @@ const Stake = () => {
                     <span>
                       <h5>Claimed $ETH</h5>
                       <p>
-                        {(nftStakingInfo?.mClaimedETH + nftStakingInfo?.mClaimedETHLock).toLocaleString(undefined, { maximumFractionDigits: 2 })}
+                        {(nftStakingInfo?.mClaimedETH + nftStakingInfo?.mClaimedETHLock).toLocaleString(undefined, { maximumFractionDigits: 4 })}
                         {/* {(nftStakingInfo?.mClaimedETH + nftStakingInfo?.mClaimedETHLock)} */}
                         <MyTooltip
                           text={
                             <>
-                              <p>{nftStakingInfo?.mClaimedETH.toLocaleString(undefined, { maximumFractionDigits: 2 })} $ETH - Free</p>
-                              <p>{nftStakingInfo?.mClaimedETHLock.toLocaleString(undefined, { maximumFractionDigits: 2 })} $ETH - Lock</p>
+                              <p>{nftStakingInfo?.mClaimedETH.toLocaleString(undefined, { maximumFractionDigits: 4 })} $ETH - Free</p>
+                              <p>{nftStakingInfo?.mClaimedETHLock.toLocaleString(undefined, { maximumFractionDigits: 4 })} $ETH - Lock</p>
                             </>}
                         />
                       </p>
-                      <p><small>≈ ${(ethPrice * (nftStakingInfo?.mClaimedETH + nftStakingInfo?.mClaimedETHLock)).toLocaleString(undefined, { maximumFractionDigits: 2 })}</small></p>
+                      <p><small>≈ ${(ethPrice * (nftStakingInfo?.mClaimedETH + nftStakingInfo?.mClaimedETHLock)).toLocaleString(undefined, { maximumFractionDigits: 4 })}</small></p>
                       {/* <p><small>≈ ${(ethPrice * (nftStakingInfo?.mClaimedETH + nftStakingInfo?.mClaimedETHLock))}</small></p> */}
                     </span>
                   </li>
@@ -289,17 +289,17 @@ const Stake = () => {
                     <span>
                       <h5>Claimable $ETH</h5>
                       <p>
-                        {(nftStakingInfo?.mClaimableETH + nftStakingInfo?.mClaimableETHLock).toLocaleString(undefined, { maximumFractionDigits: 2 })}
+                        {(nftStakingInfo?.mClaimableETH + nftStakingInfo?.mClaimableETHLock).toLocaleString(undefined, { maximumFractionDigits: 4 })}
                         {/* {(nftStakingInfo?.mClaimableETH + nftStakingInfo?.mClaimableETHLock)} */}
                         <MyTooltip
                           text={
                             <>
-                              <p>{nftStakingInfo?.mClaimableETH.toLocaleString(undefined, { maximumFractionDigits: 2 })} $ETH - Free</p>
-                              <p>{nftStakingInfo?.mClaimableETHLock.toLocaleString(undefined, { maximumFractionDigits: 2 })} $ETH - Lock</p>
+                              <p>{nftStakingInfo?.mClaimableETH.toLocaleString(undefined, { maximumFractionDigits: 4 })} $ETH - Free</p>
+                              <p>{nftStakingInfo?.mClaimableETHLock.toLocaleString(undefined, { maximumFractionDigits: 4 })} $ETH - Lock</p>
                             </>}
                         />
                       </p>
-                      <p><small>≈ ${(ethPrice * (nftStakingInfo?.mClaimableETH + nftStakingInfo?.mClaimableETHLock)).toLocaleString(undefined, { maximumFractionDigits: 2 })}</small></p>
+                      <p><small>≈ ${(ethPrice * (nftStakingInfo?.mClaimableETH + nftStakingInfo?.mClaimableETHLock)).toLocaleString(undefined, { maximumFractionDigits: 4 })}</small></p>
                       {/* <p><small>≈ ${(ethPrice * (nftStakingInfo?.mClaimableETH + nftStakingInfo?.mClaimableETHLock))}</small></p> */}
                     </span>
                   </li>
@@ -333,8 +333,8 @@ const Stake = () => {
                     <img src="/assets/logo.png" alt="" />
                     <span>
                       <h5>Total Dividend $ETH</h5>
-                      <p>{nftStakingInfo?.tDividETHLock.toLocaleString(undefined, { maximumFractionDigits: 2 })}</p>
-                      <p><small>≈ ${(ethPrice * nftStakingInfo?.tDividETHLock).toLocaleString(undefined, { maximumFractionDigits: 2 })}</small></p>
+                      <p>{nftStakingInfo?.tDividETHLock.toLocaleString(undefined, { maximumFractionDigits: 4 })}</p>
+                      <p><small>≈ ${(ethPrice * nftStakingInfo?.tDividETHLock).toLocaleString(undefined, { maximumFractionDigits: 4 })}</small></p>
                     </span>
                   </li>
                   <li>
@@ -344,22 +344,22 @@ const Stake = () => {
                     </span> 
                     <span>
                       <h5>Total Staked $BoredM</h5>
-                      <p>{nftStakingInfo?.tStakedBoredMLock.toLocaleString(undefined, { maximumFractionDigits: 2 })}</p>
+                      <p>{nftStakingInfo?.tStakedBoredMLock.toLocaleString(undefined, { maximumFractionDigits: 4 })}</p>
                       <p><small>≈ ${(boredmPrice * nftStakingInfo?.tStakedBoredMLock)}</small></p>
                     </span>
                   </li>
                   <li>
                     <span>
                       <h5>My staked $BoredM</h5>
-                      <p>{nftStakingInfo?.mStakedBoredMLock.toLocaleString(undefined, { maximumFractionDigits: 2 })}</p>
+                      <p>{nftStakingInfo?.mStakedBoredMLock.toLocaleString(undefined, { maximumFractionDigits: 4 })}</p>
                       <p><small>≈ ${(boredmPrice * nftStakingInfo?.mStakedBoredMLock)}</small></p>
                     </span>
                   </li>
                   <li>
                     <span>
                       <h5>My Earned $ETH</h5>
-                      <p>{nftStakingInfo?.mEarnedETHLock.toLocaleString(undefined, { maximumFractionDigits: 2 })}</p>
-                      <p><small>≈ ${(ethPrice * nftStakingInfo?.mEarnedETHLock).toLocaleString(undefined, { maximumFractionDigits: 2 })}</small></p>
+                      <p>{nftStakingInfo?.mEarnedETHLock.toLocaleString(undefined, { maximumFractionDigits: 4 })}</p>
+                      <p><small>≈ ${(ethPrice * nftStakingInfo?.mEarnedETHLock).toLocaleString(undefined, { maximumFractionDigits: 4 })}</small></p>
                     </span>
                   </li>
                   <li>
@@ -377,15 +377,15 @@ const Stake = () => {
                     <li>
                       <span>
                         <h5>Claimed $ETH</h5>
-                        <p>{nftStakingInfo?.mClaimedETHLock.toLocaleString(undefined, { maximumFractionDigits: 2 })}</p>
-                        <p><small>≈ ${(ethPrice * nftStakingInfo?.mClaimedETHLock).toLocaleString(undefined, { maximumFractionDigits: 2 })}</small></p>
+                        <p>{nftStakingInfo?.mClaimedETHLock.toLocaleString(undefined, { maximumFractionDigits: 4 })}</p>
+                        <p><small>≈ ${(ethPrice * nftStakingInfo?.mClaimedETHLock).toLocaleString(undefined, { maximumFractionDigits: 4 })}</small></p>
                       </span>
                     </li>
                     <li>
                       <span>
                         <h5>Claimable $ETH</h5>
-                        <p>{nftStakingInfo?.mClaimableETHLock.toLocaleString(undefined, { maximumFractionDigits: 2 })}</p>
-                        <p><small>≈ ${(ethPrice * nftStakingInfo?.mClaimableETHLock).toLocaleString(undefined, { maximumFractionDigits: 2 })}</small></p>
+                        <p>{nftStakingInfo?.mClaimableETHLock.toLocaleString(undefined, { maximumFractionDigits: 4 })}</p>
+                        <p><small>≈ ${(ethPrice * nftStakingInfo?.mClaimableETHLock).toLocaleString(undefined, { maximumFractionDigits: 4 })}</small></p>
                       </span>
                     </li>
                     <li>
@@ -444,7 +444,7 @@ const Stake = () => {
                 <p><small>Your total rewards</small></p>
               </li>
               <li>
-                <h5>{(nftStakingInfo?.mEarnedETH + nftStakingInfo?.mEarnedETHLock).toLocaleString(undefined, { maximumFractionDigits: 2 })} <span>ETH</span></h5>
+                <h5>{(nftStakingInfo?.mEarnedETH + nftStakingInfo?.mEarnedETHLock).toLocaleString(undefined, { maximumFractionDigits: 4 })} <span>ETH</span></h5>
               </li>
             </ul>
 
@@ -501,7 +501,7 @@ const Stake = () => {
                 <input type="number" onChange={e => onChangeValStake(e)} placeholder={"Amount"} value={amountStak.toFixed(2)} />
                 <button onClick={onMaxStak}>Max</button>
               </div>
-              <h5>Balance : {balance.toLocaleString(undefined, { maximumFractionDigits: 2 })} $BoredM</h5>
+              <h5>Balance : {balance.toLocaleString(undefined, { maximumFractionDigits: 4 })} $BoredM</h5>
               <div className={classes.progress}>
                 <div className="line">
                   <div style={{ background: '#9B51E0', width: `${progressStak}%`, height: '100%' }}></div>
@@ -583,7 +583,7 @@ const Stake = () => {
                 <img src="/assets/logo.png" alt="" />
                 <div>
                   <h4>Withdraw from $BoredM in Farm</h4>
-                  <p>{isWithdrawFree ? nftStakingInfo?.mStakedBoredM.toLocaleString(undefined, { maximumFractionDigits: 2 }) : nftStakingInfo?.mStakedBoredMLock.toLocaleString(undefined, { maximumFractionDigits: 2 })} $BoredM staked</p>
+                  <p>{isWithdrawFree ? nftStakingInfo?.mStakedBoredM.toLocaleString(undefined, { maximumFractionDigits: 4 }) : nftStakingInfo?.mStakedBoredMLock.toLocaleString(undefined, { maximumFractionDigits: 4 })} $BoredM staked</p>
                 </div>
               </span>
               <MaterialUISwitch onChange={e => setIsWithdrawFree(!e.target.checked)} />
@@ -594,7 +594,7 @@ const Stake = () => {
                 <input type="number" onChange={e => onChangeValWithdraw(e)} placeholder={"Amount"} value={amountWithdraw.toFixed(2)} />
                 <button onClick={onMaxWithdraw}>Max</button>
               </div>
-              <h5>Balance : {balance.toLocaleString(undefined, { maximumFractionDigits: 2 })} $BoredM</h5>
+              <h5>Balance : {balance.toLocaleString(undefined, { maximumFractionDigits: 4 })} $BoredM</h5>
               <div className={classes.progress}>
                 <div className="line">
                   <div style={{ background: '#9B51E0', width: `${progressWithdraw}%`, height: '100%' }}></div>
