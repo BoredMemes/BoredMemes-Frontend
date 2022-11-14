@@ -44,15 +44,17 @@ const MyTooltip = ({ text }) => {
   return (
 
     <HtmlTooltip
-    open = {showTooltip}
-    title={
-      <>
-        <p>{text}</p>
-      </>
-    }
-  >
-    <button className={classes.root} onClick={() => setShowTooltip(!showTooltip)}><i className="fas fa-exclamation-circle"></i></button>
-  </HtmlTooltip>
+      open = {showTooltip}
+      onOpen={() => setShowTooltip(true)}
+      onClose={() => setShowTooltip(false)}
+      title={
+        <>
+          <p>{text}</p>
+        </>
+      }
+    >
+      <button className={classes.root} onClick={() => setShowTooltip(!showTooltip)}><i className="fas fa-exclamation-circle"></i></button>
+    </HtmlTooltip>
   );
 };
 
