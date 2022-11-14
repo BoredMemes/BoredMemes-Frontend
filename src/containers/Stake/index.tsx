@@ -126,7 +126,7 @@ const Stake = () => {
 
   //-----------------------Withdraw Part-------------------//
   const [isWithdrawFree, setIsWithdrawFree] = useState(true);
- 
+
   const [amountWithdraw, setAmountWithdraw] = useState(0);
   const [progressWithdraw, setProgressWithdraw] = useState(50);
   const onWithdraw = async () => {
@@ -201,7 +201,11 @@ const Stake = () => {
                 </li>
                 <li>
                   <span>
-                    <h5>APR</h5>
+                    
+                    <div className='val'>
+                      <h5>APR</h5>
+                      <MyTooltip text="APR/APY is approximated and varies with token volume and NFT art volume."/>
+                    </div>
                     <p>12% / <img src="assets/icons/lock_icon.svg" style={{ width: '14px', height: '19px', marginRight: '0px' }} alt="" /> 44%</p>
                   </span>
                 </li>
@@ -287,19 +291,19 @@ const Stake = () => {
                   </li>
                   <li>
                     <span>
-                      <h5>Claimable $ETH</h5>
+                      <h5>Claimable $ETH ({isHarvestFree ? "Free" : "Lock"})</h5>
                       <p>
-                        {(nftStakingInfo?.mClaimableETH + nftStakingInfo?.mClaimableETHLock).toLocaleString(undefined, { maximumFractionDigits: 4 })}
+                        {(isHarvestFree ? nftStakingInfo?.mClaimableETH : nftStakingInfo?.mClaimableETHLock).toLocaleString(undefined, { maximumFractionDigits: 4 })}
                         {/* {(nftStakingInfo?.mClaimableETH + nftStakingInfo?.mClaimableETHLock)} */}
                         <MyTooltip
                           text={
-                            <>
-                              <p>{nftStakingInfo?.mClaimableETH.toLocaleString(undefined, { maximumFractionDigits: 4 })} $ETH - Free</p>
+                            isHarvestFree ?
+                              <p>{nftStakingInfo?.mClaimableETH.toLocaleString(undefined, { maximumFractionDigits: 4 })} $ETH - Free</p> :
                               <p>{nftStakingInfo?.mClaimableETHLock.toLocaleString(undefined, { maximumFractionDigits: 4 })} $ETH - Lock</p>
-                            </>}
+                          }
                         />
                       </p>
-                      <p><small>≈ ${(ethPrice * (nftStakingInfo?.mClaimableETH + nftStakingInfo?.mClaimableETHLock)).toLocaleString(undefined, { maximumFractionDigits: 4 })}</small></p>
+                      <p><small>≈ ${(ethPrice * (isHarvestFree ? nftStakingInfo?.mClaimableETH : nftStakingInfo?.mClaimableETHLock)).toLocaleString(undefined, { maximumFractionDigits: 4 })}</small></p>
                       {/* <p><small>≈ ${(ethPrice * (nftStakingInfo?.mClaimableETH + nftStakingInfo?.mClaimableETHLock))}</small></p> */}
                     </span>
                   </li>
