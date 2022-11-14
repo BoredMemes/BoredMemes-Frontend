@@ -10,7 +10,7 @@ import Menu from 'components/menu/Menu';
 
 const useStyles = makeStyles(theme => ({
   layout: {
-    backgroundColor: '#fff',
+    backgroundColor: '#000',
     display: 'flex',
     flexDirection: 'column',
     minHeight: '100vh',
@@ -75,7 +75,7 @@ const Layout = ({ children }) => {
 
   return (
     <>
-      <div className={`${classes.layout} ${theme}`} style = {{backgroundImage : theme === 'dark' ? `url("/assets/paper_dark.jpg")`: `url("/assets/paper.jpg")`}}>
+      <div className={`${classes.layout} ${theme}`} style = {{backgroundImage : theme === 'dark' ? `url("/assets/paper_dark.png")`: `url("/assets/paper.jpg")`}}>
         <Topbar menuOpen={menuOpen} setMenuOpen={setMenuOpen} />
         <div className={classes.layoutContent}>
           {!isMobileOrTablet && (

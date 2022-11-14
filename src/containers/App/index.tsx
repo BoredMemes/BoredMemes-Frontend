@@ -3,15 +3,18 @@ import { SnackbarProvider } from 'notistack';
 import Routes from '../../routes';
 import { ThemeProvider } from "theme/ThemeContext";
 import { useAxios } from 'hooks/useAxios';
+import { GlobalValueProvider } from 'theme/GlobalValueProvider';
 function App() {
   useAxios();
   return (
     <ThemeProvider>
-      <SnackbarProvider maxSnack={3} anchorOrigin={{ vertical: 'top', horizontal: 'right' }}>
-        <Router basename={process.env.PUBLIC_URL}>
-          <Routes />
-        </Router>
-      </SnackbarProvider>
+      <GlobalValueProvider>
+        <SnackbarProvider maxSnack={3} anchorOrigin={{ vertical: 'top', horizontal: 'right' }}>
+          <Router basename={process.env.PUBLIC_URL}>
+            <Routes />
+          </Router>
+        </SnackbarProvider>
+      </GlobalValueProvider>
     </ThemeProvider>
   );
 }

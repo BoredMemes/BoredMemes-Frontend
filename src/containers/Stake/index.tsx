@@ -1,5 +1,5 @@
 import FilledButton from 'components/Buttons/FilledButton';
-import { useStyles } from './style';
+import { AntSwitch, MaterialUISwitch, useStyles } from './style';
 import { useContext, useEffect, useState } from 'react';
 import Expand from 'react-expand-animated';
 import Modal from 'components/modal';
@@ -179,7 +179,7 @@ const Stake = () => {
       }
     }
   }
-
+  const [sensitiveContent, setSensitiveContent] = useState(false);
   return (
     <>
       <div className={classes.root}>
@@ -211,7 +211,7 @@ const Stake = () => {
                 <li>
                   <span>
                     <h5>Total Staked $BoredM</h5>
-                    <p>{
+                    <div className='val'>{
                       (nftStakingInfo?.tStakedBoredM + nftStakingInfo?.tStakedBoredMLock).toLocaleString(undefined, { maximumFractionDigits: 2 })
                     }
                     <Tooltip 
@@ -221,7 +221,7 @@ const Stake = () => {
                           <p>{nftStakingInfo?.tStakedBoredMLock} $BoredM - Lock</p>
                         </>}
                       />
-                      </p>
+                      </div>
                     <p><small>≈ ${(boredmPrice * (nftStakingInfo?.tStakedBoredM + nftStakingInfo?.tStakedBoredMLock))}</small></p>
                   </span>
                 </li>
@@ -229,7 +229,7 @@ const Stake = () => {
                 <li>
                   <span>
                     <h5>My Staked $BoredM</h5>
-                    <p>
+                    <div className='val'>
                       {(nftStakingInfo?.mStakedBoredM + nftStakingInfo?.mStakedBoredMLock).toLocaleString(undefined, { maximumFractionDigits: 2 })}
                       <Tooltip 
                         text = {
@@ -238,14 +238,14 @@ const Stake = () => {
                           <p>{nftStakingInfo?.mStakedBoredMLock} $BoredM - Unlocks the {moment((nftStakingInfo.mTimestampLock + 30 * 24 * 3600) * 1000).format("MMM DD YYYY")} at {moment(nftStakingInfo.mTimestampLock * 1000).format("h:mmA")}</p>
                         </>}
                       />
-                    </p>
+                    </div>
                     <p><small>≈ ${(boredmPrice * (nftStakingInfo?.mStakedBoredM + nftStakingInfo?.mStakedBoredMLock))}</small></p>
                   </span>
                 </li>
                 <li>
                   <span>
                     <h5>My Earned $ETH</h5>
-                    <p>
+                    <div className='val'>
                       {(nftStakingInfo?.mEarnedETH + nftStakingInfo?.mEarnedETHLock).toLocaleString(undefined, { maximumFractionDigits: 2 })}
                       <Tooltip 
                         text = {
@@ -254,7 +254,7 @@ const Stake = () => {
                           <p>{nftStakingInfo?.mEarnedETHLock} $ETH - Lock</p>
                         </>}
                       />
-                    </p>
+                    </div>
                     <p><small>≈ ${(ethPrice * (nftStakingInfo?.mEarnedETH + nftStakingInfo?.mEarnedETHLock)).toLocaleString(undefined, { maximumFractionDigits: 2 })}</small></p>
                   </span>
                 </li>
@@ -266,7 +266,8 @@ const Stake = () => {
                 <img src="/assets/icons/arrow_down_icon.svg" alt="" style={{ transform: boredMExpand ? 'rotate(180deg)' : 'rotate(0deg)' }} />
               </div>
             </div>
-            <Expand open={boredMExpand && (nftStakingInfo?.tStakedBoredM + nftStakingInfo?.tStakedBoredMLock) > 0} duration={300} styles={styles} transitions={transitions}>
+            {/* <Expand open={boredMExpand && (nftStakingInfo?.tStakedBoredM + nftStakingInfo?.tStakedBoredMLock) > 0} duration={300} styles={styles} transitions={transitions}></Expand> */}
+            <Expand open={boredMExpand} duration={300} styles={styles} transitions={transitions}>
               <div className="state" >
                 <ul>
 
@@ -301,6 +302,10 @@ const Stake = () => {
                       </p>
                       <p><small>≈ ${(ethPrice * (nftStakingInfo?.mClaimableETH + nftStakingInfo?.mClaimableETHLock)).toLocaleString(undefined, { maximumFractionDigits: 2 })}</small></p>
                     </span>
+                  </li>
+                  <li>
+                    <MaterialUISwitch onChange={e => setSensitiveContent(e.target.checked)}/>
+                  
                   </li>
                   <li>
                     {/* <FilledButton label={'Reinvest'} color='success' /> */}

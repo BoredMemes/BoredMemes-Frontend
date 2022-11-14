@@ -24,7 +24,6 @@ function getLibrary(provider) {
 }
 
 ReactDOM.render(
-  <React.StrictMode>
     <Web3ReactProvider getLibrary={getLibrary}>
       <Web3ReactManager>
         <AuthProvider>
@@ -34,8 +33,7 @@ ReactDOM.render(
           </RefreshContextProvider>
         </AuthProvider>
       </Web3ReactManager>
-    </Web3ReactProvider>
-  </React.StrictMode>,
+    </Web3ReactProvider>,
   document.getElementById("root")
 );
 

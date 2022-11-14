@@ -14,6 +14,7 @@ import axios from 'axios';
 import { arrayify, hashMessage } from 'ethers/lib/utils';
 import { getMintInfo, onMintArtItem } from 'utils/contracts';
 import { useAuthState } from 'context/authContext';
+import GlobalValueContext from 'theme/GlobalValueProvider';
 const myData = [
   {
     a: 1,
@@ -130,7 +131,17 @@ const CreateArt = () => {
     const _packPrices = await getMintInfo(chainId, library.getSigner());
     setPackPrices(_packPrices);
   }
+  const { globalDescription, setGlobalDescription } = useContext(GlobalValueContext)
 
+  // useEffect(() => {
+  //   setDescription(globalDescription);
+  //   console.log(globalDescription)
+  // }, [globalDescription, setDescription])
+
+  const onChangeDescription = (e:any) => {
+    setDescription(e)
+    setGlobalDescription(e)
+  }
   const onGetArt = async () => {
     if (!loginStatus) {
       toast.error("Please connect your wallet correctly!");
@@ -177,6 +188,7 @@ const CreateArt = () => {
       console.log("Sign Message Error : ", e);
       setProcessingModal(false);
     }
+    setGlobalDescription("")
 
     // setSigned(msg && msg !== "")
     // setSignMsg(msg);
@@ -211,6 +223,7 @@ const CreateArt = () => {
   const onChangeSetting = () => {
     history.push('/edit_profile');
   }
+  
 
   return (
     <>
@@ -227,7 +240,7 @@ const CreateArt = () => {
               <p>Add your image description. The more detailed, the more accurate the ai will be.</p>
             </div>
             <div className={classes.stepContent}>
-              <InputField isMulti label="Image description" onChangeData={(e) => setDescription(e)} />
+              <InputField isMulti label="Image description" onChangeData={onChangeDescription} value = {globalDescription}/>
             </div>
           </div>
 

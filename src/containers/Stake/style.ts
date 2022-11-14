@@ -1,5 +1,5 @@
-import { makeStyles } from '@material-ui/core/styles';
-
+import { makeStyles, styled, Theme, withStyles } from '@material-ui/core/styles';
+import { Switch } from '@material-ui/core';
 export const useStyles = makeStyles(theme => ({
   root: {
     display: 'flex',
@@ -122,9 +122,10 @@ export const useStyles = makeStyles(theme => ({
           '& h5': {
             color : '#727272',
           },
-          '& p': {
+          '& .val': {
             fontSize : 16,
             display : 'flex',
+            color : '#727272',
             [theme.breakpoints.down('xs')]: {
               fontSize : 12,
             },
@@ -671,6 +672,95 @@ export const useStyles = makeStyles(theme => ({
   },
 }));
 
+export const MaterialUISwitch = styled(Switch)(({ theme }) => ({
+  width: 62,
+  height: 40,
+  
+  padding: 7,
+  '& .MuiSwitch-switchBase': {
+    margin: 1,
+    padding: 0,
+    transform: 'translateX(8px)',
+    backgroundColor: '#F400F5',
+    top: 8,
+    
+    '&.Mui-checked': {
+      color: '#fff',
+      backgroundColor: '#fff',
+      zIndex : 1,
+      transform: 'translateX(calc(100% + 8px))',
+      '& .MuiSwitch-thumb:before': {
+        backgroundImage: `url('/assets/icons/lock_icon_02.svg')`,
+      },
+      '& + .MuiSwitch-track': {
+        opacity: 1,
+        backgroundColor: '#F400F5',
+        
+      },
+    },
+  },
+  '& .MuiSwitch-thumb': {
+    backgroundColor: '#ffffff00',
+    width: 22,
+    height: 22,
+    '&:before': {
+      content: "''",
+      position: 'absolute',
+      width: '100%',
+      height: '100%',
+      left: 0,
+      top: 0,
+      backgroundRepeat: 'no-repeat',
+      backgroundPosition: 'center',
+      backgroundImage: `url('/assets/icons/lock_icon_01.svg')`,
+    },
+  },
+  '& .MuiSwitch-track': {
+    opacity: 1,
+    color : '#F400F5',
+    backgroundColor: '#fff',
+    borderRadius: 30,
+    border : '1px #F400F5 solid',
+  },
+}));
 
+export const AntSwitch = withStyles((theme: Theme) => ({
+  root: {
+    width: (props: { kind: string }) => (props.kind === 'small' ? 40 : 48),
+    height: (props: { kind: string }) => (props.kind === 'small' ? 20 : 24),
+    borderRadius: 20,
+    padding: 0,
+    display: 'flex',
+    border : '1px #F400F5 solid'
+  },
+  switchBase: {
+    padding: 3,
+    color: '#F400F5',
+
+    
+    '&$checked': {
+      transform: 'translateX(calc(100% + 2px))',
+      color: theme.palette.common.white,
+      '& + $track': {
+        opacity: 1,
+        backgroundColor: '#F400F5',
+        borderColor: theme.palette.primary.main,
+      },
+    },
+  },
+  thumb: (props: { kind: string }) => ({
+    width: props.kind === 'small' ? 13 : 17,
+    height: props.kind === 'small' ? 13 : 17,
+    boxShadow: 'none',
+  }),
+  track: {
+    borderColor: '#fff',
+    borderRadius: 20,
+    opacity: 1,
+    backgroundColor: '#fff',
+  },
+  checked: {},
+}))(Switch);
 
 export default useStyles;
+

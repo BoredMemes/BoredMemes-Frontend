@@ -30,6 +30,7 @@ body {
   font-family: 'Roboto', 'Ubuntu', 'Helvetica Neue', sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+  background-color: #000;
 }
 
 code {
@@ -73,13 +74,13 @@ h1{
 }
 .dark {
   .nav-background{
-    background-color: #000 !important;
+    background-color: #1e1e1e !important;
   }
   .sideBarMenu{
-    background-color: #000 !important;
+    background-color: #1e1e1e !important;
   }
   .mainContainer{
-    background-color: #000 !important;
+    background-color: #1e1e1e !important;
   }
   h3, h1{
     color: #fff !important;
@@ -109,7 +110,7 @@ h1{
   }
   
   .themeBtn{
-    background-color: #000 !important;
+    background-color: #1e1e1e !important;
   }
   .connectBtn{
     background-color: #F400F5 !important;
