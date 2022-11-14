@@ -505,7 +505,7 @@ const Stake = () => {
             </div>
             <div className={classes.modalContent}>
               <div className={`${classes.amount} input-span`}>
-                <input type="number" onChange={e => onChangeValStake(e)} placeholder={"Amount"} value={amountStak} />
+                <input type="number" onChange={e => onChangeValStake(e)} placeholder={"Amount"} value={amountStak.toFixed(2)} />
                 <button onClick={onMaxStak}>Max</button>
               </div>
               <h5>Balance : {balance.toLocaleString(undefined, { maximumFractionDigits: 2 })} $BoredM</h5>
