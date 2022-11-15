@@ -165,9 +165,6 @@ const CreateArt = () => {
       return;
     }
 
-    if (user?.is_telegram_notify && user?.is_twitter_notify && user?.is_email_notify) {
-      return toast.error("One of both is recommended.");
-    }
     setProcessingModal(true)
     try {
       const timestamp = Math.floor(new Date().getTime() / 1000);
