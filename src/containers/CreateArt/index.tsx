@@ -127,6 +127,18 @@ const CreateArt = () => {
     if (loginStatus) getMintingInfo();
   }, [loginStatus])
 
+  const [notify, setNotify] = useState("");
+  useEffect(() => {
+    if (user){
+      const notifyIds = user?.notifyIds;
+      let _notify = "";
+      for (var idx = 0 ; idx < notifyIds.length ; idx++){
+        _notify += notifyInfo[notifyIds[idx]] + (idx === notifyIds.length - 1 ? "" : idx === notifyIds.length - 2 ? ", and " : ", ");
+      }
+      setNotify(_notify);
+    }
+  }, [user])
+
   const getMintingInfo = async () => {
     const _packPrices = await getMintInfo(chainId, library.getSigner());
     setPackPrices(_packPrices);
@@ -167,7 +179,7 @@ const CreateArt = () => {
         description: description,
         ratio: artRatio,
         packId: packID,
-        notifyId: user?.notifyId,
+        notifyIds: user?.notifyIds,
       }
       axios.post("/api/addart", paramsData)
         .then(async (res) => {
@@ -342,7 +354,7 @@ const CreateArt = () => {
             <div className={classes.stepLeft}>
               <div className="circle" style={{ background: user?.notifyId > 0 ? '#F8B4E4' : '#d4d4d4' }}>4</div>
               <h3>Your details</h3>
-              <p>Notification will be sent to your {notifyInfo[user?.notifyId]}.</p>
+              <p>Notification will be sent to your {notify}.</p>
             </div>
             <div className={classes.stepContent}>
               <div className="row">
