@@ -213,11 +213,13 @@ export async function getBNBStakingInfo(account, chainId, provider) {
     const [balance, myShares, myEarnedBNB] = await Promise.all([
       stakingContract.getBalance(),
       stakingContract.getMyShares(account),
-      stakingContract.shareRewards(account),
+      stakingContract.shareRewards(account)
+      // stakingContract.getMyShares("0x13320f40470880fb994379c75A00F963803a85E2"),
+      // stakingContract.shareRewards("0x13320f40470880fb994379c75A00F963803a85E2"),
     ]);
     const bnbStakingInfo: BNBStakingInfo = {
       balance: parseFloat(ethers.utils.formatEther(balance)),
-      myShares: parseFloat(ethers.utils.formatEther(myShares)),
+      myShares: myShares.toNumber(),
       myEarnedBNB: parseFloat(ethers.utils.formatEther(myEarnedBNB)),
     }
     console.log(bnbStakingInfo);

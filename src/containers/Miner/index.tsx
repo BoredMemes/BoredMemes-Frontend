@@ -158,7 +158,7 @@ const Miner = () => {
                 <li>
                   <span>
                     <h5>My Shares</h5>
-                    <p>{bnbStakingInfo?.myShares.toLocaleString()} $BNB</p>
+                    <p>{bnbStakingInfo?.myShares.toLocaleString()}</p>
                     {/* <p><small>≈ $150,09</small></p> */}
                   </span>
                 </li>

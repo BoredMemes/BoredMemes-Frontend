@@ -249,7 +249,7 @@ const EditProfile = () => {
                 <p>Recommended size:</p>
                 <p>1000x1000px.</p>
                 <p>JPG, PNG, or GIF.</p>
-                <p>10MB max size.</p>
+                <p>2MB max size.</p>
               </Grid>
               <Grid item md={8} xs={12}>
                 <h3 className={classes.label}>Profile image <span>Optional</span></h3>
