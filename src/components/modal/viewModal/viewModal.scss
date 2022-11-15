@@ -81,19 +81,21 @@
       .top {
         width: 100%;
         display: flex;
-        justify-content: center;
-        align-items: center;
+        // justify-content: center;
+        // align-items: center;
         flex-direction: column;
         position: relative;
         max-height: 60vh;
         min-height: 60vh;
+        overflow-x: hidden;
+        overflow-y: scroll;
         @include mobile_potrait {
           max-height: 80vh;
         }
 
         img{
           width: 100%;
-          min-height : 13vw;
+          // min-height : 13vw;
           object-fit : cover;
           @include mobile_potrait {
           }
