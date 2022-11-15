@@ -89,13 +89,13 @@ export default function Topbar({ menuOpen, setMenuOpen }: MenuType) {
   useEffect(() => {
     if (loginStatus && chainId) {
       //console.log("Chain ID : ", chainId);
-      setNetworkOption(chainId === 5 ? options[0] : options[1])
+      setNetworkOption(chainId !== 56 ? options[0] : options[1])
     }
   }, [loginStatus, chainId]);
 
   const options = [
-    { value: "eth", label: "ETHEREUM", customAbbreviation: "eth", chainId: 5 },
-    { value: "bin", label: "BINANCE", customAbbreviation: "bin", chainId: 97 },
+    { value: "eth", label: "ETHEREUM", customAbbreviation: "eth", chainId: 1 },
+    { value: "bin", label: "BINANCE", customAbbreviation: "bin", chainId: 56 },
   ];
   const onChange = (e) => {
   }

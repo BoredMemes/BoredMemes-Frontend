@@ -15,7 +15,7 @@ export const Networks = {
 export const CONTRACTS_BY_NETWORK = {
   [Networks.ETH_MainNet]: {
     BoredMNFT: {
-      address: '0xc8Ce162eF2B15092Cf6eAfC22459CD2637207E7f',
+      address: '0x44a488437a7F258D29d17F3674fe96cCC1307B9c',
       abi: BoredMNFTABI,
     },
     BoredMMarket: {
@@ -23,11 +23,11 @@ export const CONTRACTS_BY_NETWORK = {
       abi: BoredMMarketABI,
     },
     BoredMToken: {
-      address: '0x6b55A11fe85920aD8174e1d4FE701ecf4b1E482A',
+      address: '0x445d711c8974d80643745a4666803d255a589390',
       abi: BoredMTokenABI
     },
     BoredMStaking: {
-      address: '0x8b4196629F23A0dA3A4976b01b261bFB8360e600',
+      address: '0xE0C1aB853b3a3c21Cc3C50BA6494c7AfCC8eCea7',
       abi: BoredMStakingABI
     }
   },
