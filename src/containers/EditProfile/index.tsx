@@ -80,7 +80,6 @@ const EditProfile = () => {
       return;
     }
     if (userName === '' && user?.username == '')return;
-    if (!twitterChecked && !telegramChecked && !emailChecked)return;
     setSignModal(true)
     const timestamp = Math.floor(new Date().getTime() / 1000);
     const msg = await library.getSigner().signMessage(arrayify(hashMessage(account?.toLowerCase() + "-" + timestamp)));
@@ -103,7 +102,6 @@ const EditProfile = () => {
     if (twitterChecked)notifyIds.push(1);
     if (telegramChecked)notifyIds.push(2);
     if (emailChecked)notifyIds.push(3);
-    console.log(notifyIds);
 
     let formData = new FormData();
     if (nftAsset !== undefined)formData.append('file', nftAsset);
