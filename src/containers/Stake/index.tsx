@@ -559,7 +559,7 @@ const Stake = () => {
                 <MyTooltip
                   text={
                     <>
-                      <p>The lock is applied for 30 days and gives you access to 90% of the total rewards. If you choose not to lock, your tokens are free to withdraw anytime and you get access to 10% of total rewards.</p>
+                      <p>1% fee for withdrawing in the next 48h -72h. Depositing resets the time. Normal token tax are applied. A second locked deposit resets the lock period.</p>
                     </>}
                 />
               </div>
