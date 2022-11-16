@@ -559,14 +559,14 @@ const Stake = () => {
                 <MyTooltip
                   text={
                     <>
-                      <p>1% fee for withdrawing in the next 48h -72h. Depositing resets the time. Normal token tax are applied. A second locked deposit resets the lock period.</p>
+                      <p>The lock is applied for 30 days and gives you access to 90% of the total rewards. If you choose not to lock, your tokens are free to withdraw anytime and you get access to 10% of total rewards.</p>
                     </>}
                 />
               </div>
 
               <div className="warning">
                 <img src="/assets/icons/warning_icon.svg" alt="" />
-                <p>1% fee for withdrawing in the next 48h -72h. Depositing or reinvesting resets the time. 7% tax is applied for staking/unstaking. Staking with lock resets lock timer.</p>
+                <p>1% fee for withdrawing in the next 48h -72h. Depositing resets the time. Normal token tax are applied. A second locked deposit resets the lock period.</p>
               </div>
             </div>
             <div className={classes.modalBtns}>
