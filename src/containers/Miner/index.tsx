@@ -40,14 +40,12 @@ const Miner = () => {
     myShares: 0,
     myEarnedBNB: 0,
   })
-  const [bnbBalance, setBNBBalance ] = useState(0);
+  const [bnbBalance, setBNBBalance] = useState(0);
   useEffect(() => {
-    if (loginStatus) {
-      getPrices();
-      onBNBStakingInfo();
-    }
-  }, [loginStatus, account, chainId, library])
-  
+    getPrices();
+    onBNBStakingInfo();
+  }, [])
+
   const [ethPrice, setEthPrice] = useState(0);
   const [boredmPrice, setBoredMPrice] = useState(0);
   const getPrices = async () => {
@@ -61,7 +59,7 @@ const Miner = () => {
   }
 
   const onBNBStakingInfo = async () => {
-    const _info = await getBNBStakingInfo(account, chainId, library);
+    const _info = await getBNBStakingInfo(account);
     if (_info) setBNBStakingInfo(_info);
   }
 
@@ -208,7 +206,7 @@ const Miner = () => {
           </div>
           <div className={classes.top}>
             <h1>Other Miner</h1>
-            <FilledButton label={'Add your custom Miner'} color = 'grey' handleClick={onAddMiner} className='addBtn'/>
+            <FilledButton label={'Add your custom Miner'} color='grey' handleClick={onAddMiner} className='addBtn' />
           </div>
           {/* {minerList.map((d, k)=>(
             <div className={`${classes.stakeCard} stakeCard`} key = {k}>

@@ -31,11 +31,11 @@ const CommunityFeed = () => {
   const [isLoaded, setIsLoaded] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   useEffect(() => {
-    if (!isLoaded && !isLoading && loginStatus){
+    if (!isLoaded && !isLoading){
       setIsLoading(true)
       fetchItems();
     }
-  }, [isLoaded, loginStatus])
+  }, [isLoaded])
 
   const fetchItems = async () => {
     let paramsData = {

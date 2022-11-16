@@ -16,11 +16,9 @@ const Stake = () => {
   const { loginStatus, chainId, account, library } = useContext(Web3WalletContext)
 
   useEffect(() => {
-    if (loginStatus && library) {
-      getPrices();
-      onStakingInfo();
-    }
-  }, [loginStatus, account, chainId, library])
+    getPrices();
+    onStakingInfo();
+  }, [])
 
   const [ethPrice, setEthPrice] = useState(0);
   const [boredmPrice, setBoredMPrice] = useState(0);
@@ -52,7 +50,7 @@ const Stake = () => {
     mPercentLock: 90
   });
   const onStakingInfo = async () => {
-    const _info = await getStakingInfo(account, chainId, library.getSigner());
+    const _info = await getStakingInfo(account);
     if (_info) setNftStakingInfo(_info);
   }
 
@@ -201,10 +199,10 @@ const Stake = () => {
                 </li>
                 <li>
                   <span>
-                    
+
                     <div className='val'>
                       <h5>APR</h5>
-                      <MyTooltip text="APR/APY is approximated and varies with token volume and NFT art volume."/>
+                      <MyTooltip text="APR/APY is approximated and varies with token volume and NFT art volume." />
                     </div>
                     <p>12% / <img src="assets/icons/lock_icon.svg" style={{ width: '14px', height: '19px', marginRight: '0px' }} alt="" /> 44%</p>
                   </span>
@@ -274,7 +272,7 @@ const Stake = () => {
                   <li>
                     <span>
                       <h5>Claimed $ETH</h5>
-                      <p style={{display:'flex'}}>
+                      <p style={{ display: 'flex' }}>
                         {(nftStakingInfo?.mClaimedETH + nftStakingInfo?.mClaimedETHLock).toLocaleString(undefined, { maximumFractionDigits: 4 })}
                         {/* {(nftStakingInfo?.mClaimedETH + nftStakingInfo?.mClaimedETHLock)} */}
                         <MyTooltip
@@ -292,7 +290,7 @@ const Stake = () => {
                   <li>
                     <span>
                       <h5>Claimable $ETH ({isHarvestFree ? "Free" : "Lock"})</h5>
-                      <p style={{display:'flex'}}>
+                      <p style={{ display: 'flex' }}>
                         {(isHarvestFree ? nftStakingInfo?.mClaimableETH : nftStakingInfo?.mClaimableETHLock).toLocaleString(undefined, { maximumFractionDigits: 4 })}
                         {/* {(nftStakingInfo?.mClaimableETH + nftStakingInfo?.mClaimableETHLock)} */}
                         <MyTooltip

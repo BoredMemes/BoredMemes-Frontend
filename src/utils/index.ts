@@ -59,31 +59,31 @@ export const CONTRACTS_BY_NETWORK = {
 
 
 export const networks = {
-  [1] : {
-    NETWORK_ID : process.env.REACT_APP_ETH_NETWORK_ID,
-    CURRENCY : process.env.REACT_APP_ETH_CURRENCY,
-    NETWORK : process.env.REACT_APP_ETH_NETWORK,
-    BLOCK_EXPLORER : process.env.REACT_APP_ETH_BLOCK_EXPLORER,
-    NODES : process.env.REACT_APP_ETH_NODE_1,
+  [1]: {
+    NETWORK_ID: process.env.REACT_APP_ETH_NETWORK_ID,
+    CURRENCY: process.env.REACT_APP_ETH_CURRENCY,
+    NETWORK: process.env.REACT_APP_ETH_NETWORK,
+    BLOCK_EXPLORER: process.env.REACT_APP_ETH_BLOCK_EXPLORER,
+    NODES: process.env.REACT_APP_ETH_NODE_1,
   },
-  [5] : {
-    NETWORK_ID : process.env.REACT_APP_ETH_NETWORK_ID,
-    CURRENCY : process.env.REACT_APP_ETH_CURRENCY,
-    NETWORK : process.env.REACT_APP_ETH_NETWORK,
-    BLOCK_EXPLORER : process.env.REACT_APP_ETH_BLOCK_EXPLORER,
-    NODES : process.env.REACT_APP_ETH_NODE_1,
+  [5]: {
+    NETWORK_ID: process.env.REACT_APP_ETH_NETWORK_ID,
+    CURRENCY: process.env.REACT_APP_ETH_CURRENCY,
+    NETWORK: process.env.REACT_APP_ETH_NETWORK,
+    BLOCK_EXPLORER: process.env.REACT_APP_ETH_BLOCK_EXPLORER,
+    NODES: process.env.REACT_APP_ETH_NODE_1,
   },
-  [56] : {
-    NETWORK_ID : process.env.REACT_APP_BSC_NETWORK_ID,
-    CURRENCY : process.env.REACT_APP_BSC_CURRENCY,
-    NETWORK : process.env.REACT_APP_BSC_NETWORK,
-    BLOCK_EXPLORER : process.env.REACT_APP_BSC_BLOCK_EXPLORER,
-    NODES : process.env.REACT_APP_BSC_NODE_1,
+  [56]: {
+    NETWORK_ID: process.env.REACT_APP_BSC_NETWORK_ID,
+    CURRENCY: process.env.REACT_APP_BSC_CURRENCY,
+    NETWORK: process.env.REACT_APP_BSC_NETWORK,
+    BLOCK_EXPLORER: process.env.REACT_APP_BSC_BLOCK_EXPLORER,
+    NODES: process.env.REACT_APP_BSC_NODE_1,
   }
 }
 
 //export const currentNetwork = process.env.REACT_APP_BSC_NETWORK_ID : process.env.REACT_APP_ETH_NETWORK_ID;
-export function getCurrentNetwork(){
+export function getCurrentNetwork() {
   return window.localStorage.getItem(chainIdLocalStorageKey) || process.env.REACT_APP_ETH_NETWORK_ID;
 }
 
