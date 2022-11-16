@@ -31,7 +31,7 @@ const CommunityFeed = () => {
   const [isLoaded, setIsLoaded] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   useEffect(() => {
-    if (!isLoaded && !isLoading){
+    if (!isLoaded && !isLoading && loginStatus){
       setIsLoading(true)
       fetchItems();
     }
