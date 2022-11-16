@@ -39,7 +39,7 @@ export function useEagerConnect() {
                       if (hasSetup) activate(currentConnector);
                     });
                   } else {
-                    window.localStorage.removeItem(connectorLocalStorageKey)
+                    // window.localStorage.removeItem(connectorLocalStorageKey)
                   }
                   setTried(true);
                 });

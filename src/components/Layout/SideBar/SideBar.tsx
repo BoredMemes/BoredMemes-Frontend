@@ -4,7 +4,7 @@ import { useHistory, useLocation } from 'react-router-dom';
 import './style.scss';
 import ThemeContext from "theme/ThemeContext"
 import Web3WalletContext from 'hooks/Web3ReactManager';
-import { chainIdLocalStorageKey} from 'hooks';
+import { chainIdLocalStorageKey } from 'hooks';
 import useAuth from 'hooks/useAuth';
 import { getCurrentNetwork } from 'utils';
 type MenuType = {
@@ -23,18 +23,18 @@ export default function SideBar({ menuOpen, setMenuOpen }: MenuType) {
   const { theme, setTheme } = useContext(ThemeContext)
   const onChangeRoute = (route) => {
     history.push(route);
-    const _chainId = route === "miner" ? process.env.REACT_APP_BSC_NETWORK_ID : process.env.REACT_APP_ETH_NETWORK_ID;
-    if (getCurrentNetwork() !== _chainId){
-      switchNetwork();
-      window.location.reload();
-    }
+    // const _chainId = route === "miner" ? process.env.REACT_APP_BSC_NETWORK_ID : process.env.REACT_APP_ETH_NETWORK_ID;
+    // if (getCurrentNetwork() !== _chainId){
+    //   switchNetwork();
+    //   // window.location.reload();
+    // }
   }
-  
+
   //switchNetwork();
   useEffect(() => {
     window.localStorage.setItem(chainIdLocalStorageKey, path === "miner" ? process.env.REACT_APP_BSC_NETWORK_ID : process.env.REACT_APP_ETH_NETWORK_ID);
     switchNetwork();
-  }, [path])
+  }, [path, account, library])
 
   return (
     <div className="sideBar">

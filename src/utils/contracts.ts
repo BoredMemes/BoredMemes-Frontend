@@ -144,7 +144,7 @@ export async function getStakingInfo(account) {
       mPercentFree: mPercentFree.toNumber(),
       mPercentLock: mPercentLock.toNumber()
     }
-    console.log(nftStakingInfo);
+    
     return nftStakingInfo;
   } catch (e) {
     const revertMsg = JSON.parse(JSON.stringify(e))["reason"];

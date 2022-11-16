@@ -25,12 +25,12 @@ const useAuth = () => {
           setupNetwork().then((hasSetup) => {
             if (hasSetup) {
               activate(connector);
-              window.localStorage.setItem(connectorLocalStorageKey, connectorID);
+              // window.localStorage.setItem(connectorLocalStorageKey, connectorID);
             }
           });
         } else if (error instanceof NoEthereumProviderError) {
           toast.error('No provider was found!')
-          window.localStorage.removeItem(connectorLocalStorageKey)
+          // window.localStorage.removeItem(connectorLocalStorageKey)
         } else if (
           error instanceof UserRejectedRequestErrorInjected ||
           error instanceof UserRejectedRequestErrorWalletConnect
@@ -41,11 +41,11 @@ const useAuth = () => {
           }
           toast.error('Authorization Error, Please authorize to access your account')
           console.log('Authorization Error, Please authorize to access your account')
-          window.localStorage.removeItem(connectorLocalStorageKey)
+          // window.localStorage.removeItem(connectorLocalStorageKey)
         } else {
           toast.error(error.message)
           console.log(error.name, error.message)
-          window.localStorage.removeItem(connectorLocalStorageKey)
+          // window.localStorage.removeItem(connectorLocalStorageKey)
         }
       })
     } else {

@@ -2,7 +2,7 @@ import { InjectedConnector } from "@web3-react/injected-connector";
 import { WalletConnectConnector } from "@web3-react/walletconnect-connector";
 import { ethers } from "ethers";
 import { WalletLinkConnector } from "@web3-react/walletlink-connector";
-import { getCurrentNetwork, networks } from "utils";
+import { getCurrentNetwork, Networks, networks } from "utils";
 
 const POLLING_INTERVAL = 12000;
 const chainId = parseInt(getCurrentNetwork(), 10);
@@ -16,10 +16,14 @@ export enum ConnectorNames {
   WalletLink = "WalletLink",
 }
 
-export const injected = new InjectedConnector({ supportedChainIds: [chainId] });
+export const injected = new InjectedConnector({ supportedChainIds: [Networks.ETH_MainNet, Networks.BSC_Mainnet] });
 
 export const walletconnect = new WalletConnectConnector({
-  rpc: { [chainId]: rpcUrl },
+  rpc: {
+    [Networks.ETH_MainNet]: networks[Networks.ETH_MainNet].NODES,
+    [Networks.BSC_Mainnet]: networks[Networks.BSC_Mainnet].NODES,
+  },
+  chainId: chainId,
   bridge: "https://bridge.walletconnect.org",
   qrcode: true,
 });
@@ -39,7 +43,7 @@ export const connectorsByName = {
 };
 
 export const connectors =
-[
+  [
     {
       title: "Metamask",
       connectorId: "Injected",
@@ -52,8 +56,8 @@ export const connectors =
       title: "WalletLink",
       connectorId: "WalletLink",
     },
-]
-    
+  ]
+
 
 export const getLibrary = (provider) => {
   const library = new ethers.providers.Web3Provider(provider);
