@@ -73,8 +73,8 @@ const ViewModal: React.FC<Props> = ({ updateArts, showModal, setShowModal, item 
   };
 
   const onDownload = () => {
-    if (item?.assetUrl !== "")
-      fetch(item?.assetUrl).then(response => {
+    if (item?.thumbnail !== "")
+      fetch(item?.thumbnail).then(response => {
         response.blob().then(blob => {
           // Creating new object of PDF file
           const fileURL = window.URL.createObjectURL(blob);
@@ -82,7 +82,7 @@ const ViewModal: React.FC<Props> = ({ updateArts, showModal, setShowModal, item 
           let alink = document.createElement('a');
           alink.href = fileURL;
           alink.setAttribute('target', '_blank');
-          alink.download = item?.assetUrl.split('/')[item?.assetUrl.split('/').length - 1];
+          alink.download = item?.thumbnail.split('/')[item?.thumbnail.split('/').length - 1];
           alink.click();
           // Append to html link element page
           document.body.appendChild(alink);
