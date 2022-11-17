@@ -90,7 +90,7 @@ export default function Topbar({ menuOpen, setMenuOpen }: MenuType) {
     if (loginStatus && chainId) {
       //console.log("Chain ID : ", chainId);
       setNetworkOption(chainId !== 56 ? options[0] : options[1])
-    }
+    }else setNetworkOption(null);
   }, [loginStatus, chainId]);
 
   const options = [

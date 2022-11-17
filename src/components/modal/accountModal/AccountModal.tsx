@@ -5,6 +5,7 @@ import { toast } from "react-toastify";
 import useAuth from 'hooks/useAuth';
 import { truncateWalletString } from 'utils';
 import { useWeb3React } from '@web3-react/core';
+import { connectorLocalStorageKey } from 'hooks';
 interface Props {
     showAccountModal: boolean,
     setShowAccountModal?: any
@@ -46,6 +47,7 @@ const AccountModal: React.FC<Props> = ({
         setIsStart(false)
         setTimeout(() => {
             setShowAccountModal(false);
+            window.localStorage.removeItem(connectorLocalStorageKey);
             logout();
         }, 800)
     }
