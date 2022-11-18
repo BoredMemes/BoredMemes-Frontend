@@ -18,7 +18,7 @@ const Stake = () => {
   useEffect(() => {
     getPrices();
     onStakingInfo();
-  }, [])
+  }, [loginStatus, chainId, account, library])
 
   const [ethPrice, setEthPrice] = useState(0);
   const [boredmPrice, setBoredMPrice] = useState(0);
