@@ -234,12 +234,11 @@ export async function getBNBStakingInfo(account) {
   }
 }
 
-export async function onMyBuyShares(refAddress, chainId, provider) {
+export async function onMyBuyShares(refAddress, amount, chainId, provider) {
   try {
     const stakingContract = getContractObj('BNBStaking', chainId, provider);
-    console.log(stakingContract.address);
     const tx = await stakingContract.buyShares(refAddress, {
-      value: ethers.utils.parseEther("0.005")
+      value: ethers.utils.parseEther(amount.toString())
     });
     await tx.wait(1)
     return true;

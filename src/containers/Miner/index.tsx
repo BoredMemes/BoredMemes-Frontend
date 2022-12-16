@@ -97,11 +97,11 @@ const Miner = () => {
   const onBuyShares = async () => {
     if (loginStatus) {
       const toast_load_id = toast.loading("Staking...");
-      const isStaked = await onMyBuyShares(ethers.constants.AddressZero, chainId, library.getSigner());
+      const isStaked = await onMyBuyShares(ethers.constants.AddressZero, amount, chainId, library.getSigner());
       //const isStaked = await onMyBuyShares(account.toLowerCase(), chainId, library.getSigner());
       toast.dismiss(toast_load_id);
       if (isStaked) {
-        toast.success("Bought " + amount + " Successfully.")
+        toast.success("Bought " + amount + " BNB Successfully.")
         onCancelBuyShares();
         onBNBStakingInfo();
       }
