@@ -1,13 +1,20 @@
 import { makeStyles } from '@material-ui/core/styles';
 import axios from 'axios';
 import Web3WalletContext from 'hooks/Web3ReactManager';
-import { useContext, useEffect, useState } from 'react';
+import { useContext, useLayoutEffect, useRef, useState } from 'react';
+import { useHistory } from 'react-router-dom';
 import { toast } from 'react-toastify';
 
 interface PropsType {
   item?: any;
-  onShow?: any;
+  onClick?: any;
   updateArts?: any;
+  onShow?: any;
+  isSelected ?: boolean
+}
+
+interface StyleType {
+  height?: any;
 }
 
 const useStyles = makeStyles(theme => ({
@@ -16,12 +23,13 @@ const useStyles = makeStyles(theme => ({
     cursor: 'pointer',
     background: '#F0F2F5',
     borderRadius: 18,
-    overflow: 'hidden',
-    marginBottom: 30,
+    border : '3px #F400F500 solid',
+    // overflow: 'hidden',
+    marginBottom: 15,
     position: 'relative',
-    '@media screen and (max-width: 768px) and (orientation: portrait)': {
+    [theme.breakpoints.down('xs')]: {
       maxWidth: '90vw',
-      minWidth: '70vw',
+      width: '70vw',
     },
     '& .top': {
       display: 'flex',
@@ -29,13 +37,18 @@ const useStyles = makeStyles(theme => ({
       alignItems: 'center',
       flexDirection: 'column',
       position: 'relative',
+      height : '100%',
+      [theme.breakpoints.down('xs')]: {
+        width: '100%',
+      },
       '& img': {
         width: '100%',
-        height: '15vw',
-        maxHeight : 300,
+        height : '100%',
+        // height: '15vw',
+        // maxHeight : 300,
+        borderRadius: 16,
         objectFit: 'cover',
-        '@media screen and (max-width: 768px) and (orientation: portrait)': {
-          height: '40vw',
+        [theme.breakpoints.down('xs')]: {
           display : 'flex',
           alignItems: 'center',
           justifyContent: 'center',
@@ -43,8 +56,7 @@ const useStyles = makeStyles(theme => ({
       },
       '& div': {
         width: '100%',
-        height: '15vw',
-        maxHeight : 300,
+        // height: '15vw',
         objectFit: 'cover',
         fontSize: 14,
         textAlign: 'center',
@@ -53,31 +65,90 @@ const useStyles = makeStyles(theme => ({
         display : 'flex',
         alignItems: 'center',
         justifyContent: 'center',
-        '@media screen and (max-width: 768px) and (orientation: portrait)': {
-          height: '40vw',
+        [theme.breakpoints.down('xs')]: {
           display : 'flex',
           alignItems: 'center',
           justifyContent: 'center',
         },
       },
     },
+    '&:hover': {
+      '& .overly': {
+        opacity : 1,
+      }
+    },
 
-    '& .footer': {
-      padding: '10px 20px',
-      display: 'flex',
+    '& .overly': {
+      padding: '10px 10px',
       justifyContent: 'space-between',
+      display : 'flex',
       alignItems: 'center',
-      flexDirection: 'row',
-      '@media screen and (max-width: 768px) and (orientation: portrait)': {
+      flexDirection: 'column',
+      position: 'absolute',
+      width : 'calc(100% - 10px)',
+      height : 100,
+      left : 5,
+      bottom : 5,
+      background : '#F0F2F5',
+      borderRadius: 16,
+      opacity : 0,
+      transition : 'all 0.3s ease',
+      [theme.breakpoints.down('xs')]: {
         width: '100% !important',
       },
-      '& .left': {
+      '& .desc': {
+        display: 'flex',
+        // justifyContent: 'center',
+        // alignItems: 'center',
+        width: '100%',
+        '& p': {
+          width: '100%',
+          display: '-webkit-box',
+          WebkitLineClamp: 2,
+          boxSizing: 'border-box',
+          textOverflow:'ellipsis',
+          overflow: 'hidden',
+          whiteSpace: 'normal',
+          WebkitBoxOrient: 'vertical',
+          fontSize : 12,
+        }
+      },
+      '& .footer': {
+        justifyContent: 'space-between',
+        display : 'flex',
+        alignItems: 'center',
+        width : '100%',
+      },
+      '& .avatar': {
         display: 'flex',
         justifyContent: 'center',
         alignItems: 'center',
         flexDirection: 'row',
+        transition : 'all 0.3s ease',
+        padding : 5,
+        borderRadius : 40,
+        '&:hover': {
+          background: '#D9D9D9',
+        },
+        '& img': {
+          marginRight: 7,
+          height : 35,
+          width : 35,
+          objectfit : 'cover',
+          borderRadius: 35,
+        },
+        '& p': {
+          width: '100%',
+          display: '-webkit-box',
+          boxSizing: 'border-box',
+          textOverflow:'ellipsis',
+          overflow: 'hidden',
+          whiteSpace: 'normal',
+          WebkitBoxOrient: 'vertical',
+          fontSize : 12,
+        }
       },
-      '& .right': {
+      '& .btns': {
         display: 'flex',
         justifyContent: 'center',
         alignItems: 'center',
@@ -112,9 +183,11 @@ const useStyles = makeStyles(theme => ({
           flexDirection: 'column',
           position: 'absolute',
           backgroundColor: '#fff',
-          top: '-76px',
+          // top: '-156px',
+          bottom : '100%',
           padding: 7,
           borderRadius: 5,
+          zIndex : 2,
           transition: 'all 0.3s ease',
           '& .menuItem': {
             display: 'flex',
@@ -125,12 +198,29 @@ const useStyles = makeStyles(theme => ({
             transition: 'all 0.3s ease',
             borderRadius: 5,
             color: '#727272',
+            position: 'relative',
             '&:hover': {
               background: '#D9D9D9',
+              '& .subDrodownMenu': {
+                display: 'flex',
+              }
             },
             '& img': {
               marginRight: 7,
-
+            },
+            '& .subDrodownMenu': {
+              display: 'none',
+              justifyContent: 'center',
+              alignItems: 'center',
+              flexDirection: 'column',
+              position: 'absolute',
+              backgroundColor: '#fff',
+              left: '100%',
+              bottom : 0,
+              padding: 7,
+              borderRadius: 5,
+              zIndex : 2,
+              transition: 'all 0.3s ease',
             }
           },
         },
@@ -145,6 +235,7 @@ const useStyles = makeStyles(theme => ({
           left: '-111px',
           padding: 3,
           borderRadius: 5,
+          
           transition: 'all 0.3s ease',
           '& .menuItem': {
             display: 'flex',
@@ -169,55 +260,15 @@ const useStyles = makeStyles(theme => ({
         marginLeft: 7,
       },
     },
-    '& .footer1': {
-      padding: '10px 20px',
-      display: 'flex',
-      justifyContent: 'space-between',
-      alignItems: 'center',
-      flexDirection: 'row',
-      width: '100%',
-      position: 'absolute',
-      bottom: 0,
-      left: 0,
-      '@media screen and (max-width: 768px) and (orientation: portrait)': {
-        width: '100% !important',
-      },
-      '& .left': {
-        display: 'flex',
-        justifyContent: 'center',
-        alignItems: 'center',
-        flexDirection: 'row',
-      },
-      '& .right': {
-        display: 'flex',
-        justifyContent: 'center',
-        alignItems: 'center',
-        flexDirection: 'row',
-      },
-      '& .smallBtn': {
-        width: 25,
-        height: 25,
-        display: 'flex',
-        justifyContent: 'center',
-        alignItems: 'center',
-        borderRadius: 5,
-        transition: 'all 0.3s ease',
-        '&:hover': {
-          background: '#D9D9D9',
-        },
-      },
-      '& .ml-3': {
-        marginLeft: 7,
-      },
+    '&.selected': {
+      borderColor : '#F400F5'
     },
   },
 }));
 
-
-const PropertyCard1 = ({ item, onShow, updateArts }: PropsType) => {
+const PropertyCard1 = ({ item, onClick, onShow, isSelected, updateArts }: PropsType) => {
   const classes = useStyles();
-  const { loginStatus, account, library } = useContext(Web3WalletContext)
-  const [emoticon, setEmoticon] = useState(-1);
+  const { loginStatus, account } = useContext(Web3WalletContext)
 
   const handleBookmark = async (item) => {
     if (!loginStatus) {
@@ -236,6 +287,7 @@ const PropertyCard1 = ({ item, onShow, updateArts }: PropsType) => {
         console.log(e);
       })
   }
+
 
   const copyHandle = () => {
     if (item?.description === "")return;
@@ -295,10 +347,40 @@ const PropertyCard1 = ({ item, onShow, updateArts }: PropsType) => {
         })
     }
   }
+  const ref = useRef(null)
+  const [divStyle, setDivStyle] = useState<StyleType>();
+  useLayoutEffect(() => {
+    let x = parseInt(item.ratio.split(':')[0])
+    let y = parseInt(item.ratio.split(':')[1])
+    
+    setDivStyle({height: ((ref.current.offsetWidth * y)/x)+ "px"})
+
+  }, []);
+
+  function updateDimensions() {
+    let x = parseInt(item.ratio.split(':')[0])
+    let y = parseInt(item.ratio.split(':')[1])
+    console.log(ref.current.offsetWidth, x)
+    setDivStyle({height: ((ref.current.offsetWidth * y)/x)+ "px"})
+  }
+
+  window.removeEventListener('resize', updateDimensions);
+  
+  window.onresize = ()=>{
+    let x = parseInt(item.ratio.split(':')[0])
+    let y = parseInt(item.ratio.split(':')[1])
+    
+    setDivStyle({height: ((ref.current.offsetWidth * y)/x)+ "px"})
+  }
+  const location = useHistory()
+  const onGotoPage = (link : string)=>{
+    location.push(link)
+  }
+
 
   return (
-    <div className={`${classes.productWrapper} card1`}>
-      <div className="top" onClick={onShow}>
+    <div className={`${classes.productWrapper} ${isSelected ? 'selected':''} card1`} ref = {ref} style = {divStyle} onClick={onClick}>
+      <div className="top" >
         {
           item?.assetUrl && item?.assetUrl !== "" ? <img src={item?.assetUrl} alt="" /> :
             <div>
@@ -307,62 +389,82 @@ const PropertyCard1 = ({ item, onShow, updateArts }: PropsType) => {
         }
       </div>
 
-      <div className="footer">
-        <div className="left">
-          <div className="smallBtn" onClick={() => onDownload()}>
-            <img src="/assets/icons/download_icon.svg" alt="" />
-          </div>
+      <div className="overly">
+        <div className="desc">
+          <p>{item?.description}</p>
         </div>
-        <div className="right">
+        <div className="footer">
+          <div className="avatar">
+            <img src="/assets/avatars/avatar_01.png" alt="" />
+            <p>{item?.name}</p>
+          </div>
+          <div className="btns">
           <div className="smallBtn dropdown">
-            <img src="/assets/icons/more_icon.svg" alt="" />
-            <div className="drodownMenu">
-              <div className="menuItem" onClick={() => copyHandle()}>
-                <img src="/assets/icons/images_icon.svg" alt="" /> Copy description
-              </div>
-              <div className="menuItem" onClick={() => onDownload()}>
-                <img src="/assets/icons/download_icon.svg" alt="" /> Save image
+              <img src="/assets/icons/more_icon.svg" alt="" />
+              <div className="drodownMenu">
+                <div className="menuItem" onClick={() => copyHandle()}>
+                  <img src="/assets/icons/arrow_icon_01.svg" alt="" /> Copy...
+
+                  <div className="subDrodownMenu">
+                    <div className="menuItem" onClick={() => copyHandle()}><img src="/assets/icons/link_icon.svg" alt="" /> Command</div>
+                    <div className="menuItem" onClick={() => copyHandle()}><img src="/assets/icons/images_icon.svg.svg" alt="" /> Prompt</div>
+                    <div className="menuItem" onClick={() => copyHandle()}><img src="/assets/icons/link_icon.svg" alt="" /> Link</div>
+                  </div>
+                </div>
+                <div className="menuItem" onClick={() =>onGotoPage(`/view_art/${item?.tokenId}`)}>
+                  <img src="/assets/icons/newTab_icon.svg" alt=""  /> Open new tab
+                </div>
+                <div className="menuItem" onClick={() => onGotoPage(`/create_nft_collection/${item?.tokenId}`)}>
+                  <img src="/assets/icons/createNFT_icon.svg" alt="" /> Create NFT
+                </div>
+                
+                <div className="menuItem" onClick={() => onDownload()}>
+                  <img src="/assets/icons/download_icon.svg" alt="" /> Save image
+                </div>
+                <div className="menuItem" >
+                  <img src="/assets/icons/follow_icon.svg" alt="" /> Follow Username
+                </div>
               </div>
             </div>
-          </div>
 
-          {item?.emoticonId === 0 &&
-          <div className="smallBtn ml-3">
-             <img src="/assets/icons/image 185.png" alt="" />
-          </div>}
-          {item?.emoticonId === 1 &&
-          <div className="smallBtn ml-3">
-            <img src="/assets/icons/Grimacing Face.png" alt="" />
-          </div>}
-          {item?.emoticonId === 2 &&
-          <div className="smallBtn ml-3">
-            <img src="/assets/icons/Star-Struck.png" alt="" />
-          </div>}
-          {item?.emoticonId === 3 &&
-          <div className="smallBtn ml-3">
-           <img src="/assets/icons/Smiling Face with Heart-Eyes.png" alt="" />
-          </div>}
-         
-          <div className="smallBtn ml-3" onClick={() => handleBookmark(item)}>
-            {(item?.bookmarks && item?.bookmarks.includes(account?.toLowerCase())) ?
-              <img src="/assets/icons/bookmark_full_icon.svg" alt="" /> :
-              <img src="/assets/icons/bookmark_line_icon.svg" alt="" />}
-          </div>
+            {item?.emoticonId === 0 &&
+            <div className="smallBtn ml-3">
+              <img src="/assets/icons/image 185.png" alt="" />
+            </div>}
+            {item?.emoticonId === 1 &&
+            <div className="smallBtn ml-3">
+              <img src="/assets/icons/Grimacing Face.png" alt="" />
+            </div>}
+            {item?.emoticonId === 2 &&
+            <div className="smallBtn ml-3">
+              <img src="/assets/icons/Star-Struck.png" alt="" />
+            </div>}
+            {item?.emoticonId === 3 &&
+            <div className="smallBtn ml-3">
+            <img src="/assets/icons/Smiling Face with Heart-Eyes.png" alt="" />
+            </div>}
+          
+            <div className="smallBtn ml-3" onClick={() => handleBookmark(item)}>
+              {(item?.bookmarks && item?.bookmarks.includes(account?.toLowerCase())) ?
+                <img src="/assets/icons/bookmark_full_icon.svg" alt="" /> :
+                <img src="/assets/icons/bookmark_line_icon.svg" alt="" />}
+            </div>
 
-          <div className="smallBtn ml-3 dropdown">
-            <img src="/assets/icons/face_icon.svg" alt="" />
-            <div className="drodownMenu1">
-              <div className="menuItem" onClick={() => handleEmoticon(0)}>
-                <img src="/assets/icons/image 185.png" alt="" />
-              </div>
-              <div className="menuItem" onClick={() => handleEmoticon(1)}>
-                <img src="/assets/icons/Grimacing Face.png" alt="" />
-              </div>
-              <div className="menuItem" onClick={() => handleEmoticon(2)}>
-                <img src="/assets/icons/Star-Struck.png" alt="" />
-              </div>
-              <div className="menuItem" onClick={() => handleEmoticon(3)}>
-                <img src="/assets/icons/Smiling Face with Heart-Eyes.png" alt="" />
+            <div className="smallBtn ml-3 dropdown">
+              <img src="/assets/icons/face_icon.svg" alt="" />
+              <div className="drodownMenu1">
+                <div className="menuItem" onClick={() => handleEmoticon(0)}>
+                  <img src="/assets/icons/image 185.png" alt="" />
+                </div>
+                <div className="menuItem" onClick={() => handleEmoticon(1)}>
+                  <img src="/assets/icons/Grimacing Face.png" alt="" />
+                </div>
+                <div className="menuItem" onClick={() => handleEmoticon(2)}>
+                  <img src="/assets/icons/Star-Struck.png" alt="" />
+                </div>
+                <div className="menuItem" onClick={() => handleEmoticon(3)}>
+                  <img src="/assets/icons/Smiling Face with Heart-Eyes.png" alt="" />
+                </div>
               </div>
             </div>
           </div>

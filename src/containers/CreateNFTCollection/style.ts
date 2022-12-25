@@ -5,7 +5,7 @@ export const useStyles = makeStyles(theme => ({
     background: '#ffffff',
     borderRadius : 20,
     height : '100%',
-    padding: 24,
+    
     [theme.breakpoints.down('sm')]: {
       padding: 0,
       paddingTop: 0,
@@ -14,18 +14,118 @@ export const useStyles = makeStyles(theme => ({
     '&.MuiSelect-icon': {},
   },
   top: {
-    background: '#ffffff00',
-    margin: theme.spacing(0, 2),
-    width: 'calc(100% - 30px)',
-    paddingTop: 10,
-    paddingBottom: 10,
+    backgroundSize : 'cover',
+    backgroundRepeat : 'norepeat',
+    backgroundPosition : '50%',
+    width: '100%',
+    height : 300,
     display: 'flex',
-    alignItems: 'center',
-    justifyContent: 'space-between',
-    flexWrap: 'wrap',
+    alignItems: 'flex-start',
+    padding : 24,
+    borderRadius : 20,
+    position : 'relative',
     [theme.breakpoints.down('xs')]: {
       flexDirection: 'column',
       alignItems: 'flex-start',
+      padding : 15,
+    },
+    '& .title': {
+      position : 'absolute',
+      bottom : 24,
+      left: 24,
+      [theme.breakpoints.down('xs')]: {
+        bottom : 15,
+        left: 15,
+      },
+      '& h2': {
+        fontSize : 32,
+        color : '#fff',
+        textShadow : '5px 5px 10px #000000aa',
+        [theme.breakpoints.down('xs')]: {
+          fontSize : 18,
+        },
+      },
+    },
+
+    '& .btns': {
+      position : 'absolute',
+      bottom : 24,
+      right: 24,
+      display: 'flex',
+      flexDirection: 'column',
+      alignItems: 'flex-end',
+      gridArea : 'auto',
+      gap : 20,
+      [theme.breakpoints.down('xs')]: {
+        bottom : 50,
+        right: 15,
+      },
+      '& button': {
+        maxWidth: 250,
+        cursor: 'pointer',
+        background: '#F400F5',
+        borderRadius: 15,
+        display : 'flex',
+        justifyContent: 'center',
+        alignItems: 'center',
+        height : 80,
+        position: 'relative',
+        transition : 'all 0.3s ease',
+        border : 'none',
+        padding : '0px 20px',
+        [theme.breakpoints.down('xs')]: {
+            maxWidth: 200,
+            height : 60,
+        },
+        '& p': {
+          fontSize : 16,
+          color : '#fff',
+          marginRight: 10,
+          [theme.breakpoints.down('xs')]: {
+            fontSize : 12,
+          },
+        },
+        '& img': {
+          [theme.breakpoints.down('xs')]: {
+            width: 20,
+            height: 20,
+          },
+        },
+        '&:hover': {
+          background: '#F400a5',
+        },
+      },
+      '& a': {
+        maxWidth: 250,
+        cursor: 'pointer',
+        background: '#fff',
+        borderRadius: 15,
+        display : 'flex',
+        justifyContent: 'center',
+        alignItems: 'center',
+        position: 'relative',
+        transition : 'all 0.3s ease',
+        border : 'none',
+        padding : '10px 20px',
+        color : '#727272',
+        [theme.breakpoints.down('xs')]: {
+          fontSize : 12,
+        },
+
+        '& img': {
+          width: 30,
+          height: 30,
+          marginLeft : 10,
+          [theme.breakpoints.down('xs')]: {
+            width: 20,
+            height: 20,
+          },
+        },
+        
+        '&:hover': {
+          background: '#eee',
+        },
+      }
     },
     
     '& .avatar': {
@@ -45,84 +145,40 @@ export const useStyles = makeStyles(theme => ({
         '& h3': {
           fontSize : 20,
           lineHeight : 1,
+          color : '#fff',
           [theme.breakpoints.down('xs')]: {
             fontSize : 18,
-          },
-        },
-        '& .follows': {
-          marginRight : 20,
-          display: 'flex',
-          alignItems: 'center',
-        },
-        '& .socialLinks': {
-          display: 'flex',
-          alignItems: 'center',
-          gridTemplateColumns: 'auto auto auto',
-          gap: 20,
-          [theme.breakpoints.down('xs')]: {
-            gap: 10,
-          },
-          '& a' :{
-            fontSize: 22,
-            color: '#1EA1F2',
-            textDecoration: 'none',
-            cursor: 'pointer',
-            transition: 'all 0.3s ease',
-            '& :hover':{
-              opacity: 0.7,
-            },
-            [theme.breakpoints.down('xs')]: {
-              fontSize : 20,
-            },
-          }
-        },
-        '& p': {
-          fontSize: 14,
-          marginRight : 20,
-          [theme.breakpoints.down('xs')]: {
-            fontSize: 12,
           },
         },
       },
     },
     '& .right': {
-      marginLeft: 20,
+      marginLeft: 'auto',
+      marginRight : 0,
       marginBottom: 20,
-      flex: 1,
+      flex: 0.8,
       display: 'flex',
       alignItems: 'center',
       [theme.breakpoints.down('xs')]: {
         marginLeft: 0,
         marginBottom: 0,
         width : '100%',
-        justifyContent: 'space-between',
+        alignItems: 'flex-start',
       },
 
       '& p': {
         fontSize: 14,
+        color : '#fff',
         [theme.breakpoints.down('xs')]: {
+          display: '-webkit-box',
+          WebkitLineClamp: 2,
+          boxSizing: 'border-box',
+          textOverflow:'ellipsis',
+          overflow: 'hidden',
+          whiteSpace: 'normal',
+          WebkitBoxOrient: 'vertical',
         },
       },
-      '& .edit_profile':{
-        padding : '10px 20px',
-        background: '#F0F2F5',
-        boxShadow: '-1.96149px 2.94223px 6.86521px rgba(0, 0, 0, 0.25)',
-        borderRadius: 10,
-        fontSize: '0.8vw',
-        color : '#727272',
-        [theme.breakpoints.up('xl')]: {
-          fontSize: 18,
-        },
-        [theme.breakpoints.only('xl')]: {
-          fontSize: 16,
-        },
-        [theme.breakpoints.only('md')]: {
-          padding: '8px 1vw',
-        },
-        [theme.breakpoints.down('xs')]: {
-          fontSize : 12,
-        },
-      }
     },
   },
 
@@ -133,7 +189,7 @@ export const useStyles = makeStyles(theme => ({
     flexDirection: 'column',
     alignItems: 'center',
     paddingTop: 10,
-
+    padding: 24,
     [theme.breakpoints.down('xs')]: {
       paddingBottom: 20,
     },
@@ -239,8 +295,8 @@ export const useStyles = makeStyles(theme => ({
         width : 15,
         height : 15,
         [theme.breakpoints.down('xs')]: {
-          width : 18,
-          height : 18,
+          width : 12,
+          height : 12,
         },
       },
     },
@@ -252,30 +308,38 @@ export const useStyles = makeStyles(theme => ({
     flexDirection : 'column',
     width: '100%',
     padding : '10px 20px 0px 20px',
-    '& h5': {
+    '& p': {
       fontSize : 14,
       color : '#343A69',
       width: '100%',
-      textAlign : 'end',
-      marginBottom : 20,
+      marginBottom : 10,
       [theme.breakpoints.down('xs')]: {
         fontSize: 12,
       },
+    },
+    '& .chooseBtns': {
+      width: '100%',
+      marginBottom : 20,
     },
 
     '& .row': {
       display: 'flex',
       alignItems: 'center',
-      justifyContent : 'space-between',
+      justifyContent : 'flex-start',
       width: '100%',
-      borderRadius: 7,
-
-      '& p': {
-        fontSize : 14,
-        color : '#262626',
-        fontFamily: "'Josefin Sans', sans-serif",
+      gridArea : 'auto',
+      gap : 10,
+      [theme.breakpoints.down('xs')]: {
+        // flexDirection : 'column',
+      },
+      '& button': {
+        width : 'fit-content',
+        maxWidth: '40%',
         [theme.breakpoints.down('xs')]: {
-          fontSize: 12,
+          maxWidth: '50%',
+          fontSize : 10,
+          padding : 5,
+          // width : '100%',
         },
       },
     },
@@ -287,11 +351,12 @@ export const useStyles = makeStyles(theme => ({
     gridTemplateColumns: 'auto auto auto',
     gap: 20,
     padding : 20,
+    paddingTop : 0,
     [theme.breakpoints.down('xs')]: {
       gap: 10,
     },
     '& button': {
-      width : '50%',
+      width : '100%',
       
       [theme.breakpoints.down('xs')]: {
         fontSize: 12,

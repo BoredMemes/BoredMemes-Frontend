@@ -1,10 +1,12 @@
 import { makeStyles } from '@material-ui/core/styles';
+import { useState } from 'react';
 
 interface PropsType {
   filter?: string;
   setFilter?: any;
   searchStr?: string;
   setSearchStr?: any;
+  handleAllClick ?: any
 }
 
 const useStyles = makeStyles(theme => ({
@@ -41,7 +43,11 @@ const useStyles = makeStyles(theme => ({
       marginBottom: 10,
       marginTop: 10,
       width: '100%',
-      '@media screen and (max-width: 768px) and (orientation: portrait)': {
+      display: 'flex',
+      alignItems: 'center',
+      gridArea : 'auto',
+      gap : 10,
+      [theme.breakpoints.down('xs')]: {
         width: '100%',
         marginRight: 0,
         marginBottom: 10,
@@ -56,6 +62,7 @@ const useStyles = makeStyles(theme => ({
         alignItems: 'center',
         background: '#F0F2F5',
         color: '#93989A',
+        width: 'calc(100% - 100px)',
         '@media screen and (max-width: 768px) and (orientation: portrait)': {
           justifyContent: 'center',
         },
@@ -100,6 +107,29 @@ const useStyles = makeStyles(theme => ({
           },
         },
       },
+      '& .btns': {
+        width : 100,
+        gridArea : 'auto',
+        gap : 10,
+        display: 'flex',
+        alignItems: 'center',
+        '& button': {
+          border : '1px #F400F500 solid',
+          background: '#ffffff00',
+          cursor: 'pointer',
+          transition: 'all 0.3s ease',
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent : 'center',
+          width : 40,
+          height : 40,
+          borderRadius: 35,
+
+          '&:hover': {
+            background: '#F0F2F5',
+          },
+        }
+      }
     },
     '& .select': {
       marginRight: 10,
@@ -152,12 +182,91 @@ const useStyles = makeStyles(theme => ({
         color : '#fff',
       }
     },
+
+    '& .smalBtns': {
+      marginRight: 0,
+      marginLeft: 'auto',
+      marginBottom: 10,
+      marginTop: 10,
+      display : 'flex',
+      gridArea : 'auto',
+      gap : 10,
+      '@media screen and (max-width: 768px) and (orientation: portrait)': {
+        marginRight: 0,
+        marginBottom: 10,
+      },
+      '& .likeBtn': {
+        display: 'flex',
+        alignItems: 'center',
+        justifyContent: 'center',
+        border: 'none',
+        padding: 0,
+        background: '#F0F2F500',
+        borderRadius: 5,
+        cursor: 'pointer',
+        transition: 'all 0.3s ease',
+        width : 30,
+        height : 30,
+        
+        [theme.breakpoints.only('xs')]: {
+        },
+        '&:hover': {
+          background: '#F0F2F5',
+        },
+        '& img': {
+          [theme.breakpoints.only('xs')]: {
+          },
+        },
+      },
+      '& .imgBtn': {
+        display: 'flex',
+        alignItems: 'center',
+        justifyContent: 'center',
+        border: 'none',
+        padding: 0,
+        background: '#F0F2F500',
+        borderRadius: 5,
+        cursor: 'pointer',
+        transition: 'all 0.3s ease',
+        height : 30,
+        
+        [theme.breakpoints.only('xs')]: {
+        },
+        '&:hover': {
+          background: '#F0F2F5',
+        },
+        '& img': {
+          [theme.breakpoints.only('xs')]: {
+          },
+        },
+      },
+      '& .activeBtn': {
+        background: '#F400F5',
+        color : '#fff',
+      }
+    },
   },
  
 }));
 
-const Filter = ({ filter, setFilter, searchStr, setSearchStr }: PropsType) => {
+const Filter = ({ filter, setFilter, searchStr, setSearchStr, handleAllClick }: PropsType) => {
   const classes = useStyles();
+
+  const [stateShowImage, setStateShowImage] = useState(0)
+  const onShowImages = ()=>{
+    if(stateShowImage < 2){
+      setStateShowImage(stateShowImage + 1)
+    }
+    else{
+      setStateShowImage(0)
+    }
+  }
+  const [isAll, setIsAll] = useState(false)
+  const onSelectAll = ()=>{
+    setIsAll(!isAll)
+    handleAllClick()
+
+  }
   return (
     <>
       <div className={classes.root}>
@@ -169,6 +278,10 @@ const Filter = ({ filter, setFilter, searchStr, setSearchStr }: PropsType) => {
               </button>
               <input type="text" placeholder="Search" onChange={(e)=>setSearchStr(e.target.value)}/>
             </span>
+            <div className="btns">
+              <button><img src="/assets/icons/refresh_icon.svg" alt="" /></button>
+              <button onClick={onSelectAll} style = {{borderColor : isAll ? '#F400F5' : '#F400F500'}}><img src="/assets/icons/select_icon.svg" alt="" /></button>
+            </div>
           </div>
 
           <span className="select">
@@ -183,6 +296,27 @@ const Filter = ({ filter, setFilter, searchStr, setSearchStr }: PropsType) => {
           <span className="select">
             <button onClick={() => setFilter('top')} className={`${filter === 'top' ? 'activeBtn filterBtn':'filterBtn'}`}>Top</button>
           </span>
+          <div className="smalBtns">
+            <button onClick={() => onShowImages()} className={`imgBtn`}>
+              {stateShowImage === 0 ? 
+                <img src="/assets/icons/show_all_icon.svg" alt="" />:
+                stateShowImage === 1 ?
+                <img src="/assets/icons/show_icon.svg" alt="" /> :
+                <img src="/assets/icons/show_private_icon.svg" alt="" /> }
+            </button>
+            <button className={`likeBtn`}>
+              <img src="/assets/icons/image 185.png" alt="" />
+            </button>
+            <button className={`likeBtn`}>
+              <img src="/assets/icons/Grimacing Face.png" alt="" />
+            </button>
+            <button className={`likeBtn`}>
+              <img src="/assets/icons/Star-Struck.png" alt="" />
+            </button>
+            <button className={`likeBtn`}>
+              <img src="/assets/icons/Smiling Face with Heart-Eyes.png" alt="" />
+            </button>
+          </div>
         </div>
       </div>
     </>

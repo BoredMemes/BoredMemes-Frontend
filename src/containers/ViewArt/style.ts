@@ -1,67 +1,15 @@
-import { makeStyles } from '@material-ui/core/styles';
-
+import { makeStyles, styled} from '@material-ui/core/styles';
+import { Switch } from '@material-ui/core';
 export const useStyles = makeStyles(theme => ({
   root: {
     background: '#ffffff',
     borderRadius : 20,
-    padding: 24,
     height : '100%',
+    overflow : 'hidden',
     [theme.breakpoints.down('sm')]: {
-      padding: 0,
-      paddingTop: 0,
-      paddingBottom: 50,
+      padding: 20,
     },
-    '&.MuiSelect-icon': {},
-  },
-  top: {
-    background: '#ffffff00',
-    margin: theme.spacing(0, 2),
-    width: 'calc(100% - 30px)',
-    paddingTop: 10,
-    paddingBottom: 10,
-    display: 'flex',
-    alignItems: 'center',
-    justifyContent: 'space-between',
-    flexWrap: 'wrap',
-    [theme.breakpoints.down('xs')]: {
-      flexDirection: 'column',
-      alignItems: 'flex-start',
-    },
-    '& h1': {
-      fontSize : 22,
-      fontWeight : 500,
-      marginBottom: theme.spacing(2),
-      [theme.breakpoints.down('xs')]: {
-        fontSize : 20,
-      },
-    },
-    '& .tabList': {
-      display: 'flex',
-      alignItems: 'center',
-      gridArea : 'auto',
-      gap : 20,
-      [theme.breakpoints.down('xs')]: {
-        fontSize : 20,
-      },
-      '& .tab': {
-        fontSize : 16,
-        fontWeight : 500,
-        padding : '5px 10px',
-        borderBottom : '1px #727272 solid',
-        color : '#727272',
-        cursor : 'pointer',
-        transition : 'all 0.3s ease',
-        [theme.breakpoints.down('xs')]: {
-        },
-      },
-      '& .activeTab': {
-        borderColor : '#000',
-        color : '#000',
-        [theme.breakpoints.down('xs')]: {
-        },
-      },
-    },
-
+    
   },
 
   content: {
@@ -70,90 +18,136 @@ export const useStyles = makeStyles(theme => ({
     justifyContent: 'center',
     flexDirection: 'column',
     alignItems: 'center',
-    paddingTop: 10,
-    position : 'relative',
+
     [theme.breakpoints.down('xs')]: {
-      paddingBottom: 20,
     },
-    '& .sticky': {
-      position : 'sticky',
-      bottom : 10,
-      background : '#F0F2F5',
-      width : '100%',
-      padding : '10px 20px',
-      borderRadius : 15,
-      display: 'flex',
-      justifyContent: 'space-between',
-      alignItems: 'center',
-      transition : 'all 0.5s ease',
-      [theme.breakpoints.down('xs')]: {
-        flexDirection: 'column',
+    '& .art_div': {
+      width: '100%',
+      '& img': {
+        width: '100%',
+        borderRadius : 20,
       },
-      '& .left': {
+    },
+    '& .info_div': {
+      width: '100%',
+      padding : 25,
+      '& .col': {
         [theme.breakpoints.down('xs')]: {
           flexDirection: 'column',
-          width: '100%',
         },
       },
-      '& .btns': {
+      '& .row': {
+        width: '100%',
         display: 'flex',
+        justifyContent: 'space-between',
         alignItems: 'center',
-        gridAare : 'auto',
-        gap : 20,
-        '& button': {
+        [theme.breakpoints.down('xs')]: {
+          // flexDirection: 'column',
+          // alignItems: 'flex-start',
+        },
+        '& .col_info': {
           display: 'flex',
           alignItems: 'center',
-          border : 'none',
-          padding : '8px 20px',
-          fontSize : 16,
-          cursor : 'pointer',
-          transition : 'all 0.3s ease',
-          borderRadius : 50,
+          gridArea : 'auto',
+          gap : 20,
           [theme.breakpoints.down('xs')]: {
-            fontSize : 12,
+            flexDirection: 'column',
+            marginBottom : 20,
           },
-        },
-        '& .grey': {
-          color : '#727272',
-          '&:hover': {
-            background : '#D9D9D9'
+          '& span': {
+            padding: 10,
+            background : '#F400F555',
+            color : '#F400F5',
+            borderRadius : 10,
+            [theme.breakpoints.down('xs')]: {
+              width: '100%',
+            },
           }
         },
-        '& .pink': {
-          color : '#fff',
-          background : '#F400F5',
-          position : 'relative',
+        '& .avatar': {
+          display: 'flex',
+          justifyContent: 'center',
+          alignItems: 'center',
+          flexDirection: 'row',
+          transition : 'all 0.3s ease',
+          padding : 5,
+          borderRadius : 40,
           '&:hover': {
-            background : '#F400F599',
+            background: '#D9D9D9',
+          },
+          '& img': {
+            marginRight: 7,
+            height : 35,
+            width : 35,
+            objectfit : 'cover',
+            borderRadius: 35,
+          },
+          '& p': {
+            width: '100%',
+            display: '-webkit-box',
+            boxSizing: 'border-box',
+            textOverflow:'ellipsis',
+            overflow: 'hidden',
+            whiteSpace: 'normal',
+            WebkitBoxOrient: 'vertical',
+            fontSize : 12,
+          }
+        },
+        '& .btns': {
+          display: 'flex',
+          justifyContent: 'center',
+          alignItems: 'center',
+          flexDirection: 'row',
+          '& button': {
+            height : 80,
+          }
+
+        },
+        '& .smallBtn': {
+          width: 25,
+          height: 25,
+          display: 'flex',
+          justifyContent: 'center',
+          alignItems: 'center',
+          borderRadius: 5,
+          transition: 'all 0.3s ease',
+          '&:hover': {
+            background: '#D9D9D9',
+          },
+        },
+        '& .dropdown': {
+          position: 'relative',
+          '&:hover': {
             '& .drodownMenu': {
+              display: 'flex',
+            },
+            '& .drodownMenu1': {
               display: 'flex',
             }
           },
-          '& img': {
-            marginLeft : 10,
-          },
           '& .drodownMenu': {
             display: 'none',
+            justifyContent: 'center',
+            alignItems: 'center',
             flexDirection: 'column',
             position: 'absolute',
             backgroundColor: '#fff',
             // top: '-156px',
-            right : 0,
             bottom : '100%',
             padding: 7,
             borderRadius: 5,
             zIndex : 2,
             transition: 'all 0.3s ease',
             '& .menuItem': {
+              display: 'flex',
+              alignItems: 'center',
               fontSize: 14,
-              // width: 155,
-              whiteSpace : 'nowrap',
+              width: 155,
               padding: 5,
               transition: 'all 0.3s ease',
               borderRadius: 5,
               color: '#727272',
               position: 'relative',
-              textAlign : 'left',
               '&:hover': {
                 background: '#D9D9D9',
                 '& .subDrodownMenu': {
@@ -163,16 +157,80 @@ export const useStyles = makeStyles(theme => ({
               '& img': {
                 marginRight: 7,
               },
+              '& .subDrodownMenu': {
+                display: 'none',
+                justifyContent: 'center',
+                alignItems: 'center',
+                flexDirection: 'column',
+                position: 'absolute',
+                backgroundColor: '#fff',
+                left: '100%',
+                bottom : 0,
+                padding: 7,
+                borderRadius: 5,
+                zIndex : 2,
+                transition: 'all 0.3s ease',
+              }
+            },
+          },
+          '& .drodownMenu1': {
+            display: 'none',
+            justifyContent: 'center',
+            alignItems: 'center',
+            flexDirection: 'row',
+            position: 'absolute',
+            backgroundColor: '#fff',
+            top: '-3px',
+            left: '-111px',
+            padding: 3,
+            borderRadius: 5,
+            
+            transition: 'all 0.3s ease',
+            '& .menuItem': {
+              display: 'flex',
+              alignItems: 'center',
+              width: 20,
+              height: 20,
+              transition: 'all 0.3s ease',
+              borderRadius: 5,
+              color: '#727272',
+              margin: 3,
+              '&:hover': {
+                background: '#D9D9D9',
+              },
+              '& img': {
+                marginRight: 7,
+    
+              }
             },
           },
         },
+        '& .ml-3': {
+          marginLeft: 7,
+        },
+        
+      },
+      '& .desc': {
+        marginBottom : 20,
+        '& p': {
+          width: '100%',
+          display: '-webkit-box',
+          boxSizing: 'border-box',
+          textOverflow:'ellipsis',
+          overflow: 'hidden',
+          whiteSpace: 'normal',
+          WebkitBoxOrient: 'vertical',
+          fontSize : 12,
+        }
       },
     },
+
+
   },
   masonry: {
     display: 'flex',
     width: '100%',
-    [theme.breakpoints.down('xs')]: {
+    '@media screen and (max-width: 768px) and (orientation: portrait)': {
       flexDirection: 'column',
       width: '100%',
     },
@@ -181,6 +239,7 @@ export const useStyles = makeStyles(theme => ({
     margin: theme.spacing(0, 1),
     [theme.breakpoints.down('sm')]: {
       width: '100%',
+      
     },
     [theme.breakpoints.down('xs')]: {
       display: 'flex',
@@ -264,8 +323,8 @@ export const useStyles = makeStyles(theme => ({
         width : 15,
         height : 15,
         [theme.breakpoints.down('xs')]: {
-          width : 12,
-          height : 12,
+          width : 18,
+          height : 18,
         },
       },
     },
@@ -415,8 +474,63 @@ export const useStyles = makeStyles(theme => ({
       },
     },
   },
+  myInputWrap: {
+    width : '100%',
+    marginBottom :20,
+  }
 }));
 
 
 
 export default useStyles;
+export const MaterialUISwitch = styled(Switch)(({ theme }) => ({
+  width: 62,
+  height: 40,
+  
+  padding: 7,
+  '& .MuiSwitch-switchBase': {
+    margin: 1,
+    padding: 0,
+    transform: 'translateX(8px)',
+    backgroundColor: '#F400F5',
+    top: 8,
+    
+    '&.Mui-checked': {
+      color: '#fff',
+      backgroundColor: '#fff',
+      zIndex : 1,
+      transform: 'translateX(calc(100% + 8px))',
+      '& .MuiSwitch-thumb:before': {
+        backgroundImage: `url('/assets/icons/lock_icon_02.svg')`,
+      },
+      '& + .MuiSwitch-track': {
+        opacity: 1,
+        backgroundColor: '#F400F5',
+        
+      },
+    },
+  },
+  '& .MuiSwitch-thumb': {
+    backgroundColor: '#ffffff00',
+    width: 22,
+    height: 22,
+    '&:before': {
+      content: "''",
+      position: 'absolute',
+      width: '100%',
+      height: '100%',
+      left: 0,
+      top: 0,
+      backgroundRepeat: 'no-repeat',
+      backgroundPosition: 'center',
+      backgroundImage: `url('/assets/icons/lock_icon_01.svg')`,
+    },
+  },
+  '& .MuiSwitch-track': {
+    opacity: 1,
+    color : '#F400F5',
+    backgroundColor: '#fff',
+    borderRadius: 30,
+    border : '1px #F400F5 solid',
+  },
+}));

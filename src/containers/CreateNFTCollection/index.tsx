@@ -1,22 +1,22 @@
-import { MaterialUISwitch, useStyles } from './style';
+import { useStyles } from './style';
 import Masonry from 'react-masonry-css';
 import ProductCard1 from 'components/Cards/ProductCard1';
 import Filter from 'components/Filter/Filter';
 import { useContext, useEffect, useState } from 'react';
-import { HashLink } from 'react-router-hash-link';
 import ViewModal from 'components/modal/viewModal/ViewModal';
 import Web3WalletContext from 'hooks/Web3ReactManager';
-import { useAuthState } from 'context/authContext';
 import axios from 'axios';
 import { toast } from 'react-toastify';
-import CollectionLIst from 'components/CollectionLIst/CollectionLIst';
 import Modal from 'components/modal';
 import FilledButton from 'components/Buttons/FilledButton';
 import TextInput from 'components/Forms/TextInput';
+import { useHistory } from 'react-router-dom';
 
 const tmp = [
   {
     assetUrl: "/assets/imgs/unsplash_bMSA5-tLFao.png",
+    useerUrl: "/assets/avatars/avatar_01.png",
+    title : 'First Collection',
     bookmarkCount: 0,
     bookmarks: [],
     creator: "0x0000000000000000000000000000000000000000",
@@ -46,6 +46,8 @@ const tmp = [
   },
   {
     assetUrl: "/assets/imgs/unsplash_bMSA5-tLFao (1).png",
+    useerUrl: "/assets/avatars/avatar_01.png",
+    title : 'First Collection',
     bookmarkCount: 0,
     bookmarks: [],
     creator: "0x0000000000000000000000000000000000000000",
@@ -75,6 +77,8 @@ const tmp = [
   },
   {
     assetUrl: "/assets/imgs/unsplash_bMSA5-tLFao (1).png",
+    useerUrl: "/assets/avatars/avatar_01.png",
+    title : 'First Collection',
     bookmarkCount: 0,
     bookmarks: [],
     creator: "0x0000000000000000000000000000000000000000",
@@ -104,6 +108,8 @@ const tmp = [
   },
   {
     assetUrl: "/assets/imgs/unsplash_bMSA5-tLFao (2).png",
+    useerUrl: "/assets/avatars/avatar_01.png",
+    title : 'First Collection',
     bookmarkCount: 0,
     bookmarks: [],
     creator: "0x0000000000000000000000000000000000000000",
@@ -133,6 +139,8 @@ const tmp = [
   },
   {
     assetUrl: "/assets/imgs/unsplash_bMSA5-tLFao (2).png",
+    useerUrl: "/assets/avatars/avatar_01.png",
+    title : 'First Collection',
     bookmarkCount: 0,
     bookmarks: [],
     creator: "0x0000000000000000000000000000000000000000",
@@ -162,6 +170,8 @@ const tmp = [
   },
   {
     assetUrl: "/assets/imgs/unsplash_bMSA5-tLFao (3).png",
+    useerUrl: "/assets/avatars/avatar_01.png",
+    title : 'First Collection',
     bookmarkCount: 0,
     bookmarks: [],
     creator: "0x0000000000000000000000000000000000000000",
@@ -191,6 +201,8 @@ const tmp = [
   },
   {
     assetUrl: "/assets/imgs/unsplash_bMSA5-tLFao (3).png",
+    useerUrl: "/assets/avatars/avatar_01.png",
+    title : 'First Collection',
     bookmarkCount: 0,
     bookmarks: [],
     creator: "0x0000000000000000000000000000000000000000",
@@ -220,17 +232,9 @@ const tmp = [
   }
 ]
 
-const tmpCollections = [
-  {
-    assetUrl: "/assets/imgs/unsplash_bMSA5-tLFao.png",
-    title : "First collection",
-    description : 'First Collection'
-  }
-]
-const MyArt = () => {
+const CreateNFTCollection = () => {
   const classes = useStyles();
   const { loginStatus, account } = useContext(Web3WalletContext)
-  const { user } = useAuthState();
   const breakpointColumnsObj = {
     // default: 4,
     3840: 7,
@@ -246,7 +250,13 @@ const MyArt = () => {
   const [filter, setFilter] = useState('new');
   const [searchStr, setSearchStr] = useState('');
   const [myArt, setMyArt] = useState<any[]>([]);
-  const [myCollection, setMyCollection] = useState<any[]>(tmpCollections);
+  const [myCollection, setMyCollection] = useState<any>();
+  const location = useHistory()
+  useEffect(() => {
+    let id = parseInt(location.location.pathname.split('/')[2])
+    setMyCollection(myArt.filter(item=>item?.tokenId === id)[0])
+    console.log(myCollection)
+  }, [location.location.pathname, myArt, myCollection])
 
   useEffect(() => {
     if (loginStatus){
@@ -255,9 +265,9 @@ const MyArt = () => {
   }, [loginStatus])
 
   const fetchItems = async () => {
+
     let paramsData = {
-      emoticonAddr : account?.toLowerCase(),
-      owner : account?.toLowerCase()
+      emoticonAddr : loginStatus ? account?.toLowerCase() : undefined
     }
     axios.get("/api/item", {params : paramsData})
       .then((res) => {
@@ -285,12 +295,6 @@ const MyArt = () => {
   
   const [showModal, setShowModal] = useState(false)
   const [data, setData] = useState(null)
-  const onShow = (d:any)=>{
-    if (d?.itemStatus && d?.isRequested){
-      setShowModal(true)
-      setData(d)
-    }
-  }
 
   // Edit collection
   const [showEditCollectionModal, setShowEditCollectionModal] = useState(false)
@@ -319,9 +323,9 @@ const MyArt = () => {
 
     }
   }
-  const onEditCollection = (d:any)=>{
-    setDescription(d?.description)
-    setTitle(d?.title)
+  const onEditCollection = ()=>{
+    setDescription(myCollection?.description)
+    setTitle(myCollection?.title)
     setShowEditCollectionModal(true)
   }
 
@@ -352,35 +356,35 @@ const MyArt = () => {
   return (
     <>
       <div className={`${classes.root} mainContainer`}>
-        <div className={classes.top}>
+        <div className={classes.top} style = {{backgroundImage : `url('${myCollection?.assetUrl}')`}}>
           <div className="avatar">
-            <img src={user?.logo_url } alt="" />
+            <img src={myCollection?.useerUrl } alt="" />
             <span>
-              <h3>{user?.name}</h3>
-              <div className="follows">
-                <p>0 Following</p>
-                <div className="socialLinks">
-                  <a href={"http://twitter.com/" + user?.social_twitter_id} className = "twitter" target="_blank"rel="noreferrer">
-                    <i className="fab fa-twitter"></i>
-                  </a> 
-                  <a href={"https://t.me/" + user?.social_telegram_id} className = "telegram" target="_blank"rel="noreferrer">
-                    <i className="fab fa-telegram"> </i>
-                  </a> 
-                </div>
-                
-              </div>
-              
+              <h3>{myCollection?.name}</h3>
             </span>
           </div>
           <div className="right">
-            <p>{user?.bio}</p>
-              
+            <p>{myCollection?.description}</p>
+          </div>
+
+          <div className="title">
+            <h2>{myCollection?.title}</h2>
+          </div>
+
+          <div className="btns">
+            <a href={`https://opensea.io/${account}`} target="_blank" rel="noreferrer" >
+            Edit on OpenSea <img src="/assets/icons/opensea_icon.svg" alt="" />
+            </a>
+            <button onClick={onEditCollection}>
+              <p>Mint added images to Collection</p>
+              <img src="/assets/icons/add_icon_01.svg" alt="" />
+            </button>
           </div>
         </div>
-        <CollectionLIst collections={myCollection} onEditCollection = {onEditCollection}/>
+        
+        <div className={classes.content}>
         <Filter filter = {filter} setFilter = {setFilter} setSearchStr = {setSearchStr} handleAllClick = {handleAllClick}/>
 
-        <div className={classes.content}>
           <Masonry
             breakpointCols={breakpointColumnsObj}
             className={classes.masonry}
@@ -402,27 +406,38 @@ const MyArt = () => {
         contentClass={classes.modalRootContent}
         children={<>
           <div className={classes.modal}>
-            <div className={classes.modalTop}>
+            <div className={`${classes.modalTop} modalTop` }>
               <span className='topTitle'>
                 <div>
-                  <h4>Edit Collection</h4>
+                  <h4>Create NFT Collection</h4>
                 </div>
               </span>
               <button className="closeBtn" onClick={() => setShowEditCollectionModal(false)}><img src="/assets/icons/close_icon_01.svg" alt="" /></button>
             </div>
-            <div className={classes.modalContent}>
+            <div className={`${classes.modalContent} modalContent`}>
               <TextInput label={'Title'} wrapperClass = {classes.myInputWrap} value = {title} onChangeData = {(d)=>onChangeTitle(d)}/>
 
               <TextInput isMulti label={<>{'Description'} <span>Optional</span></>} wrapperClass = {classes.myInputWrap} value = {description} onChangeData = {(d)=>onChangeDescription(d)}/>
               
-              <div className="row">
-                <p>Public Collection</p>
-                <MaterialUISwitch onChange={e => setIsPublicCollection(!e.target.checked)} />
+              <div className="chooseBtns">
+                <p>Choose Your Network</p>
+                <div className="row">
+                <FilledButton label={'ETHEREUM'} icon = {<img src="/assets/icons/eth_icon_01.svg" alt=""/>} iconPosition = 'start' handleClick={onSave}  color = 'smart'/>
+                <FilledButton label={'BINANCE SMART CHAIN'} icon = {<img src="/assets/icons/binance_icon.svg" alt=""/>} iconPosition = 'start'  color = 'grey' />
+                </div>
               </div>
+
+              <div className="chooseBtns">
+                <p>Choose Your Price</p>
+                <div className="row">
+                <FilledButton label={'Free Creation 10% Buy/Sell Tax'} color = 'smart'/>
+                <FilledButton label={'1 ETH Creation 1% Buy/Sell Tax'} color = 'grey' />
+                </div>
+              </div>
+
             </div>
             <div className={classes.modalBtns}>
-              <FilledButton label={'Cancel'} color='secondary' handleClick={() => setShowEditCollectionModal(false)} />
-              <FilledButton label={'Save'} handleClick={onSave} />
+              <FilledButton label={'Create NFT Colection'} icon = {<img src="/assets/icons/add_icon_01.svg" alt=""/>} iconPosition = 'start' handleClick={onSave} />
             </div>
           </div>
 
@@ -432,4 +447,4 @@ const MyArt = () => {
   );
 };
 
-export default MyArt;
+export default CreateNFTCollection;

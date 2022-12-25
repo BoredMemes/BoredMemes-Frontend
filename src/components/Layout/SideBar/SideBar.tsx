@@ -44,23 +44,23 @@ export default function SideBar({ menuOpen, setMenuOpen }: MenuType) {
         <ul className='bbr'>
           {loginStatus && <></>}
           <li className={path.indexOf('my_art') >= 0 ? 'selected' : ''}>
-            <div onClick={() => onChangeRoute("my_art")}><img src="/assets/icons/home_icon.svg" alt="" /> My Art</div>
+            <div onClick={() => onChangeRoute("/my_art")}><img src="/assets/icons/home_icon.svg" alt="" /> My Art</div>
           </li>
           <li className={path.indexOf('create_art') >= 0 ? 'selected' : ''}>
-            <div onClick={() => onChangeRoute("create_art")}><img src="/assets/icons/create_icon.svg" alt="" /> Create Art</div>
+            <div onClick={() => onChangeRoute("/create_art")}><img src="/assets/icons/create_icon.svg" alt="" /> Create Art</div>
           </li>
           <li className={path.indexOf('community_feed') >= 0 ? 'selected' : ''}>
-            <div onClick={() => onChangeRoute("community_feed")}><img src="/assets/icons/community_icon.svg" alt="" /> Community Feed</div>
+            <div onClick={() => onChangeRoute("/community_feed")}><img src="/assets/icons/community_icon.svg" alt="" /> Community Feed</div>
           </li>
           <li className={path.indexOf('bookmarks') >= 0 ? 'selected' : ''}>
-            <div onClick={() => onChangeRoute("bookmarks")}><img src="/assets/icons/bookmark_icon.svg" alt="" /> Bookmarks</div>
+            <div onClick={() => onChangeRoute("/bookmarks")}><img src="/assets/icons/bookmark_icon.svg" alt="" /> Bookmarks</div>
           </li>
         </ul>
 
         <h3>Rewards</h3>
         <ul>
           <li className={path === 'miner' ? 'selected' : ''}>
-            <div onClick={() => onChangeRoute("miner")}><img src="/assets/icons/miner_icon.svg" alt="" /> Miner</div>
+            <div onClick={() => onChangeRoute("/miner")}><img src="/assets/icons/miner_icon.svg" alt="" /> Miner</div>
           </li>
           <li className={path === '' ? 'selected' : ''}>
             <div onClick={() => onChangeRoute("")}><img src="/assets/icons/stake_icon.svg" alt="" /> Stake</div>
@@ -71,7 +71,7 @@ export default function SideBar({ menuOpen, setMenuOpen }: MenuType) {
       <div className="sideFooter" onClick={() => setMenuOpen(false)}>
         <ul>
           <li className={path.indexOf('edit_profile') >= 0 ? 'selected' : ''}>
-            <div onClick={() => onChangeRoute("edit_profile")}><img src="/assets/icons/setting_icon.svg" alt="" /> Settings</div>
+            <div onClick={() => onChangeRoute("/edit_profile")}><img src="/assets/icons/setting_icon.svg" alt="" /> Settings</div>
           </li>
         </ul>
         <div className={`change_theme`}>

@@ -59,17 +59,17 @@ const useStyles = makeStyles<Theme, MakeStylesPropType>(theme => ({
       borderColor: 'rgba(0, 0, 0, 0) !important',
     },
     '& input': {
-      padding: '20px 15px',
+      padding: '15px 15px',
       paddingRight: 50,
       background: '#fff',
       border : '1px #222 solid',
-      borderRadius: 15,
+      borderRadius: 10,
     },
     '& textarea': {
-      padding: '20px 15px',
+      padding: '15px 15px',
       background: '#fff',
       border : '1px #222 solid',
-      borderRadius: 15,
+      borderRadius: 10,
     },
     '& input::placeholder, & textarea::placeholder,': {
       color: '#727272',
@@ -97,7 +97,7 @@ const useStyles = makeStyles<Theme, MakeStylesPropType>(theme => ({
     marginBottom: 9,
     display : 'flex',
     justifyContent : 'space-between',
-    fontSize: 18,
+    fontSize: 16,
     fontWeight: 500,
     color : '#343A69',
     '& span': {

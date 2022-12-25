@@ -85,6 +85,28 @@ h1{
   h3, h1{
     color: #fff !important;
   }
+  .modalTop{
+    background-color: #1e1e1e !important;
+  }
+  .modalContent{
+    input{
+      color: #fff !important;
+      background-color: #1e1e1e !important;
+    }
+    textarea{
+      color: #fff !important;
+      background-color: #1e1e1e !important;
+    }
+    p{
+      color: #fff !important;
+    }
+  }
+  .imgBtn{
+    img{
+      filter: brightness(3) !important;
+    }
+
+  }
   .card1{
     background-color: #ffffff22 !important;
     .smallBtn{
@@ -131,6 +153,15 @@ h1{
     background-color: #ffffff33 !important;
     input{
       color: #fff !important;
+    }
+    img{
+      filter: brightness(3) !important;
+    }
+  }
+  .search{
+
+    img{
+      filter: brightness(3) !important;
     }
   }
   .activeThemeBtn{
