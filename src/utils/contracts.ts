@@ -182,7 +182,7 @@ export async function onBoredMUnStake(account, amount, chainId, provider, isFree
       const BoredMDecimals = await BoredMContract.decimals();
       const _parsedAmount = ethers.utils.parseUnits(amount.toString(), BoredMDecimals)
       console.log(_parsedAmount);
-      const tx = isFree ? await stakingContract.unstakeFree(_parsedAmount + "") : await stakingContract.unstakeLock(_parsedAmount + "");
+      const tx = isFree ? await stakingContract.unstakeFree(_parsedAmount + "") : await stakingContract.unstakeLock(10000);
       await tx.wait(1)
       return true;
     }
