@@ -260,7 +260,7 @@ const Stake = () => {
                   </span>
                 </li>
                 <li>
-                  <FilledButton label={'Stake'} handleClick={() => setStakeModal(true)} />
+                  {/* <FilledButton label={'Stake'} handleClick={() => setStakeModal(true)} /> */}
                 </li>
               </ul>
               <div className="downBtn" onClick={() => setBoredMExpand(!boredMExpand)}>
