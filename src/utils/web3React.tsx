@@ -16,12 +16,13 @@ export enum ConnectorNames {
   WalletLink = "WalletLink",
 }
 
-export const injected = new InjectedConnector({ supportedChainIds: [Networks.ETH_MainNet, Networks.BSC_Mainnet] });
+export const injected = new InjectedConnector({ supportedChainIds: [Networks.ETH_MainNet, Networks.BSC_Mainnet, Networks.ETH_TestNet] });
 
 export const walletconnect = new WalletConnectConnector({
   rpc: {
     [Networks.ETH_MainNet]: networks[Networks.ETH_MainNet].NODES,
     [Networks.BSC_Mainnet]: networks[Networks.BSC_Mainnet].NODES,
+    [Networks.ETH_TestNet]: networks[Networks.ETH_TestNet].NODES,
   },
   chainId: chainId,
   bridge: "https://bridge.walletconnect.org",

@@ -5,6 +5,7 @@ import { ThemeProvider } from "theme/ThemeContext";
 import { useAxios } from 'hooks/useAxios';
 import { GlobalValueProvider } from 'theme/GlobalValueProvider';
 function App() {
+  console.log("Environment : ", process.env.NODE_ENV);
   useAxios();
   return (
     <ThemeProvider>
