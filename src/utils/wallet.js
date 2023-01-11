@@ -22,6 +22,7 @@ export const setupNetwork = async () => {
       });
       return true;
     } catch (error) {
+      console.log(networks[chainId]);
       await provider.request({
         method: "wallet_addEthereumChain",
         params: [

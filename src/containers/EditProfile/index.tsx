@@ -14,6 +14,7 @@ import { arrayify, hashMessage } from 'ethers/lib/utils';
 import { ethers } from 'ethers';
 import Web3WalletContext from 'hooks/Web3ReactManager';
 import { useAuthState } from 'context/authContext';
+import TelegramLoginButton from 'react-telegram-login';
 
 const EditProfile = () => {
 
@@ -160,6 +161,10 @@ const EditProfile = () => {
     return () => clearTimeout(_delay);
   }, [userName])
 
+  const handleTelegramResponse = response => {
+    console.log(response);
+  };
+
   return (
     <>
       <div className={classes.root}>
@@ -276,6 +281,7 @@ const EditProfile = () => {
                 <p>Show the Bored memes community that your profile is authentic.</p>
               </Grid>
               <Grid item md={8} xs={12}>
+                <TelegramLoginButton dataOnauth={handleTelegramResponse} botName="OdauBot" />
                 <TextInput
                   name="twitter"
                   disabled={!loginStatus}

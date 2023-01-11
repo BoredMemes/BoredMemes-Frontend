@@ -6,8 +6,6 @@ import { getCurrentNetwork, Networks, networks } from "utils";
 
 const POLLING_INTERVAL = 12000;
 const chainId = parseInt(getCurrentNetwork(), 10);
-console.log(chainId);
-console.log(networks[chainId]);
 const rpcUrl = networks[chainId].NODES;
 
 export enum ConnectorNames {
@@ -16,13 +14,15 @@ export enum ConnectorNames {
   WalletLink = "WalletLink",
 }
 
-export const injected = new InjectedConnector({ supportedChainIds: [Networks.ETH_MainNet, Networks.BSC_Mainnet, Networks.ETH_TestNet] });
+export const injected = new InjectedConnector({ supportedChainIds: process.env.NODE_ENV === "production" ? [Networks.ETH_MainNet, Networks.BSC_Mainnet] : [Networks.ETH_TestNet, Networks.BSC_Testnet]});
 
 export const walletconnect = new WalletConnectConnector({
-  rpc: {
+  rpc: process.env.NODE_ENV === "production" ? {
     [Networks.ETH_MainNet]: networks[Networks.ETH_MainNet].NODES,
     [Networks.BSC_Mainnet]: networks[Networks.BSC_Mainnet].NODES,
-    [Networks.ETH_TestNet]: networks[Networks.ETH_TestNet].NODES,
+  } : {
+    [Networks.ETH_MainNet]: networks[Networks.ETH_TestNet].NODES,
+    [Networks.BSC_Mainnet]: networks[Networks.BSC_Testnet].NODES
   },
   chainId: chainId,
   bridge: "https://bridge.walletconnect.org",

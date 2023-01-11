@@ -17,11 +17,9 @@ const useAuth = () => {
   const { activate, deactivate } = useWeb3React()
 
   const login = useCallback((connectorID: ConnectorNames) => {
-    console.log("Login");
     const connector = connectorsByName[connectorID]
     if (connector) {
       activate(connector, async (error: Error) => {
-        console.log(error);
         if (error instanceof UnsupportedChainIdError) {
           setupNetwork().then((hasSetup) => {
             if (hasSetup) {

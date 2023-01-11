@@ -1,12 +1,10 @@
-import { useWeb3React } from '@web3-react/core';
-import { useContext, useEffect, useState } from 'react';
+import { useContext, useEffect } from 'react';
 import { useHistory, useLocation } from 'react-router-dom';
 import './style.scss';
 import ThemeContext from "theme/ThemeContext"
 import Web3WalletContext from 'hooks/Web3ReactManager';
 import { chainIdLocalStorageKey } from 'hooks';
 import useAuth from 'hooks/useAuth';
-import { getCurrentNetwork } from 'utils';
 type MenuType = {
   menuOpen?: boolean;
   setMenuOpen?(flag: boolean): void;
@@ -23,18 +21,17 @@ export default function SideBar({ menuOpen, setMenuOpen }: MenuType) {
   const { theme, setTheme } = useContext(ThemeContext)
   const onChangeRoute = (route) => {
     history.push(route);
-    // const _chainId = route === "miner" ? process.env.REACT_APP_BSC_NETWORK_ID : process.env.REACT_APP_ETH_NETWORK_ID;
-    // if (getCurrentNetwork() !== _chainId){
-    //   switchNetwork();
-    //   // window.location.reload();
-    // }
   }
 
-  //switchNetwork();
   useEffect(() => {
     window.localStorage.setItem(chainIdLocalStorageKey, path === "miner" ? process.env.REACT_APP_BSC_NETWORK_ID : process.env.REACT_APP_ETH_NETWORK_ID);
     switchNetwork();
   }, [path, account, library])
+
+  const onChangeTheme = (_theme) => {
+    window.localStorage.setItem("themeId", _theme);
+    setTheme(_theme);
+  }
 
   return (
     <div className="sideBar">
@@ -75,8 +72,8 @@ export default function SideBar({ menuOpen, setMenuOpen }: MenuType) {
           </li>
         </ul>
         <div className={`change_theme`}>
-          <button onClick={() => setTheme("light")} className={`${theme === 'light' ? "activeThemeBtn themeBtn" : "themeBtn"}`}><img src="/assets/icons/light_icon.svg" alt="" /> Light</button>
-          <button onClick={() => setTheme("dark")} className={`${theme === 'dark' ? "activeThemeBtn themeBtn" : "themeBtn"}`}><img src="/assets/icons/dark_icon.svg" alt="" /> Dark</button>
+          <button onClick={() => onChangeTheme("light")} className={`${theme === 'light' ? "activeThemeBtn themeBtn" : "themeBtn"}`}><img src="/assets/icons/light_icon.svg" alt="" /> Light</button>
+          <button onClick={() => onChangeTheme("dark")} className={`${theme === 'dark' ? "activeThemeBtn themeBtn" : "themeBtn"}`}><img src="/assets/icons/dark_icon.svg" alt="" /> Dark</button>
         </div>
         <div className="socialLinks">
           <a href="http://twitter.com/boredmemesAi" className="twitter" target="_blank" rel="noreferrer">
