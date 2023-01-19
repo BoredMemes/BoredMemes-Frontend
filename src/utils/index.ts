@@ -3,6 +3,7 @@ import BoredMNFTABI from 'contracts/BoredMNFT.json';
 import BoredMMarketABI from 'contracts/BoredMMarket.json';
 import BoredMTokenABI from 'contracts/BoredMToken.json';
 import BoredMStakingABI from 'contracts/BoredMStaking.json';
+import BoredMFactoryABI from 'contracts/BoredMFactory.json';
 import BNBStakingABI from 'contracts/BNBStaking.json';
 import { chainIdLocalStorageKey } from 'hooks';
 
@@ -30,6 +31,10 @@ export const CONTRACTS_BY_NETWORK = {
     BoredMStaking: {
       address: '0xE0C1aB853b3a3c21Cc3C50BA6494c7AfCC8eCea7',
       abi: BoredMStakingABI
+    },
+    BoredMFactory: {
+      address: '0x1469b4977447d59d1caf901cd75346452c215edb',
+      abi: BoredMFactoryABI
     }
   },
   [Networks.ETH_TestNet]: {
@@ -48,6 +53,10 @@ export const CONTRACTS_BY_NETWORK = {
     BoredMStaking: {
       address: '0x8b4196629F23A0dA3A4976b01b261bFB8360e600',
       abi: BoredMStakingABI
+    },
+    BoredMFactory: {
+      address: '0x1469b4977447d59d1caf901cd75346452c215edb',
+      abi: BoredMFactoryABI
     }
   },
   [Networks.BSC_Mainnet]: {

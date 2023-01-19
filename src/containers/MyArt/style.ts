@@ -126,6 +126,177 @@ export const useStyles = makeStyles(theme => ({
     },
   },
 
+  topdetail: {
+    backgroundSize : 'cover',
+    backgroundRepeat : 'norepeat',
+    backgroundPosition : '50%',
+    background: 'linear-gradient(47.43deg, #2A01FF 0%, #FF1EE1 57%, #FFB332 100%)',
+    width: '100%',
+    height : 300,
+    display: 'flex',
+    alignItems: 'flex-start',
+    padding : 24,
+    borderTopLeftRadius: 20,
+    borderTopRightRadius: 20,
+    position : 'relative',
+    [theme.breakpoints.down('xs')]: {
+      flexDirection: 'column',
+      alignItems: 'flex-start',
+      padding : 15,
+    },
+    '& .title': {
+      position : 'absolute',
+      bottom : 24,
+      left: 24,
+      [theme.breakpoints.down('xs')]: {
+        bottom : 15,
+        left: 15,
+      },
+      '& h2': {
+        fontSize : 32,
+        color : '#fff',
+        textShadow : '5px 5px 10px #000000aa',
+        [theme.breakpoints.down('xs')]: {
+          fontSize : 18,
+        },
+      },
+    },
+
+    '& .btns': {
+      position : 'absolute',
+      bottom : 24,
+      right: 24,
+      display: 'flex',
+      flexDirection: 'column',
+      alignItems: 'flex-end',
+      gridArea : 'auto',
+      gap : 20,
+      [theme.breakpoints.down('xs')]: {
+        bottom : 50,
+        right: 15,
+      },
+      '& button': {
+        maxWidth: 250,
+        cursor: 'pointer',
+        background: '#F400F5',
+        borderRadius: 15,
+        display : 'flex',
+        justifyContent: 'center',
+        alignItems: 'center',
+        height : 80,
+        position: 'relative',
+        transition : 'all 0.3s ease',
+        border : 'none',
+        padding : '0px 20px',
+        [theme.breakpoints.down('xs')]: {
+            maxWidth: 200,
+            height : 60,
+        },
+        '& p': {
+          fontSize : 16,
+          color : '#fff',
+          marginRight: 10,
+          [theme.breakpoints.down('xs')]: {
+            fontSize : 12,
+          },
+        },
+        '& img': {
+          [theme.breakpoints.down('xs')]: {
+            width: 20,
+            height: 20,
+          },
+        },
+        '&:hover': {
+          background: '#F400a5',
+        },
+      },
+      '& div': {
+        maxWidth: 250,
+        cursor: 'pointer',
+        background: '#fff',
+        borderRadius: 15,
+        display : 'flex',
+        justifyContent: 'center',
+        alignItems: 'center',
+        position: 'relative',
+        transition : 'all 0.3s ease',
+        border : 'none',
+        padding : '10px 20px',
+        color : '#727272',
+        [theme.breakpoints.down('xs')]: {
+          fontSize : 12,
+        },
+
+        '& img': {
+          width: 30,
+          height: 30,
+          marginLeft : 10,
+          [theme.breakpoints.down('xs')]: {
+            width: 20,
+            height: 20,
+          },
+        },
+        
+        '&:hover': {
+          background: '#eee',
+        },
+      }
+    },
+    
+    '& .avatar': {
+      display: 'flex',
+      alignItems: 'center',
+      '& img': {
+        borderRadius: '50%',
+        width: 48,
+        height: 48,
+      },
+      '& span': {
+        position: 'relative',
+        display: 'flex',
+        alignItems: 'flex-start',
+        flexDirection: 'column',
+        marginLeft : 7,
+        '& h3': {
+          fontSize : 20,
+          lineHeight : 1,
+          color : '#fff',
+          [theme.breakpoints.down('xs')]: {
+            fontSize : 18,
+          },
+        },
+      },
+    },
+    '& .right': {
+      marginLeft: 'auto',
+      marginRight : 0,
+      marginBottom: 20,
+      flex: 0.8,
+      display: 'flex',
+      alignItems: 'center',
+      [theme.breakpoints.down('xs')]: {
+        marginLeft: 0,
+        marginBottom: 0,
+        width : '100%',
+        alignItems: 'flex-start',
+      },
+
+      '& p': {
+        fontSize: 14,
+        color : '#fff',
+        [theme.breakpoints.down('xs')]: {
+          display: '-webkit-box',
+          WebkitLineClamp: 2,
+          boxSizing: 'border-box',
+          textOverflow:'ellipsis',
+          overflow: 'hidden',
+          whiteSpace: 'normal',
+          WebkitBoxOrient: 'vertical',
+        },
+      },
+    },
+  },
+
   content: {
     width: '100%',
     display: 'flex',
@@ -280,6 +451,49 @@ export const useStyles = makeStyles(theme => ({
       },
     },
   },
+  modalContentDetail: {
+    display: 'flex',
+    alignItems: 'center',
+    justifyContent : 'center',
+    flexDirection : 'column',
+    width: '100%',
+    padding : '10px 20px 0px 20px',
+    '& p': {
+      fontSize : 14,
+      color : '#343A69',
+      width: '100%',
+      marginBottom : 10,
+      [theme.breakpoints.down('xs')]: {
+        fontSize: 12,
+      },
+    },
+    '& .chooseBtns': {
+      width: '100%',
+      marginBottom : 20,
+    },
+
+    '& .row': {
+      display: 'flex',
+      alignItems: 'center',
+      justifyContent : 'flex-start',
+      width: '100%',
+      gridArea : 'auto',
+      gap : 10,
+      [theme.breakpoints.down('xs')]: {
+        // flexDirection : 'column',
+      },
+      '& button': {
+        width : 'fit-content',
+        maxWidth: '40%',
+        [theme.breakpoints.down('xs')]: {
+          maxWidth: '50%',
+          fontSize : 10,
+          padding : 5,
+          // width : '100%',
+        },
+      },
+    },
+  },
   modalBtns: {
     display: 'flex',
     alignItems: 'center',
@@ -293,6 +507,26 @@ export const useStyles = makeStyles(theme => ({
     '& button': {
       width : '50%',
       
+      [theme.breakpoints.down('xs')]: {
+        fontSize: 12,
+      },
+    },
+  },
+  
+  modalBtnsDetail: {
+    display: 'flex',
+    alignItems: 'center',
+    width: '100%',
+    gridTemplateColumns: 'auto auto auto',
+    gap: 20,
+    padding : 20,
+    paddingTop : 0,
+    [theme.breakpoints.down('xs')]: {
+      gap: 10,
+    },
+    '& button': {
+      width : '100%',
+      background: 'linear-gradient(47.43deg, #2A01FF 0%, #FF1EE1 57%, #FFB332 100%)',
       [theme.breakpoints.down('xs')]: {
         fontSize: 12,
       },

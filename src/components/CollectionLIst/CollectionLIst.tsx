@@ -3,7 +3,8 @@ import Masonry from 'react-masonry-css';
 
 interface PropsType {
   collections?: any[];
-  onEditCollection ?: any
+  onEditCollection ?: any;
+  onDetailCollection ?: any;
 }
 
 
@@ -93,7 +94,7 @@ const useStyles = makeStyles(theme => ({
 }));
 
 
-const CollectionLIst = ({ collections, onEditCollection }: PropsType) => {
+const CollectionLIst = ({ collections, onEditCollection, onDetailCollection }: PropsType) => {
   const classes = useStyles();
   const breakpointColumnsObj = {
     // default: 4,
@@ -116,12 +117,12 @@ const CollectionLIst = ({ collections, onEditCollection }: PropsType) => {
             className={classes.masonry}
             columnClassName={classes.gridColumn}
           >
-            {collections.map((collection, key) => (
-              <div className={`${classes.collectionCard} collectionCard`} key = {key} onClick = {()=>onEditCollection(collection)}>
-                <p>{collection?.title}</p>
+            {collections?.map((collection, key) => (
+              <div className={`${classes.collectionCard} collectionCard`} key = {key} onClick = {() => onDetailCollection(collection)}>
+                <p>{collection?.name}</p>
               </div>
             ))}
-            <div className={`${classes.newCollectionCard} newCollectionCard`}>
+            <div className={`${classes.newCollectionCard} newCollectionCard`} onClick = {()=>onEditCollection()}>
               <img src="/assets/icons/add_icon.svg" alt="" />
               <p>New Collection</p>
             </div>

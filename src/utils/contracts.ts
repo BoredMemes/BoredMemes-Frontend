@@ -1,7 +1,7 @@
 import '@ethersproject/shims';
 import { BigNumber, ethers } from 'ethers';
 import { toast } from 'react-toastify';
-import { getContractObj, Networks, networks } from '.';
+import { getContractInfo, getContractObj, Networks, networks } from '.';
 import { BNBStakingInfo, NFTStakingInfo } from './types';
 
 export function isAddress(address) {
@@ -278,3 +278,33 @@ export async function onInvest(refAddress, chainId, provider) {
   }
 }
 
+/**
+* createNewCollection(from, name, uri, bPublic, chainId, provider)
+* from : SingleFrameFixed / MultiFrameFixed
+* name : collection name
+* uri : collectioin uri
+*/
+export async function createNewCollection(chainId, provider) {
+  const factoryContract = getContractObj("BoredMFactory", chainId, provider);
+  const factoryContractInfo = getContractInfo("BoredMFactory", chainId);
+  try {
+    const tx = await factoryContract.createCollection();
+    const receipt = await tx.wait(2);
+    if (receipt.confirmations) {
+      const interf = new ethers.utils.Interface(factoryContractInfo.abi);
+      const logs = receipt.logs;
+      let collectionAddress = "";
+      for (let index = 0; index < logs.length; index++) {
+        const log = logs[index];
+        if (factoryContractInfo.address?.toLowerCase() === log.address?.toLowerCase()) {
+          collectionAddress = interf.parseLog(log).args.collection_address?.toLowerCase();
+          return collectionAddress;
+        }
+      }
+    }
+    return false;
+  } catch (e) {
+    toast.error(JSON.parse(JSON.stringify(e))["reason"]);
+    return false;
+  }
+}

@@ -418,7 +418,6 @@ const CreateNFTCollection = () => {
               <TextInput label={'Title'} wrapperClass = {classes.myInputWrap} value = {title} onChangeData = {(d)=>onChangeTitle(d)}/>
 
               <TextInput isMulti label={<>{'Description'} <span>Optional</span></>} wrapperClass = {classes.myInputWrap} value = {description} onChangeData = {(d)=>onChangeDescription(d)}/>
-              
               <div className="chooseBtns">
                 <p>Choose Your Network</p>
                 <div className="row">
@@ -434,7 +433,6 @@ const CreateNFTCollection = () => {
                 <FilledButton label={'1 ETH Creation 1% Buy/Sell Tax'} color = 'grey' />
                 </div>
               </div>
-
             </div>
             <div className={classes.modalBtns}>
               <FilledButton label={'Create NFT Colection'} icon = {<img src="/assets/icons/add_icon_01.svg" alt=""/>} iconPosition = 'start' handleClick={onSave} />

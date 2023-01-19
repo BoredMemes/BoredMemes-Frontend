@@ -162,7 +162,9 @@ const EditProfile = () => {
   }, [userName])
 
   const handleTelegramResponse = response => {
+    console.log("Telegram Response");
     console.log(response);
+    console.log("Telegram Response End");
   };
 
   return (
@@ -281,7 +283,7 @@ const EditProfile = () => {
                 <p>Show the Bored memes community that your profile is authentic.</p>
               </Grid>
               <Grid item md={8} xs={12}>
-                <TelegramLoginButton dataOnauth={handleTelegramResponse} botName="OdauBot" />
+                <TelegramLoginButton dataOnauth={handleTelegramResponse} botName="PixiaLoginBot" />
                 <TextInput
                   name="twitter"
                   disabled={!loginStatus}
@@ -311,7 +313,7 @@ const EditProfile = () => {
                     setTelegram(val);
                   }}
                 />
-                <TextInput
+                {/* <TextInput
                   name="email"
                   disabled={!loginStatus}
                   className={classes.myInput}
@@ -324,13 +326,13 @@ const EditProfile = () => {
                   onChangeData={val => {
                     setEmail(val);
                   }}
-                />
+                /> */}
               </Grid>
             </Grid>
 
           </div>
 
-          <div className={`${classes.panel} panel`}>
+          {/* <div className={`${classes.panel} panel`}>
             <Grid container justifyContent="space-between" spacing={4}>
               <Grid item md={4} xs={12}>
                 <h2>Art creation Notifications.</h2>
@@ -359,11 +361,9 @@ const EditProfile = () => {
                   <h3>Email Notification</h3>
                   <i className="fa fa-envelope"></i>
                 </div>
-                {/* <ErrorAlert title="One of 3 is recommanded." show={((twitterChecked ? 1 : 0) + (telegramChecked ? 1 : 0) + (emailChecked ? 1 :0)) > 1 } alertType='warning' /> */}
               </Grid>
             </Grid>
-
-          </div>
+          </div> */}
           <FilledButton label={'Save Changes'} className={classes.saveButton} handleClick={() => onSubmit()} />
 
 
