@@ -1,5 +1,6 @@
 import FilledButton from 'components/Buttons/FilledButton';
 import ReactDOM from 'react-dom';
+import postscribe from 'postscribe';
 import { useStyles } from './style';
 import { toast } from "react-toastify";
 import { useWeb3React } from '@web3-react/core';
@@ -96,6 +97,10 @@ const EditProfile = () => {
     setSignMsg("")
     setTimestamp(0);
   }
+
+  useEffect(() => {
+    postscribe('#root', '<script async src="https://telegram.org/js/telegram-widget.js?21" data-telegram-login="PixiaLoginBot" data-size="large" data-onauth="onTelegramAuth(user)" data-request-access="write"></script>');
+  }, [])
 
   const updateProfile = async () => {
     if (!signMsg && !curTimestamp) return;
@@ -285,7 +290,7 @@ const EditProfile = () => {
               </Grid>
               <Grid item md={8} xs={12}>
                 <div id="telegramButton">
-                  <TelegramLoginButton dataOnauth={handleTelegramResponse} botName="PixiaLoginBot" />
+                  <TelegramLoginButton dataOnauth={handleTelegramResponse} botName="PixiaLoginBot" language="en"/>
                 </div>
                 <TextInput
                   name="twitter"

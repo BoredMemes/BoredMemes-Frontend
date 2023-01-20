@@ -51,6 +51,7 @@
     "moment": "^2.29.1",
     "node-sass": "^6.0.0",
     "notistack": "^1.0.4",
+    "postscribe": "^2.0.8",
     "prop-types": "^15.7.2",
     "qrcode.react": "^1.0.0",
     "react": "^17.0.1",
