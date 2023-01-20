@@ -1,4 +1,5 @@
 import FilledButton from 'components/Buttons/FilledButton';
+import ReactDOM from 'react-dom';
 import { useStyles } from './style';
 import { toast } from "react-toastify";
 import { useWeb3React } from '@web3-react/core';
@@ -283,7 +284,9 @@ const EditProfile = () => {
                 <p>Show the Bored memes community that your profile is authentic.</p>
               </Grid>
               <Grid item md={8} xs={12}>
-                <TelegramLoginButton dataOnauth={handleTelegramResponse} botName="PixiaLoginBot" />
+                <div id="telegramButton">
+                  <TelegramLoginButton dataOnauth={handleTelegramResponse} botName="PixiaLoginBot" />
+                </div>
                 <TextInput
                   name="twitter"
                   disabled={!loginStatus}
