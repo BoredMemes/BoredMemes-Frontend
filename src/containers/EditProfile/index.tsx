@@ -1,9 +1,7 @@
 import FilledButton from 'components/Buttons/FilledButton';
-import ReactDOM from 'react-dom';
 import postscribe from 'postscribe';
 import { useStyles } from './style';
 import { toast } from "react-toastify";
-import { useWeb3React } from '@web3-react/core';
 import { useContext, useEffect, useRef, useState } from 'react';
 import Grid from '@material-ui/core/Grid';
 import UploadFile from '../../components/Forms/UploadFile';
@@ -17,6 +15,7 @@ import { ethers } from 'ethers';
 import Web3WalletContext from 'hooks/Web3ReactManager';
 import { useAuthState } from 'context/authContext';
 import TelegramLoginButton from 'react-telegram-login';
+import TwitterLogin from "react-twitter-login";
 
 const EditProfile = () => {
 
@@ -82,7 +81,7 @@ const EditProfile = () => {
       toast.error('Please connect your wallet correctly!');
       return;
     }
-    if (userName === '' && user?.username == '')return;
+    if (userName === '' && user?.username == '') return;
     setSignModal(true)
     const timestamp = Math.floor(new Date().getTime() / 1000);
     const msg = await library.getSigner().signMessage(arrayify(hashMessage(account?.toLowerCase() + "-" + timestamp)));
@@ -106,12 +105,12 @@ const EditProfile = () => {
     if (!signMsg && !curTimestamp) return;
 
     const notifyIds = [];
-    if (twitterChecked)notifyIds.push(1);
-    if (telegramChecked)notifyIds.push(2);
-    if (emailChecked)notifyIds.push(3);
+    if (twitterChecked) notifyIds.push(1);
+    if (telegramChecked) notifyIds.push(2);
+    if (emailChecked) notifyIds.push(3);
 
     let formData = new FormData();
-    if (nftAsset !== undefined)formData.append('file', nftAsset);
+    if (nftAsset !== undefined) formData.append('file', nftAsset);
     else formData.append('logo_url', user?.logo_url);
     formData.append("address", account?.toLowerCase());
     formData.append("timestamp", curTimestamp.toString());
@@ -125,12 +124,12 @@ const EditProfile = () => {
     formData.append("notifyIds", JSON.stringify(notifyIds));
     axios.post("/api/user/update", formData, {
       headers: {
-        "Content-Type" : "multipart/form-data",
+        "Content-Type": "multipart/form-data",
       }
     })
       .then((res) => {
         closeProfile();
-        if (res.data.message === "success"){
+        if (res.data.message === "success") {
           toast.success("Saved Successfully.")
           window.location.href = "/";
         }
@@ -145,7 +144,7 @@ const EditProfile = () => {
   const [isAvailable, setAvailable] = useState(true);
   const [isNameLoading, setNameLoading] = useState(false);
   function checkUserName() {
-    if (!loginStatus)return;
+    if (!loginStatus) return;
     setNameLoading(true);
     axios.get("/api/user/checkname", { params: { username: userName, address: account?.toLowerCase() } })
       .then((res) => {
@@ -157,7 +156,7 @@ const EditProfile = () => {
         setNameLoading(false);
       })
   }
-  
+
   useEffect(() => {
     if (isNameLoading) return;
     if (userName === "") return;
@@ -171,6 +170,10 @@ const EditProfile = () => {
     console.log("Telegram Response");
     console.log(response);
     console.log("Telegram Response End");
+  };
+
+  const authHandler = (err, data) => {
+    console.log(err, data);
   };
 
   return (
@@ -218,7 +221,7 @@ const EditProfile = () => {
                   label={'Username'}
                   placeholder={'Username'}
                   value={user?.username}
-                  onChangeData={val => { if (val !== user?.username)setUserName(val); }}
+                  onChangeData={val => { if (val !== user?.username) setUserName(val); }}
                 />
                 <ErrorAlert title="A username is required !" show={userName === "" && user?.username === ""} />
                 <ErrorAlert title={`Username ${userName} is available.`} show={!isNameLoading && userName !== "" && isAvailable} alertType='success' />
@@ -290,8 +293,14 @@ const EditProfile = () => {
               </Grid>
               <Grid item md={8} xs={12}>
                 <div id="telegramButton">
-                  <TelegramLoginButton dataOnauth={handleTelegramResponse} botName="PixiaLoginBot" language="en"/>
+                  <TelegramLoginButton dataOnauth={handleTelegramResponse} botName="PixiaLoginBot" language="en" />
                 </div>
+                <TwitterLogin
+                  authCallback={authHandler}
+                  consumerKey={"Q2dcs30qa7p8cW702R5N8j75c"}
+                  consumerSecret={"r7CSSFpbGiyH24sK19fiWcUcEaORF5NYx0zujHeQfK3cceTgIy"}
+                  callbackUrl={"http://localhost:3000/"}
+                />
                 <TextInput
                   name="twitter"
                   disabled={!loginStatus}
@@ -480,7 +489,7 @@ const EditProfile = () => {
               </div>
             </div>
             <div className={classes.modalBtns}>
-              <FilledButton label={'Disconnect'} color='secondary' handleClick={(e) => {closeProfile();}}/>
+              <FilledButton label={'Disconnect'} color='secondary' handleClick={(e) => { closeProfile(); }} />
               <FilledButton label={'Continue'} disabled={!isSigned} handleClick={(e) => { updateProfile(); }} />
             </div>
           </div>
