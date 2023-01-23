@@ -297,9 +297,9 @@ const EditProfile = () => {
                 </div>
                 <TwitterLogin
                   authCallback={authHandler}
-                  consumerKey={"Q2dcs30qa7p8cW702R5N8j75c"}
-                  consumerSecret={"r7CSSFpbGiyH24sK19fiWcUcEaORF5NYx0zujHeQfK3cceTgIy"}
-                  callbackUrl={"http://localhost:3000/"}
+                  consumerKey={"VHBVMHpCOFU2dVRmNi1RV3FpZXE6MTpjaQ"}
+                  consumerSecret={"uenfCxjCKwfZ9M1TZABm2j1C6g9Qmy728MnqWbiqF20XLxE7ro"}
+                  callbackUrl={"https://dev.pixia.ai/"}
                 />
                 <TextInput
                   name="twitter"
