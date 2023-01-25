@@ -2,7 +2,7 @@ import FilledButton from 'components/Buttons/FilledButton';
 import postscribe from 'postscribe';
 import { useStyles } from './style';
 import { toast } from "react-toastify";
-import { useContext, useEffect, useRef, useState } from 'react';
+import { useCallback, useContext, useEffect, useRef, useState } from 'react';
 import Grid from '@material-ui/core/Grid';
 import UploadFile from '../../components/Forms/UploadFile';
 import ErrorAlert from '../../components/Widgets/ErrorAlert';
@@ -15,7 +15,8 @@ import { ethers } from 'ethers';
 import Web3WalletContext from 'hooks/Web3ReactManager';
 import { useAuthState } from 'context/authContext';
 import TelegramLoginButton from 'react-telegram-login';
-import TwitterLogin from "react-twitter-login";
+import { LoginSocialTwitter } from 'reactjs-social-login';
+import { TwitterLoginButton } from 'react-social-login-buttons';
 
 const EditProfile = () => {
 
@@ -176,6 +177,10 @@ const EditProfile = () => {
     console.log(err, data);
   };
 
+  const onLoginStart = useCallback(() => {
+    alert('login start')
+  }, [])
+
   return (
     <>
       <div className={classes.root}>
@@ -295,12 +300,26 @@ const EditProfile = () => {
                 <div id="telegramButton">
                   <TelegramLoginButton dataOnauth={handleTelegramResponse} botName="PixiaLoginBot" language="en" />
                 </div>
-                <TwitterLogin
+                <LoginSocialTwitter
+                  isOnlyGetToken
+                  // client_id={process.env.REACT_APP_TWITTER_V2_APP_KEY || ''}
+                  client_id={"gdNwf8nRctYTUEBnCJyFgoWf9"}
+                  redirect_uri={"https://dev.pixia.ai/"}
+                  onLoginStart={onLoginStart}
+                  onResolve={({ provider, data }) => {
+                    console.log(data);
+                  }}
+                  onReject={(err: any) => {
+                    console.log(err)
+                  }}
+                >
+                  <TwitterLoginButton />
+                </LoginSocialTwitter>
+                {/* <TwitterLogin
                   authCallback={authHandler}
-                  consumerKey={"VHBVMHpCOFU2dVRmNi1RV3FpZXE6MTpjaQ"}
-                  consumerSecret={"uenfCxjCKwfZ9M1TZABm2j1C6g9Qmy728MnqWbiqF20XLxE7ro"}
-                  callbackUrl={"https://dev.pixia.ai/"}
-                />
+                  consumerKey={"gdNwf8nRctYTUEBnCJyFgoWf9"}
+                  consumerSecret={"BDAHYdWTLosUVemheb04IyCP0ytygh9yFj4vcwUa9Jki4ND2aT"}
+                /> */}
                 <TextInput
                   name="twitter"
                   disabled={!loginStatus}
