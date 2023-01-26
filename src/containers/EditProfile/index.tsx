@@ -303,7 +303,7 @@ const EditProfile = () => {
                 <LoginSocialTwitter
                   isOnlyGetToken
                   // client_id={process.env.REACT_APP_TWITTER_V2_APP_KEY || ''}
-                  client_id={"gdNwf8nRctYTUEBnCJyFgoWf9"}
+                  client_id={"VHBVMHpCOFU2dVRmNi1RV3FpZXE6MTpjaQ"}
                   redirect_uri={"https://dev.pixia.ai/account/login"}
                   onLoginStart={onLoginStart}
                   onResolve={({ provider, data }) => {
@@ -315,11 +315,6 @@ const EditProfile = () => {
                 >
                   <TwitterLoginButton />
                 </LoginSocialTwitter>
-                {/* <TwitterLogin
-                  authCallback={authHandler}
-                  consumerKey={"gdNwf8nRctYTUEBnCJyFgoWf9"}
-                  consumerSecret={"BDAHYdWTLosUVemheb04IyCP0ytygh9yFj4vcwUa9Jki4ND2aT"}
-                /> */}
                 <TextInput
                   name="twitter"
                   disabled={!loginStatus}
