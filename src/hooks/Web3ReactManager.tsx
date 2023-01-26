@@ -18,6 +18,7 @@ export function Web3ReactManager({ children }) {
   const { connector, library, account, active, chainId, activate } = useWeb3React();
   const [loginStatus, setLoginStatus] = useState(false);
   useEffect(() => {
+    console.log(chainId);
     const isLoggedin = account && active && process.env.NODE_ENV === "production" ? (chainId === Networks.ETH_MainNet || chainId === Networks.BSC_Mainnet) : (chainId === Networks.ETH_TestNet || chainId === Networks.BSC_Testnet);
     setLoginStatus(isLoggedin);
   }, [connector, library, account, active, chainId]);
