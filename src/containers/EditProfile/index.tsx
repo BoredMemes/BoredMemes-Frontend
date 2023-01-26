@@ -304,7 +304,7 @@ const EditProfile = () => {
                   isOnlyGetToken
                   // client_id={process.env.REACT_APP_TWITTER_V2_APP_KEY || ''}
                   client_id={"gdNwf8nRctYTUEBnCJyFgoWf9"}
-                  redirect_uri={"https://dev.pixia.ai/"}
+                  redirect_uri={"https://dev.pixia.ai/account/login"}
                   onLoginStart={onLoginStart}
                   onResolve={({ provider, data }) => {
                     console.log(data);
