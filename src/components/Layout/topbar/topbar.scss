@@ -1,4 +1,5 @@
 @import '../../../global.scss';
+
 .nav-background {
   height: 5rem;
   width: 100%;
@@ -11,6 +12,7 @@
   box-shadow: 0px 16px 60px #00000008;
   border-radius: 20px;
   margin-bottom: 15px;
+
   @include mobile_potrait {
     position: fixed;
     width: 100vw;
@@ -19,6 +21,7 @@
     backdrop-filter: blur(5px);
   }
 }
+
 .topbar {
   margin: 0 auto;
   display: flex;
@@ -27,10 +30,12 @@
   width: 100%;
   position: relative;
   padding: 0px 10px;
+
   @media screen and (max-width: 1440px) {
     width: 100%;
     padding: 0px 20px;
   }
+
   @include mobile_potrait {
     width: 100%;
   }
@@ -40,33 +45,43 @@
     display: flex;
     align-items: center;
     justify-content: center;
+
     @include mobile_potrait {
       margin-left: 1.8rem;
       height: auto;
     }
+
     @include mobile_landscape {
       margin-left: 0.5rem;
     }
+
     a {
       height: 100%;
       display: flex;
       align-items: center;
       justify-content: center;
       text-decoration: none;
+
       @include mobile_potrait {
         font-size: 2rem;
       }
+
       @include mobile_landscape {
         font-size: 2rem;
       }
+
       img {
         height: 4rem;
+        margin-left: 20px;
+
         @include mobile_potrait {
           height: 3rem;
         }
       }
-      .textLogo{
+
+      .textLogo {
         height: 32px;
+
         @include mobile_potrait {
           display: none;
         }
@@ -87,34 +102,38 @@
       cursor: pointer;
       transition: all 0.3s ease;
       font-size: 0.8vw;
+
       @include mobile_potrait {
         font-size: 14px;
         margin: 0px;
         margin-right: 10px;
       }
+
       &:hover {
         opacity: 0.6;
       }
     }
-    .select-gray{
+
+    .select-gray {
       @include mobile_potrait {
         display: none;
       }
     }
-    
-    a{
+
+    a {
       margin: 0;
       height: 40px;
       width: 40px;
       object-fit: cover;
       border-radius: 50%;
       overflow: hidden;
-      .avatar{
+
+      .avatar {
         height: 40px;
         width: 40px;
       }
     }
-   
+
   }
 
   .hamburger {
@@ -130,6 +149,7 @@
     z-index: 3;
     overflow: hidden;
     transform: scale(0.9);
+
     @include mobile_potrait {
       display: flex;
       width: 25px;
@@ -151,22 +171,28 @@
       transform-origin: left;
       transition: all 1s ease;
     }
+
     &.active {
       z-index: 1;
+
       span {
         &:first-child {
           width: 28px;
           transform: rotate(40deg);
+
           @include mobile_potrait {
             transform: rotate(35deg);
           }
         }
+
         &:nth-child(2) {
           opacity: 0;
         }
+
         &:last-child {
           width: 28px;
           transform: rotate(-40deg);
+
           @include mobile_potrait {
             transform: rotate(-35deg);
           }

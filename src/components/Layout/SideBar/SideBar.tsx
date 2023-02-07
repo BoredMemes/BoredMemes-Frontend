@@ -24,8 +24,8 @@ export default function SideBar({ menuOpen, setMenuOpen }: MenuType) {
   }
 
   useEffect(() => {
-    window.localStorage.setItem(chainIdLocalStorageKey, path === "miner" ? process.env.REACT_APP_BSC_NETWORK_ID : process.env.REACT_APP_ETH_NETWORK_ID);
-    switchNetwork();
+    // window.localStorage.setItem(chainIdLocalStorageKey, path === "miner" ? process.env.REACT_APP_BSC_NETWORK_ID : process.env.REACT_APP_ETH_NETWORK_ID);
+    // switchNetwork();
   }, [path, account, library])
 
   const onChangeTheme = (_theme) => {
@@ -37,17 +37,20 @@ export default function SideBar({ menuOpen, setMenuOpen }: MenuType) {
     <div className="sideBar">
 
       <div className="navList" onClick={() => setMenuOpen(false)}>
-        <h3>Bored Memes</h3>
+        <h3>PIXIA AI</h3>
         <ul className='bbr'>
           {loginStatus && <></>}
           <li className={path.indexOf('my_art') >= 0 ? 'selected' : ''}>
             <div onClick={() => onChangeRoute("/my_art")}><img src="/assets/icons/home_icon.svg" alt="" /> My Art</div>
           </li>
-          <li className={path.indexOf('create_art') >= 0 ? 'selected' : ''}>
+          {/* <li className={path.indexOf('create_art') >= 0 ? 'selected' : ''}>
             <div onClick={() => onChangeRoute("/create_art")}><img src="/assets/icons/create_icon.svg" alt="" /> Create Art</div>
-          </li>
+          </li> */}
           <li className={path.indexOf('community_feed') >= 0 ? 'selected' : ''}>
             <div onClick={() => onChangeRoute("/community_feed")}><img src="/assets/icons/community_icon.svg" alt="" /> Community Feed</div>
+          </li>
+          <li className={path.indexOf('personal_feed') >= 0 ? 'selected' : ''}>
+            <div onClick={() => onChangeRoute("/personal_feed")}><img src="/assets/icons/personal_icon.svg" alt="" /> Personal Feed</div>
           </li>
           <li className={path.indexOf('bookmarks') >= 0 ? 'selected' : ''}>
             <div onClick={() => onChangeRoute("/bookmarks")}><img src="/assets/icons/bookmark_icon.svg" alt="" /> Bookmarks</div>
@@ -57,14 +60,30 @@ export default function SideBar({ menuOpen, setMenuOpen }: MenuType) {
         <h3>Rewards</h3>
         <ul>
           <li className={path === 'miner' ? 'selected' : ''}>
-            <div onClick={() => onChangeRoute("/miner")}><img src="/assets/icons/miner_icon.svg" alt="" /> Miner</div>
+            <div onClick={() => onChangeRoute("/miner")}><img src="/assets/icons/farms_icon.svg" alt="" /> Farms</div>
           </li>
           <li className={path === '' ? 'selected' : ''}>
-            <div onClick={() => onChangeRoute("")}><img src="/assets/icons/stake_icon.svg" alt="" /> Stake</div>
+            <div onClick={() => onChangeRoute("")}><img src="/assets/icons/manage_hub_icon.svg" alt="" /> Manage Hub</div>
           </li>
         </ul>
-
       </div>
+      
+      <div className="stakeInfo">
+        <div className="sideStake">
+          <p>PIXIA Liquidity</p>
+          <div>0.5 ETH</div>
+        </div>
+        <div className="sideStake">
+          <p>Staking Reward</p>
+          <div>0.5 ETH</div>
+        </div>
+        <div className="sideStake">
+          <p>Caller Reward</p>
+          <div>0.5 ETH</div>
+        </div>
+        <div className='fuelup'>FUEL UP</div>
+      </div>
+
       <div className="sideFooter" onClick={() => setMenuOpen(false)}>
         <ul>
           <li className={path.indexOf('edit_profile') >= 0 ? 'selected' : ''}>

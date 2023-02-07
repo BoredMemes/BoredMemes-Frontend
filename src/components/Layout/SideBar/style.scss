@@ -134,6 +134,84 @@
     }
   }
 
+  .stakeInfo {
+    display: flex;
+
+    flex-direction: column;
+    width: 100%;
+    padding: 20px;
+    border-radius: 25px;
+    background: linear-gradient(47.43deg, #2A01FF44 0%, #FF1EE144 57%, #FFB33244 100%);
+    justify-content: center;
+    align-items: center;
+    gap: 14px;
+
+    .sideStake {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      width: 100%;
+
+      p {
+        font-weight: 400;
+        font-style: normal;
+        line-height: 13px;
+        font-family: "Josefin Sans";
+        color: #1846E8;
+      }
+
+      div {
+        width: 63px;
+        height: 20px;
+
+        font-family: 'Josefin Sans';
+        font-style: normal;
+        font-weight: 500;
+        font-size: 16px;
+        line-height: 16px;
+        display: flex;
+        align-items: center;
+        text-align: right;
+
+        /* Gradient Pixia 2 */
+
+        background: linear-gradient(47.43deg, #2A01FF 0%, #FF1EE1 57%, #FFB332 100%);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        background-clip: text;
+      }
+    }
+
+    .fuelup {
+      display: flex;
+      height: 45px;
+      width: 70%;
+      flex-direction: row;
+      justify-content: center;
+      align-items: center;
+      padding: 5px;
+      gap: 10px;
+
+      background: linear-gradient(47.43deg, #2A01FF 0%, #FF1EE1 57%, #FFB332 100%);
+      border-radius: 15px;
+
+      font-family: 'Poppins';
+      font-style: normal;
+      font-weight: 600;
+      line-height: 19px;
+      display: flex;
+      align-items: center;
+      text-align: center;
+      letter-spacing: -0.005em;
+
+      color: #FFFFFF;
+      cursor: pointer;
+      &:hover {
+        opacity: 0.7;
+      }
+    }
+  }
+
   .sideFooter {
     position: sticky;
     top: 30px;

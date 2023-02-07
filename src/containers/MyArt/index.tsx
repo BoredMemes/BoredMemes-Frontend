@@ -4,6 +4,8 @@ import ProductCard1 from 'components/Cards/ProductCard1';
 import Filter from 'components/Filter/Filter';
 import { useContext, useEffect, useState } from 'react';
 import { HashLink } from 'react-router-hash-link';
+import JSZip from "jszip";
+import FileSaver from "file-saver";
 import ViewModal from 'components/modal/viewModal/ViewModal';
 import Web3WalletContext from 'hooks/Web3ReactManager';
 import { useAuthState } from 'context/authContext';
@@ -247,6 +249,8 @@ const MyArt = () => {
   };
   const [filter, setFilter] = useState('new');
   const [searchStr, setSearchStr] = useState('');
+  const [privateType, setPrivateType] = useState(undefined);
+  const [emoticonId, setEmoticonId] = useState(undefined);
   const [myArt, setMyArt] = useState<any[]>([]);
   const [myCollection, setMyCollection] = useState<any[]>();
   const [selectedCollection, setSelectedCollection] = useState(null);
@@ -256,17 +260,22 @@ const MyArt = () => {
       fetchItems();
       fetchCollections();
     }
-  }, [loginStatus, account])
+  }, [loginStatus, account, filter, searchStr, emoticonId, privateType])
+
 
   const fetchItems = async () => {
+    console.log("Fetch Items");
     let paramsData = {
-      emoticonAddr: account?.toLowerCase(),
-      owner: account?.toLowerCase()
+      emoticonAddr: loginStatus ? account?.toLowerCase() : undefined,
+      owner: account?.toLowerCase(),
+      searchTxt: searchStr,
+      emoticonId: emoticonId,
+      privateType: privateType
     }
-    axios.get("/api/item", { params: paramsData })
+    axios.get(filter === "new" ? "/api/art" : "/api/item", { params: paramsData })
       .then((res) => {
         console.log(res.data.items)
-        // setMyArt(res.data.items);
+        setMyArt(res.data.items);
         //setMyArt(tmp);
       }).catch((e) => {
         console.log(e.message);
@@ -290,16 +299,21 @@ const MyArt = () => {
 
   const updateArts = (item) => {
     const newArts = myArt.map((art, key) => {
-      if (art.tokenId === item.tokenId) {
-        return item;
+      if (filter !== "new") {
+        if (art.tokenId === item.tokenId) {
+          return item;
+        }
+      } else {
+        if (art.id === item.id) {
+          return item;
+        }
       }
+
       return art;
     })
+    console.log(newArts);
     setMyArt(newArts);
   }
-
-  useEffect(() => {
-  }, [searchStr]);
 
   const [showModal, setShowModal] = useState(false)
   const [data, setData] = useState(null)
@@ -416,24 +430,22 @@ const MyArt = () => {
 
   // Selection Logic
 
-  const [selectedList, setSelectedList] = useState([])
+  const [selectedItems, setSelectedItems] = useState([])
 
-  const handleClick = (isSelected, tokenId: number) => {
-    console.log(selectedList)
+  const handleClick = (isSelected, item) => {
+    const isNew = filter === "new";
     if (isSelected) {
-      setSelectedList(selectedList.filter((id) => tokenId !== id))
+      setSelectedItems(selectedItems.filter((_item) => isNew ? item.id !== _item.id : (item.tokenId !== _item.tokenId && item.itemCollection !== _item.itemCollection)))
     } else {
-      setSelectedList(selectedList.concat([tokenId]))
+      setSelectedItems(selectedItems.concat([item]))
     }
   }
   const handleAllClick = () => {
-
-    const tokenIds = myArt.map((token) => token.tokenId)
-    const isAllSelected = selectedList.length > 0 && myArt.filter((token) => selectedList.indexOf(token.tokenId) === -1).length === 0
+    const isAllSelected = selectedItems.length > 0 && myArt.length === selectedItems.length;
     if (isAllSelected) {
-      setSelectedList(selectedList.filter((id) => tokenIds.indexOf(id) === -1))
+      setSelectedItems([]);
     } else {
-      setSelectedList(tokenIds)
+      setSelectedItems([...myArt]);
     }
   }
 
@@ -441,6 +453,55 @@ const MyArt = () => {
     setSelectedChainId(_chainId);
   }
 
+  const [showAddColllectionModal, setShowAddColllectionModal] = useState(false)
+  const [showCreateColllectionModal, setShowCreateColllectionModal] = useState(false)
+
+  const onRemove = () => {
+  }
+  const onAdd = () => {
+    setShowAddColllectionModal(true)
+  }
+  const onCreateNFT = () => {
+    //setShowCreateColllectionModal(false)
+  }
+
+  const onPublish = (isPublic) => {
+    if (!loginStatus || !account) {
+      return toast.error("Please connect your wallet correctly.");
+    }
+    let paramsData = {
+      address: account,
+      itemIds: selectedItems.map((_item) => filter === "new" ? _item.id : _item.tokenId),
+      collections: filter === "new" ? [] : selectedItems.map((_item) => _item.itemCollection),
+      isPublic: isPublic,
+      isNew: filter === "new"
+    }
+    axios.post("/api/publish", paramsData)
+      .then((res) => {
+        toast.success((isPublic ? "Published" : "Unpublished") + " Successfully")
+      }).catch((e) => {
+        toast.error(e.message);
+        console.log(e);
+      })
+  }
+  const onDownload = () => {
+    const zip = new JSZip();
+    const zipFile = zip.folder("images");
+    const list = selectedItems.map(async (item, index) => {
+      const fileUrl = item.thumbnail;
+      const response = await fetch(item.thumbnail);
+      const data = await response.blob();
+      const name = fileUrl.split("/")[fileUrl.split("/").length - 1];
+      zipFile.file(name, data);
+      return data;
+    })
+    Promise.all(list).then(function () {
+      zip.generateAsync({ type: "blob" })
+        .then((content) => {
+          FileSaver.saveAs(content, "images");
+        })
+    })
+  }
 
   return (
     <>
@@ -453,7 +514,7 @@ const MyArt = () => {
                 <span>
                   <h3>{user?.name}</h3>
                   <div className="follows">
-                    <p>0 Following</p>
+                    <p>{user?.followers.length || 0} Following</p>
                     <div className="socialLinks">
                       <a href={"http://twitter.com/" + user?.social_twitter_id} className="twitter" target="_blank" rel="noreferrer">
                         <i className="fab fa-twitter"></i>
@@ -481,7 +542,6 @@ const MyArt = () => {
               </div>
               <div className="right">
                 <p>{selectedCollection?.description}</p>
-
               </div>
               <div className="title">
                 <h2>{selectedCollection?.name}</h2>
@@ -498,7 +558,7 @@ const MyArt = () => {
             </div>
         }
         {!isDetail && <CollectionLIst collections={myCollection} onEditCollection={onEditCollection} onDetailCollection={onDetailCollection} />}
-        <Filter filter={filter} setFilter={setFilter} setSearchStr={setSearchStr} handleAllClick={handleAllClick} />
+        <Filter filter={filter} setFilter={setFilter} setPrivateType={setPrivateType} setSearchStr={setSearchStr} handleAllClick={handleAllClick} setEmoticonId={setEmoticonId} />
 
         <div className={classes.content}>
           <Masonry
@@ -507,12 +567,41 @@ const MyArt = () => {
             columnClassName={classes.gridColumn}
           >
             {myArt.map((item, key) => {
-              const isSelected = selectedList.indexOf(item.tokenId) > -1;
-
+              var isSelected = false;
+              for (const _item of selectedItems) {
+                if (filter === "new" && _item.id === item.id) {
+                  isSelected = true;
+                  break;
+                }
+                if (filter !== "new" && _item.tokenId === item.tokenId && _item.itemCollection === item.itemCollection) {
+                  isSelected = true;
+                  break;
+                }
+              }
               return (
-                <ProductCard1 key={key} updateArts={updateArts} item={item} onClick={() => handleClick(isSelected, item.tokenId)} isSelected={isSelected} />)
+                <ProductCard1 key={key} isNew={filter === "new"} updateArts={updateArts} item={item} onClick={() => handleClick(isSelected, item)} isSelected={isSelected} />)
             })}
           </Masonry>
+          <div className="sticky" style={{ opacity: selectedItems.length !== 0 ? 1 : 0, zIndex: selectedItems.length !== 0 ? 0 : -1 }}>
+            <div className="left">
+              <p>Selected : {selectedItems.length}</p>
+            </div>
+            <div className="btns">
+              <button className='grey' onClick={() => setSelectedItems([])}>Close</button>
+              <button className='grey' onClick={handleAllClick}>Selet All</button>
+              <button className='pink'>Actions <img src="/assets/icons/arrow_down_icon_01.svg" alt="" />
+                <div className="drodownMenu">
+                  <div className="menuItem" onClick={() => onDownload()}>Download Zip</div>
+                  <div className="menuItem" onClick={() => onPublish(true)}>Publish</div>
+                  <div className="menuItem" onClick={() => onPublish(false)}>Unpublish</div>
+                  <div className="menuItem" onClick={() => setShowCreateColllectionModal(true)}>Create NFT</div>
+                  <div className="menuItem" onClick={() => onAdd()}>Add To Collection</div>
+                  <div className="menuItem" onClick={() => onRemove()}>Remove From Collection</div>
+                </div>
+              </button>
+
+            </div>
+          </div>
         </div>
       </div>
       <ViewModal updateArts={updateArts} showModal={showModal} setShowModal={setShowModal} item={data} />
@@ -602,6 +691,70 @@ const MyArt = () => {
             </div>
           </div>
 
+        </>}
+      />
+      <Modal
+        show={showAddColllectionModal}
+        maxWidth='sm'
+        contentClass={classes.modalRootContent}
+        children={<>
+          <div className={classes.modal}>
+            <div className={`${classes.modalTop} modalTop`}>
+              <span className='topTitle'>
+                <div>
+                  <h4>Add To Collection</h4>
+                </div>
+              </span>
+              <button className="closeBtn" onClick={() => setShowAddColllectionModal(false)}><img src="/assets/icons/close_icon_01.svg" alt="" /></button>
+            </div>
+            <div className={`${classes.modalAddContent} modalContent`}>
+
+
+              <div className="btns">
+                {myCollection?.map((collection, key) => (
+                  <button className={`collectionCard`} key={key} onClick={() => {}}>
+                    <p>{collection?.name.length > 18 ? collection?.name.substring(0, 17) + "..." : collection?.name}</p>
+                  </button>
+                ))}
+                <button className='newCollectionCard' onClick={() => setShowEditCollectionModal(true)}>
+                  <img src="/assets/icons/add_icon.svg" alt="" />
+                  <p>New Collection</p>
+                </button>
+
+              </div>
+            </div>
+          </div>
+        </>}
+      />
+      <Modal
+        show={showCreateColllectionModal}
+        maxWidth='sm'
+        contentClass={classes.modalRootContent}
+        children={<>
+          <div className={classes.modal}>
+            <div className={`${classes.modalTop} modalTop`}>
+              <span className='topTitle'>
+                <div>
+                  <h4>Add To Collection</h4>
+                </div>
+              </span>
+              <button className="closeBtn" onClick={() => setShowCreateColllectionModal(false)}><img src="/assets/icons/close_icon_01.svg" alt="" /></button>
+            </div>
+            <div className={`${classes.modalAddContent} modalContent`}>
+              <p>Your NFTs are created for free, part of BoredMemesAi Collection. only network fees are applie on creation, and a 10% fee on buy/sell.</p>
+
+              <div className="chooseBtns">
+                <h4>Choose Your Network</h4>
+                <div className="row">
+                  <FilledButton label={'ETHEREUM'} icon={<img src="/assets/icons/eth_icon_01.svg" alt="" />} iconPosition='start' handleClick={() => { }} color='smart' />
+                  <FilledButton label={'BINANCE SMART CHAIN'} icon={<img src="/assets/icons/binance_icon.svg" alt="" />} iconPosition='start' color='grey' />
+                </div>
+              </div>
+            </div>
+            <div className={classes.modalBtns} style={{justifyContent:'center'}}>
+              <FilledButton label={'Create NFTs'} icon={<img src="/assets/icons/add_icon_01.svg" alt="" />} iconPosition='start' handleClick={onCreateNFT} />
+            </div>
+          </div>
         </>}
       />
     </>

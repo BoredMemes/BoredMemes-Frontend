@@ -6,6 +6,7 @@ import MyArt from 'containers/MyArt';
 import ScrollToTop from 'utils/scrollToTop';
 import CreateArt from 'containers/CreateArt';
 import CommunityFeed from 'containers/CommunityFeed';
+import PersonalFeed from 'containers/PersonalFeed';
 import Bookmarks from 'containers/Bookmarks';
 import Miner from 'containers/Miner';
 import Stake from 'containers/Stake';
@@ -20,14 +21,15 @@ const Routes = () => (
         <ScrollToTop />
         <Route exact path="/" component={Stake} />
         <Route exact path="/my_art" component={MyArt} />
-        <Route exact path="/create_art" component={CreateArt} />
+        {/* <Route exact path="/create_art" component={CreateArt} /> */}
         <Route exact path="/community_feed" component={CommunityFeed} />
+        <Route exact path="/personal_feed" component={PersonalFeed} />
         <Route exact path="/bookmarks" component={Bookmarks} />
         <Route exact path="/miner" component={Miner} />
         <Route exact path="/settings" component={EditProfile} />
         <Route exact path="/edit_profile" component={EditProfile} />
         <Route exact path="/create_nft_collection/:id" component={CreateNFTCollection} />
-        <Route exact path="/view_art/:id" component={ViewArt} />
+        <Route exact path="/view_art/:new/:id" component={ViewArt} />
 
         {/* <Route path="/detail/:tokenID" component={Setting} />EditProfile */}
 

@@ -1,12 +1,14 @@
 import { makeStyles } from '@material-ui/core/styles';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 
 interface PropsType {
   filter?: string;
   setFilter?: any;
   searchStr?: string;
   setSearchStr?: any;
-  handleAllClick ?: any
+  handleAllClick ?: any;
+  setEmoticonId ?: any;
+  setPrivateType ?: any;
 }
 
 const useStyles = makeStyles(theme => ({
@@ -168,7 +170,7 @@ const useStyles = makeStyles(theme => ({
           fontSize: 14,
         },
         '&:hover': {
-          background: '#F400F577',
+          background: 'linear-gradient(47.43deg, #2A01FF77 0%, #FF1EE177 57%, #FFB33277 100%);',
         },
         '& img': {
           marginLeft: 10,
@@ -178,7 +180,7 @@ const useStyles = makeStyles(theme => ({
         },
       },
       '& .activeBtn': {
-        background: '#F400F5',
+        background: 'linear-gradient(47.43deg, #2A01FF 0%, #FF1EE1 57%, #FFB332 100%);',
         color : '#fff',
       }
     },
@@ -249,9 +251,10 @@ const useStyles = makeStyles(theme => ({
  
 }));
 
-const Filter = ({ filter, setFilter, searchStr, setSearchStr, handleAllClick }: PropsType) => {
+const Filter = ({ filter, setFilter, setPrivateType, searchStr, setSearchStr, handleAllClick, setEmoticonId }: PropsType) => {
   const classes = useStyles();
 
+  const [ searchTxt, setSearchTxt] = useState("");
   const [stateShowImage, setStateShowImage] = useState(0)
   const onShowImages = ()=>{
     if(stateShowImage < 2){
@@ -261,6 +264,10 @@ const Filter = ({ filter, setFilter, searchStr, setSearchStr, handleAllClick }: 
       setStateShowImage(0)
     }
   }
+
+  useEffect(() => {
+    setPrivateType(stateShowImage === 0 ? undefined : stateShowImage === 1 ? 1 : 0)
+  }, [stateShowImage])
   const [isAll, setIsAll] = useState(false)
   const onSelectAll = ()=>{
     setIsAll(!isAll)
@@ -276,10 +283,10 @@ const Filter = ({ filter, setFilter, searchStr, setSearchStr, handleAllClick }: 
               <button>
                 <i className="fas fa-search"></i>
               </button>
-              <input type="text" placeholder="Search" onChange={(e)=>setSearchStr(e.target.value)}/>
+              <input type="text" placeholder="Search" value={searchTxt} onChange={(e)=>setSearchTxt(e.target.value)}/>
             </span>
             <div className="btns">
-              <button><img src="/assets/icons/refresh_icon.svg" alt="" /></button>
+              <button><img src="/assets/icons/refresh_icon.svg" alt="" onClick={() => setSearchStr(searchTxt)}/></button>
               <button onClick={onSelectAll} style = {{borderColor : isAll ? '#F400F5' : '#F400F500'}}><img src="/assets/icons/select_icon.svg" alt="" /></button>
             </div>
           </div>
@@ -304,16 +311,16 @@ const Filter = ({ filter, setFilter, searchStr, setSearchStr, handleAllClick }: 
                 <img src="/assets/icons/show_icon.svg" alt="" /> :
                 <img src="/assets/icons/show_private_icon.svg" alt="" /> }
             </button>
-            <button className={`likeBtn`}>
+            <button className={`likeBtn`} onClick={() => setEmoticonId(0)}>
               <img src="/assets/icons/image 185.png" alt="" />
             </button>
-            <button className={`likeBtn`}>
+            <button className={`likeBtn`} onClick={() => setEmoticonId(1)}>
               <img src="/assets/icons/Grimacing Face.png" alt="" />
             </button>
-            <button className={`likeBtn`}>
+            <button className={`likeBtn`} onClick={() => setEmoticonId(2)}>
               <img src="/assets/icons/Star-Struck.png" alt="" />
             </button>
-            <button className={`likeBtn`}>
+            <button className={`likeBtn`} onClick={() => setEmoticonId(3)}>
               <img src="/assets/icons/Smiling Face with Heart-Eyes.png" alt="" />
             </button>
           </div>

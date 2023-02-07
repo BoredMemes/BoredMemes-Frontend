@@ -3,73 +3,80 @@ import Masonry from 'react-masonry-css';
 
 interface PropsType {
   collections?: any[];
-  onEditCollection ?: any;
-  onDetailCollection ?: any;
+  onEditCollection?: any;
+  onDetailCollection?: any;
 }
 
 
 const useStyles = makeStyles(theme => ({
   root: {
-    display : 'flex',
+    display: 'flex',
     position: 'relative',
-    padding : 10,
+    padding: 10,
     [theme.breakpoints.down('xs')]: {
     },
   },
   collectionCard: {
     maxWidth: 454,
     cursor: 'pointer',
-    background: '#F400F5',
+    //background: '#F400F5',
+    background: 'linear-gradient(47.43deg, #2A01FF 0%, #FF1EE1 57%, #FFB332 100%);',
     borderRadius: 15,
-    display : 'flex',
+    display: 'flex',
     justifyContent: 'center',
     alignItems: 'center',
-    height : 80,
+    height: 80,
     position: 'relative',
-    transition : 'all 0.3s ease',
+    transition: 'all 0.3s ease',
     [theme.breakpoints.down('xs')]: {
-        width : '100%',
-        height : 60,
+      width: '100%',
+      height: 60,
     },
     '& p': {
-      fontSize : 16,
-      color : '#fff',
+      fontFamily: "Poppins",
+      fontSize: 16,
+      fontWeight: 600,
+      color: '#fff',
       [theme.breakpoints.down('xs')]: {
-        fontSize : 12,
+        fontSize: 12,
       },
     },
-    
+
     '&:hover': {
-      background: '#F400F5aa',
+      background: 'linear-gradient(47.43deg, #2A01FFaa 0%, #FF1EE1aa 57%, #FFB332aa 100%);',
     },
   },
   newCollectionCard: {
     maxWidth: 454,
     cursor: 'pointer',
-    background: '#ffffff00',
+    background: 'linear-gradient(#fff 0 0) padding-box, linear-gradient(47.43deg, #2A01FF 0%, #FF1EE1 57%, #FFB332 100%) border-box;',
     borderRadius: 15,
-    display : 'flex',
+    display: 'flex',
     justifyContent: 'center',
     alignItems: 'center',
-    height : 80,
+    height: 80,
     position: 'relative',
-    transition : 'all 0.3s ease',
-    border: '1px dashed #262626',
+    transition: 'all 0.3s ease',
+    border: '2px dashed #fff',
     [theme.breakpoints.down('xs')]: {
-      width : '100%',
-      height : 60,
+      width: '100%',
+      height: 60,
     },
     '& img': {
-      marginRight : 10,
+      marginRight: 10,
       [theme.breakpoints.down('xs')]: {
-        width : 20,
+        width: 16,
       },
     },
     '& p': {
-      fontSize : 16,
-      color : '#262626',
+      fontFamily: "Poppins",
+      fontSize: 16,
+      fontWeight: 600,
+      background: 'linear-gradient(47.43deg, #2A01FF 0%, #FF1EE1 57%, #FFB332 100%);',
+      WebkitBackgroundClip: 'text',
+      WebkitTextFillColor: 'transparent',
       [theme.breakpoints.down('xs')]: {
-        fontSize : 12,
+        fontSize: 12,
       },
     },
   },
@@ -112,23 +119,23 @@ const CollectionLIst = ({ collections, onEditCollection, onDetailCollection }: P
   return (
     <div className={`${classes.root} collectionList`}>
 
-          <Masonry
-            breakpointCols={breakpointColumnsObj}
-            className={classes.masonry}
-            columnClassName={classes.gridColumn}
-          >
-            {collections?.map((collection, key) => (
-              <div className={`${classes.collectionCard} collectionCard`} key = {key} onClick = {() => onDetailCollection(collection)}>
-                <p>{collection?.name}</p>
-              </div>
-            ))}
-            <div className={`${classes.newCollectionCard} newCollectionCard`} onClick = {()=>onEditCollection()}>
-              <img src="/assets/icons/add_icon.svg" alt="" />
-              <p>New Collection</p>
-            </div>
-          </Masonry>
-          
-        
+      <Masonry
+        breakpointCols={breakpointColumnsObj}
+        className={classes.masonry}
+        columnClassName={classes.gridColumn}
+      >
+        {collections?.map((collection, key) => (
+          <div className={`${classes.collectionCard} collectionCard`} key={key} onClick={() => onDetailCollection(collection)}>
+            <p>{collection?.name.length > 18 ? collection?.name.substring(0,17) + "..." : collection?.name}</p>
+          </div>
+        ))}
+        <div className={`${classes.newCollectionCard} newCollectionCard`} onClick={() => onEditCollection()}>
+          <img src="/assets/icons/add_icon.svg" alt="" />
+          <p>New Collection</p>
+        </div>
+      </Masonry>
+
+
     </div>
   );
 };

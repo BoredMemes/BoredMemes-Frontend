@@ -35,7 +35,7 @@ const useStyles = makeStyles(theme => ({
     },
   },
   sideBar: {
-    width: '16vw',
+    width: '20vw',
     minWidth: 230,
     maxWidth: 300,
     padding: '13px 1.5vw',
@@ -52,13 +52,13 @@ const useStyles = makeStyles(theme => ({
     },
   },
   mainContent: {
-    width: 'calc(100% - 16vw)',
+    width: 'calc(100% - 20vw)',
     borderRadius : 20,
     boxShadow: "0px 16px 60px #00000008",
     height : 'auto',
     margin : 0,
     [theme.breakpoints.up('xl')]: {
-      width: 'calc(100% - 300px)',
+      width: '100%',
     },
     [theme.breakpoints.down('xs')]: {
       width: '100%',

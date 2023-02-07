@@ -90,7 +90,7 @@ export default function Topbar({ menuOpen, setMenuOpen }: MenuType) {
     if (loginStatus && chainId) {
       //console.log("Chain ID : ", chainId);
       setNetworkOption(chainId !== 56 ? options[0] : options[1])
-    }else setNetworkOption(null);
+    } else setNetworkOption(null);
   }, [loginStatus, chainId]);
 
   const options = [
@@ -105,9 +105,10 @@ export default function Topbar({ menuOpen, setMenuOpen }: MenuType) {
         <div className="logo">
           <HashLink to="/">
             <img src="/assets/logo.png" alt="" />
-            <img src="/assets/BoredMemes_FontLogo 1.png" alt="" className='textLogo' />
+            <img src="/assets/BoredMemes_FontLogo 1.png" alt="" />
           </HashLink>
         </div>
+
         <div className="btns">
           <Select
             value={networkOption}

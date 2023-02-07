@@ -31,10 +31,10 @@ const useStyles = makeStyles(theme => ({
     },
   },
   primary: {
-    background: '#F400F5',
+    background: 'linear-gradient(47.43deg, #2A01FF 0%, #FF1EE1 57%, #FFB332 100%);',
     color: '#fff',
     '&:hover': {
-      background: '#F400F599',
+      background: 'linear-gradient(47.43deg, #2A01FF99 0%, #FF1EE199 57%, #FFB33299 100%);',
     },
   },
   secondary: {

@@ -2,6 +2,7 @@ import { makeStyles } from '@material-ui/core/styles';
 import axios from 'axios';
 import Web3WalletContext from 'hooks/Web3ReactManager';
 import { useContext, useLayoutEffect, useRef, useState } from 'react';
+import { useAuthState } from 'context/authContext';
 import { useHistory } from 'react-router-dom';
 import { toast } from 'react-toastify';
 
@@ -11,6 +12,7 @@ interface PropsType {
   updateArts?: any;
   onShow?: any;
   isSelected ?: boolean
+  isNew ?: boolean
 }
 
 interface StyleType {
@@ -193,7 +195,7 @@ const useStyles = makeStyles(theme => ({
             display: 'flex',
             alignItems: 'center',
             fontSize: 14,
-            width: 155,
+            width: 170,
             padding: 5,
             transition: 'all 0.3s ease',
             borderRadius: 5,
@@ -266,9 +268,10 @@ const useStyles = makeStyles(theme => ({
   },
 }));
 
-const PropertyCard1 = ({ item, onClick, onShow, isSelected, updateArts }: PropsType) => {
+const PropertyCard1 = ({ item, onClick, onShow, isSelected, updateArts, isNew }: PropsType) => {
   const classes = useStyles();
   const { loginStatus, account } = useContext(Web3WalletContext)
+  const { user } = useAuthState();
 
   const handleBookmark = async (item) => {
     if (!loginStatus) {
@@ -276,23 +279,43 @@ const PropertyCard1 = ({ item, onClick, onShow, isSelected, updateArts }: PropsT
     }
     let paramsData = {
       address: account?.toLowerCase(),
+      isNew: isNew,
+      artId: item?.id,
       tokenId: item?.tokenId,
       collection: item?.itemCollection
     }
     axios.post("/api/item/bookmark", paramsData)
       .then((res) => {
         console.log(res.data.item);
-        updateArts(res.data.item, true);
+        updateArts(res.data.item);
       }).catch((e) => {
         console.log(e);
       })
   }
 
+  const onFollow = async () => {
+    if (!loginStatus) {
+      return toast.error("Please connect your wallet correctly.");
+    }
+    if (account?.toLowerCase() === item?.ownerUser?.address.toLowerCase()){
+      return toast.error("You can not follow yourself.");
+    }
+    let paramsData = {
+      address: account?.toLowerCase(),
+      toAddress: item?.ownerUser?.address.toLowerCase()
+    }
+    axios.post("/api/user/follow", paramsData)
+    .then((res) => {
+      console.log(res.data.user);
+    }).catch((e) => {
+      console.log(e);
+    })
+  }
 
-  const copyHandle = () => {
+  const copyHandle = (type) => {
     if (item?.description === "")return;
     let textarea = document.createElement("textarea");
-    textarea.textContent = item?.description;
+    textarea.textContent = type === 0 ? item?.fullCommand : type === 1 ? item?.description : "Item Link";
     //textarea.textContent = "dfghjkl;";
     textarea.style.position = "fixed"; // Prevent scrolling to bottom of page in Microsoft Edge.
     document.body.appendChild(textarea);
@@ -332,6 +355,8 @@ const PropertyCard1 = ({ item, onClick, onShow, isSelected, updateArts }: PropsT
     if (loginStatus){
       let paramsData = {
         address: account?.toLowerCase(),
+        isNew: isNew,
+        artId: item?.id,
         tokenId: item?.tokenId,
         collection: item?.itemCollection,
         emoticonId: emoticonId
@@ -340,7 +365,7 @@ const PropertyCard1 = ({ item, onClick, onShow, isSelected, updateArts }: PropsT
         .then((res) => {
           if (res.data.message === "success"){
             item.emoticonId = emoticonId;
-            updateArts(item, false);
+            updateArts(item);
           }          
         }).catch((e) => {
           console.log(e);
@@ -372,9 +397,8 @@ const PropertyCard1 = ({ item, onClick, onShow, isSelected, updateArts }: PropsT
     
     setDivStyle({height: ((ref.current.offsetWidth * y)/x)+ "px"})
   }
-  const location = useHistory()
   const onGotoPage = (link : string)=>{
-    location.push(link)
+    window.open(link, "_blank");
   }
 
 
@@ -395,23 +419,23 @@ const PropertyCard1 = ({ item, onClick, onShow, isSelected, updateArts }: PropsT
         </div>
         <div className="footer">
           <div className="avatar">
-            <img src="/assets/avatars/avatar_01.png" alt="" />
-            <p>{item?.name}</p>
+            <img src={item?.ownerUser?.logo_url} alt="" />
+            <p>{item?.ownerUser?.name}</p>
           </div>
           <div className="btns">
           <div className="smallBtn dropdown">
               <img src="/assets/icons/more_icon.svg" alt="" />
               <div className="drodownMenu">
-                <div className="menuItem" onClick={() => copyHandle()}>
+                <div className="menuItem">
                   <img src="/assets/icons/arrow_icon_01.svg" alt="" /> Copy...
 
                   <div className="subDrodownMenu">
-                    <div className="menuItem" onClick={() => copyHandle()}><img src="/assets/icons/link_icon.svg" alt="" /> Command</div>
-                    <div className="menuItem" onClick={() => copyHandle()}><img src="/assets/icons/images_icon.svg.svg" alt="" /> Prompt</div>
-                    <div className="menuItem" onClick={() => copyHandle()}><img src="/assets/icons/link_icon.svg" alt="" /> Link</div>
+                    <div className="menuItem" onClick={() => copyHandle(0)}><img src="/assets/icons/link_icon.svg" alt="" /> Command</div>
+                    <div className="menuItem" onClick={() => copyHandle(1)}><img src="/assets/icons/images_icon.svg" alt="" /> Prompt</div>
+                    <div className="menuItem" onClick={() => copyHandle(2)}><img src="/assets/icons/link_icon.svg" alt="" /> Link</div>
                   </div>
                 </div>
-                <div className="menuItem" onClick={() =>onGotoPage(`/view_art/${item?.tokenId}`)}>
+                <div className="menuItem" onClick={() =>onGotoPage(`/view_art/${isNew ? "new" : "onchain"}/${isNew? item?.id : item?.tokenId}`)}>
                   <img src="/assets/icons/newTab_icon.svg" alt=""  /> Open new tab
                 </div>
                 <div className="menuItem" onClick={() => onGotoPage(`/create_nft_collection/${item?.tokenId}`)}>
@@ -421,9 +445,12 @@ const PropertyCard1 = ({ item, onClick, onShow, isSelected, updateArts }: PropsT
                 <div className="menuItem" onClick={() => onDownload()}>
                   <img src="/assets/icons/download_icon.svg" alt="" /> Save image
                 </div>
-                <div className="menuItem" >
-                  <img src="/assets/icons/follow_icon.svg" alt="" /> Follow Username
+                {
+                  account?.toLowerCase() !== item?.ownerUser?.address.toLowerCase() && <div className="menuItem" onClick={() => onFollow()}>
+                  <img src="/assets/icons/follow_icon.svg" alt="" /> {user?.followers.includes(item?.ownerUser?.address.toLowerCase()) ? "Unfollow" : "Follow"} {item?.ownerUser?.name.length > 6 ? item?.ownerUser?.name.substring(0,6) + "..." : item?.ownerUser?.name}
                 </div>
+                }
+                
               </div>
             </div>
 

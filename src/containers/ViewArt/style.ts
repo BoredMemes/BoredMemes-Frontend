@@ -474,6 +474,26 @@ export const useStyles = makeStyles(theme => ({
       },
     },
   },
+  modalBtnsDetail: {
+    display: 'flex',
+    alignItems: 'center',
+    width: 330,
+    height: 95,
+    gridTemplateColumns: 'auto auto auto',
+    gap: 20,
+    padding : 20,
+    paddingTop : 0,
+    [theme.breakpoints.down('xs')]: {
+      gap: 10,
+    },
+    '& button': {
+      width : '100%',
+      background: 'linear-gradient(47.43deg, #2A01FF 0%, #FF1EE1 57%, #FFB332 100%)',
+      [theme.breakpoints.down('xs')]: {
+        fontSize: 12,
+      },
+    },
+  },
   myInputWrap: {
     width : '100%',
     marginBottom :20,

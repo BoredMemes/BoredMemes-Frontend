@@ -313,6 +313,99 @@ export const useStyles = makeStyles(theme => ({
       border: 'none',
       boxShadow: '0px 0px 3px #00D9AC',
     },
+    '& .sticky': {
+      position : 'sticky',
+      bottom : 10,
+      background : '#F0F2F5',
+      width : '100%',
+      padding : '10px 20px',
+      borderRadius : 15,
+      display: 'flex',
+      justifyContent: 'space-between',
+      alignItems: 'center',
+      transition : 'all 0.5s ease',
+      [theme.breakpoints.down('xs')]: {
+        flexDirection: 'column',
+      },
+      '& .left': {
+        [theme.breakpoints.down('xs')]: {
+          flexDirection: 'column',
+          width: '100%',
+        },
+      },
+      '& .btns': {
+        display: 'flex',
+        alignItems: 'center',
+        gridAare : 'auto',
+        gap : 20,
+        '& button': {
+          display: 'flex',
+          alignItems: 'center',
+          border : 'none',
+          padding : '8px 20px',
+          fontSize : 16,
+          cursor : 'pointer',
+          transition : 'all 0.3s ease',
+          borderRadius : 50,
+          [theme.breakpoints.down('xs')]: {
+            fontSize : 12,
+          },
+        },
+        '& .grey': {
+          color : '#727272',
+          '&:hover': {
+            background : '#D9D9D9'
+          }
+        },
+        '& .pink': {
+          color : '#fff',
+          background : '#F400F5',
+          position : 'relative',
+          '&:hover': {
+            background : '#F400F599',
+            '& .drodownMenu': {
+              display: 'flex',
+            }
+          },
+          '& img': {
+            marginLeft : 10,
+          },
+          '& .drodownMenu': {
+            display: 'none',
+            flexDirection: 'column',
+            position: 'absolute',
+            backgroundColor: '#fff',
+            // top: '-156px',
+            right : 0,
+            bottom : '100%',
+            padding: 7,
+            borderRadius: 5,
+            zIndex : 2,
+            transition: 'all 0.3s ease',
+            '& .menuItem': {
+              fontSize: 14,
+              // width: 155,
+              whiteSpace : 'nowrap',
+              padding: 5,
+              transition: 'all 0.3s ease',
+              borderRadius: 5,
+              color: '#727272',
+              position: 'relative',
+              textAlign : 'left',
+              '&:hover': {
+                background: '#D9D9D9',
+                '& .subDrodownMenu': {
+                  display: 'flex',
+                }
+              },
+              '& img': {
+                marginRight: 7,
+              },
+            },
+          },
+        },
+      },
+    },
   },
   masonry: {
     display: 'flex',
@@ -485,6 +578,133 @@ export const useStyles = makeStyles(theme => ({
       '& button': {
         width : 'fit-content',
         maxWidth: '40%',
+        [theme.breakpoints.down('xs')]: {
+          maxWidth: '50%',
+          fontSize : 10,
+          padding : 5,
+          // width : '100%',
+        },
+      },
+    },
+  },
+  modalAddContent: {
+    display: 'flex',
+    alignItems: 'center',
+    justifyContent : 'center',
+    flexDirection : 'column',
+    width: '100%',
+    padding : '10px 20px 0px 20px',
+    '& p': {
+      fontSize : 14,
+      color : '#343A69',
+      width: '100%',
+      maxWidth : 350,
+      marginBottom : 10,
+      [theme.breakpoints.down('xs')]: {
+        fontSize: 12,
+      },
+    },
+    
+   
+    '& .btns': {
+      width: '100%',
+      display: 'flex',
+      alignItems: 'center',
+      justifyContent : 'center',
+      flexDirection : 'column',
+      marginBottom : 20,
+      gridArea : 'auto',
+      gap: 20,
+      '& button': {
+        maxWidth: 254,
+        width : '100%',
+        cursor: 'pointer',
+        transition : 'all 0.3s ease',
+        borderRadius: 15,
+        display : 'flex',
+        justifyContent: 'center',
+        alignItems: 'center',
+        height : 80,
+        position: 'relative',
+        
+        [theme.breakpoints.down('xs')]: {
+          width : '100%',
+          height : 60,
+        },
+        '& p': {
+          margin : 0,
+        },
+      },
+      '& .collectionCard': {
+        background: 'linear-gradient(94.46deg, #F400F5 0.38%, #D300F5 100%);',
+        border : 'none',
+        '& p': {
+          fontSize : 16,
+          color : '#fff',
+          [theme.breakpoints.down('xs')]: {
+            fontSize : 12,
+          },
+        },
+        '&:hover': {
+          background: 'linear-gradient(94.46deg, #F400F5AA 0.38%, #D300F5AA 100%);',
+        },
+      },
+      '& .newCollectionCard': {
+        background: 'linear-gradient(#fff 0 0) padding-box, linear-gradient(47.43deg, #2A01FF 0%, #FF1EE1 57%, #FFB332 100%) border-box;',
+        border: '2px dashed #fff',
+        [theme.breakpoints.down('xs')]: {
+          width : '100%',
+          height : 60,
+        },
+        '& img': {
+          marginRight : 10,
+          [theme.breakpoints.down('xs')]: {
+            width : 20,
+          },
+        },
+        '& p': {
+          background: 'linear-gradient(47.43deg, #2A01FF 0%, #FF1EE1 57%, #FFB332 100%);',
+      WebkitBackgroundClip: 'text',
+      WebkitTextFillColor: 'transparent',
+          width : 'fit-content',
+          color : '#262626',
+          [theme.breakpoints.down('xs')]: {
+            fontSize : 12,
+          },
+        },
+      },
+      
+
+    },
+    '& .chooseBtns': {
+      width: '100%',
+      marginBottom : 20,
+      maxWidth : 350,
+      '& h4': {
+        fontSize : 14,
+        color : '#343A69',
+        width: '100%',
+        maxWidth : 350,
+        marginBottom : 10,
+        [theme.breakpoints.down('xs')]: {
+          fontSize: 12,
+        },
+      },
+    },
+    '& .row': {
+      display: 'flex',
+      alignItems: 'center',
+      justifyContent : 'flex-start',
+      width: '100%',
+      gridArea : 'auto',
+      gap : 10,
+      [theme.breakpoints.down('xs')]: {
+        // flexDirection : 'column',
+      },
+      '& button': {
+        width : 'fit-content',
+        maxWidth: '50%',
+        fontSize : 12,
         [theme.breakpoints.down('xs')]: {
           maxWidth: '50%',
           fontSize : 10,
