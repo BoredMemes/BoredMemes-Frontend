@@ -184,7 +184,118 @@ const Stake = () => {
           <div className={classes.top}>
             <h1>Manage Subscription</h1>
           </div>
-          <div className={`${classes.stakeCard} stakeCard`}>
+
+          <div className={classes.manage_sub_body}>
+
+            <div className='plan_card'>
+              <div className='card_header'>
+                <div>
+                  <h4>Your Plan</h4>
+                  <p>Relock your $PIXIA before 16 november 2023, 13:07 to continue using PIXIA.</p>
+                </div>
+                <div style={{ width: '100%', textAlign: 'right' }}>
+                  <button style={{
+                    padding: '5px', background: 'transparent', width: '108px',
+                    height: '45px', borderRadius: '15px', textAlign: 'center', border: 'dashed 1px #ff589d', color: '#be16d2', alignSelf: 'center'
+                  }}>Renew Plan</button>
+                  <button style={{
+                    background: '#2B614C', paddingLeft: 40, paddingRight: 40, border: 'none', color: 'white', height: '45px', marginLeft: 8,
+                    borderRadius: '15px'
+                  }}>Active Plan</button>
+                </div>
+              </div>
+
+              <div className='card_body'>
+                <div className='card'>
+                  <h3>Hours Detail</h3>
+                  <div>
+                    <p>Plan hours</p>
+                    <span>96h 35m / 120h</span>
+                  </div>
+                  <div>
+                    <p>Additional</p>
+                    <span>4h</span>
+                  </div>
+                  <div>
+                    <p>Bonus</p>
+                    <span>0h</span>
+                  </div>
+                  <div>
+                  </div>
+                </div>
+                <div className='card'>
+                  <h3>Get More Hours</h3>
+                  <div className="card_wrapper">
+                    <div className='card_com'>
+                      <h5>1 Hour</h5>
+                      <h6>8 USD</h6>
+                      <button>- ETH</button>
+                    </div>
+                    <div className='card_com'>
+                      <h5>1 Hour</h5>
+                      <h6>8 USD</h6>
+                      <button>- ETH</button>
+                    </div>
+                    <div className='card_com'>
+                      <h5>1 Hour</h5>
+                      <h6>8 USD</h6>
+                      <button>- ETH</button>
+                    </div>
+                  </div>
+                  <div>
+                  </div>
+                </div>
+              </div>
+
+            </div>
+            <div className={classes.how_card}>
+              <div >
+                <div className='plan_question' style={{display:'block'}}>
+                  <strong>How To Get A Plan?</strong>
+                  <p>Stake lock $PIXIA for 30 days to get a plan.To renew your plan, relock your $PIXIA.</p>
+                  <div>
+                    <button style={{
+                      padding: '5px', background: 'transparent',
+                      height: '45px', borderRadius: '15px', textAlign: 'center', border: 'dashed 1px #ff589d', color: '#be16d2', alignSelf: 'center'
+                    }}>Relock $PIXIA</button>
+                    <button style={{
+                      padding: '5px', background: 'linear-gradient(47.43deg, #2A01FF 0%, #FF1EE1 57%, #FFB332 100%)',
+                      height: '45px', borderRadius: '15px', textAlign: 'center', border: 'none', color: 'white', alignSelf: 'center'
+                    }}>Stake $PIXIA</button>
+                  </div>
+                </div>
+                <div className='sub_cards'>
+                  <div>
+                    <h4>Basic</h4>
+                    <p>200 minutes/m</p>
+                    <span>Stake lock</span>
+                    <span>27 USD worth</span>
+                    <span>of $PIXIA</span>
+                  </div>
+                  <div>
+                    <h4>Standard</h4>
+                    <p>15 hours/m</p>
+                    <span>Stake lock</span>
+                    <span>120 USD worth</span>
+                    <span>of $PIXIA</span>
+                  </div><div>
+                    <h4>Pro</h4>
+                    <p>300 minutes/m</p>
+                    <span>Stake lock</span>
+                    <span>240 USD worth</span>
+                    <span>of $PIXIA</span>
+                    <span>Private Mode</span>
+                  </div>
+                </div>
+              </div>
+              <div style={{display:'block'}}>
+                <h3>Frequently Asked Questions</h3>
+                <p>Can't find the answer you're looking for? Read the <a href=''><u>Quick Start Guide</u></a> or visit the <a href=''><u>Telegram Group</u></a> to ask for help.</p>
+              </div>
+            </div>
+          </div>
+
+          {/* <div className={`${classes.stakeCard} stakeCard`}>
             <div className="top">
               <ul>
                 <li>
@@ -274,7 +385,6 @@ const Stake = () => {
                       <h5>Claimed $ETH</h5>
                       <p style={{display:'flex'}}>
                         {(nftStakingInfo?.mClaimedETH + nftStakingInfo?.mClaimedETHLock).toLocaleString(undefined, { maximumFractionDigits: 4 })}
-                        {/* {(nftStakingInfo?.mClaimedETH + nftStakingInfo?.mClaimedETHLock)} */}
                         <MyTooltip
                           text={
                             <>
@@ -284,7 +394,6 @@ const Stake = () => {
                         />
                       </p>
                       <p><small>≈ ${(ethPrice * (nftStakingInfo?.mClaimedETH + nftStakingInfo?.mClaimedETHLock)).toLocaleString(undefined, { maximumFractionDigits: 4 })}</small></p>
-                      {/* <p><small>≈ ${(ethPrice * (nftStakingInfo?.mClaimedETH + nftStakingInfo?.mClaimedETHLock))}</small></p> */}
                     </span>
                   </li>
                   <li>
@@ -292,7 +401,6 @@ const Stake = () => {
                       <h5>Claimable $ETH ({isHarvestFree ? "Free" : "Lock"})</h5>
                       <p style={{display:'flex'}}>
                         {(isHarvestFree ? nftStakingInfo?.mClaimableETH : nftStakingInfo?.mClaimableETHLock).toLocaleString(undefined, { maximumFractionDigits: 4 })}
-                        {/* {(nftStakingInfo?.mClaimableETH + nftStakingInfo?.mClaimableETHLock)} */}
                         <MyTooltip
                           text={
                             isHarvestFree ?
@@ -302,14 +410,12 @@ const Stake = () => {
                         />
                       </p>
                       <p><small>≈ ${(ethPrice * (isHarvestFree ? nftStakingInfo?.mClaimableETH : nftStakingInfo?.mClaimableETHLock)).toLocaleString(undefined, { maximumFractionDigits: 4 })}</small></p>
-                      {/* <p><small>≈ ${(ethPrice * (nftStakingInfo?.mClaimableETH + nftStakingInfo?.mClaimableETHLock))}</small></p> */}
                     </span>
                   </li>
                   <li>
                     <MaterialUISwitch onChange={e => setHarvestFree(!e.target.checked)} />
                   </li>
                   <li>
-                    {/* <FilledButton label={'Reinvest'} color='success' /> */}
                     {
                       isHarvestFree ? nftStakingInfo?.mClaimableETH > 0 && <FilledButton label={'Harvest'} color='secondary' handleClick={() => onHarvest(true)} /> :
                         nftStakingInfo?.mClaimableETHLock > 0 && <FilledButton label={'Harvest'} color='secondary' handleClick={() => onHarvest(false)} />
@@ -326,7 +432,7 @@ const Stake = () => {
           <div className={classes.top}>
             <h1>Other Farms (coming soon)</h1>
             <FilledButton label={'Add your custom farm'} color='grey' handleClick={onAddMiner} />
-          </div>
+          </div> */}
         </div>
       </div>
 

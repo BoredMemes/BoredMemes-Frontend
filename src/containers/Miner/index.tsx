@@ -8,7 +8,59 @@ import { toast } from 'react-toastify';
 import { ethers } from 'ethers';
 import { getBalanceOfBNB, getBNBStakingInfo, onInvest, onMyBuyShares, onSellShares } from 'utils/contracts';
 import { BNBStakingInfo } from 'utils/types';
+import FormControlLabel from '@mui/material/FormControlLabel';
+import Switch, { SwitchProps } from '@mui/material/Switch';
 import axios from 'axios';
+import { styled } from '@mui/material/styles';
+
+const MaterialUISwitch = styled(Switch)(({ theme }) => ({
+  width: 60,
+  height: 34,
+  padding: 7,
+  '& .MuiSwitch-switchBase': {
+    margin: 1,
+    padding: 0,
+    transform: 'translateX(10px)',
+    '&.Mui-checked': {
+      value: 'sg',
+      color: '#fff',
+      transform: 'translateX(30px)',
+      '& .MuiSwitch-thumb:before': {
+        backgroundImage: `url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" height="20" width="20" viewBox="0 0 20 20"><path fill="${encodeURIComponent(
+          '#fff',
+        )}" d="M4.2 2.5l-.7 1.8-1.8.7 1.8.7.7 1.8.6-1.8L6.7 5l-1.9-.7-.6-1.8zm15 8.3a6.7 6.7 0 11-6.6-6.6 5.8 5.8 0 006.6 6.6z"/></svg>')`,
+      },
+      '& + .MuiSwitch-track': {
+        opacity: 1,
+        backgroundColor: theme.palette.mode === 'dark' ? '#8796A5' : '#aab4be',
+      },
+    },
+  },
+  '& .MuiSwitch-thumb': {
+    backgroundColor: theme.palette.mode === 'dark' ? '#003892' : '#001e3c',
+    width: 18,
+    height: 18,
+    marginTop: 8,
+    '&:before': {
+      content: "''",
+      position: 'absolute',
+      width: '90%',
+      height: '90%',
+      left: 0,
+      top: 4,
+      backgroundRepeat: 'no-repeat',
+      backgroundPosition: 'center',
+      backgroundImage: `url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" height="20" width="20" viewBox="0 0 20 20"><path fill="${encodeURIComponent(
+        '#fff',
+      )}" d="M9.305 1.667V3.75h1.389V1.667h-1.39zm-4.707 1.95l-.982.982L5.09 6.072l.982-.982-1.473-1.473zm10.802 0L13.927 5.09l.982.982 1.473-1.473-.982-.982zM10 5.139a4.872 4.872 0 00-4.862 4.86A4.872 4.872 0 0010 14.862 4.872 4.872 0 0014.86 10 4.872 4.872 0 0010 5.139zm0 1.389A3.462 3.462 0 0113.471 10a3.462 3.462 0 01-3.473 3.472A3.462 3.462 0 016.527 10 3.462 3.462 0 0110 6.528zM1.665 9.305v1.39h2.083v-1.39H1.666zm14.583 0v1.39h2.084v-1.39h-2.084zM5.09 13.928L3.616 15.4l.982.982 1.473-1.473-.982-.982zm9.82 0l-.982.982 1.473 1.473.982-.982-1.473-1.473zM9.305 16.25v2.083h1.389V16.25h-1.39z"/></svg>')`,
+    },
+  },
+  '& .MuiSwitch-track': {
+    opacity: 1,
+    backgroundColor: theme.palette.mode === 'dark' ? '#8796A5' : '#aab4be',
+    borderRadius: 20 / 2,
+  },
+}));
 const Miner = () => {
   const classes = useStyles();
   const { loginStatus, chainId, account, library } = useContext(Web3WalletContext)
@@ -140,9 +192,98 @@ const Miner = () => {
       <div className={classes.root}>
         <div className={`${classes.content} mainContainer`}>
           <div className={classes.top}>
-            <h1>BoredM Miner</h1>
+            <h1>Farms with NFT boosters</h1>
           </div>
-          <div className={`${classes.stakeCard} stakeCard`}>
+
+          <div className='stake_withdraw_body'>
+            <div className={`${classes.stake_card} stake_card`}>
+              <img src='assets/imgs/farm-stake-avatar1.png' />
+              <div>
+                <h4>$PIXIA</h4>
+                <p>7,836,923.44</p>
+                <span>≈ $150,09</span>
+              </div>
+
+              <div style={{ padding: 6 }}>
+                <h5>APR</h5>
+                <p>12%/ 44%</p>
+              </div>
+
+              <div>
+                <h5>My staked $PIXIA</h5>
+                <p>7,836,923.44</p>
+                <span>≈ $150,09</span>
+              </div>
+
+              <div style={{ padding: 6 }}>
+                <h5>My NFT Boosters</h5>
+                <h3>4x</h3>
+              </div>
+
+              <div>
+                <h5>My Earned $ETH</h5>
+                <p>0.15</p>
+                <span>≈ $150,09</span>
+              </div>
+
+              <button style={{
+                padding: '5px', background: 'transparent', width: '108px',
+                height: '45px', borderRadius: '15px', textAlign: 'center', border: 'dashed 1px #ff589d', color: '#be16d2', alignSelf: 'center'
+              }}>Stake</button>
+              <button style={{
+                padding: '5px', background: 'linear-gradient(47.43deg, #2A01FF 0%, #FF1EE1 57%, #FFB332 100%)', width: '108px',
+                height: '45px', borderRadius: '15px', textAlign: 'center', border: 'none', color: 'white', alignSelf: 'center'
+              }}>Boost</button>
+            </div>
+
+            <div className={classes.withdraw_card}>
+              <div>
+                <h5>My staked $PIXIA</h5>
+                <p>7,836,923.44</p>
+                <span>≈ $150,09</span>
+              </div>
+
+              <div>
+                <h5>My Earned $ETH</h5>
+                <p>0.15</p>
+                <span>≈ $150,09</span>
+              </div>
+
+              <div>
+                <FormControlLabel
+                  control={<MaterialUISwitch sx={{ m: 1 }} defaultChecked={true} />}
+                  label={''}
+                />
+                <span style={{ display: 'block' }}>Unlock/Lock</span>
+              </div>
+
+              <div>
+                <h5>My NFT Boosters</h5>
+                <img src='assets/imgs/NFT-booster.png' />
+              </div>
+              <button style={{
+                padding: '5px', background: 'transparent', width: '108px',
+                height: '45px', borderRadius: '15px', textAlign: 'center', border: 'dashed 1px #ff589d', color: '#be16d2', alignSelf: 'center'
+              }}>Compound</button>
+              <button style={{
+                padding: '5px', background: 'transparent', width: '108px',
+                height: '45px', borderRadius: '15px', textAlign: 'center', border: 'dashed 1px #ff589d', color: '#be16d2', alignSelf: 'center'
+              }}>Cash Out</button>
+              <button style={{
+                padding: '5px', background: '#4905FB', width: '108px',
+                height: '45px', borderRadius: '15px', textAlign: 'center', border: 'none', color: 'white', alignSelf: 'center'
+              }}>Withdraw</button>
+            </div>
+          </div>
+
+          <div className={classes.custom_create_btn}>
+            <img src='assets/imgs/create-farm-icon.png' />
+            <span>Create Your Custom Farm</span>
+          </div>
+
+
+
+          {/* <div className={`${classes.stakeCard} stakeCard`}>
             <div className="top">
               <ul>
                 <li>
@@ -150,21 +291,21 @@ const Miner = () => {
                   <span>
                     <h4>BoredM Shares</h4>
                     <p>{bnbStakingInfo?.balance.toLocaleString()}$BNB</p>
-                    {/* total balance */}
+                    total balance
                   </span>
                 </li>
                 <li>
                   <span>
                     <h5>My Shares</h5>
                     <p>{bnbStakingInfo?.myShares.toLocaleString()}</p>
-                    {/* <p><small>≈ $150,09</small></p> */}
+                    <p><small>≈ $150,09</small></p>
                   </span>
                 </li>
                 <li>
                   <span>
                     <h5>My Earned $BNB</h5>
                     <p>{bnbStakingInfo?.myEarnedBNB.toLocaleString()} $BNB</p>
-                    {/* <p><small>≈ $150,09</small></p> */}
+                    <p><small>≈ $150,09</small></p>
                   </span>
                 </li>
                 <li>
@@ -182,14 +323,14 @@ const Miner = () => {
                     <span>
                       <h5>My Shares</h5>
                       <p>{bnbStakingInfo?.myShares.toLocaleString()} $BNB</p>
-                      {/* <p><small>≈ $150,09</small></p> */}
+                      <p><small>≈ $150,09</small></p>
                     </span>
                   </li>
                   <li>
                     <span>
                       <h5>My Earned $BNB</h5>
                       <p>{bnbStakingInfo?.myEarnedBNB.toLocaleString()} $BNB</p>
-                      {/* <p><small>≈ $150,09</small></p> */}
+                      <p><small>≈ $150,09</small></p>
                     </span>
                   </li>
                   <li>
@@ -203,11 +344,11 @@ const Miner = () => {
 
             </Expand>
             {boredMExpand && bnbStakingInfo?.myShares == 0 && <p className='bottomTxt'>Buy Other shares to earn.</p>}
-          </div>
-          <div className={classes.top}>
+          </div> */}
+          {/* <div className={classes.top}>
             <h1>Other Miner</h1>
             <FilledButton label={'Add your custom Miner'} color='grey' handleClick={onAddMiner} className='addBtn' />
-          </div>
+          </div> */}
           {/* {minerList.map((d, k)=>(
             <div className={`${classes.stakeCard} stakeCard`} key = {k}>
               <div className="top">

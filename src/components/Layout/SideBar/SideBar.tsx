@@ -75,7 +75,7 @@ export default function SideBar({ menuOpen, setMenuOpen }: MenuType) {
   const path = search.pathname.replace('/', '');
   const history = useHistory();
 
-  const [switchLabel, setSwitchLabel] = useState('Dark Mxxode');
+  const [switchLabel, setSwitchLabel] = useState('Dark Mode');
   const { theme, setTheme } = useContext(ThemeContext)
   const onChangeRoute = (route) => {
     history.push(route);

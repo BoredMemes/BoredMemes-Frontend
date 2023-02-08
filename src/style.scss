@@ -80,16 +80,32 @@ h1 {
   .top-lq-content {
     background: linear-gradient(47.43deg, #c2b6fa 0%, #f8bff1 57%, #f3ddb7 100%);
   }
+
   .btns {
     .select-gray {
+
       .css-1xub5kc-control,
       .css-zjhzo0-control {
         background: linear-gradient(47.43deg, #c2b6fa 0%, #f8bff1 57%, #f3ddb7 100%) !important;
       }
     }
+
     .connectBtn {
       background: linear-gradient(47.43deg, #c2b6fa 0%, #f8bff1 57%, #f3ddb7 100%) !important;
     }
+  }
+
+  .stake_card {
+    background: #F4F4F4 !important;
+    div {
+      h4, p{
+        color: #000 !important;
+      }
+    }
+  }
+
+  .stake_withdraw_body {
+    background: linear-gradient(47.43deg, #b5a8f8 0%, #fab6f1 57%, #f7ddb2 100%) !important;
   }
 }
 
@@ -532,6 +548,12 @@ h1 {
 
 .MuiButton-contained {
   border: none !important;
+}
+
+.stake_withdraw_body {
+  background: linear-gradient(47.43deg, #0a0136 0%, #36002f 57%, #352201 100%);
+  box-shadow: 10px 24px 54px rgba(0, 0, 0, 0.03);
+  border-radius: 16px;
 }
 
 @keyframes loadingAni {
