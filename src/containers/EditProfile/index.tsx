@@ -1,8 +1,8 @@
 import FilledButton from 'components/Buttons/FilledButton';
+import postscribe from 'postscribe';
 import { useStyles } from './style';
 import { toast } from "react-toastify";
-import { useWeb3React } from '@web3-react/core';
-import { useContext, useEffect, useRef, useState } from 'react';
+import { useCallback, useContext, useEffect, useRef, useState } from 'react';
 import Grid from '@material-ui/core/Grid';
 import UploadFile from '../../components/Forms/UploadFile';
 import ErrorAlert from '../../components/Widgets/ErrorAlert';
@@ -14,6 +14,9 @@ import { arrayify, hashMessage } from 'ethers/lib/utils';
 import { ethers } from 'ethers';
 import Web3WalletContext from 'hooks/Web3ReactManager';
 import { useAuthState } from 'context/authContext';
+import TelegramLoginButton from 'react-telegram-login';
+import { LoginSocialTwitter } from 'reactjs-social-login';
+import { TwitterLoginButton } from 'react-social-login-buttons';
 
 const EditProfile = () => {
 
@@ -79,8 +82,7 @@ const EditProfile = () => {
       toast.error('Please connect your wallet correctly!');
       return;
     }
-    if (userName === '' && user?.username == '')return;
-    if (!twitterChecked && !telegramChecked && !emailChecked)return;
+    if (userName === '' && user?.username == '') return;
     setSignModal(true)
     const timestamp = Math.floor(new Date().getTime() / 1000);
     const msg = await library.getSigner().signMessage(arrayify(hashMessage(account?.toLowerCase() + "-" + timestamp)));
@@ -96,17 +98,20 @@ const EditProfile = () => {
     setTimestamp(0);
   }
 
+  useEffect(() => {
+    postscribe('#root', '<script async src="https://telegram.org/js/telegram-widget.js?21" data-telegram-login="PixiaLoginBot" data-size="large" data-onauth="onTelegramAuth(user)" data-request-access="write"></script>');
+  }, [])
+
   const updateProfile = async () => {
     if (!signMsg && !curTimestamp) return;
 
     const notifyIds = [];
-    if (twitterChecked)notifyIds.push(1);
-    if (telegramChecked)notifyIds.push(2);
-    if (emailChecked)notifyIds.push(3);
-    console.log(notifyIds);
+    if (twitterChecked) notifyIds.push(1);
+    if (telegramChecked) notifyIds.push(2);
+    if (emailChecked) notifyIds.push(3);
 
     let formData = new FormData();
-    if (nftAsset !== undefined)formData.append('file', nftAsset);
+    if (nftAsset !== undefined) formData.append('file', nftAsset);
     else formData.append('logo_url', user?.logo_url);
     formData.append("address", account?.toLowerCase());
     formData.append("timestamp", curTimestamp.toString());
@@ -120,12 +125,12 @@ const EditProfile = () => {
     formData.append("notifyIds", JSON.stringify(notifyIds));
     axios.post("/api/user/update", formData, {
       headers: {
-        "Content-Type" : "multipart/form-data",
+        "Content-Type": "multipart/form-data",
       }
     })
       .then((res) => {
         closeProfile();
-        if (res.data.message === "success"){
+        if (res.data.message === "success") {
           toast.success("Saved Successfully.")
           window.location.href = "/";
         }
@@ -140,7 +145,7 @@ const EditProfile = () => {
   const [isAvailable, setAvailable] = useState(true);
   const [isNameLoading, setNameLoading] = useState(false);
   function checkUserName() {
-    if (!loginStatus)return;
+    if (!loginStatus) return;
     setNameLoading(true);
     axios.get("/api/user/checkname", { params: { username: userName, address: account?.toLowerCase() } })
       .then((res) => {
@@ -152,7 +157,7 @@ const EditProfile = () => {
         setNameLoading(false);
       })
   }
-  
+
   useEffect(() => {
     if (isNameLoading) return;
     if (userName === "") return;
@@ -161,6 +166,20 @@ const EditProfile = () => {
     }, 2000);
     return () => clearTimeout(_delay);
   }, [userName])
+
+  const handleTelegramResponse = response => {
+    console.log("Telegram Response");
+    console.log(response);
+    console.log("Telegram Response End");
+  };
+
+  const authHandler = (err, data) => {
+    console.log(err, data);
+  };
+
+  const onLoginStart = useCallback(() => {
+    alert('login start')
+  }, [])
 
   return (
     <>
@@ -207,7 +226,7 @@ const EditProfile = () => {
                   label={'Username'}
                   placeholder={'Username'}
                   value={user?.username}
-                  onChangeData={val => { if (val !== user?.username)setUserName(val); }}
+                  onChangeData={val => { if (val !== user?.username) setUserName(val); }}
                 />
                 <ErrorAlert title="A username is required !" show={userName === "" && user?.username === ""} />
                 <ErrorAlert title={`Username ${userName} is available.`} show={!isNameLoading && userName !== "" && isAvailable} alertType='success' />
@@ -249,7 +268,7 @@ const EditProfile = () => {
                 <p>Recommended size:</p>
                 <p>1000x1000px.</p>
                 <p>JPG, PNG, or GIF.</p>
-                <p>10MB max size.</p>
+                <p>2MB max size.</p>
               </Grid>
               <Grid item md={8} xs={12}>
                 <h3 className={classes.label}>Profile image <span>Optional</span></h3>
@@ -278,6 +297,25 @@ const EditProfile = () => {
                 <p>Show the Bored memes community that your profile is authentic.</p>
               </Grid>
               <Grid item md={8} xs={12}>
+                <div id="telegramButton">
+                  <TelegramLoginButton dataOnauth={handleTelegramResponse} botName="PixiaLoginBot" language="en" />
+                </div>
+                <LoginSocialTwitter
+                  isOnlyGetToken
+                  // client_id={process.env.REACT_APP_TWITTER_V2_APP_KEY || ''}
+                  client_id={"VHBVMHpCOFU2dVRmNi1RV3FpZXE6MTpjaQ"}
+                  redirect_uri={window.location.href}
+                  onLoginStart={onLoginStart}
+                  onResolve={({ provider, data }) => {
+                    console.log("On Resolve");
+                    console.log(data);
+                  }}
+                  onReject={(err: any) => {
+                    console.log(err)
+                  }}
+                >
+                  <TwitterLoginButton />
+                </LoginSocialTwitter>
                 <TextInput
                   name="twitter"
                   disabled={!loginStatus}
@@ -307,7 +345,7 @@ const EditProfile = () => {
                     setTelegram(val);
                   }}
                 />
-                <TextInput
+                {/* <TextInput
                   name="email"
                   disabled={!loginStatus}
                   className={classes.myInput}
@@ -320,13 +358,13 @@ const EditProfile = () => {
                   onChangeData={val => {
                     setEmail(val);
                   }}
-                />
+                /> */}
               </Grid>
             </Grid>
 
           </div>
 
-          <div className={`${classes.panel} panel`}>
+          {/* <div className={`${classes.panel} panel`}>
             <Grid container justifyContent="space-between" spacing={4}>
               <Grid item md={4} xs={12}>
                 <h2>Art creation Notifications.</h2>
@@ -355,20 +393,18 @@ const EditProfile = () => {
                   <h3>Email Notification</h3>
                   <i className="fa fa-envelope"></i>
                 </div>
-                {/* <ErrorAlert title="One of 3 is recommanded." show={((twitterChecked ? 1 : 0) + (telegramChecked ? 1 : 0) + (emailChecked ? 1 :0)) > 1 } alertType='warning' /> */}
               </Grid>
             </Grid>
-
-          </div>
+          </div> */}
           <FilledButton label={'Save Changes'} className={classes.saveButton} handleClick={() => onSubmit()} />
 
 
         </div>
-        <div className={`${classes.right} mainContainer`}>
+        {/* <div className={`${classes.right} mainContainer`}>
           <div className={classes.top}>
             <h1>Highlights</h1>
           </div>
-          {/* <div className={`${classes.rewardCard} rewardCard`}>
+          <div className={`${classes.rewardCard} rewardCard`}>
             <ul>
               <li>
               </li>
@@ -409,7 +445,7 @@ const EditProfile = () => {
               </li>
             </ul>
 
-          </div> */}
+          </div>
           <div className={classes.buyPanel}>
             <ul>
               <li>
@@ -439,7 +475,7 @@ const EditProfile = () => {
             </ul>
 
           </div>
-        </div>
+        </div> */}
       </div>
 
 
@@ -468,7 +504,7 @@ const EditProfile = () => {
               </div>
             </div>
             <div className={classes.modalBtns}>
-              <FilledButton label={'Disconnect'} color='secondary' handleClick={(e) => {closeProfile();}}/>
+              <FilledButton label={'Disconnect'} color='secondary' handleClick={(e) => { closeProfile(); }} />
               <FilledButton label={'Continue'} disabled={!isSigned} handleClick={(e) => { updateProfile(); }} />
             </div>
           </div>

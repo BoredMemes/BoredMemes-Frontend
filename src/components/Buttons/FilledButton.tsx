@@ -10,24 +10,31 @@ const useStyles = makeStyles(theme => ({
     justifyContent: 'center',
     alignItems: 'center',
     fontSize: 14,
-    fontWeight: 600,
+    // fontWeight: 600,
     borderRadius: 15,
     height: 45,
     border: '1px solid #FFFFFF',
     boxShadow: '-1.96149px 2.94223px 6.86521px rgba(0, 0, 0, 0.25)',
-    
+    lineHeight : 1,
   },
   icon: {
     marginLeft: 16,
+    display: 'flex',
+    justifyContent: 'center',
+    alignItems: 'center',
     '& svg': {
       fontSize: 17,
     },
+    '& img': {
+      width: 25,
+      height: 25,
+    },
   },
   primary: {
-    background: '#F400F5',
+    background: 'linear-gradient(47.43deg, #2A01FF 0%, #FF1EE1 57%, #FFB332 100%);',
     color: '#fff',
     '&:hover': {
-      background: '#F400F599',
+      background: 'linear-gradient(47.43deg, #2A01FF99 0%, #FF1EE199 57%, #FFB33299 100%);',
     },
   },
   secondary: {
@@ -36,6 +43,21 @@ const useStyles = makeStyles(theme => ({
     '&:hover': {
       background: '#7E9EF999',
     },
+  },
+  custom: {
+    backgroundImage: `url('/assets/imgs/cancel-btn.png')`,
+    backgroundRepeat:'no-repeat',
+    backgroundColor:'#fff',
+    borderRadius:'9px',
+    boxShadow:'none',
+    color: '#fff',
+    '&:hover': {
+      backgroundColor: '#f9e4f699',
+      boxShadow:'none'
+    },
+    [theme.breakpoints.down('xs')]: {
+      padding:'0px !important'
+    }
   },
   success: {
     background: '#87BE9C',
@@ -54,8 +76,18 @@ const useStyles = makeStyles(theme => ({
   grey: {
     background: '#E3E3E3',
     color: '#727272',
+    fontWeight: 400,
     '&:hover': {
       background: '#E3E3E399',
+    },
+  },
+  smart: {
+    background: '#fdccfd',
+    color: '#F400F5',
+    fontWeight: 400,
+    
+    '&:hover': {
+      background: '#fdccfd99',
     },
   },
   disabled: {
@@ -98,7 +130,7 @@ FilledButton.propTypes = {
   size: PropTypes.oneOf(['small', 'medium', 'large']),
   iconPosition: PropTypes.oneOf(['start', 'end']),
   handleClick: PropTypes.func,
-  color: PropTypes.oneOf(['primary', 'secondary', 'success', 'error', 'grey']),
+  color: PropTypes.oneOf(['primary', 'secondary', 'success', 'error', 'grey', 'smart', 'custom']),
   disabled: PropTypes.bool,
 };
 

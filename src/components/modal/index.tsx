@@ -11,6 +11,7 @@ interface PropsType {
   children: any;
   className?: string;
   maxWidth?: 'lg' | 'md' | 'sm' | 'xl' | 'xs' | false;
+  contentClass?:string
 }
 const Modal = (props: PropsType) => {
   const { theme } = useContext(ThemeContext)
@@ -22,8 +23,9 @@ const Modal = (props: PropsType) => {
       maxWidth={props.maxWidth}
       aria-labelledby="responsive-dialog-title"
       className={theme}
+      style = {{backdropFilter : 'blur(5px)'}}
     >
-      <DialogContent>{props.children}</DialogContent>
+      <DialogContent className={props.contentClass}>{props.children}</DialogContent>
     </Dialog>
   );
 };

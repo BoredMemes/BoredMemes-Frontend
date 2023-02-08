@@ -40,14 +40,12 @@ const Miner = () => {
     myShares: 0,
     myEarnedBNB: 0,
   })
-  const [bnbBalance, setBNBBalance ] = useState(0);
+  const [bnbBalance, setBNBBalance] = useState(0);
   useEffect(() => {
-    if (loginStatus) {
-      getPrices();
-      onBNBStakingInfo();
-    }
+    getPrices();
+    onBNBStakingInfo();
   }, [loginStatus, account, chainId, library])
-  
+
   const [ethPrice, setEthPrice] = useState(0);
   const [boredmPrice, setBoredMPrice] = useState(0);
   const getPrices = async () => {
@@ -61,7 +59,7 @@ const Miner = () => {
   }
 
   const onBNBStakingInfo = async () => {
-    const _info = await getBNBStakingInfo(account, chainId, library);
+    const _info = await getBNBStakingInfo(account);
     if (_info) setBNBStakingInfo(_info);
   }
 
@@ -99,11 +97,11 @@ const Miner = () => {
   const onBuyShares = async () => {
     if (loginStatus) {
       const toast_load_id = toast.loading("Staking...");
-      const isStaked = await onMyBuyShares(ethers.constants.AddressZero, chainId, library.getSigner());
+      const isStaked = await onMyBuyShares(ethers.constants.AddressZero, amount, chainId, library.getSigner());
       //const isStaked = await onMyBuyShares(account.toLowerCase(), chainId, library.getSigner());
       toast.dismiss(toast_load_id);
       if (isStaked) {
-        toast.success("Bought " + amount + " Successfully.")
+        toast.success("Bought " + amount + " BNB Successfully.")
         onCancelBuyShares();
         onBNBStakingInfo();
       }
@@ -158,7 +156,7 @@ const Miner = () => {
                 <li>
                   <span>
                     <h5>My Shares</h5>
-                    <p>{bnbStakingInfo?.myShares.toLocaleString()} $BNB</p>
+                    <p>{bnbStakingInfo?.myShares.toLocaleString()}</p>
                     {/* <p><small>≈ $150,09</small></p> */}
                   </span>
                 </li>
@@ -208,7 +206,7 @@ const Miner = () => {
           </div>
           <div className={classes.top}>
             <h1>Other Miner</h1>
-            <FilledButton label={'Add your custom Miner'} color = 'grey' handleClick={onAddMiner} className='addBtn'/>
+            <FilledButton label={'Add your custom Miner'} color='grey' handleClick={onAddMiner} className='addBtn' />
           </div>
           {/* {minerList.map((d, k)=>(
             <div className={`${classes.stakeCard} stakeCard`} key = {k}>
@@ -274,7 +272,7 @@ const Miner = () => {
           ))} */}
 
         </div>
-        <div className={`${classes.right} mainContainer`}>
+        {/* <div className={`${classes.right} mainContainer`}>
           <div className={classes.top}>
             <h1>Highlights</h1>
           </div>
@@ -299,7 +297,7 @@ const Miner = () => {
 
           </div>
 
-          {/* <div className={`${classes.rewardCard} rewardCard`}>
+          <div className={`${classes.rewardCard} rewardCard`}>
             <ul>
               <li>
 
@@ -319,7 +317,7 @@ const Miner = () => {
               </li>
             </ul>
 
-          </div> */}
+          </div>
           <div className={classes.buyPanel}>
             <ul>
               <li>
@@ -349,7 +347,7 @@ const Miner = () => {
             </ul>
 
           </div>
-        </div>
+        </div> */}
       </div>
 
       <Modal

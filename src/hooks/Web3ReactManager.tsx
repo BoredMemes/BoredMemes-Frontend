@@ -1,7 +1,7 @@
 import { useWeb3React } from "@web3-react/core";
 import {  useEagerConnect, useInactiveListener} from "hooks";
 import { useState, createContext, useEffect } from "react"
-import { getCurrentNetwork } from "utils";
+import { getCurrentNetwork, Networks } from "utils";
 
 const Web3WalletContext = createContext({
   loginStatus : false,
@@ -18,8 +18,7 @@ export function Web3ReactManager({ children }) {
   const { connector, library, account, active, chainId, activate } = useWeb3React();
   const [loginStatus, setLoginStatus] = useState(false);
   useEffect(() => {
-    console.log("Chain ID : ", chainId)
-    const isLoggedin = account && active && chainId === parseInt(getCurrentNetwork(), 10);
+    const isLoggedin = account && active && process.env.NODE_ENV === "production" ? (chainId === Networks.ETH_MainNet || chainId === Networks.BSC_Mainnet) : (chainId === Networks.ETH_TestNet || chainId === Networks.BSC_Testnet);
     setLoginStatus(isLoggedin);
   }, [connector, library, account, active, chainId]);
 

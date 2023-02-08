@@ -16,11 +16,9 @@ const Stake = () => {
   const { loginStatus, chainId, account, library } = useContext(Web3WalletContext)
 
   useEffect(() => {
-    if (loginStatus && library) {
-      getPrices();
-      onStakingInfo();
-    }
-  }, [loginStatus, account, chainId, library])
+    getPrices();
+    onStakingInfo();
+  }, [loginStatus, chainId, account, library])
 
   const [ethPrice, setEthPrice] = useState(0);
   const [boredmPrice, setBoredMPrice] = useState(0);
@@ -52,7 +50,7 @@ const Stake = () => {
     mPercentLock: 90
   });
   const onStakingInfo = async () => {
-    const _info = await getStakingInfo(account, chainId, library.getSigner());
+    const _info = await getStakingInfo(account);
     if (_info) setNftStakingInfo(_info);
   }
 
@@ -184,7 +182,7 @@ const Stake = () => {
       <div className={classes.root}>
         <div className={`${classes.content} mainContainer`}>
           <div className={classes.top}>
-            <h1>BoredM Farm</h1>
+            <h1>Manage Subscription</h1>
           </div>
           <div className={`${classes.stakeCard} stakeCard`}>
             <div className="top">
@@ -260,7 +258,7 @@ const Stake = () => {
                   </span>
                 </li>
                 <li>
-                  {/* <FilledButton label={'Stake'} handleClick={() => setStakeModal(true)} /> */}
+                  <FilledButton label={'Stake'} handleClick={() => setStakeModal(true)} />
                 </li>
               </ul>
               <div className="downBtn" onClick={() => setBoredMExpand(!boredMExpand)}>
@@ -328,159 +326,6 @@ const Stake = () => {
           <div className={classes.top}>
             <h1>Other Farms (coming soon)</h1>
             <FilledButton label={'Add your custom farm'} color='grey' handleClick={onAddMiner} />
-          </div>
-          {/* {minerList.map((d, k) => (
-            <div className={`${classes.stakeCard} stakeCard`} key={k}>
-              <div className="top">
-                <ul>
-                  <li>
-                    <img src="/assets/logo.png" alt="" />
-                    <span>
-                      <h5>Total Dividend $ETH</h5>
-                      <p>{nftStakingInfo?.tDividETHLock.toLocaleString(undefined, { maximumFractionDigits: 4 })}</p>
-                      <p><small>≈ ${(ethPrice * nftStakingInfo?.tDividETHLock).toLocaleString(undefined, { maximumFractionDigits: 4 })}</small></p>
-                    </span>
-                  </li>
-                  <li>
-                    <span>
-                      <h5>APR</h5>
-                      <p>12% / <img src="assets/icons/lock_icon.svg" alt="" /> 44%</p>
-                    </span> 
-                    <span>
-                      <h5>Total Staked $BoredM</h5>
-                      <p>{nftStakingInfo?.tStakedBoredMLock.toLocaleString(undefined, { maximumFractionDigits: 4 })}</p>
-                      <p><small>≈ ${(boredmPrice * nftStakingInfo?.tStakedBoredMLock)}</small></p>
-                    </span>
-                  </li>
-                  <li>
-                    <span>
-                      <h5>My staked $BoredM</h5>
-                      <p>{nftStakingInfo?.mStakedBoredMLock.toLocaleString(undefined, { maximumFractionDigits: 4 })}</p>
-                      <p><small>≈ ${(boredmPrice * nftStakingInfo?.mStakedBoredMLock)}</small></p>
-                    </span>
-                  </li>
-                  <li>
-                    <span>
-                      <h5>My Earned $ETH</h5>
-                      <p>{nftStakingInfo?.mEarnedETHLock.toLocaleString(undefined, { maximumFractionDigits: 4 })}</p>
-                      <p><small>≈ ${(ethPrice * nftStakingInfo?.mEarnedETHLock).toLocaleString(undefined, { maximumFractionDigits: 4 })}</small></p>
-                    </span>
-                  </li>
-                  <li>
-                    <FilledButton label={'Stake'} handleClick={() => onStakeModal(false)} />
-                  </li>
-                </ul>
-                <div className="downBtn" onClick={() => setMinerExpand(!minerExpand)}>
-                  <img src="/assets/icons/arrow_down_icon.svg" alt="" style={{ transform: minerExpand ? 'rotate(180deg)' : 'rotate(0deg)' }} />
-                </div>
-              </div>
-              <Expand open={minerExpand} duration={300} styles={styles} transitions={transitions}>
-                <div className="state" >
-                  <ul>
-
-                    <li>
-                      <span>
-                        <h5>Claimed $ETH</h5>
-                        <p>{nftStakingInfo?.mClaimedETHLock.toLocaleString(undefined, { maximumFractionDigits: 4 })}</p>
-                        <p><small>≈ ${(ethPrice * nftStakingInfo?.mClaimedETHLock).toLocaleString(undefined, { maximumFractionDigits: 4 })}</small></p>
-                      </span>
-                    </li>
-                    <li>
-                      <span>
-                        <h5>Claimable $ETH</h5>
-                        <p>{nftStakingInfo?.mClaimableETHLock.toLocaleString(undefined, { maximumFractionDigits: 4 })}</p>
-                        <p><small>≈ ${(ethPrice * nftStakingInfo?.mClaimableETHLock).toLocaleString(undefined, { maximumFractionDigits: 4 })}</small></p>
-                      </span>
-                    </li>
-                    <li>
-                      <FilledButton label={'Reinvest'} color='success' />
-                      <FilledButton disabled={nftStakingInfo?.mClaimableETH <= 0} label={'Harvest'} color='secondary' handleClick={() => onHarvest(true)} />
-                      <FilledButton label={'Withdraw'} handleClick={() => onWithdrawModal(false)} />
-                    </li>
-                  </ul>
-
-                </div>
-
-              </Expand>
-              {!minerExpand && <p className='bottomTxt'>Stake $Other to earn.</p>
-            </div>
-          ))} */}
-
-        </div>
-        <div className={`${classes.right} mainContainer`}>
-          <div className={classes.top}>
-            <h1>Highlights</h1>
-          </div>
-          {/* <div className={`${classes.rewardCard} rewardCard`}>
-            <ul>
-              <li>
-              </li>
-              <li>
-                <p>@ Binance Smart Chain</p>
-                <h4>BoredM Miner</h4>
-              </li>
-            </ul>
-
-            <ul>
-              <li>
-                <p><small>Your total rewards</small></p>
-              </li>
-              <li>
-                <h5>{} <span>BNB</span></h5>
-              </li>
-            </ul>
-
-          </div> */}
-
-          <div className={`${classes.rewardCard} rewardCard`}>
-            <ul>
-              <li>
-
-              </li>
-              <li>
-                <p>@ Ethereum Network</p>
-                <h4>BoredM Stake</h4>
-              </li>
-            </ul>
-
-            <ul>
-              <li>
-                <p><small>Your total rewards</small></p>
-              </li>
-              <li>
-                <h5>{(nftStakingInfo?.mEarnedETH + nftStakingInfo?.mEarnedETHLock).toLocaleString(undefined, { maximumFractionDigits: 4 })} <span>ETH</span></h5>
-              </li>
-            </ul>
-
-          </div>
-          <div className={classes.buyPanel}>
-            <ul>
-              <li>
-                <div className="balance" style={{ backgroundImage: `url('/assets/imgs/Rectangle 29.png')` }}>
-                  <h2>$BoredM </h2> <img src="/assets/icons/eth_icon_01.svg" alt="" /> <h2>{boredmPrice} ETH</h2>
-                </div>
-
-              </li>
-              <li>
-                <a href="https://www.dextools.io/app/en/ether/pair-explorer/0x1ee2a47ec688a1b56afc9c0b134d9c555851cb4a" className="Dextools" target="_blank" rel="noreferrer" style={{ background: `#05A3C9` }}>
-                  Buy on Dextools
-                  <img src="/assets/icons/dxtool_icon.svg" alt="" />
-                </a>
-              </li>
-              <li>
-                <a href="https://app.uniswap.org/#/swap?outputCurrency=0x445d711C8974d80643745A4666803D255a589390" className="Uniswap" target="_blank" rel="noreferrer" style={{ background: `#D63371` }}>
-                  Buy on Uniswap
-                  <img src="/assets/icons/uniswap_icon.svg" alt="" />
-                </a>
-              </li>
-              <li>
-                <a href="https://app.1inch.io/#/1/unified/swap/ETH/BoredM" className="1inch" target="_blank" rel="noreferrer" style={{ background: `#101A2E` }}>
-                  Buy on 1inch
-                  <img src="/assets/icons/linch_icon.svg" alt="" />
-                </a>
-              </li>
-            </ul>
-
           </div>
         </div>
       </div>
@@ -566,7 +411,7 @@ const Stake = () => {
 
               <div className="warning">
                 <img src="/assets/icons/warning_icon.svg" alt="" />
-                <p>1% fee for withdrawing in the next 48h -72h. Depositing or reinvesting resets the time. 7% tax is applied for staking/unstaking. Staking with lock resets lock timer.</p>
+                <p>1% fee for withdrawing in the next 48h -72h. Depositing resets the time. Normal token tax are applied. A second locked deposit resets the lock period.</p>
               </div>
             </div>
             <div className={classes.modalBtns}>

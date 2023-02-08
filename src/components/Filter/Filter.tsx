@@ -1,10 +1,14 @@
 import { makeStyles } from '@material-ui/core/styles';
+import { useEffect, useState } from 'react';
 
 interface PropsType {
   filter?: string;
   setFilter?: any;
   searchStr?: string;
   setSearchStr?: any;
+  handleAllClick ?: any;
+  setEmoticonId ?: any;
+  setPrivateType ?: any;
 }
 
 const useStyles = makeStyles(theme => ({
@@ -41,7 +45,11 @@ const useStyles = makeStyles(theme => ({
       marginBottom: 10,
       marginTop: 10,
       width: '100%',
-      '@media screen and (max-width: 768px) and (orientation: portrait)': {
+      display: 'flex',
+      alignItems: 'center',
+      gridArea : 'auto',
+      gap : 10,
+      [theme.breakpoints.down('xs')]: {
         width: '100%',
         marginRight: 0,
         marginBottom: 10,
@@ -56,6 +64,7 @@ const useStyles = makeStyles(theme => ({
         alignItems: 'center',
         background: '#F0F2F5',
         color: '#93989A',
+        width: 'calc(100% - 100px)',
         '@media screen and (max-width: 768px) and (orientation: portrait)': {
           justifyContent: 'center',
         },
@@ -100,6 +109,29 @@ const useStyles = makeStyles(theme => ({
           },
         },
       },
+      '& .btns': {
+        width : 100,
+        gridArea : 'auto',
+        gap : 10,
+        display: 'flex',
+        alignItems: 'center',
+        '& button': {
+          border : '1px #F400F500 solid',
+          background: '#ffffff00',
+          cursor: 'pointer',
+          transition: 'all 0.3s ease',
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent : 'center',
+          width : 40,
+          height : 40,
+          borderRadius: 35,
+
+          '&:hover': {
+            background: '#F0F2F5',
+          },
+        }
+      }
     },
     '& .select': {
       marginRight: 10,
@@ -138,12 +170,75 @@ const useStyles = makeStyles(theme => ({
           fontSize: 14,
         },
         '&:hover': {
-          background: '#F400F577',
+          background: 'linear-gradient(47.43deg, #2A01FF77 0%, #FF1EE177 57%, #FFB33277 100%);',
         },
         '& img': {
           marginLeft: 10,
           '@media screen and (max-width: 768px) and (orientation: portrait)': {
             marginRight: 10,
+          },
+        },
+      },
+      '& .activeBtn': {
+        background: 'linear-gradient(47.43deg, #2A01FF 0%, #FF1EE1 57%, #FFB332 100%);',
+        color : '#fff',
+      }
+    },
+
+    '& .smalBtns': {
+      marginRight: 0,
+      marginLeft: 'auto',
+      marginBottom: 10,
+      marginTop: 10,
+      display : 'flex',
+      gridArea : 'auto',
+      gap : 10,
+      '@media screen and (max-width: 768px) and (orientation: portrait)': {
+        marginRight: 0,
+        marginBottom: 10,
+      },
+      '& .likeBtn': {
+        display: 'flex',
+        alignItems: 'center',
+        justifyContent: 'center',
+        border: 'none',
+        padding: 0,
+        background: '#F0F2F500',
+        borderRadius: 5,
+        cursor: 'pointer',
+        transition: 'all 0.3s ease',
+        width : 30,
+        height : 30,
+        
+        [theme.breakpoints.only('xs')]: {
+        },
+        '&:hover': {
+          background: '#F0F2F5',
+        },
+        '& img': {
+          [theme.breakpoints.only('xs')]: {
+          },
+        },
+      },
+      '& .imgBtn': {
+        display: 'flex',
+        alignItems: 'center',
+        justifyContent: 'center',
+        border: 'none',
+        padding: 0,
+        background: '#F0F2F500',
+        borderRadius: 5,
+        cursor: 'pointer',
+        transition: 'all 0.3s ease',
+        height : 30,
+        
+        [theme.breakpoints.only('xs')]: {
+        },
+        '&:hover': {
+          background: '#F0F2F5',
+        },
+        '& img': {
+          [theme.breakpoints.only('xs')]: {
           },
         },
       },
@@ -156,8 +251,29 @@ const useStyles = makeStyles(theme => ({
  
 }));
 
-const Filter = ({ filter, setFilter, searchStr, setSearchStr }: PropsType) => {
+const Filter = ({ filter, setFilter, setPrivateType, searchStr, setSearchStr, handleAllClick, setEmoticonId }: PropsType) => {
   const classes = useStyles();
+
+  const [ searchTxt, setSearchTxt] = useState("");
+  const [stateShowImage, setStateShowImage] = useState(0)
+  const onShowImages = ()=>{
+    if(stateShowImage < 2){
+      setStateShowImage(stateShowImage + 1)
+    }
+    else{
+      setStateShowImage(0)
+    }
+  }
+
+  useEffect(() => {
+    setPrivateType(stateShowImage === 0 ? undefined : stateShowImage === 1 ? 1 : 0)
+  }, [stateShowImage])
+  const [isAll, setIsAll] = useState(false)
+  const onSelectAll = ()=>{
+    setIsAll(!isAll)
+    handleAllClick()
+
+  }
   return (
     <>
       <div className={classes.root}>
@@ -167,8 +283,12 @@ const Filter = ({ filter, setFilter, searchStr, setSearchStr }: PropsType) => {
               <button>
                 <i className="fas fa-search"></i>
               </button>
-              <input type="text" placeholder="Search" onChange={(e)=>setSearchStr(e.target.value)}/>
+              <input type="text" placeholder="Search" value={searchTxt} onChange={(e)=>setSearchTxt(e.target.value)}/>
             </span>
+            <div className="btns">
+              <button><img src="/assets/icons/refresh_icon.svg" alt="" onClick={() => setSearchStr(searchTxt)}/></button>
+              <button onClick={onSelectAll} style = {{borderColor : isAll ? '#F400F5' : '#F400F500'}}><img src="/assets/icons/select_icon.svg" alt="" /></button>
+            </div>
           </div>
 
           <span className="select">
@@ -183,6 +303,27 @@ const Filter = ({ filter, setFilter, searchStr, setSearchStr }: PropsType) => {
           <span className="select">
             <button onClick={() => setFilter('top')} className={`${filter === 'top' ? 'activeBtn filterBtn':'filterBtn'}`}>Top</button>
           </span>
+          <div className="smalBtns">
+            <button onClick={() => onShowImages()} className={`imgBtn`}>
+              {stateShowImage === 0 ? 
+                <img src="/assets/icons/show_all_icon.svg" alt="" />:
+                stateShowImage === 1 ?
+                <img src="/assets/icons/show_icon.svg" alt="" /> :
+                <img src="/assets/icons/show_private_icon.svg" alt="" /> }
+            </button>
+            <button className={`likeBtn`} onClick={() => setEmoticonId(0)}>
+              <img src="/assets/icons/image 185.png" alt="" />
+            </button>
+            <button className={`likeBtn`} onClick={() => setEmoticonId(1)}>
+              <img src="/assets/icons/Grimacing Face.png" alt="" />
+            </button>
+            <button className={`likeBtn`} onClick={() => setEmoticonId(2)}>
+              <img src="/assets/icons/Star-Struck.png" alt="" />
+            </button>
+            <button className={`likeBtn`} onClick={() => setEmoticonId(3)}>
+              <img src="/assets/icons/Smiling Face with Heart-Eyes.png" alt="" />
+            </button>
+          </div>
         </div>
       </div>
     </>

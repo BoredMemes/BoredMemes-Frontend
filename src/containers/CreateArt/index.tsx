@@ -124,15 +124,15 @@ const CreateArt = () => {
 
   const [packPrices, setPackPrices] = useState([]);
   useEffect(() => {
-    if (loginStatus) getMintingInfo();
-  }, [loginStatus])
+    getMintingInfo();
+  }, [])
 
   const [notify, setNotify] = useState("");
   useEffect(() => {
-    if (user){
+    if (user) {
       const notifyIds = user?.notifyIds;
       let _notify = "";
-      for (var idx = 0 ; idx < notifyIds.length ; idx++){
+      for (var idx = 0; idx < notifyIds.length; idx++) {
         _notify += notifyInfo[notifyIds[idx]] + (idx === notifyIds.length - 1 ? "" : idx === notifyIds.length - 2 ? ", and " : ", ");
       }
       setNotify(_notify);
@@ -140,7 +140,7 @@ const CreateArt = () => {
   }, [user])
 
   const getMintingInfo = async () => {
-    const _packPrices = await getMintInfo(chainId, library.getSigner());
+    const _packPrices = await getMintInfo();
     setPackPrices(_packPrices);
   }
   const { globalDescription, setGlobalDescription } = useContext(GlobalValueContext)
@@ -150,7 +150,7 @@ const CreateArt = () => {
   //   console.log(globalDescription)
   // }, [globalDescription, setDescription])
 
-  const onChangeDescription = (e:any) => {
+  const onChangeDescription = (e: any) => {
     setDescription(e)
     setGlobalDescription(e)
   }
@@ -165,9 +165,6 @@ const CreateArt = () => {
       return;
     }
 
-    if (user?.is_telegram_notify && user?.is_twitter_notify && user?.is_email_notify) {
-      return toast.error("One of both is recommended.");
-    }
     setProcessingModal(true)
     try {
       const timestamp = Math.floor(new Date().getTime() / 1000);
@@ -235,7 +232,7 @@ const CreateArt = () => {
   const onChangeSetting = () => {
     history.push('/edit_profile');
   }
-  
+
 
   return (
     <>
@@ -252,7 +249,7 @@ const CreateArt = () => {
               <p>Add your image description. The more detailed, the more accurate the ai will be.</p>
             </div>
             <div className={classes.stepContent}>
-              <InputField isMulti label="Image description" onChangeData={onChangeDescription} value = {globalDescription}/>
+              <InputField isMulti label="Image description" onChangeData={onChangeDescription} value={globalDescription} />
             </div>
           </div>
 

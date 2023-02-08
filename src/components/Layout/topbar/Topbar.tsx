@@ -5,6 +5,7 @@ import { HashLink } from 'react-router-hash-link';
 import { getBalanceOfBoredM } from 'utils/contracts';
 import { truncateWalletString } from 'utils';
 import './topbar.scss';
+import ThemeContext from "theme/ThemeContext"
 import FormatMoneyOptionLabel from '../../selectOptionFormat/FormatMoneyOptionLabel';
 import Select from "react-select";
 import AccountModal from 'components/modal/accountModal/AccountModal';
@@ -80,6 +81,7 @@ const customStyles = {
 export default function Topbar({ menuOpen, setMenuOpen }: MenuType) {
   const [showConnectModal, setShowConnectModal] = useState(false);
   const [showAcountModal, setShowAcountModal] = useState(false);
+  const { theme } = useContext(ThemeContext);
 
   const { loginStatus, account, library, chainId } = useContext(Web3WalletContext)
   const { user } = useAuthState();
@@ -90,7 +92,7 @@ export default function Topbar({ menuOpen, setMenuOpen }: MenuType) {
     if (loginStatus && chainId) {
       //console.log("Chain ID : ", chainId);
       setNetworkOption(chainId !== 56 ? options[0] : options[1])
-    }
+    } else setNetworkOption(null);
   }, [loginStatus, chainId]);
 
   const options = [
@@ -104,9 +106,24 @@ export default function Topbar({ menuOpen, setMenuOpen }: MenuType) {
       <div className="topbar">
         <div className="logo">
           <HashLink to="/">
-            <img src="/assets/logo.png" alt="" />
-            <img src="/assets/BoredMemes_FontLogo 1.png" alt="" className='textLogo' />
+            {theme === 'dark' ? <img src="/assets/imgs/dark-logo.png" alt="" />:<img src="/assets/imgs/light-logo.png" alt="" />}
+            {/* <img src="/assets/BoredMemes_FontLogo 1.png" alt="" /> */}
           </HashLink>
+        </div>
+        <div className='top-lq-content'>
+          <div>
+            <span>PIXIA Liquidity</span>
+            <p>-Eth</p>
+          </div>
+          <div>
+            <span>Staking Reward</span>
+            <p>-Eth</p>
+          </div>
+          <div>
+            <span>Caller Reward</span>
+            <p>-Eth</p>
+          </div>
+          <button>FUEL UP</button>
         </div>
         <div className="btns">
           <Select
@@ -122,11 +139,11 @@ export default function Topbar({ menuOpen, setMenuOpen }: MenuType) {
             styles={customStyles}
           />
           <div className="connectBtn" onClick={() => !loginStatus ? setShowConnectModal(true) : setShowAcountModal(true)}>
-            {loginStatus ? truncateWalletString(account) : 'Connect Wallet'}
+            {loginStatus ? `${truncateWalletString(account).substring(2, 0)}...${truncateWalletString(account).slice(-3)}` : 'Connect Wallet'}
           </div>
           {loginStatus &&
             <HashLink to="/">
-              <img src={user?.logo_url} alt="" className='avatar' />
+              <img src={user?.logo_url} alt="" className='avatar'/>
             </HashLink>
           }
 

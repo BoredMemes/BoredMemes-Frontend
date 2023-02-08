@@ -43,7 +43,7 @@ export const useStyles = makeStyles(theme => ({
   },
 
   content: {
-    width: 'calc(100% - 300px)',
+    width: '100%',
     height : 'auto',
     margin : 0,
     display: 'flex',

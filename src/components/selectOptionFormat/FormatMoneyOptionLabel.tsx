@@ -13,17 +13,17 @@ const FormatMoneyOptionLabel = ({ value, label, customAbbreviation }) => (
 					justifyContent: "center", 
 					alignItems: "center",
 					color:'#3059E8',
-					backgroundColor: "#F0F2F5"
+					background: "rgb(152, 162, 178, 0.5)"
 			}}>
 				{
 					value === "usd" ? <i className="fas fa-dollar-sign"></i>
-					: (value === "eth" ?  <img src="/assets/icons/eth_icon.svg" alt="" style={{	width: "30px", height: "30px", borderRadius: "50%"}}/> 
+					: (value === "eth" ?  <img src="/assets/icons/eth_logo.png" alt="" style={{	width: "14px", height: "18px", borderRadius: "50%"}}/> 
 					: (value === "eur" ?  <i className="fas fa-euro-sign"></i> 
 					:<img src="/assets/icons/binance_icon.svg" alt="" style={{	width: "30px", height: "30px", borderRadius: "50%"}}/> ))
 				}
 			</div> 
 		</div>
-		<div style={{color: "#727272", fontWeight: 500, paddingLeft: "10px"}}>{label}</div>
+		<div style={{color: "#727272", fontWeight: 500, paddingLeft: "10px", fontSize:16}}>{label}</div>
 	</div>
 );
 

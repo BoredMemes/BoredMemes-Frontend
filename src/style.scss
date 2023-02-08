@@ -48,6 +48,7 @@ a {
 .owl-carousel .owl-item .icon-img {
   width: auto;
 }
+
 .MuiButton-root {
   text-transform: none !important;
 }
@@ -66,323 +67,482 @@ hr {
 .MuiFormControlLabel-root {
   margin: 0 !important;
 }
-p{
+
+p {
   color: #727272;
 }
-h1{
+
+h1 {
   color: #262626;
 }
+
+.light {
+  .top-lq-content {
+    background: linear-gradient(47.43deg, #c2b6fa 0%, #f8bff1 57%, #f3ddb7 100%);
+  }
+  .btns {
+    .select-gray {
+      .css-1xub5kc-control,
+      .css-zjhzo0-control {
+        background: linear-gradient(47.43deg, #c2b6fa 0%, #f8bff1 57%, #f3ddb7 100%) !important;
+      }
+    }
+    .connectBtn {
+      background: linear-gradient(47.43deg, #c2b6fa 0%, #f8bff1 57%, #f3ddb7 100%) !important;
+    }
+  }
+}
+
 .dark {
-  .nav-background{
+  .nav-background {
     background-color: #1e1e1e !important;
   }
-  .sideBarMenu{
+
+  .sideBarMenu {
     background-color: #1e1e1e !important;
   }
-  .mainContainer{
+
+  .mainContainer {
     background-color: #1e1e1e !important;
   }
-  h3, h1{
+
+  h3,
+  h1 {
     color: #fff !important;
   }
-  .card1{
-    background-color: #ffffff22 !important;
-    .smallBtn{
-      &:hover{
-        background-color: #ffffff33 !important;
-      }
-      
-    }
-    .drodownMenu{
-      background-color: #555 !important;
-      .menuItem{
-        color : #aaa !important;
-      }
-      
-    }
-    .drodownMenu1{
-      background-color: #555 !important;
-      .menuItem{
-        color : #aaa !important;
-      }
-      
-    }
-  }
-  
-  .themeBtn{
+
+  .modalTop {
     background-color: #1e1e1e !important;
   }
-  .connectBtn{
-    background-color: #F400F5 !important;
-    color : #fff !important;
-  }
-  .filterBtn, .edit_profile, .addBtn{
-    background-color: #ffffff33 !important;
-    color : #aaa !important;
-  }
-  .activeBtn {
-    background: #F400F5 !important;
-    color : #fff;
-  }
-  .change_theme{
-    background-color: #ffffff33 !important;
-  }
-  .search-input{
-    background-color: #ffffff33 !important;
-    input{
+
+  .modalContent {
+    input {
+      color: #fff !important;
+      background-color: #1e1e1e !important;
+    }
+
+    textarea {
+      color: #fff !important;
+      background-color: #1e1e1e !important;
+    }
+
+    p {
       color: #fff !important;
     }
   }
-  .activeThemeBtn{
+
+  .imgBtn {
+    img {
+      filter: brightness(3) !important;
+    }
+
+  }
+
+  .card1 {
+    background-color: #ffffff22 !important;
+
+    .smallBtn {
+      &:hover {
+        background-color: #ffffff33 !important;
+      }
+
+    }
+
+    .drodownMenu {
+      background-color: #555 !important;
+
+      .menuItem {
+        color: #aaa !important;
+      }
+
+    }
+
+    .drodownMenu1 {
+      background-color: #555 !important;
+
+      .menuItem {
+        color: #aaa !important;
+      }
+
+    }
+  }
+
+  .themeBtn {
+    background-color: #1e1e1e !important;
+  }
+
+  .connectBtn {
+    background-color: #F400F5 !important;
+    color: #fff !important;
+  }
+
+  .filterBtn,
+  .edit_profile,
+  .addBtn {
+    background-color: #ffffff33 !important;
+    color: #aaa !important;
+  }
+
+  .activeBtn {
+    background: #F400F5 !important;
+    color: #fff;
+  }
+
+  .change_theme {
+    background-color: #ffffff33 !important;
+  }
+
+  .search-input {
+    background-color: #ffffff33 !important;
+
+    input {
+      color: #fff !important;
+    }
+
+    img {
+      filter: brightness(3) !important;
+    }
+  }
+
+  .search {
+
+    img {
+      filter: brightness(3) !important;
+    }
+  }
+
+  .activeThemeBtn {
     background-color: #ffffff33 !important;
     color: #0841D4;
-    img{
+
+    img {
       filter: grayscale(0);
       opacity: 1;
     }
   }
-  .medium{
+
+  .medium {
     color: #fff !important;
   }
-  p{
+
+  p {
     color: #aaa !important;
   }
-  h1{
+
+  h1 {
     color: #262626;
   }
-  .stakeCard{
+
+  .stakeCard {
     background-color: #06364a33 !important;
-    p{
+
+    p {
       color: #aaa !important;
     }
-    h5{
+
+    h5 {
       color: #ddd !important;
     }
-    h4{
+
+    h4 {
       color: #c6e4f7 !important;
     }
-    .top{
+
+    .top {
       background-color: #333 !important;
     }
   }
-  .rewardCard{
+
+  .rewardCard {
     background-color: #333 !important;
-    p{
+
+    p {
       color: #fff !important;
     }
-    h5{
+
+    h5 {
       color: #ddd !important;
     }
-    h4{
+
+    h4 {
       color: #c6e4f7 !important;
     }
-    .top{
+
+    .top {
       background-color: #555 !important;
     }
   }
-  .myCheck{
+
+  .myCheck {
     background-color: #333 !important;
-    p{
+
+    p {
       color: #fff !important;
     }
-    h5{
+
+    h5 {
       color: #ddd !important;
     }
-    h4{
+
+    h4 {
       color: #c6e4f7 !important;
     }
-    .top{
+
+    .top {
       background-color: #555 !important;
     }
   }
-  .dropzone{
+
+  .dropzone {
     background-color: #333 !important;
-    p{
+
+    p {
       color: #fff !important;
     }
-    h5{
+
+    h5 {
       color: #ddd !important;
     }
-    h4{
+
+    h4 {
       color: #c6e4f7 !important;
     }
-    .top{
+
+    .top {
       background-color: #555 !important;
     }
   }
-  .panel{
+
+  .panel {
     background-color: #333 !important;
-    p{
+
+    p {
       color: #fff !important;
     }
-    h3{
-      span{
+
+    h3 {
+      span {
         color: #ddd !important;
       }
     }
-    h2{
+
+    h2 {
       color: #c6e4f7 !important;
     }
-    .top{
+
+    .top {
       background-color: #555 !important;
     }
-    .MuiOutlinedInput-root{
+
+    .MuiOutlinedInput-root {
       background-color: #3a2452 !important;
     }
-    input{
+
+    input {
       background-color: #555 !important;
       border-color: #262626 !important;
       color: #fff !important;
-      &::placeholder{
+
+      &::placeholder {
         color: #aaa !important;
       }
     }
-    textarea{
+
+    textarea {
       background-color: #555 !important;
       border-color: #262626 !important;
       color: #fff !important;
-      &::placeholder{
+
+      &::placeholder {
         color: #aaa !important;
       }
     }
   }
-  .step{
-    p{
+
+  .step {
+    p {
       color: #aaa !important;
     }
-    h3{
-      span{
+
+    h3 {
+      span {
         color: #ddd !important;
       }
     }
-    h2, h4{
+
+    h2,
+    h4 {
       color: #c6e4f7 !important;
     }
-    .top{
+
+    .top {
       background-color: #555 !important;
     }
-    label{
+
+    label {
       color: #ddd !important;
     }
-    .MuiOutlinedInput-root{
+
+    .MuiOutlinedInput-root {
       background-color: #333 !important;
       border-radius: 7px;
     }
+
     .Mui-focused fieldset {
       border-color: #333 !important;
     }
-    input{
+
+    input {
       background-color: #333 !important;
       border-color: #262626 !important;
       color: #fff !important;
-      &::placeholder{
+
+      &::placeholder {
         color: #aaa !important;
       }
     }
-    textarea{
+
+    textarea {
       background-color: #333 !important;
       border-color: #262626 !important;
       color: #fff !important;
-      &::placeholder{
+
+      &::placeholder {
         color: #aaa !important;
       }
     }
-    .ratioContent{
+
+    .ratioContent {
       background: #333 !important;
     }
-    .card{
+
+    .card {
       background: #333 !important;
     }
-    .circle{
+
+    .circle {
       color: #000;
     }
   }
+
   .select-gray {
-    &>div{
+    &>div {
       background: #333 !important;
-      color : #aaa !important;
+      color: #aaa !important;
     }
-    &>div:first-of-type{
-        border: 1px solid #fff;
-        
-        div{
+
+    &>div:first-of-type {
+      border: 1px solid #fff;
+
+      div {
+        color: #ffffff !important;
+      }
+
+      div {
+        div {
           color: #ffffff !important;
         }
-        
-        div{
-            div{
-              color: #ffffff !important;
-            }
-        }
+      }
     }
   }
-  .modelContent, .MuiDialogContent-root{
-    background-color: #333 !important;
+
+  .modelContent,
+  .MuiDialogContent-root {
+    h3 {
+      color: black !important
+    }
+
+    // background-color: #333 !important;
     .warning {
       p {
-        color : #F3AC3D !important;
+        color: #F3AC3D !important;
       }
     }
-    .addressInput{
+
+    .addressInput {
       color: #ddd !important;
     }
-    .coppyAddressButton{
+
+    .coppyAddressButton {
       color: #ddd !important;
     }
-    .modalBtns{
-      a{
+
+    .modalBtns {
+      a {
         color: #c6e4f7 !important;
       }
-      .disconnect{
+
+      .disconnect {
         background-color: #F400F5 !important;
-        color : #fff !important;
+        color: #fff !important;
       }
     }
+
     .input-span {
       background-color: #555 !important;
-      input{
+
+      input {
         color: #ddd !important;
-        &::placeholder{
+
+        &::placeholder {
           color: #aaa !important;
         }
       }
+
       button {
-        background : #7A00F5;
+        background: #7A00F5;
         color: #fff !important;
-        &:hover{
-          background : #9633f9!important;
+
+        &:hover {
+          background: #9633f9 !important;
         }
       }
     }
-    h2, h5{
+
+    h2,
+    h5 {
       color: #ddd !important;
     }
-    .label{
+
+    .label {
       color: #ddd !important;
     }
-    h4{
-      color: #c6e4f7 !important;
+
+    h4 {
+      // color: #c6e4f7 !important;
     }
-    .connectModalCloseButton{
+
+    .connectModalCloseButton {
       color: #fff !important;
     }
+
     .closeBtn {
       color: #fff !important;
-      &:hover{
+
+      &:hover {
         background: #555 !important;
       }
     }
   }
 }
 
+.MuiDialog-paperWidthSm {
+  max-width: 636px !important;
+}
+
+.MuiButton-contained {
+  border: none !important;
+}
+
 @keyframes loadingAni {
-  0%{
+  0% {
     transform: rotate(0deg);
   }
+
   // 50%{
   //   transform: rotate(-180deg);
   // }
-  100%{
+  100% {
     transform: rotate(-360deg);
   }
 }

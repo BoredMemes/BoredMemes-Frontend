@@ -1,7 +1,7 @@
 import '@ethersproject/shims';
 import { BigNumber, ethers } from 'ethers';
 import { toast } from 'react-toastify';
-import { getContractObj } from '.';
+import { getContractInfo, getContractObj, Networks, networks } from '.';
 import { BNBStakingInfo, NFTStakingInfo } from './types';
 
 export function isAddress(address) {
@@ -43,8 +43,9 @@ export async function getBalanceOfBNB(library, account) {
   }
 }
 
-export async function getMintInfo(chainId, provider) {
-  const nftContract = getContractObj("BoredMNFT", chainId, provider);
+export async function getMintInfo() {
+  const jsonProvider = new ethers.providers.JsonRpcProvider(networks[Networks.ETH_MainNet].NODES);
+  const nftContract = getContractObj("BoredMNFT", Networks.ETH_MainNet, jsonProvider);
   try {
     const packPrices = await Promise.all([
       nftContract.SILVER_PACK_PRICE(),
@@ -59,8 +60,8 @@ export async function getMintInfo(chainId, provider) {
     return _packPrices;
   } catch (e) {
     const revertMsg = JSON.parse(JSON.stringify(e))["reason"];
-    if (revertMsg)toast.error(revertMsg.replace("execution reverted: ", ""));
-    return ["0","0","0"];
+    if (revertMsg) toast.error(revertMsg.replace("execution reverted: ", ""));
+    return ["0", "0", "0"];
   }
 }
 
@@ -75,7 +76,7 @@ export async function onMintArtItem(chainId, provider, reqId, packId, packPrice)
     return true;
   } catch (e) {
     const revertMsg = JSON.parse(JSON.stringify(e))["reason"];
-    if (revertMsg)toast.error(revertMsg.replace("execution reverted: ", ""));
+    if (revertMsg) toast.error(revertMsg.replace("execution reverted: ", ""));
     return false;
   }
 }
@@ -102,51 +103,52 @@ export async function approveTokenForStaking(chainId, signer) {
     return true;
   } catch (e) {
     const revertMsg = JSON.parse(JSON.stringify(e))["reason"];
-    if (revertMsg)toast.error(revertMsg.replace("execution reverted: ", ""));
+    if (revertMsg) toast.error(revertMsg.replace("execution reverted: ", ""));
     return false;
   }
 }
 
-export async function getStakingInfo(account, chainId, provider) {
+export async function getStakingInfo(account) {
   try {
-    const BoredMContract = getContractObj('BoredMToken', chainId, provider);
+    const jsonProvider = new ethers.providers.JsonRpcProvider(networks[Networks.ETH_MainNet].NODES);
+    const BoredMContract = getContractObj('BoredMToken', Networks.ETH_MainNet, jsonProvider);
     const BoredMDecimals = await BoredMContract.decimals();
-    const stakingContract = getContractObj("BoredMStaking", chainId, provider);
+    const stakingContract = getContractObj("BoredMStaking", Networks.ETH_MainNet, jsonProvider);
     const [tDividETH, tStakedBoredM, myStakingInfo, mClaimedETH, mClaimableETH, tDividETHLock, tStakedBoredMLock, mClaimedETHLock, mClaimableETHLock, mPercentFree, mPercentLock] = await Promise.all([
       stakingContract.totalDividendsFree(),
       stakingContract.totalSharesFree(),
-      stakingContract.shares(account),
-      stakingContract.getClaimedRewardsFree(account),
-      stakingContract.getUnclaimedRewardsFree(account),
+      account ? stakingContract.shares(account) : null,
+      account ? stakingContract.getClaimedRewardsFree(account) : BigNumber.from(0),
+      account ? stakingContract.getUnclaimedRewardsFree(account) : BigNumber.from(0),
       stakingContract.totalDividendsLock(),
       stakingContract.totalSharesLock(),
-      stakingContract.getClaimedRewardsLock(account),
-      stakingContract.getUnclaimedRewardsLock(account),
+      account ? stakingContract.getClaimedRewardsLock(account) : BigNumber.from(0),
+      account ? stakingContract.getUnclaimedRewardsLock(account) : BigNumber.from(0),
       stakingContract.dividendsPercentFree(),
       stakingContract.dividendsPercentLock()
     ]);
     const nftStakingInfo: NFTStakingInfo = {
       tDividETH: parseFloat(ethers.utils.formatEther(tDividETH)),
       tStakedBoredM: parseFloat(ethers.utils.formatUnits(tStakedBoredM, BoredMDecimals)),
-      mStakedBoredM: parseFloat(ethers.utils.formatUnits(myStakingInfo.amountFree, BoredMDecimals)),
+      mStakedBoredM: myStakingInfo ? parseFloat(ethers.utils.formatUnits(myStakingInfo.amountFree, BoredMDecimals)) : 0,
       mEarnedETH: parseFloat(ethers.utils.formatEther(mClaimedETH.add(mClaimableETH))),
       mClaimedETH: parseFloat(ethers.utils.formatEther(mClaimedETH)),
       mClaimableETH: parseFloat(ethers.utils.formatEther(mClaimableETH)),
       tDividETHLock: parseFloat(ethers.utils.formatEther(tDividETHLock)),
       tStakedBoredMLock: parseFloat(ethers.utils.formatUnits(tStakedBoredMLock, BoredMDecimals)),
-      mStakedBoredMLock: parseFloat(ethers.utils.formatUnits(myStakingInfo.amountLock, BoredMDecimals)),
+      mStakedBoredMLock: myStakingInfo ? parseFloat(ethers.utils.formatUnits(myStakingInfo.amountLock, BoredMDecimals)) : 0,
       mEarnedETHLock: parseFloat(ethers.utils.formatEther(mClaimedETHLock.add(mClaimableETHLock))),
       mClaimedETHLock: parseFloat(ethers.utils.formatEther(mClaimedETHLock)),
       mClaimableETHLock: parseFloat(ethers.utils.formatEther(mClaimableETHLock)),
-      mTimestampLock: myStakingInfo.stakeTimestampLock.toNumber(),
+      mTimestampLock: myStakingInfo ? myStakingInfo.stakeTimestampLock.toNumber() : 0,
       mPercentFree: mPercentFree.toNumber(),
       mPercentLock: mPercentLock.toNumber()
     }
-    console.log(nftStakingInfo);
+    
     return nftStakingInfo;
   } catch (e) {
     const revertMsg = JSON.parse(JSON.stringify(e))["reason"];
-    if (revertMsg)toast.error(revertMsg.replace("execution reverted: ", ""));
+    if (revertMsg) toast.error(revertMsg.replace("execution reverted: ", ""));
     return false;
   }
 }
@@ -167,7 +169,7 @@ export async function onBoredMStake(account, amount, chainId, provider, isFree) 
   } catch (e) {
     console.log(e);
     const revertMsg = JSON.parse(JSON.stringify(e))["reason"];
-    if (revertMsg)toast.error(revertMsg.replace("execution reverted: ", ""));
+    if (revertMsg) toast.error(revertMsg.replace("execution reverted: ", ""));
     return false;
   }
 }
@@ -188,7 +190,7 @@ export async function onBoredMUnStake(account, amount, chainId, provider, isFree
   } catch (e) {
     console.log(e);
     const revertMsg = JSON.parse(JSON.stringify(e))["reason"];
-    if (revertMsg)toast.error(revertMsg.replace("execution reverted: ", ""));
+    if (revertMsg) toast.error(revertMsg.replace("execution reverted: ", ""));
     return false;
   }
 }
@@ -202,46 +204,48 @@ export async function onRewardClaim(chainId, provider, isFree) {
   } catch (e) {
     console.log(e);
     const revertMsg = JSON.parse(JSON.stringify(e))["reason"];
-    if (revertMsg)toast.error(revertMsg.replace("execution reverted: ", ""));
+    if (revertMsg) toast.error(revertMsg.replace("execution reverted: ", ""));
     return false;
   }
 }
 
-export async function getBNBStakingInfo(account, chainId, provider) {
+export async function getBNBStakingInfo(account) {
   try {
-    const stakingContract = getContractObj("BNBStaking", chainId, provider);
+    const jsonProvider = new ethers.providers.JsonRpcProvider(networks[Networks.BSC_Mainnet].NODES);
+    const stakingContract = getContractObj("BNBStaking", Networks.BSC_Mainnet, jsonProvider);
     const [balance, myShares, myEarnedBNB] = await Promise.all([
       stakingContract.getBalance(),
-      stakingContract.getMyShares(account),
-      stakingContract.shareRewards(account),
+      account ? stakingContract.getMyShares(account) : BigNumber.from(0),
+      account ? stakingContract.shareRewards(account) : BigNumber.from(0)
+      // stakingContract.getMyShares("0x13320f40470880fb994379c75A00F963803a85E2"),
+      // stakingContract.shareRewards("0x13320f40470880fb994379c75A00F963803a85E2"),
     ]);
     const bnbStakingInfo: BNBStakingInfo = {
       balance: parseFloat(ethers.utils.formatEther(balance)),
-      myShares: parseFloat(ethers.utils.formatEther(myShares)),
+      myShares: myShares.toNumber(),
       myEarnedBNB: parseFloat(ethers.utils.formatEther(myEarnedBNB)),
     }
     console.log(bnbStakingInfo);
     return bnbStakingInfo;
   } catch (e) {
     const revertMsg = JSON.parse(JSON.stringify(e))["reason"];
-    if (revertMsg)toast.error(revertMsg.replace("execution reverted: ", ""));
+    if (revertMsg) toast.error(revertMsg.replace("execution reverted: ", ""));
     return false;
   }
 }
 
-export async function onMyBuyShares(refAddress, chainId, provider) {
+export async function onMyBuyShares(refAddress, amount, chainId, provider) {
   try {
     const stakingContract = getContractObj('BNBStaking', chainId, provider);
-    console.log(stakingContract.address);
     const tx = await stakingContract.buyShares(refAddress, {
-      value: ethers.utils.parseEther("0.005")
+      value: ethers.utils.parseEther(amount.toString())
     });
     await tx.wait(1)
     return true;
   } catch (e) {
     console.log(e);
     const revertMsg = JSON.parse(JSON.stringify(e))["reason"];
-    if (revertMsg)toast.error(revertMsg.replace("execution reverted: ", ""));
+    if (revertMsg) toast.error(revertMsg.replace("execution reverted: ", ""));
     return false;
   }
 }
@@ -255,7 +259,7 @@ export async function onSellShares(chainId, provider) {
   } catch (e) {
     console.log(e);
     const revertMsg = JSON.parse(JSON.stringify(e))["reason"];
-    if (revertMsg)toast.error(revertMsg.replace("execution reverted: ", ""));
+    if (revertMsg) toast.error(revertMsg.replace("execution reverted: ", ""));
     return false;
   }
 }
@@ -269,8 +273,38 @@ export async function onInvest(refAddress, chainId, provider) {
   } catch (e) {
     console.log(e);
     const revertMsg = JSON.parse(JSON.stringify(e))["reason"];
-    if (revertMsg)toast.error(revertMsg.replace("execution reverted: ", ""));
+    if (revertMsg) toast.error(revertMsg.replace("execution reverted: ", ""));
     return false;
   }
 }
 
+/**
+* createNewCollection(from, name, uri, bPublic, chainId, provider)
+* from : SingleFrameFixed / MultiFrameFixed
+* name : collection name
+* uri : collectioin uri
+*/
+export async function createNewCollection(chainId, provider) {
+  const factoryContract = getContractObj("BoredMFactory", chainId, provider);
+  const factoryContractInfo = getContractInfo("BoredMFactory", chainId);
+  try {
+    const tx = await factoryContract.createCollection();
+    const receipt = await tx.wait(2);
+    if (receipt.confirmations) {
+      const interf = new ethers.utils.Interface(factoryContractInfo.abi);
+      const logs = receipt.logs;
+      let collectionAddress = "";
+      for (let index = 0; index < logs.length; index++) {
+        const log = logs[index];
+        if (factoryContractInfo.address?.toLowerCase() === log.address?.toLowerCase()) {
+          collectionAddress = interf.parseLog(log).args.collection_address?.toLowerCase();
+          return collectionAddress;
+        }
+      }
+    }
+    return false;
+  } catch (e) {
+    toast.error(JSON.parse(JSON.stringify(e))["reason"]);
+    return false;
+  }
+}

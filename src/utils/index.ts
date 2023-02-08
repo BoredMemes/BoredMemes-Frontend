@@ -3,13 +3,15 @@ import BoredMNFTABI from 'contracts/BoredMNFT.json';
 import BoredMMarketABI from 'contracts/BoredMMarket.json';
 import BoredMTokenABI from 'contracts/BoredMToken.json';
 import BoredMStakingABI from 'contracts/BoredMStaking.json';
+import BoredMFactoryABI from 'contracts/BoredMFactory.json';
 import BNBStakingABI from 'contracts/BNBStaking.json';
 import { chainIdLocalStorageKey } from 'hooks';
 
 export const Networks = {
   ETH_MainNet: 1,
   ETH_TestNet: 5,
-  BSC_Mainnet: 56
+  BSC_Mainnet: 56,
+  BSC_Testnet: 97
 };
 
 export const CONTRACTS_BY_NETWORK = {
@@ -29,6 +31,10 @@ export const CONTRACTS_BY_NETWORK = {
     BoredMStaking: {
       address: '0xE0C1aB853b3a3c21Cc3C50BA6494c7AfCC8eCea7',
       abi: BoredMStakingABI
+    },
+    BoredMFactory: {
+      address: '0x1469b4977447d59d1caf901cd75346452c215edb',
+      abi: BoredMFactoryABI
     }
   },
   [Networks.ETH_TestNet]: {
@@ -47,6 +53,10 @@ export const CONTRACTS_BY_NETWORK = {
     BoredMStaking: {
       address: '0x8b4196629F23A0dA3A4976b01b261bFB8360e600',
       abi: BoredMStakingABI
+    },
+    BoredMFactory: {
+      address: '0x1469b4977447d59d1caf901cd75346452c215edb',
+      abi: BoredMFactoryABI
     }
   },
   [Networks.BSC_Mainnet]: {
@@ -59,31 +69,36 @@ export const CONTRACTS_BY_NETWORK = {
 
 
 export const networks = {
-  [1] : {
-    NETWORK_ID : process.env.REACT_APP_ETH_NETWORK_ID,
-    CURRENCY : process.env.REACT_APP_ETH_CURRENCY,
-    NETWORK : process.env.REACT_APP_ETH_NETWORK,
-    BLOCK_EXPLORER : process.env.REACT_APP_ETH_BLOCK_EXPLORER,
-    NODES : process.env.REACT_APP_ETH_NODE_1,
+  [1]: {
+    NETWORK_ID: process.env.REACT_APP_ETH_NETWORK_ID,
+    CURRENCY: process.env.REACT_APP_ETH_CURRENCY,
+    NETWORK: process.env.REACT_APP_ETH_NETWORK,
+    BLOCK_EXPLORER: process.env.REACT_APP_ETH_BLOCK_EXPLORER,
+    NODES: process.env.REACT_APP_ETH_NODE_1,
   },
-  [5] : {
-    NETWORK_ID : process.env.REACT_APP_ETH_NETWORK_ID,
-    CURRENCY : process.env.REACT_APP_ETH_CURRENCY,
-    NETWORK : process.env.REACT_APP_ETH_NETWORK,
-    BLOCK_EXPLORER : process.env.REACT_APP_ETH_BLOCK_EXPLORER,
-    NODES : process.env.REACT_APP_ETH_NODE_1,
+  [5]: {
+    NETWORK_ID: process.env.REACT_APP_ETH_NETWORK_ID,
+    CURRENCY: process.env.REACT_APP_ETH_CURRENCY,
+    NETWORK: process.env.REACT_APP_ETH_NETWORK,
+    BLOCK_EXPLORER: process.env.REACT_APP_ETH_BLOCK_EXPLORER,
+    NODES: process.env.REACT_APP_ETH_NODE_1,
   },
-  [56] : {
-    NETWORK_ID : process.env.REACT_APP_BSC_NETWORK_ID,
-    CURRENCY : process.env.REACT_APP_BSC_CURRENCY,
-    NETWORK : process.env.REACT_APP_BSC_NETWORK,
-    BLOCK_EXPLORER : process.env.REACT_APP_BSC_BLOCK_EXPLORER,
-    NODES : process.env.REACT_APP_BSC_NODE_1,
+  [56]: {
+    NETWORK_ID: process.env.REACT_APP_BSC_NETWORK_ID,
+    CURRENCY: process.env.REACT_APP_BSC_CURRENCY,
+    NETWORK: process.env.REACT_APP_BSC_NETWORK,
+    BLOCK_EXPLORER: process.env.REACT_APP_BSC_BLOCK_EXPLORER,
+    NODES: process.env.REACT_APP_BSC_NODE_1,
+  },
+  [97]: {
+    NETWORK_ID: process.env.REACT_APP_BSC_NETWORK_ID,
+    CURRENCY: process.env.REACT_APP_BSC_CURRENCY,
+    NETWORK: process.env.REACT_APP_BSC_NETWORK,
+    BLOCK_EXPLORER: process.env.REACT_APP_BSC_BLOCK_EXPLORER,
+    NODES: process.env.REACT_APP_BSC_NODE_1,
   }
 }
-
-//export const currentNetwork = process.env.REACT_APP_BSC_NETWORK_ID : process.env.REACT_APP_ETH_NETWORK_ID;
-export function getCurrentNetwork(){
+export function getCurrentNetwork() {
   return window.localStorage.getItem(chainIdLocalStorageKey) || process.env.REACT_APP_ETH_NETWORK_ID;
 }
 
