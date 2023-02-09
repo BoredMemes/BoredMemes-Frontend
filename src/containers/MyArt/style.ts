@@ -54,28 +54,6 @@ export const useStyles = makeStyles(theme => ({
           display: 'flex',
           alignItems: 'center',
         },
-        '& .socialLinks': {
-          display: 'flex',
-          alignItems: 'center',
-          gridTemplateColumns: 'auto auto auto',
-          gap: 20,
-          [theme.breakpoints.down('xs')]: {
-            gap: 10,
-          },
-          '& a' :{
-            fontSize: 22,
-            color: '#1EA1F2',
-            textDecoration: 'none',
-            cursor: 'pointer',
-            transition: 'all 0.3s ease',
-            '& :hover':{
-              opacity: 0.7,
-            },
-            [theme.breakpoints.down('xs')]: {
-              fontSize : 20,
-            },
-          }
-        },
         '& p': {
           fontSize: 14,
           marginRight : 20,
@@ -97,7 +75,31 @@ export const useStyles = makeStyles(theme => ({
         width : '100%',
         justifyContent: 'space-between',
       },
-
+      '& .socialLinks': {
+        display: 'flex',
+        alignItems: 'center',
+        gridTemplateColumns: 'auto auto auto',
+        gap: 20,
+        [theme.breakpoints.down('xs')]: {
+          gap: 10,
+        },
+        '& a' :{
+          fontSize: 22,
+          color: '#1EA1F2',
+          textDecoration: 'none',
+          cursor: 'pointer',
+          transition: 'all 0.3s ease',
+          '& :hover':{
+            opacity: 0.7,
+          },
+          [theme.breakpoints.down('xs')]: {
+            fontSize : 20,
+          },
+        },
+        '& div': {
+          color: 'white'
+        } 
+      },
       '& p': {
         fontSize: 14,
         [theme.breakpoints.down('xs')]: {
@@ -178,7 +180,7 @@ export const useStyles = makeStyles(theme => ({
       '& button': {
         maxWidth: 250,
         cursor: 'pointer',
-        background: '#F400F5',
+        background: 'linear-gradient(47.43deg, #2A01FF 0%, #FF1EE1 57%, #FFB332 100%)',
         borderRadius: 15,
         display : 'flex',
         justifyContent: 'center',
@@ -625,6 +627,26 @@ export const useStyles = makeStyles(theme => ({
       },
     },
   },
+  modalAddRootContent: {
+    maxWidth: '450px',
+    padding: '0px !important',
+    width: '400px',
+    height: '315px',
+    [theme.breakpoints.down('xs')]: {
+      width: '320px',
+      height: '245px',
+    },
+  },
+  modalAddNftRootContent: {
+    maxWidth: '450px',
+    padding: '0px !important',
+    width: '380px',
+    height: '380px',
+    [theme.breakpoints.down('xs')]: {
+      width: '320px',
+      height: '345px',
+    },
+  },
   modalAddContent: {
     display: 'flex',
     alignItems: 'center',
@@ -642,8 +664,6 @@ export const useStyles = makeStyles(theme => ({
         fontSize: 12,
       },
     },
-
-
     '& .btns': {
       width: '100%',
       display: 'flex',
@@ -797,6 +817,7 @@ export const useStyles = makeStyles(theme => ({
     },
   },
   myInputWrap: {
+    marginTop:10,
     width: '100%',
     marginBottom: 5,
   }

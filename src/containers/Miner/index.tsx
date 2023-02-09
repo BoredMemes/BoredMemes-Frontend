@@ -3,8 +3,10 @@ import { useStyles } from './style';
 import { useContext, useEffect, useState } from 'react';
 import Expand from 'react-expand-animated';
 import Modal from 'components/modal';
+import Checkbox from '@mui/material/Checkbox';
 import Web3WalletContext from 'hooks/Web3ReactManager';
 import { toast } from 'react-toastify';
+import ThemeContext from "theme/ThemeContext"
 import { ethers } from 'ethers';
 import { getBalanceOfBNB, getBNBStakingInfo, onInvest, onMyBuyShares, onSellShares } from 'utils/contracts';
 import { BNBStakingInfo } from 'utils/types';
@@ -12,7 +14,8 @@ import FormControlLabel from '@mui/material/FormControlLabel';
 import Switch, { SwitchProps } from '@mui/material/Switch';
 import axios from 'axios';
 import { styled } from '@mui/material/styles';
-
+import MyTooltip from 'components/Widgets/MyTooltip';
+import CheckLock from 'components/Forms/CheckLock';
 const MaterialUISwitch = styled(Switch)(({ theme }) => ({
   width: 60,
   height: 34,
@@ -20,44 +23,44 @@ const MaterialUISwitch = styled(Switch)(({ theme }) => ({
   '& .MuiSwitch-switchBase': {
     margin: 1,
     padding: 0,
-    transform: 'translateX(10px)',
+    transform: 'translateX(8px)',
     '&.Mui-checked': {
       value: 'sg',
       color: '#fff',
-      transform: 'translateX(30px)',
+      transform: 'translateX(32px)',
       '& .MuiSwitch-thumb:before': {
-        backgroundImage: `url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" height="20" width="20" viewBox="0 0 20 20"><path fill="${encodeURIComponent(
-          '#fff',
-        )}" d="M4.2 2.5l-.7 1.8-1.8.7 1.8.7.7 1.8.6-1.8L6.7 5l-1.9-.7-.6-1.8zm15 8.3a6.7 6.7 0 11-6.6-6.6 5.8 5.8 0 006.6 6.6z"/></svg>')`,
+        background: `url('assets/icons/lock_icon.svg')`,
+        backgroundRepeat: 'no-repeat'
       },
       '& + .MuiSwitch-track': {
         opacity: 1,
-        backgroundColor: theme.palette.mode === 'dark' ? '#8796A5' : '#aab4be',
+        backgroundColor: theme.palette.mode === 'dark' ? '#eee' : '#000',
+        border: 'solid 1px #ef1ce3'
       },
     },
   },
   '& .MuiSwitch-thumb': {
-    backgroundColor: theme.palette.mode === 'dark' ? '#003892' : '#001e3c',
-    width: 18,
-    height: 18,
+    backgroundColor: theme.palette.mode === 'dark' ? 'transparent' : 'transparent',
+    width: 22,
+    height: 14,
     marginTop: 8,
     '&:before': {
       content: "''",
       position: 'absolute',
-      width: '90%',
-      height: '90%',
+      width: '100%',
+      height: '100%',
       left: 0,
       top: 4,
       backgroundRepeat: 'no-repeat',
       backgroundPosition: 'center',
-      backgroundImage: `url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" height="20" width="20" viewBox="0 0 20 20"><path fill="${encodeURIComponent(
-        '#fff',
-      )}" d="M9.305 1.667V3.75h1.389V1.667h-1.39zm-4.707 1.95l-.982.982L5.09 6.072l.982-.982-1.473-1.473zm10.802 0L13.927 5.09l.982.982 1.473-1.473-.982-.982zM10 5.139a4.872 4.872 0 00-4.862 4.86A4.872 4.872 0 0010 14.862 4.872 4.872 0 0014.86 10 4.872 4.872 0 0010 5.139zm0 1.389A3.462 3.462 0 0113.471 10a3.462 3.462 0 01-3.473 3.472A3.462 3.462 0 016.527 10 3.462 3.462 0 0110 6.528zM1.665 9.305v1.39h2.083v-1.39H1.666zm14.583 0v1.39h2.084v-1.39h-2.084zM5.09 13.928L3.616 15.4l.982.982 1.473-1.473-.982-.982zm9.82 0l-.982.982 1.473 1.473.982-.982-1.473-1.473zM9.305 16.25v2.083h1.389V16.25h-1.39z"/></svg>')`,
+      backgroundSize: 'contain',
+      background: `url('assets/icons/unlock-icon.png')`,
     },
   },
   '& .MuiSwitch-track': {
     opacity: 1,
-    backgroundColor: theme.palette.mode === 'dark' ? '#8796A5' : '#aab4be',
+    backgroundColor: theme.palette.mode === 'dark' ? '#eee' : '#000',
+    border: 'solid 1px #ef1ce3',
     borderRadius: 20 / 2,
   },
 }));
@@ -66,6 +69,10 @@ const Miner = () => {
   const { loginStatus, chainId, account, library } = useContext(Web3WalletContext)
 
   const [minerList, setMinerList] = useState<number[]>([0]);
+  const [isFree, setFree] = useState(false);
+  const [withdrawModal, setWithdrawModal] = useState(false);
+  const [createCustomModal, setCreateCustomModal] = useState(false);
+
   const onAddMiner = () => {
     let alink = document.createElement('a');
     alink.href = "https://forms.gle/85zYBQ8dxiJyNq2D6";
@@ -73,6 +80,7 @@ const Miner = () => {
     alink.click();
     //setMinerList(oldArray => [...oldArray, 0]);
   }
+  const label = { inputProps: { 'aria-label': 'Checkbox demo' } };
 
   const [boredMExpand, setBoredMExpand] = useState(false);
   const [minerExpand, setMinerExpand] = useState(false);
@@ -83,7 +91,7 @@ const Miner = () => {
   };
   const transitions = ['width', 'height', 'opacity', 'background'];
 
-  const [buyModal, setBuyModal] = useState(false);
+  const [stakeModal, setStakeModal] = useState(false);
   const [amount, setAmount] = useState(0);
   const [progress, setProgress] = useState(50);
 
@@ -161,14 +169,14 @@ const Miner = () => {
   }
   const onCancelBuyShares = () => {
     setProgress(50);
-    setBuyModal(false);
+    setStakeModal(false);
   }
 
   useEffect(() => {
-    if (loginStatus && buyModal) {
+    if (loginStatus && stakeModal) {
       getBNBBalance();
     }
-  }, [loginStatus, buyModal])
+  }, [loginStatus, stakeModal])
 
   const onChangeVal = async (e: any) => {
     if (e.target.value === null || e.target.value === '') {
@@ -178,10 +186,10 @@ const Miner = () => {
     }
   }
   useEffect(() => {
-    if (progress >= 0 && buyModal) {
+    if (progress >= 0 && stakeModal) {
       setAmount(bnbBalance * progress / 100);
     }
-  }, [progress, buyModal, bnbBalance])
+  }, [progress, stakeModal, bnbBalance])
   const onMax = async () => {
     setAmount(bnbBalance)
   }
@@ -193,6 +201,10 @@ const Miner = () => {
         <div className={`${classes.content} mainContainer`}>
           <div className={classes.top}>
             <h1>Farms with NFT boosters</h1>
+            <div className={classes.custom_pool_btn} role='button' onClick={() => setCreateCustomModal(true)}>
+              <img src='assets/imgs/create-farm-icon.png' width={20} />
+              <span>Create Your Custom Pool</span>
+            </div>
           </div>
 
           <div className='stake_withdraw_body'>
@@ -211,41 +223,46 @@ const Miner = () => {
 
               <div>
                 <h5>My staked $PIXIA</h5>
-                <p>7,836,923.44</p>
+                <p>7,836,923.44 <img src='assets/icons/warning_icon_01.svg' width={10} /></p>
                 <span>≈ $150,09</span>
               </div>
 
               <div style={{ padding: 6 }}>
                 <h5>My NFT Boosters</h5>
-                <h3>4x</h3>
+                <h3>4x <img src='assets/icons/warning_icon_01.svg' width={10} /></h3>
               </div>
 
               <div>
                 <h5>My Earned $ETH</h5>
-                <p>0.15</p>
+                <p>0.15<img src='assets/icons/warning_icon_01.svg' width={10} /></p>
                 <span>≈ $150,09</span>
               </div>
 
-              <button style={{
-                padding: '5px', background: 'transparent', width: '108px',
-                height: '45px', borderRadius: '15px', textAlign: 'center', border: 'dashed 1px #ff589d', color: '#be16d2', alignSelf: 'center'
-              }}>Stake</button>
-              <button style={{
-                padding: '5px', background: 'linear-gradient(47.43deg, #2A01FF 0%, #FF1EE1 57%, #FFB332 100%)', width: '108px',
-                height: '45px', borderRadius: '15px', textAlign: 'center', border: 'none', color: 'white', alignSelf: 'center'
-              }}>Boost</button>
+              <div style={{ paddingTop: 16 }}>
+                <button style={{
+                  marginLeft: 5, fontWeight: 600,
+                  padding: '5px', background: 'transparent', width: '108px',
+                  height: '45px', borderRadius: '15px', textAlign: 'center', border: 'dashed 1px #ff589d', color: '#be16d2', alignSelf: 'center'
+                }}>Boost</button>
+                <button style={{
+                  marginLeft: 5, fontWeight: 600,
+                  padding: '5px', background: 'linear-gradient(47.43deg, #2A01FF 0%, #FF1EE1 57%, #FFB332 100%)', width: '108px',
+                  height: '45px', borderRadius: '15px', textAlign: 'center', border: 'none', color: 'white', alignSelf: 'center'
+                }} onClick={() => setStakeModal(true)}>Stake</button>
+                <img src='assets/icons/arrow_down_icon.svg' width={20} style={{ marginLeft: 5 }} />
+              </div>
             </div>
 
             <div className={classes.withdraw_card}>
               <div>
                 <h5>My staked $PIXIA</h5>
-                <p>7,836,923.44</p>
+                <p>7,836,923.44<img src='assets/icons/warning_icon_01.svg' width={10} /></p>
                 <span>≈ $150,09</span>
               </div>
 
               <div>
                 <h5>My Earned $ETH</h5>
-                <p>0.15</p>
+                <h6>0.15<img src='assets/icons/warning_icon_01.svg' width={10} /></h6>
                 <span>≈ $150,09</span>
               </div>
 
@@ -259,20 +276,28 @@ const Miner = () => {
 
               <div>
                 <h5>My NFT Boosters</h5>
-                <img src='assets/imgs/NFT-booster.png' />
+                <div>
+                  <span>3</span>
+                  <img src='assets/imgs/NFT-booster.png' />
+                </div>
               </div>
-              <button style={{
-                padding: '5px', background: 'transparent', width: '108px',
-                height: '45px', borderRadius: '15px', textAlign: 'center', border: 'dashed 1px #ff589d', color: '#be16d2', alignSelf: 'center'
-              }}>Compound</button>
-              <button style={{
-                padding: '5px', background: 'transparent', width: '108px',
-                height: '45px', borderRadius: '15px', textAlign: 'center', border: 'dashed 1px #ff589d', color: '#be16d2', alignSelf: 'center'
-              }}>Cash Out</button>
-              <button style={{
-                padding: '5px', background: '#4905FB', width: '108px',
-                height: '45px', borderRadius: '15px', textAlign: 'center', border: 'none', color: 'white', alignSelf: 'center'
-              }}>Withdraw</button>
+              <div style={{ paddingTop: 16 }}>
+                <button style={{
+                  marginLeft: 5, fontWeight: 600,
+                  padding: '5px', background: 'transparent', width: '108px',
+                  height: '45px', borderRadius: '15px', textAlign: 'center', border: 'dashed 1px #ff589d', color: '#be16d2', alignSelf: 'center'
+                }}>Compound</button>
+                <button style={{
+                  marginLeft: 5, fontWeight: 600,
+                  padding: '5px', background: 'transparent', width: '108px',
+                  height: '45px', borderRadius: '15px', textAlign: 'center', border: 'dashed 1px #ff589d', color: '#be16d2', alignSelf: 'center'
+                }}>Cash Out</button>
+                <button style={{
+                  marginLeft: 5, fontWeight: 600,
+                  padding: '5px', background: '#4905FB', width: '108px',
+                  height: '45px', borderRadius: '15px', textAlign: 'center', border: 'none', color: 'white', alignSelf: 'center'
+                }} onClick={() => setWithdrawModal(true)}>Withdraw</button>
+              </div>
             </div>
           </div>
 
@@ -309,7 +334,7 @@ const Miner = () => {
                   </span>
                 </li>
                 <li>
-                  <FilledButton label={'Buy Shares'} handleClick={() => setBuyModal(true)} />
+                  <FilledButton label={'Buy Shares'} handleClick={() => setStakeModal(true)} />
                 </li>
               </ul>
               <div className="downBtn" onClick={() => setBoredMExpand(!boredMExpand)}>
@@ -336,7 +361,7 @@ const Miner = () => {
                   <li>
                     <FilledButton label={'Reinvest'} color='success' handleClick={() => onTokenInvest()} />
                     <FilledButton label={'Harvest'} color='secondary' handleClick={() => onHarvest()} />
-                    <FilledButton label={'Buy Shares'} handleClick={() => setBuyModal(true)} />
+                    <FilledButton label={'Buy Shares'} handleClick={() => setStakeModal(true)} />
                   </li>
                 </ul>
 
@@ -374,7 +399,7 @@ const Miner = () => {
                       </span>
                     </li>
                   <li>
-                    <FilledButton label={'Buy Shares'} handleClick = {()=>setBuyModal(true)}/>
+                    <FilledButton label={'Buy Shares'} handleClick = {()=>setStakeModal(true)}/>
                   </li>
                 </ul>
                 <div className="downBtn" onClick={()=>setMinerExpand(!minerExpand)}>
@@ -401,7 +426,7 @@ const Miner = () => {
                     <li>
                       <FilledButton label={'Reinvest'} color = 'success'/>
                       <FilledButton label={'Harvest'} color = 'secondary'/>
-                      <FilledButton label={'Buy Shares'} handleClick = {()=>setBuyModal(true)}/>
+                      <FilledButton label={'Buy Shares'} handleClick = {()=>setStakeModal(true)}/>
                     </li>
                   </ul>
                   
@@ -492,16 +517,16 @@ const Miner = () => {
       </div>
 
       <Modal
-        show={buyModal}
+        show={stakeModal}
         maxWidth='sm'
         children={<>
           <div className={classes.modal}>
             <div className={classes.modalTop}>
               <span>
-                <img src="/assets/logo.png" alt="" />
-                <h4>Buy miner shares with BNB</h4>
+                <img src='assets/imgs/farm-stake-avatar1.png' />
+                <h4>Stake $PIXIA in Farm</h4>
               </span>
-              <button className="closeBtn" onClick={() => setBuyModal(false)}><img src="/assets/icons/close_icon.svg" alt="" /></button>
+              {/* <button className="closeBtn" onClick={() => setStakeModal(false)}><img src="/assets/icons/close_icon.svg" alt="" /></button> */}
             </div>
             <div className={classes.modalContent}>
               <span className='input-span'>
@@ -511,29 +536,29 @@ const Miner = () => {
               <h5>Balance : {bnbBalance.toLocaleString(undefined, { maximumFractionDigits: 2 })} $BNB</h5>
               <div className={classes.progress}>
                 <div className="line">
-                  <div style={{ background: '#9B51E0', width: `${progress}%`, height: '100%' }}></div>
+                  <div style={{ background: '#ef1ce3', width: `${progress}%`, height: '100%' }}></div>
                 </div>
-                <div className="node" onClick={() => setProgress(0)} style={{ background: progress < 0 ? '#fff' : '#9B51E0' }}>
+                <div className="node" onClick={() => setProgress(0)} style={{ background: progress < 0 ? '#fff' : '#ef1ce3' }}>
                   {progress > 0 ?
                     <img src="/assets/icons/check_icon.svg" alt="" /> :
                     <div className="circle" style={{ background: progress === 0 ? '#fff' : '#E0E0E7' }}></div>}
                 </div>
-                <div className="node" onClick={() => setProgress(25)} style={{ background: progress < 25 ? '#fff' : '#9B51E0' }}>
+                <div className="node" onClick={() => setProgress(25)} style={{ background: progress < 25 ? '#fff' : '#ef1ce3' }}>
                   {progress > 25 ?
                     <img src="/assets/icons/check_icon.svg" alt="" /> :
                     <div className="circle" style={{ background: progress === 25 ? '#fff' : '#E0E0E7' }}></div>}
                 </div>
-                <div className="node" onClick={() => setProgress(50)} style={{ background: progress < 50 ? '#fff' : '#9B51E0' }}>
+                <div className="node" onClick={() => setProgress(50)} style={{ background: progress < 50 ? '#fff' : '#ef1ce3' }}>
                   {progress > 50 ?
                     <img src="/assets/icons/check_icon.svg" alt="" /> :
                     <div className="circle" style={{ background: progress === 50 ? '#fff' : '#E0E0E7' }}></div>}
                 </div>
-                <div className="node" onClick={() => setProgress(75)} style={{ background: progress < 75 ? '#fff' : '#9B51E0' }}>
+                <div className="node" onClick={() => setProgress(75)} style={{ background: progress < 75 ? '#fff' : '#ef1ce3' }}>
                   {progress > 75 ?
                     <img src="/assets/icons/check_icon.svg" alt="" /> :
                     <div className="circle" style={{ background: progress === 75 ? '#fff' : '#E0E0E7' }}></div>}
                 </div>
-                <div className="node" onClick={() => setProgress(100)} style={{ background: progress < 100 ? '#fff' : '#9B51E0' }}>
+                <div className="node" onClick={() => setProgress(100)} style={{ background: progress < 100 ? '#fff' : '#ef1ce3' }}>
                   {progress > 100 ?
                     <img src="/assets/icons/check_icon.svg" alt="" /> :
                     <div className="circle" style={{ background: progress === 100 ? '#fff' : '#E0E0E7' }}></div>}
@@ -549,17 +574,206 @@ const Miner = () => {
               </div>
               <br />
 
+              <div>
+                <div className={classes.lock}>
+                  {/* <Checkbox {...label} defaultChecked style={{width:'30px'}}/> */}
+                  <CheckLock disabled={false} value={!isFree} onChange={(checked) => setFree(!checked)} />
+                  <img src="/assets/icons/lock_icon.svg" alt="" />
+                  <p>Lock $BoredM for access to</p>
+                  <h6 style={{ color: '#ef1ce3', background: '#ffd8f1' }} className='prog-1'>80%</h6>
+                  <span className='vs'>vs</span>
+                  <h6 style={{ color: '#4905fb', background: '#d2c4f5' }} className='prog-2'>20%</h6>
+                  {/* <img src="/assets/icons/warning_icon_01.svg" alt="" /> */}
+                  <MyTooltip
+                    text={
+                      <>
+                        <p>The lock is applied for 30 days and gives you access to 90% of the total rewards. If you choose not to lock, your tokens are free to withdraw anytime and you get access to 10% of total rewards.</p>
+                      </>}
+                  />
+                </div>
+              </div>
               <div className="warning">
-                <img src="/assets/icons/warning_icon.svg" alt="" />
-                <p>Buying shares are non refundable. Number of shares are fixed in the pool, new entrance are buying shares from previous shareholders. Your number of shares varies with new entries, reinvesting rewards or harvesting rewards. Number of shares updates when you interact with the contract.</p>
+                <img src="/assets/icons/warning_icon.png" alt="" />
+                <p>1% fee for withdrawing in the next 48h -72h. Depositing or reinvesting resets the time.</p>
               </div>
             </div>
             <div className={classes.modalBtns}>
-              <FilledButton label={'Cancel'} color='secondary' handleClick={() => setBuyModal(false)} />
-              <FilledButton label={'Buy shares'} handleClick={onBuyShares} />
+              {/* <FilledButton label={'Cancel'} color='secondary' handleClick={() => setStakeModal(false)} />
+              <FilledButton label={'Buy shares'} handleClick={onBuyShares} /> */}
+              <button style={{
+                padding: '5px', width: '50%',
+                height: '45px', borderRadius: '15px', textAlign: 'center', border: 'dashed 1px #ff589d', color: '#be16d2', alignSelf: 'center'
+              }} onClick={() => setStakeModal(false)} className="cancel-btn">Cancel</button>
+              <button style={{
+                padding: '5px', background: 'linear-gradient(47.43deg, #2A01FF 0%, #FF1EE1 57%, #FFB332 100%)', width: '50%',
+                height: '45px', borderRadius: '15px', textAlign: 'center', border: 'none', color: 'white', alignSelf: 'center'
+              }}>Stake</button>
             </div>
           </div>
 
+        </>}
+      />
+      <Modal
+        show={withdrawModal}
+        maxWidth='sm'
+        children={<>
+          <div className={classes.modal}>
+            <div className={classes.modalTop}>
+              <span className='topTitle'>
+                <img src='assets/imgs/farm-stake-avatar1.png' />
+                <div>
+                  <h4>Withdraw from $BoredM in Farm</h4>
+                  <p>7,836,923.44 $PIXIA staked</p>
+                </div>
+              </span>
+              <MaterialUISwitch />
+            </div>
+            <div className={classes.modalContent}>
+              <span className='input-span'>
+                <input type="number" onChange={e => onChangeVal(e)} placeholder={"Amount"} value={amount === 0 ? "Amount" : amount} />
+                <button onClick={onMax}>Max</button>
+              </span>
+              <h5>Balance : {bnbBalance.toLocaleString(undefined, { maximumFractionDigits: 2 })} $BNB</h5>
+              <div className={classes.progress}>
+                <div className="line">
+                  <div style={{ background: '#ef1ce3', width: `${progress}%`, height: '100%' }}></div>
+                </div>
+                <div className="node" onClick={() => setProgress(0)} style={{ background: progress < 0 ? '#fff' : '#ef1ce3' }}>
+                  {progress > 0 ?
+                    <img src="/assets/icons/check_icon.svg" alt="" /> :
+                    <div className="circle" style={{ background: progress === 0 ? '#fff' : '#E0E0E7' }}></div>}
+                </div>
+                <div className="node" onClick={() => setProgress(25)} style={{ background: progress < 25 ? '#fff' : '#ef1ce3' }}>
+                  {progress > 25 ?
+                    <img src="/assets/icons/check_icon.svg" alt="" /> :
+                    <div className="circle" style={{ background: progress === 25 ? '#fff' : '#E0E0E7' }}></div>}
+                </div>
+                <div className="node" onClick={() => setProgress(50)} style={{ background: progress < 50 ? '#fff' : '#ef1ce3' }}>
+                  {progress > 50 ?
+                    <img src="/assets/icons/check_icon.svg" alt="" /> :
+                    <div className="circle" style={{ background: progress === 50 ? '#fff' : '#E0E0E7' }}></div>}
+                </div>
+                <div className="node" onClick={() => setProgress(75)} style={{ background: progress < 75 ? '#fff' : '#ef1ce3' }}>
+                  {progress > 75 ?
+                    <img src="/assets/icons/check_icon.svg" alt="" /> :
+                    <div className="circle" style={{ background: progress === 75 ? '#fff' : '#E0E0E7' }}></div>}
+                </div>
+                <div className="node" onClick={() => setProgress(100)} style={{ background: progress < 100 ? '#fff' : '#ef1ce3' }}>
+                  {progress > 100 ?
+                    <img src="/assets/icons/check_icon.svg" alt="" /> :
+                    <div className="circle" style={{ background: progress === 100 ? '#fff' : '#E0E0E7' }}></div>}
+                </div>
+              </div>
+
+              <div className={classes.progress}>
+                <div className="label">0%</div>
+                <div className="label ml-10">25%</div>
+                <div className="label ml-5">50%</div>
+                <div className="label ml-5">75%</div>
+                <div className="label">100%</div>
+              </div>
+              <br />
+            </div>
+            <div className={classes.modalBtns}>
+              <button style={{
+                padding: '5px', width: '50%',
+                height: '45px', borderRadius: '15px', textAlign: 'center', border: 'dashed 1px #ff589d', color: '#be16d2', alignSelf: 'center'
+              }} onClick={() => setWithdrawModal(false)} className="cancel-btn">Cancel</button>
+              <button style={{
+                padding: '5px', background: 'linear-gradient(47.43deg, #2A01FF 0%, #FF1EE1 57%, #FFB332 100%)', width: '50%',
+                height: '45px', borderRadius: '15px', textAlign: 'center', border: 'none', color: 'white', alignSelf: 'center'
+              }}>Withdraw</button>
+            </div>
+          </div>
+
+        </>}
+      />
+
+      <Modal
+        show={createCustomModal}
+        maxWidth='sm'
+        contentClass={classes.createModalRootContent}
+        children={<>
+          <div className={classes.createModal}>
+            <div className={`${classes.createModalTop}`}>
+              <span className='topTitle'>
+                <div>
+                  <h4>Create Your Custom Pool</h4>
+                </div>
+              </span>
+              <button className="closeBtn" onClick={() => setCreateCustomModal(false)}><img src="/assets/icons/close_icon_01.svg" alt="" /></button>
+            </div>
+            <div className={`${classes.createModalAddContent}`}>
+              <div>
+                <p>Token Smart Contract (Used To Stake)</p>
+                <input type="text" placeholder='0x0000dead' />
+              </div>
+              <div>
+                <p>Token Ticker (Used To Stake)</p>
+                <input type="text" placeholder='PIXIA' />
+              </div>
+              <div style={{position:'relative'}}>
+                <img src='assets/imgs/farm-stake-avatar1.png' width={50} style={{ position: 'absolute' , top:38, left:8}} />
+                <p>Token image (Used To Stake)</p>
+                <input type="text" placeholder='Token-picture.jpg 131KB' style={{ paddingLeft:60}}/>
+              </div>
+              <div>
+                <p>Reward Token Smart Contract (Distributed)</p>
+                <input type="text" placeholder='0x0000dead' />
+              </div>
+              <div>
+                <p>Token Ticker (Distributed)</p>
+                <input type="text" placeholder='PIXIA' />
+              </div>
+              <div>
+                <p>NFT Collection Smart Contract (Booster)</p>
+                <input type="text" placeholder='0x0000dead' />
+              </div>
+              <h5 style={{ color: '#eee !important', textAlign: 'left', width: '100%', marginTop: '15px' }}>Choose you pool details.
+              </h5>
+              <h5 style={{ color: '#eee !important', textAlign: 'left', width: '100%', marginTop: '3px' }}>
+                Sum of % allocation should be 100%.</h5>
+              <div style={{ display: 'flex' }}>
+                <div>
+                  <p>Lock Period (Days)</p>
+                  <input type="text" placeholder='0' />
+                </div>
+                <div>
+                  <p>Allocated Pool (%)</p>
+                  <input type="text" placeholder='10' />
+                </div>
+              </div>
+              <div style={{ display: 'flex' }}>
+                <div>
+                  <p>Lock Period (Days)</p>
+                  <input type="text" placeholder='30' />
+                </div>
+                <div>
+                  <p>Allocated Pool (%)</p>
+                  <input type="text" placeholder='90' />
+                </div>
+              </div>
+              <div>
+                <button style={{
+                  padding: '5px', width: '100%', background: 'transparent',
+                  height: '45px', borderRadius: '15px', textAlign: 'center', border: 'dashed 1px #ff589d', color: '#be16d2', alignSelf: 'center',
+                }} onClick={() => setStakeModal(false)} className="cancel-btn">Add A Pool
+                </button>
+              </div>
+              <div className='btn-wrapper'>
+                <button style={{
+                  padding: '5px', width: '46%', background: 'transparent',
+                  height: '45px', borderRadius: '15px', textAlign: 'center', border: 'dashed 1px #ff589d', color: '#be16d2', alignSelf: 'center', marginLeft: 10,
+                }} onClick={() => setStakeModal(false)} className="cancel-btn">1 ETH Staking Pool
+                  <span style={{ color: '#be16d2 !important', fontSize: 10, display: 'block' }}>No fees</span></button>
+                <button style={{
+                  padding: '5px', background: 'linear-gradient(47.43deg, #2A01FF 0%, #FF1EE1 57%, #FFB332 100%)', width: '46%', marginLeft: 10,
+                  height: '45px', borderRadius: '15px', textAlign: 'center', border: 'none', color: 'white', alignSelf: 'center',
+                }}>1 ETH Staking Pool <p style={{ color: 'white', fontSize: 10 }}>No fees</p>
+                </button>
+              </div>
+            </div>
+          </div>
         </>}
       />
     </>

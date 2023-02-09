@@ -196,6 +196,7 @@ const ViewArt = () => {
               <div className="avatar">
                 <img src={item?.ownerUser?.logo_url} alt="" />
                 <p>{item?.ownerUser?.name}</p>
+                <button className='follow' style={{background : '#d2c4f5',color : 'rgba(73, 5, 251, 1)',fontWeight:600,borderRadius : 10,border:'none', padding:'3px 10px', marginLeft:20}}>follow</button>
               </div>
               <div className="btns">
                 

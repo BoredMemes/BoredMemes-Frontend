@@ -195,11 +195,11 @@ const Stake = () => {
                 </div>
                 <div style={{ width: '100%', textAlign: 'right' }}>
                   <button style={{
-                    padding: '5px', background: 'transparent', width: '108px',
-                    height: '45px', borderRadius: '15px', textAlign: 'center', border: 'dashed 1px #ff589d', color: '#be16d2', alignSelf: 'center'
-                  }}>Renew Plan</button>
+                    padding: '5px', width: '108px',
+                    height: '40px', borderRadius: '15px',paddingLeft: 10, paddingRight: 10, textAlign: 'center', border: 'dashed 1px #ff589d', alignSelf: 'center'
+                  }} className='gradient-color'>Renew Plan</button>
                   <button style={{
-                    background: '#2B614C', paddingLeft: 40, paddingRight: 40, border: 'none', color: 'white', height: '45px', marginLeft: 8,
+                    background: '#2B614C', paddingLeft: 60, paddingRight: 60, border: 'none', color: 'white', height: '40px', marginLeft: 8,
                     borderRadius: '15px'
                   }}>Active Plan</button>
                 </div>
@@ -255,9 +255,11 @@ const Stake = () => {
                   <p>Stake lock $PIXIA for 30 days to get a plan.To renew your plan, relock your $PIXIA.</p>
                   <div>
                     <button style={{
-                      padding: '5px', background: 'transparent',
-                      height: '45px', borderRadius: '15px', textAlign: 'center', border: 'dashed 1px #ff589d', color: '#be16d2', alignSelf: 'center'
-                    }}>Relock $PIXIA</button>
+                      padding: '5px',
+                      height: '45px', borderRadius: '15px', textAlign: 'center', border: 'dashed 1px #ff589d', color: '#be16d2', alignSelf: 'center',  background: 'linear-gradient(47.43deg, #2A01FF 0%, #FF1EE1 57%, #FFB332 100%);',
+                      WebkitBackgroundClip: 'text',
+                      WebkitTextFillColor: 'transparent',
+                    }} className='relock-btn'>Relock $PIXIA</button>
                     <button style={{
                       padding: '5px', background: 'linear-gradient(47.43deg, #2A01FF 0%, #FF1EE1 57%, #FFB332 100%)',
                       height: '45px', borderRadius: '15px', textAlign: 'center', border: 'none', color: 'white', alignSelf: 'center'
@@ -265,7 +267,8 @@ const Stake = () => {
                   </div>
                 </div>
                 <div className='sub_cards'>
-                  <div>
+          
+                  <div style={{border: 'solid 1.3px #ff32c9'}}>
                     <h4>Basic</h4>
                     <p>200 minutes/m</p>
                     <span>Stake lock</span>
@@ -290,7 +293,7 @@ const Stake = () => {
               </div>
               <div style={{display:'block'}}>
                 <h3>Frequently Asked Questions</h3>
-                <p>Can't find the answer you're looking for? Read the <a href=''><u>Quick Start Guide</u></a> or visit the <a href=''><u>Telegram Group</u></a> to ask for help.</p>
+                <p>Can't find the answer you're looking for? Read the <a href='' style={{color:'white'}}><u>Quick Start Guide</u></a> or visit the <a href='' style={{color:'white'}}><u>Telegram Group</u></a> to ask for help.</p>
               </div>
             </div>
           </div>
@@ -545,39 +548,39 @@ const Stake = () => {
               <button className="closeBtn" onClick={() => onCancelWithdraw()}><img src="/assets/icons/close_icon.svg" alt="" /></button>
             </div>
             <div className={classes.modalContent}>
-              <div className={`${classes.amount} input-span`}>
-                <input type="number" onChange={e => onChangeValWithdraw(e)} placeholder={"Amount"} value={amountWithdraw.toFixed(2)} />
-                <button onClick={onMaxWithdraw}>Max</button>
+            <div className={`${classes.amount} input-span`}>
+                <input type="number" onChange={e => onChangeValStake(e)} placeholder={"Amount"} value={amountStak.toFixed(2)} />
+                <button onClick={onMaxStak}>Max</button>
               </div>
               <h5>Balance : {balance.toLocaleString(undefined, { maximumFractionDigits: 4 })} $BoredM</h5>
               <div className={classes.progress}>
                 <div className="line">
-                  <div style={{ background: '#9B51E0', width: `${progressWithdraw}%`, height: '100%' }}></div>
+                  <div style={{ background: '#9B51E0', width: `${progressStak}%`, height: '100%' }}></div>
                 </div>
-                <div className="node" onClick={() => setProgressWithdraw(0)} style={{ background: progressWithdraw < 0 ? '#fff' : '#9B51E0' }}>
-                  {progressWithdraw > 0 ?
+                <div className="node" onClick={() => setProgressStak(0)} style={{ background: progressStak < 0 ? '#fff' : '#9B51E0' }}>
+                  {progressStak > 0 ?
                     <img src="/assets/icons/check_icon.svg" alt="" /> :
-                    <div className="circle" style={{ background: progressWithdraw === 0 ? '#fff' : '#E0E0E7' }}></div>}
+                    <div className="circle" style={{ background: progressStak === 0 ? '#fff' : '#E0E0E7' }}></div>}
                 </div>
-                <div className="node" onClick={() => setProgressWithdraw(25)} style={{ background: progressWithdraw < 25 ? '#fff' : '#9B51E0' }}>
-                  {progressWithdraw > 25 ?
+                <div className="node" onClick={() => setProgressStak(25)} style={{ background: progressStak < 25 ? '#fff' : '#9B51E0' }}>
+                  {progressStak > 25 ?
                     <img src="/assets/icons/check_icon.svg" alt="" /> :
-                    <div className="circle" style={{ background: progressWithdraw === 25 ? '#fff' : '#E0E0E7' }}></div>}
+                    <div className="circle" style={{ background: progressStak === 25 ? '#fff' : '#E0E0E7' }}></div>}
                 </div>
-                <div className="node" onClick={() => setProgressWithdraw(50)} style={{ background: progressWithdraw < 50 ? '#fff' : '#9B51E0' }}>
-                  {progressWithdraw > 50 ?
+                <div className="node" onClick={() => setProgressStak(50)} style={{ background: progressStak < 50 ? '#fff' : '#9B51E0' }}>
+                  {progressStak > 50 ?
                     <img src="/assets/icons/check_icon.svg" alt="" /> :
-                    <div className="circle" style={{ background: progressWithdraw === 50 ? '#fff' : '#E0E0E7' }}></div>}
+                    <div className="circle" style={{ background: progressStak === 50 ? '#fff' : '#E0E0E7' }}></div>}
                 </div>
-                <div className="node" onClick={() => setProgressWithdraw(75)} style={{ background: progressWithdraw < 75 ? '#fff' : '#9B51E0' }}>
-                  {progressWithdraw > 75 ?
+                <div className="node" onClick={() => setProgressStak(75)} style={{ background: progressStak < 75 ? '#fff' : '#9B51E0' }}>
+                  {progressStak > 75 ?
                     <img src="/assets/icons/check_icon.svg" alt="" /> :
-                    <div className="circle" style={{ background: progressWithdraw === 75 ? '#fff' : '#E0E0E7' }}></div>}
+                    <div className="circle" style={{ background: progressStak === 75 ? '#fff' : '#E0E0E7' }}></div>}
                 </div>
-                <div className="node" onClick={() => setProgressWithdraw(100)} style={{ background: progressWithdraw < 100 ? '#fff' : '#9B51E0' }}>
-                  {progressWithdraw > 100 ?
+                <div className="node" onClick={() => setProgressStak(100)} style={{ background: progressStak < 100 ? '#fff' : '#9B51E0' }}>
+                  {progressStak > 100 ?
                     <img src="/assets/icons/check_icon.svg" alt="" /> :
-                    <div className="circle" style={{ background: progressWithdraw === 100 ? '#fff' : '#E0E0E7' }}></div>}
+                    <div className="circle" style={{ background: progressStak === 100 ? '#fff' : '#E0E0E7' }}></div>}
                 </div>
               </div>
 

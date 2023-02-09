@@ -74,7 +74,7 @@ const useStyles = makeStyles(theme => ({
     },
   },
   grey: {
-    background: '#E3E3E3',
+    background: '#e3e3e3',
     color: '#727272',
     fontWeight: 400,
     '&:hover': {
@@ -82,10 +82,9 @@ const useStyles = makeStyles(theme => ({
     },
   },
   smart: {
-    background: '#fdccfd',
-    color: '#F400F5',
+    background: '#d2c4f5',
+    color: 'rgba(102, 9, 247, 1) !important',
     fontWeight: 400,
-    
     '&:hover': {
       background: '#fdccfd99',
     },

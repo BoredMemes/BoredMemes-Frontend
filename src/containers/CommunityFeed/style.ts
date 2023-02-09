@@ -178,7 +178,7 @@ export const useStyles = makeStyles(theme => ({
       '& button': {
         maxWidth: 250,
         cursor: 'pointer',
-        background: '#F400F5',
+        background: 'linear-gradient(47.43deg, #2A01FF 0%, #FF1EE1 57%, #FFB332 100%)',
         borderRadius: 15,
         display: 'flex',
         justifyContent: 'center',
@@ -447,6 +447,26 @@ export const useStyles = makeStyles(theme => ({
       height: '585px',
     },
   },
+  modalAddRootContent: {
+    maxWidth: '450px',
+    padding: '0px !important',
+    width: '400px',
+    height: '315px',
+    [theme.breakpoints.down('xs')]: {
+      width: '320px',
+      height: '245px',
+    },
+  },
+  modalAddNftRootContent: {
+    maxWidth: '450px',
+    padding: '0px !important',
+    width: '380px',
+    height: '380px',
+    [theme.breakpoints.down('xs')]: {
+      width: '320px',
+      height: '345px',
+    },
+  },
   modalTop: {
     display: 'flex',
     width: '100%',
@@ -667,7 +687,7 @@ export const useStyles = makeStyles(theme => ({
 
         [theme.breakpoints.down('xs')]: {
           width: '100%',
-          height: 40,
+          height: 60,
         },
         '& p': {
           margin: 0,

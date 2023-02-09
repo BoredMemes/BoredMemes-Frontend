@@ -10,7 +10,7 @@ import Menu from 'components/menu/Menu';
 
 const useStyles = makeStyles(theme => ({
   layout: {
-    backgroundColor: '#000',
+    backgroundColor: '#121317',
     display: 'flex',
     flexDirection: 'column',
     minHeight: '100vh',

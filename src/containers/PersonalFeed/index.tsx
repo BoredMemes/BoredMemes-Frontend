@@ -509,7 +509,8 @@ const MyArt = () => {
         {
           !isDetail ?
             <div className={classes.top}>
-              <div className="avatar">
+              <h1>Personal Feed</h1>
+              {/* <div className="avatar">
                 <img src={user?.logo_url} alt="" />
                 <span>
                   <h3>{user?.name}</h3>
@@ -531,7 +532,7 @@ const MyArt = () => {
               <div className="right">
                 <p>{user?.bio}</p>
 
-              </div>
+              </div> */}
             </div> :
             <div className={classes.topdetail} style={myArt.length > 0 ? { backgroundImage: `url('${myArt[0]?.assetUrl}')` } : {}}>
               <div className="avatar">
@@ -589,7 +590,7 @@ const MyArt = () => {
             <div className="btns">
               <button className='grey' onClick={() => setSelectedItems([])}>Close</button>
               <button className='grey' onClick={handleAllClick}>Selet All</button>
-              <button className='pink'>Actions <img src="/assets/icons/arrow_down_icon_01.svg" alt="" />
+              <button className='pink' style={{background:'linear-gradient(47.43deg, #2A01FF 0%, #FF1EE1 57%, #FFB332 100%)'}}>Actions <img src="/assets/icons/arrow_down_icon_01.svg" alt="" />
                 <div className="drodownMenu">
                   <div className="menuItem" onClick={() => onDownload()}>Download Zip</div>
                   <div className="menuItem" onClick={() => onPublish(true)}>Publish</div>
@@ -611,7 +612,7 @@ const MyArt = () => {
         contentClass={classes.modalRootContent}
         children={<>
           <div className={classes.modal}>
-            <div className={classes.modalTop}>
+            <div className={`${classes.modalTop} customModalTop`}>
               <span className='topTitle'>
                 <div>
                   <h4>{!isDetail ? "Create Collection" : "Edit Collection"}</h4>
@@ -643,15 +644,15 @@ const MyArt = () => {
         contentClass={classes.modalRootContent}
         children={<>
           <div className={classes.modal}>
-            <div className={classes.modalTop}>
+            <div className={`${classes.modalTop} customModalTop`}>
               <span className='topTitle'>
                 <div>
-                  <h4>{!isDetail ? "Create Collection" : "Edit Collection"}</h4>
+                  <h4>{!isDetail ? "Create NFT Collection" : "Mint added images to Collection"}</h4>
                 </div>
               </span>
               <button className="closeBtn" onClick={() => setShowPublishCollectionModal(false)}><img src="/assets/icons/close_icon_01.svg" alt="" /></button>
             </div>
-            <div className={classes.modalContentDetail}>
+            {/* <div className={classes.modalContentDetail}>
               <TextInput label={'Title'} wrapperClass={classes.myInputWrap} value={!isDetail ? title : selectedCollection?.name} onChangeData={(d) => onChangeTitle(d)} />
 
               <TextInput isMulti label={<>{'Description'} <span>Optional</span></>} wrapperClass={classes.myInputWrap} value={!isDetail ? description : selectedCollection?.description} onChangeData={(d) => onChangeDescription(d)} />
@@ -689,6 +690,21 @@ const MyArt = () => {
             </div>
             <div className={classes.modalBtnsDetail}>
               <FilledButton label={'Create NFT Colection'} icon={<img src="/assets/icons/add_icon_01.svg" alt="" />} iconPosition='start' handleClick={onCreateNFTCollection} />
+            </div> */}
+
+            <div className={classes.modalContent}>
+              <TextInput label={'Title'} wrapperClass={classes.myInputWrap} value={!isDetail ? title : selectedCollection?.name} placeholder='First Collection' onChangeData={(d) => onChangeTitle(d)} />
+
+              <TextInput isMulti label={<>{'Description'} <span>Optional</span></>} wrapperClass={classes.myInputWrap} placeholder='Elon Musk as Santa Floki' value={!isDetail ? description : selectedCollection?.description} onChangeData={(d) => onChangeDescription(d)} />
+              <p className={classes.text_number}>1/255</p>
+            </div>
+            <div className={classes.modalBtns}>
+              {/* <FilledButton color='custom' handleClick={() => setShowEditCollectionModal(false)} /> */}
+              <button className='newCollectionCard'>
+                <p>1 ETH NFT Collection</p>
+                <h6>No fees</h6>
+              </button>
+              <FilledButton label={'Free NFT Collection 3% Buy/Sell Fee'} handleClick={onSave} />
             </div>
           </div>
 
@@ -697,10 +713,10 @@ const MyArt = () => {
       <Modal
         show={showAddColllectionModal}
         maxWidth='sm'
-        contentClass={classes.modalRootContent}
+        contentClass={classes.modalAddRootContent}
         children={<>
           <div className={classes.modal}>
-            <div className={`${classes.modalTop} modalTop`}>
+            <div className={`${classes.modalTop} customModalTop modalTop`}>
               <span className='topTitle'>
                 <div>
                   <h4>Add To Collection</h4>
@@ -713,7 +729,7 @@ const MyArt = () => {
 
               <div className="btns">
                 {myCollection?.map((collection, key) => (
-                  <button className={`collectionCard`} key={key} onClick={() => {}}>
+                  <button className={`collectionCard`} key={key} onClick={() => { }}>
                     <p>{collection?.name.length > 18 ? collection?.name.substring(0, 17) + "..." : collection?.name}</p>
                   </button>
                 ))}
@@ -730,10 +746,10 @@ const MyArt = () => {
       <Modal
         show={showCreateColllectionModal}
         maxWidth='sm'
-        contentClass={classes.modalRootContent}
+        contentClass={classes.modalAddNftRootContent}
         children={<>
           <div className={classes.modal}>
-            <div className={`${classes.modalTop} modalTop`}>
+            <div className={`${classes.modalTop} customModalTop modalTop`}>
               <span className='topTitle'>
                 <div>
                   <h4>Add To Collection</h4>
@@ -752,7 +768,7 @@ const MyArt = () => {
                 </div>
               </div>
             </div>
-            <div className={classes.modalBtns} style={{justifyContent:'center'}}>
+            <div className={classes.modalBtns} style={{ justifyContent: 'center' }}>
               <FilledButton label={'Create NFTs'} icon={<img src="/assets/icons/add_icon_01.svg" alt="" />} iconPosition='start' handleClick={onCreateNFT} />
             </div>
           </div>

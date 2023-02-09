@@ -489,7 +489,6 @@ export const useStyles = makeStyles(theme => ({
       borderRadius: 7,
       marginBottom: 20,
       padding: 10,
-
       '& img': {
         marginRight: 10,
       },
@@ -717,8 +716,7 @@ export const useStyles = makeStyles(theme => ({
           height: '230px',
           left: '405px',
           top: '383px',
-          background: '#f3eeee',
-          opacity: 0.7,
+          background: '#f3e9f6',
           boxShadow: '10px 24px 54px rgba(0, 0, 0, 0.03)',
           borderRadius: '16px',
           padding: '27px 33px',
@@ -747,16 +745,21 @@ export const useStyles = makeStyles(theme => ({
             padding: '10px 20px',
             gap: '10px',
             height: '109px',
-            background: 'white',
+            background: '#f4f4f4',
             borderRadius: '15px',
             justifyContent: 'space-between',
             '& button': {
-              border: 'solid 1px #ff589d',
+              border: 'solid 1px #a1068e',
+              padding: 4,
               color: '#be16d2',
               textAlign: 'center',
               width: '100%',
               borderRadius: '6px',
-              background: 'transparent'
+              // background: 'transparent',
+              fontWeight: 600,
+              background: 'linear-gradient(47.43deg, #2A01FF 0%, #FF1EE1 57%, #FFB332 100%);',
+              WebkitBackgroundClip: 'text',
+              WebkitTextFillColor: 'transparent',
             },
             '& span': {
               fontWeight: 800
@@ -776,22 +779,28 @@ export const useStyles = makeStyles(theme => ({
     width: '100%',
     '& div': {
       width: '100%',
-      display:'flex',
+      display: 'flex',
       [theme.breakpoints.down('xs')]: {
         display: 'block'
       },
       justifyContent: 'space-between',
-      marginTop:35,
+      marginTop: 35,
       '& .plan_question': {
         width: '35%',
         [theme.breakpoints.down('xs')]: {
           width: '100%'
         },
         '& div': {
-          display:'flex',
+          display: 'flex',
+          '& .relock-btn': {
+            fontWeight: 600,
+            background: 'linear-gradient(47.43deg, #2A01FF 0%, #FF1EE1 57%, #FFB332 100%);',
+            WebkitBackgroundClip: 'text',
+            WebkitTextFillColor: 'transparent',
+          },
           '& button': {
-            width:'50%',
-            margin:6
+            width: '50%',
+            margin: 6
           }
         }
       },
@@ -801,27 +810,35 @@ export const useStyles = makeStyles(theme => ({
           width: '100%'
         },
         '& div': {
-          display:'block',
-          border:'solid 1.3px #ff32c9',
-          borderRadius:'8px',
-          padding:'26px 36px',
-          '& h4' :{
-            textAlign :'center',
-            color: '#d726e8',
-            fontWeight:800
+          border: 'solid 1px',
+          borderColor: 'transparent',
+          '&:hover': {
+            border: 'solid 1.3px #ff32c9',
           },
-          '& p' :{
-            textAlign :'center',
-            margin:4,
-            marginBottom:12,
-            fontWeight:500
+          cursor: 'pointer',
+          display: 'block',
+          borderRadius: '8px',
+          padding: '26px 36px',
+          '& h4': {
+            background: 'linear-gradient(47.43deg, #2A01FF 0%, #FF1EE1 57%, #FFB332 100%);',
+            WebkitBackgroundClip: 'text',
+            WebkitTextFillColor: 'transparent',
+            textAlign: 'center',
+            // color: '#d726e8',
+            fontWeight: 800
           },
-          '& span' :{
-            textAlign :'center',
-            fontSize:12,
-            display:'block',
-            margin:'3px',
-            fontWeight:500
+          '& p': {
+            textAlign: 'center',
+            margin: 4,
+            marginBottom: 12,
+            fontWeight: 500
+          },
+          '& span': {
+            textAlign: 'center',
+            fontSize: 12,
+            display: 'block',
+            margin: '3px',
+            fontWeight: 500
           }
         }
       }

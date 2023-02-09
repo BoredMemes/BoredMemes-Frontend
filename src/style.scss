@@ -30,7 +30,7 @@ body {
   font-family: 'Roboto', 'Ubuntu', 'Helvetica Neue', sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
-  background-color: #000;
+  background-color: #121317;
 }
 
 code {
@@ -51,6 +51,46 @@ a {
 
 .MuiButton-root {
   text-transform: none !important;
+}
+
+.gradient-color {
+  background: linear-gradient(47.43deg, #2A01FF 0%, #FF1EE1 57%, #FFB332 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  width: 100%;
+  color: #262626;
+  text-align: center;
+}
+
+.newCollectionCard {
+  background: linear-gradient(#fff 0 0) padding-box, linear-gradient(47.43deg, #2A01FF 0%, #FF1EE1 57%, #FFB332 100%) border-box;
+  border: 2px dashed #fff;
+  height: 45px;
+  border-radius: 8px;
+
+  // [theme.breakpoints.down('xs')]: {
+  //   width: '100%',
+  //   height: 60,
+  // },
+  img {
+    margin-right: 10,
+    // [theme.breakpoints.down('xs')]: {
+    //   width: 20,
+    // },
+  }
+
+  p,
+  h6 {
+    background: linear-gradient(47.43deg, #2A01FF 0%, #FF1EE1 57%, #FFB332 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    width: 100%;
+    color: #262626;
+    text-align: center;
+    // [theme.breakpoints.down('xs')]: {
+    //   fontSize: 12,
+    // },
+  }
 }
 
 .disabled {
@@ -81,6 +121,18 @@ h1 {
     background: linear-gradient(47.43deg, #c2b6fa 0%, #f8bff1 57%, #f3ddb7 100%);
   }
 
+  .MuiSwitch-track {
+    background:white !important;
+  }
+
+  a {
+    color: black !important
+  }
+
+  // p {
+  //   color: rgb(14, 14, 14) !important;
+  // }
+
   .btns {
     .select-gray {
 
@@ -97,8 +149,11 @@ h1 {
 
   .stake_card {
     background: #F4F4F4 !important;
+
     div {
-      h4, p{
+
+      h4,
+      p {
         color: #000 !important;
       }
     }
@@ -107,19 +162,118 @@ h1 {
   .stake_withdraw_body {
     background: linear-gradient(47.43deg, #b5a8f8 0%, #fab6f1 57%, #f7ddb2 100%) !important;
   }
+
+  .MuiDialogContent-root {
+    .input-span {
+      background-color: #F4F4F4 !important;
+    }
+  }
+}
+
+.MuiButton-label {
+  color: white !important;
+  font-size: 12px !important;
+}
+
+.vs {
+  color: black;
+  width: fit-content !important;
 }
 
 .dark {
   .nav-background {
-    background-color: #1e1e1e !important;
+    background-color: #030316 !important;
+  }
+
+  .prog-1 {
+    background: linear-gradient(47.43deg, #1b0e5e 0%, #440b3c 57%, #49320b 100%) !important;
+  }
+
+  .prog-2 {
+    background: #2e3757 !important;
+    color: #1846e8 !important;
+  }
+
+  .vs {
+    color: white
+  }
+
+  .col_info {
+    span {
+      background: #12013b !important;
+    }
+  }
+
+  .follow {
+    background: #12013b !important;
+  }
+
+  .sticky,
+  .overly {
+    background: #555 !important;
+  }
+
+  .newCollectionCard {
+    background: linear-gradient(#1c1c1c 0 0) padding-box, linear-gradient(47.43deg, #2A01FF 0%, #FF1EE1 57%, #FFB332 100%) border-box;
+    border: 2px dashed #121111;
+  }
+
+  .plan_card {
+    background: linear-gradient(47.43deg, #190f50 0%, #4c1044 57%, #46310d 100%) !important;
+
+    .card_header {
+      div {
+        h4 {
+          color: white !important;
+        }
+      }
+    }
+
+    .card_body {
+      .card {
+        background: #0d0423 !important;
+
+        div {
+          span {
+            color: white !important;
+          }
+        }
+
+        .card_wrapper {
+          .card_com {
+            background: #030316 !important;
+
+            h5,
+            h6,
+            button {
+              color: white !important;
+            }
+          }
+        }
+      }
+    }
+  }
+
+  .plan_question {
+    strong {
+      color: white !important;
+    }
+  }
+
+  .sub_cards {
+    div {
+      span {
+        color: white !important;
+      }
+    }
   }
 
   .sideBarMenu {
-    background-color: #1e1e1e !important;
+    background-color: #030316 !important;
   }
 
   .mainContainer {
-    background-color: #1e1e1e !important;
+    background-color: #030316 !important;
   }
 
   h3,
@@ -242,7 +396,7 @@ h1 {
   }
 
   p {
-    color: #aaa !important;
+    color: rgb(255, 255, 255) !important;
   }
 
   h1 {
@@ -253,7 +407,7 @@ h1 {
     background-color: #06364a33 !important;
 
     p {
-      color: #aaa !important;
+      color: rgb(59, 59, 59) !important;
     }
 
     h5 {
@@ -464,14 +618,32 @@ h1 {
 
   .modelContent,
   .MuiDialogContent-root {
+    background: #333333;
+
     h3 {
-      color: black !important
+      color: rgb(248, 245, 245) !important
+    }
+
+    div {
+      .customModalTop {
+        background: #2e2c2c;
+      }
+
+      div {
+        span {
+          h4 {
+            color: white;
+          }
+        }
+      }
     }
 
     // background-color: #333 !important;
     .warning {
+      background: #29292d !important;
+
       p {
-        color: #F3AC3D !important;
+        color: rgba(24, 70, 232, 1) !important;
       }
     }
 
@@ -495,7 +667,7 @@ h1 {
     }
 
     .input-span {
-      background-color: #555 !important;
+      background-color: #030316 !important;
 
       input {
         color: #ddd !important;
@@ -506,8 +678,8 @@ h1 {
       }
 
       button {
-        background: #7A00F5;
-        color: #fff !important;
+        background: #071040;
+        color: #1846e8 !important;
 
         &:hover {
           background: #9633f9 !important;
@@ -554,6 +726,10 @@ h1 {
   background: linear-gradient(47.43deg, #0a0136 0%, #36002f 57%, #352201 100%);
   box-shadow: 10px 24px 54px rgba(0, 0, 0, 0.03);
   border-radius: 16px;
+}
+
+.createCustomModal {
+  padding: 10px 20px !important;
 }
 
 @keyframes loadingAni {

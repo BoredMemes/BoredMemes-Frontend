@@ -435,13 +435,12 @@ const PropertyCard1 = ({ item, onClick, onShow, isSelected, updateArts, isNew }:
                     <div className="menuItem" onClick={() => copyHandle(2)}><img src="/assets/icons/link_icon.svg" alt="" /> Link</div>
                   </div>
                 </div>
-                <div className="menuItem" onClick={() =>onGotoPage(`/view_art/${isNew ? "new" : "onchain"}/${isNew? item?.id : item?.tokenId}`)}>
-                  <img src="/assets/icons/newTab_icon.svg" alt=""  /> Open new tab
-                </div>
                 <div className="menuItem" onClick={() => onGotoPage(`/create_nft_collection/${item?.tokenId}`)}>
                   <img src="/assets/icons/createNFT_icon.svg" alt="" /> Create NFT
                 </div>
-                
+                <div className="menuItem" onClick={() =>onGotoPage(`/view_art/${isNew ? "new" : "onchain"}/${isNew? item?.id : item?.tokenId}`)}>
+                  <img src="/assets/icons/newTab_icon.svg" alt=""  /> Open new tab
+                </div>
                 <div className="menuItem" onClick={() => onDownload()}>
                   <img src="/assets/icons/download_icon.svg" alt="" /> Save image
                 </div>
