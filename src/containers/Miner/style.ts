@@ -63,6 +63,7 @@ export const useStyles = makeStyles(theme => ({
   createCustomModal: {
     display: 'none !important'
   },
+
   stakeCard: {
     width: '100%',
     background: 'rgba(220, 195, 244, 0.5)',
@@ -608,8 +609,8 @@ export const useStyles = makeStyles(theme => ({
       '& button': {
         [theme.breakpoints.down('xs')]: {
           width: '100% !important',
-          marginLeft:'0px !important',
-          marginTop:8
+          marginLeft: '0px !important',
+          marginTop: 8
         },
       }
     },
@@ -980,6 +981,43 @@ export const useStyles = makeStyles(theme => ({
     },
   },
 
+  boostModal: {
+    width: '100%',
+    maxWidth: 480,
+    padding: 10,
+    [theme.breakpoints.down('xs')]: {
+      padding: '10px 7px',
+    },
+    '& .customSwitchText': {
+      right: 20,
+      display: 'flex',
+      position: 'absolute',
+      '& span': {
+        fontSize: 12,
+        marginLeft: 10,
+        color: '#3b485e'
+      }
+    },
+    '& .boostModalContent': {
+      '& .img-group': {
+        marginTop: 20,
+        display: 'block',
+        cursor:'pointer',
+        '&.selected': {
+          border:'solid 1px black'
+        },
+        '& img': {
+          margin: 4
+        }
+      }
+    }
+  },
+  img_list:{
+    maxWidth:145, overflowX:'scroll',
+    '& img': {
+      margin:2
+    },
+  },
   stake_card: {
     width: '100%',
     height: '115px',
@@ -1172,7 +1210,10 @@ export const useStyles = makeStyles(theme => ({
     marginTop: '30px',
     justifyContent: 'center',
     '& span': {
-      color: '#e91be4'
+      // color: '#e91be4'
+      background: 'linear-gradient(47.43deg, #2A01FF 0%, #FF1EE1 57%, #FFB332 100%);',
+      WebkitBackgroundClip: 'text',
+      WebkitTextFillColor: 'transparent',
     }
   },
   custom_pool_btn: {
@@ -1189,7 +1230,9 @@ export const useStyles = makeStyles(theme => ({
     marginTop: '8px',
     justifyContent: 'center',
     '& span': {
-      color: '#e91be4',
+      background: 'linear-gradient(47.43deg, #2A01FF 0%, #FF1EE1 57%, #FFB332 100%);',
+      WebkitBackgroundClip: 'text',
+      WebkitTextFillColor: 'transparent',
       fontSize: 12
     },
   },

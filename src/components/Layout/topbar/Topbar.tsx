@@ -106,11 +106,11 @@ export default function Topbar({ menuOpen, setMenuOpen }: MenuType) {
       <div className="topbar">
         <div className="logo">
           <HashLink to="/">
-            {theme === 'dark' ? <img src="/assets/imgs/dark-logo.png" alt="" />:<img src="/assets/imgs/light-logo.png" alt="" />}
+            {theme === 'dark' ? <img src="/assets/imgs/dark-logo.png" alt="" /> : <img src="/assets/imgs/light-logo.png" alt="" />}
             {/* <img src="/assets/BoredMemes_FontLogo 1.png" alt="" /> */}
           </HashLink>
         </div>
-        <div className='top-lq-content'>
+        {/* <div className='top-lq-content'>
           <div>
             <span>PIXIA Liquidity</span>
             <p>-Eth</p>
@@ -124,7 +124,7 @@ export default function Topbar({ menuOpen, setMenuOpen }: MenuType) {
             <p>-Eth</p>
           </div>
           <button>FUEL UP</button>
-        </div>
+        </div> */}
         <div className="btns">
           <Select
             value={networkOption}
@@ -138,12 +138,12 @@ export default function Topbar({ menuOpen, setMenuOpen }: MenuType) {
             isClearable={false}
             styles={customStyles}
           />
-          <div className="connectBtn" onClick={() => !loginStatus ? setShowConnectModal(true) : setShowAcountModal(true)}>
+          <div className={loginStatus ? 'connectBtn' : '_connectBtn'} onClick={() => !loginStatus ? setShowConnectModal(true) : setShowAcountModal(true)}>
             {loginStatus ? `${truncateWalletString(account).substring(2, 0)}...${truncateWalletString(account).slice(-3)}` : 'Connect Wallet'}
           </div>
           {loginStatus &&
             <HashLink to="/">
-              <img src={user?.logo_url} alt="" className='avatar'/>
+              <img src={user?.logo_url} alt="" className='avatar' />
             </HashLink>
           }
 

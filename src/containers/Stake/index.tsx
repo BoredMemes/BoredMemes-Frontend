@@ -196,7 +196,7 @@ const Stake = () => {
                 <div style={{ width: '100%', textAlign: 'right' }}>
                   <button style={{
                     padding: '5px', width: '108px',
-                    height: '40px', borderRadius: '15px',paddingLeft: 10, paddingRight: 10, textAlign: 'center', border: 'dashed 1px #ff589d', alignSelf: 'center'
+                    height: '40px', borderRadius: '15px', paddingLeft: 10, paddingRight: 10, textAlign: 'center', border: 'dashed 1px #ff589d', alignSelf: 'center'
                   }} className='gradient-color'>Renew Plan</button>
                   <button style={{
                     background: '#2B614C', paddingLeft: 60, paddingRight: 60, border: 'none', color: 'white', height: '40px', marginLeft: 8,
@@ -229,17 +229,17 @@ const Stake = () => {
                     <div className='card_com'>
                       <h5>1 Hour</h5>
                       <h6>8 USD</h6>
-                      <button>- ETH</button>
+                      <button><span>- ETH</span></button>
                     </div>
                     <div className='card_com'>
                       <h5>1 Hour</h5>
                       <h6>8 USD</h6>
-                      <button>- ETH</button>
+                      <button><span>- ETH</span></button>
                     </div>
                     <div className='card_com'>
                       <h5>1 Hour</h5>
                       <h6>8 USD</h6>
-                      <button>- ETH</button>
+                      <button><span>- ETH</span></button>
                     </div>
                   </div>
                   <div>
@@ -250,13 +250,13 @@ const Stake = () => {
             </div>
             <div className={classes.how_card}>
               <div >
-                <div className='plan_question' style={{display:'block'}}>
+                <div className='plan_question' style={{ display: 'block' }}>
                   <strong>How To Get A Plan?</strong>
                   <p>Stake lock $PIXIA for 30 days to get a plan.To renew your plan, relock your $PIXIA.</p>
                   <div>
                     <button style={{
                       padding: '5px',
-                      height: '45px', borderRadius: '15px', textAlign: 'center', border: 'dashed 1px #ff589d', color: '#be16d2', alignSelf: 'center',  background: 'linear-gradient(47.43deg, #2A01FF 0%, #FF1EE1 57%, #FFB332 100%);',
+                      height: '45px', borderRadius: '15px', textAlign: 'center', border: 'dashed 1px #ff589d', color: '#be16d2', alignSelf: 'center', background: 'linear-gradient(47.43deg, #2A01FF 0%, #FF1EE1 57%, #FFB332 100%);',
                       WebkitBackgroundClip: 'text',
                       WebkitTextFillColor: 'transparent',
                     }} className='relock-btn'>Relock $PIXIA</button>
@@ -267,8 +267,8 @@ const Stake = () => {
                   </div>
                 </div>
                 <div className='sub_cards'>
-          
-                  <div style={{border: 'solid 1.3px #ff32c9'}}>
+
+                  <div style={{border: '1.3px solid transparent', background: 'transparent',backgroundImage: 'linear-gradient(90deg, white, white),linear-gradient(47.43deg, #2A01FF 0%, #FF1EE1 40%, #FFB332 100%)',backgroundClip: 'padding-box, border-box',backgroundOrigin: 'border-box'}}>
                     <h4>Basic</h4>
                     <p>200 minutes/m</p>
                     <span>Stake lock</span>
@@ -291,9 +291,9 @@ const Stake = () => {
                   </div>
                 </div>
               </div>
-              <div style={{display:'block'}}>
+              <div style={{ display: 'block' }}>
                 <h3>Frequently Asked Questions</h3>
-                <p>Can't find the answer you're looking for? Read the <a href='' style={{color:'white'}}><u>Quick Start Guide</u></a> or visit the <a href='' style={{color:'white'}}><u>Telegram Group</u></a> to ask for help.</p>
+                <p>Can't find the answer you're looking for? Read the <a href='' style={{ color: 'white' }}><u>Quick Start Guide</u></a> or visit the <a href='' style={{ color: 'white' }}><u>Telegram Group</u></a> to ask for help.</p>
               </div>
             </div>
           </div>
@@ -548,7 +548,7 @@ const Stake = () => {
               <button className="closeBtn" onClick={() => onCancelWithdraw()}><img src="/assets/icons/close_icon.svg" alt="" /></button>
             </div>
             <div className={classes.modalContent}>
-            <div className={`${classes.amount} input-span`}>
+              <div className={`${classes.amount} input-span`}>
                 <input type="number" onChange={e => onChangeValStake(e)} placeholder={"Amount"} value={amountStak.toFixed(2)} />
                 <button onClick={onMaxStak}>Max</button>
               </div>

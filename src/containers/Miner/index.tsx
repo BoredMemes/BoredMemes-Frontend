@@ -16,9 +16,72 @@ import axios from 'axios';
 import { styled } from '@mui/material/styles';
 import MyTooltip from 'components/Widgets/MyTooltip';
 import CheckLock from 'components/Forms/CheckLock';
+
+
+const CustomSwitch = styled(Switch)(({ theme }) => ({
+  padding: 8,
+  width: 135,
+  marginLeft: -15,
+  height: 54,
+  borderRadius: '20px !important',
+  '& .MuiSwitch-switchBase': {
+    marginTop: 10,
+    padding: 0,
+    transform: 'translateX(10px)',
+    '&.Mui-checked': {
+      value: 'sg',
+      color: '#fff',
+      transform: 'translateX(66px)',
+      // '& .MuiSwitch-thumb:before': {
+      //   background: `url('assets/icons/lock_icon.svg')`,
+      //   backgroundRepeat: 'no-repeat'
+      // },
+      // '& + .MuiSwitch-track': {
+      //   opacity: 1,
+      //   backgroundColor: theme.palette.mode === 'dark' ? '#eee' : '#000',
+      //   border: 'solid 1px #ef1ce3'
+      // },
+    },
+  },
+  '& .MuiSwitch-track': {
+    borderRadius: 22,
+    background: '#030316 !important',
+    border: 'solid 1px #aaa',
+    '&:before, &:after': {
+      content: '""',
+      position: 'absolute',
+      top: '50%',
+      transform: 'translateY(-50%)',
+      width: 21,
+      height: 21,
+    },
+    // '&:before': {
+    //   backgroundImage: `url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" height="16" width="16" viewBox="0 0 24 24"><path fill="${encodeURIComponent(
+    //     theme.palette.getContrastText(theme.palette.primary.main),
+    //   )}" d="M21,7L9,19L3.5,13.5L4.91,12.09L9,16.17L19.59,5.59L21,7Z"/></svg>')`,
+    //   left: 12,
+    // },
+    // '&:after': {
+    //   backgroundImage: `url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" height="16" width="16" viewBox="0 0 24 24"><path fill="${encodeURIComponent(
+    //     theme.palette.getContrastText(theme.palette.primary.main),
+    //   )}" d="M19,13H5V11H19V13Z" /></svg>')`,
+    //   right: 12,
+    // },
+  },
+  '& .MuiSwitch-thumb': {
+    background: 'rgba(102, 104, 131, 1)',
+    border: 'solid 1px grey',
+    boxShadow: 'none',
+    width: 56,
+    height: 31,
+    margin: 2,
+    borderRadius: '15px !important'
+  },
+}));
+
 const MaterialUISwitch = styled(Switch)(({ theme }) => ({
   width: 60,
-  height: 34,
+  height: 37,
   padding: 7,
   '& .MuiSwitch-switchBase': {
     margin: 1,
@@ -44,13 +107,14 @@ const MaterialUISwitch = styled(Switch)(({ theme }) => ({
     width: 22,
     height: 14,
     marginTop: 8,
+    boxShadow: 'none',
     '&:before': {
       content: "''",
       position: 'absolute',
       width: '100%',
       height: '100%',
       left: 0,
-      top: 4,
+      top: 8,
       backgroundRepeat: 'no-repeat',
       backgroundPosition: 'center',
       backgroundSize: 'contain',
@@ -72,6 +136,7 @@ const Miner = () => {
   const [isFree, setFree] = useState(false);
   const [withdrawModal, setWithdrawModal] = useState(false);
   const [createCustomModal, setCreateCustomModal] = useState(false);
+  const [boostModal, setBoostModal] = useState(false);
 
   const onAddMiner = () => {
     let alink = document.createElement('a');
@@ -240,10 +305,12 @@ const Miner = () => {
 
               <div style={{ paddingTop: 16 }}>
                 <button style={{
-                  marginLeft: 5, fontWeight: 600,
-                  padding: '5px', background: 'transparent', width: '108px',
-                  height: '45px', borderRadius: '15px', textAlign: 'center', border: 'dashed 1px #ff589d', color: '#be16d2', alignSelf: 'center'
-                }}>Boost</button>
+                  marginLeft: 5, fontWeight: 600, background: 'linear-gradient(47.43deg, #2A01FF 0%, #FF1EE1 57%, #FFB332 100%)',
+                  WebkitBackgroundClip: 'text',
+                  WebkitTextFillColor: 'transparent',
+                  padding: '5px', width: '108px',
+                  height: '45px', borderRadius: '15px', textAlign: 'center', border: 'dashed 1px #ff589d', alignSelf: 'center'
+                }} onClick={() => setBoostModal(true)} >Boost</button>
                 <button style={{
                   marginLeft: 5, fontWeight: 600,
                   padding: '5px', background: 'linear-gradient(47.43deg, #2A01FF 0%, #FF1EE1 57%, #FFB332 100%)', width: '108px',
@@ -278,18 +345,29 @@ const Miner = () => {
                 <h5>My NFT Boosters</h5>
                 <div>
                   <span>3</span>
-                  <img src='assets/imgs/NFT-booster.png' />
+                  <div className={classes.img_list}>
+                    <img src='assets/imgs/img-list-item1.png' />
+                    <img src='assets/imgs/img-list-item2.png' />
+                    <img src='assets/imgs/img-list-item3.png' />
+                    <img src='assets/imgs/img-list-item1.png' />
+                    <img src='assets/imgs/img-list-item2.png' />
+                    <img src='assets/imgs/img-list-item3.png' />
+                  </div>
                 </div>
               </div>
               <div style={{ paddingTop: 16 }}>
                 <button style={{
-                  marginLeft: 5, fontWeight: 600,
-                  padding: '5px', background: 'transparent', width: '108px',
+                  marginLeft: 5, fontWeight: 600, background: 'linear-gradient(47.43deg, #2A01FF 0%, #FF1EE1 57%, #FFB332 100%)',
+                  WebkitBackgroundClip: 'text',
+                  WebkitTextFillColor: 'transparent',
+                  padding: '5px', width: '108px',
                   height: '45px', borderRadius: '15px', textAlign: 'center', border: 'dashed 1px #ff589d', color: '#be16d2', alignSelf: 'center'
                 }}>Compound</button>
                 <button style={{
-                  marginLeft: 5, fontWeight: 600,
-                  padding: '5px', background: 'transparent', width: '108px',
+                  marginLeft: 5, fontWeight: 600, backgroundImage: 'linear-gradient(47.43deg, #2A01FF 0%, #FF1EE1 57%, #FFB332 100%)',
+                  WebkitBackgroundClip: 'text',
+                  WebkitTextFillColor: 'transparent',
+                  padding: '5px', width: '108px',
                   height: '45px', borderRadius: '15px', textAlign: 'center', border: 'dashed 1px #ff589d', color: '#be16d2', alignSelf: 'center'
                 }}>Cash Out</button>
                 <button style={{
@@ -601,7 +679,9 @@ const Miner = () => {
               {/* <FilledButton label={'Cancel'} color='secondary' handleClick={() => setStakeModal(false)} />
               <FilledButton label={'Buy shares'} handleClick={onBuyShares} /> */}
               <button style={{
-                padding: '5px', width: '50%',
+                padding: '5px', width: '50%', background: 'linear-gradient(47.43deg, #2A01FF 0%, #FF1EE1 57%, #FFB332 100%);',
+                WebkitBackgroundClip: 'text',
+                WebkitTextFillColor: 'transparent',
                 height: '45px', borderRadius: '15px', textAlign: 'center', border: 'dashed 1px #ff589d', color: '#be16d2', alignSelf: 'center'
               }} onClick={() => setStakeModal(false)} className="cancel-btn">Cancel</button>
               <button style={{
@@ -676,7 +756,9 @@ const Miner = () => {
             </div>
             <div className={classes.modalBtns}>
               <button style={{
-                padding: '5px', width: '50%',
+                padding: '5px', width: '50%', background: 'linear-gradient(47.43deg, #2A01FF 0%, #FF1EE1 57%, #FFB332 100%);',
+                WebkitBackgroundClip: 'text',
+                WebkitTextFillColor: 'transparent',
                 height: '45px', borderRadius: '15px', textAlign: 'center', border: 'dashed 1px #ff589d', color: '#be16d2', alignSelf: 'center'
               }} onClick={() => setWithdrawModal(false)} className="cancel-btn">Cancel</button>
               <button style={{
@@ -712,10 +794,10 @@ const Miner = () => {
                 <p>Token Ticker (Used To Stake)</p>
                 <input type="text" placeholder='PIXIA' />
               </div>
-              <div style={{position:'relative'}}>
-                <img src='assets/imgs/farm-stake-avatar1.png' width={50} style={{ position: 'absolute' , top:38, left:8}} />
+              <div style={{ position: 'relative' }}>
+                <img src='assets/imgs/farm-stake-avatar1.png' width={50} style={{ position: 'absolute', top: 38, left: 8 }} />
                 <p>Token image (Used To Stake)</p>
-                <input type="text" placeholder='Token-picture.jpg 131KB' style={{ paddingLeft:60}}/>
+                <input type="text" placeholder='Token-picture.jpg 131KB' style={{ paddingLeft: 60 }} />
               </div>
               <div>
                 <p>Reward Token Smart Contract (Distributed)</p>
@@ -774,6 +856,60 @@ const Miner = () => {
               </div>
             </div>
           </div>
+        </>}
+      />
+
+      <Modal
+        show={boostModal}
+        maxWidth='sm'
+        children={<>
+          <div className={classes.boostModal}>
+            <div className={classes.modalTop}>
+              <span className='topTitle'>
+                <img src="/assets/imgs/farm-stake-avatar1.png" alt="" />
+                <div>
+                  <h4>Withdraw from $BoredM in Farm</h4>
+                  <span style={{ color: '#aaa', fontSize: 14 }}>NFT Balance: 9</span>
+                </div>
+                <div className="customSwitchText">
+                  <span>Stake</span>
+                  <span>Unstake</span>
+                </div>
+                <FormControlLabel
+                  control={<CustomSwitch defaultChecked />}
+                  label=""
+                />
+              </span>
+            </div>
+            <div className={`${classes.modalContent} boostModalContent`}>
+              <div className='img-group'>
+                <img src='assets/imgs/boost-img-1.png' />
+                <img src='assets/imgs/boost-img-2.png' />
+                <img src='assets/imgs/boost-img-3.png' />
+                <img src='assets/imgs/boost-img-4.png' />
+                <img src='assets/imgs/boost-img-5.png' />
+                <img src='assets/imgs/boost-img-6.png' />
+                <img src='assets/imgs/boost-img-7.png' />
+                <img src='assets/imgs/boost-img-8.png' />
+                <img src='assets/imgs/boost-img-9.png' />
+              </div>
+              <p style={{ textAlign: 'left', width: '100%', marginTop: 30, marginBottom: 30 }}>Select your NFTs to stake.</p>
+            </div>
+            <div className={classes.modalBtns}>
+              <button style={{
+                padding: '5px', width: '50%',
+                background: 'linear-gradient(47.43deg, #2A01FF 0%, #FF1EE1 57%, #FFB332 100%);',
+                WebkitBackgroundClip: 'text',
+                WebkitTextFillColor: 'transparent',
+                height: '45px', borderRadius: '15px', textAlign: 'center', border: 'dashed 1px #ff589d', color: '#be16d2', alignSelf: 'center'
+              }} onClick={() => setBoostModal(false)} className="cancel-btn">Cancel</button>
+              <button style={{
+                padding: '5px', background: 'linear-gradient(47.43deg, #2A01FF 0%, #FF1EE1 57%, #FFB332 100%)', width: '50%',
+                height: '45px', borderRadius: '15px', textAlign: 'center', border: 'none', color: 'white', alignSelf: 'center'
+              }}>Stake</button>
+            </div>
+          </div>
+
         </>}
       />
     </>

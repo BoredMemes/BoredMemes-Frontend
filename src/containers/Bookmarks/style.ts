@@ -392,8 +392,12 @@ export const useStyles = makeStyles(theme => ({
               color: '#727272',
               position: 'relative',
               textAlign : 'left',
+              border: '1.5px solid transparent',                
               '&:hover': {
-                background: '#D9D9D9',
+                background: 'transparent !important',
+                backgroundImage: 'linear-gradient(90deg, white, white),linear-gradient(47.43deg, #2A01FF 0%, #FF1EE1 40%, #FFB332 100%) !important',
+                backgroundClip: 'padding-box, border-box !important',
+                backgroundOrigin: 'border-box !important',
                 '& .subDrodownMenu': {
                   display: 'flex',
                 }

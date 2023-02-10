@@ -18,8 +18,8 @@ type MenuType = {
 let isChecked = window.localStorage.getItem("themeId") == 'dark' ? true : false
 
 const MaterialUISwitch = styled(Switch)(({ theme }) => ({
-  width: 60,
-  height: 34,
+  width: 70,
+  height:41,
   padding: 7,
   '& .MuiSwitch-switchBase': {
     margin: 1,
@@ -28,7 +28,7 @@ const MaterialUISwitch = styled(Switch)(({ theme }) => ({
     '&.Mui-checked': {
       value: 'sg',
       color: '#fff',
-      transform: 'translateX(30px)',
+      transform: 'translateX(38px)',
       '& .MuiSwitch-thumb:before': {
         backgroundImage: `url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" height="20" width="20" viewBox="0 0 20 20"><path fill="${encodeURIComponent(
           '#fff',
@@ -42,14 +42,14 @@ const MaterialUISwitch = styled(Switch)(({ theme }) => ({
   },
   '& .MuiSwitch-thumb': {
     backgroundColor: theme.palette.mode === 'dark' ? '#003892' : '#001e3c',
-    width: 18,
-    height: 18,
+    width: 23,
+    height: 23,
     marginTop: 8,
     '&:before': {
       content: "''",
       position: 'absolute',
       width: '90%',
-      height: '90%',
+      height: '100%',
       left: 0,
       top: 4,
       backgroundRepeat: 'no-repeat',
@@ -60,10 +60,14 @@ const MaterialUISwitch = styled(Switch)(({ theme }) => ({
     },
   },
   '& .MuiSwitch-track': {
+    border: 'solid 1px #aaa',
     opacity: 1,
     backgroundColor: theme.palette.mode === 'dark' ? '#8796A5' : '#aab4be',
-    borderRadius: 20 / 2,
+    borderRadius: 16,
   },
+  '& .MuiFormControlLabel-label': {
+    color:'#aaa'
+  }
 }));
 
 export default function SideBar({ menuOpen, setMenuOpen }: MenuType) {
@@ -93,7 +97,7 @@ export default function SideBar({ menuOpen, setMenuOpen }: MenuType) {
 
   const onChangeHandler = (e) => {
     let theme = ''
-    if(e.target.checked) {
+    if (e.target.checked) {
       theme = 'dark'
       setSwitchLabel('Dark Mode');
     } else {
@@ -112,7 +116,10 @@ export default function SideBar({ menuOpen, setMenuOpen }: MenuType) {
         <ul className='bbr'>
           {loginStatus && <></>}
           <li className={path.indexOf('my_art') >= 0 ? 'selected' : ''}>
-            <div onClick={() => onChangeRoute("/my_art")}><img src="/assets/icons/home_icon.svg" alt="" /> My Art</div>
+            <div onClick={() => onChangeRoute("/my_art")}>
+              {/* <img src="/assets/icons/home_icon.svg" alt="" /> */}
+              <i className="fas fa-home"></i>
+              My Art</div>
           </li>
           {/* <li className={path.indexOf('create_art') >= 0 ? 'selected' : ''}>
             <div onClick={() => onChangeRoute("/create_art")}><img src="/assets/icons/create_icon.svg" alt="" /> Create Art</div>
@@ -121,10 +128,16 @@ export default function SideBar({ menuOpen, setMenuOpen }: MenuType) {
             <div onClick={() => onChangeRoute("/community_feed")}><img src="/assets/icons/community_icon.svg" alt="" /> Community Feed</div>
           </li>
           <li className={path.indexOf('personal_feed') >= 0 ? 'selected' : ''}>
-            <div onClick={() => onChangeRoute("/personal_feed")}><img src="/assets/icons/personal_icon.svg" alt="" /> Personal Feed</div>
+            <div onClick={() => onChangeRoute("/personal_feed")}>
+              {/* <img src="/assets/icons/personal_icon.svg" alt="" />  */}
+              <i className="fab fa-microsoft"></i>
+              Personal Feed</div>
           </li>
           <li className={path.indexOf('bookmarks') >= 0 ? 'selected' : ''}>
-            <div onClick={() => onChangeRoute("/bookmarks")}><img src="/assets/icons/bookmark_icon.svg" alt="" /> Bookmarks</div>
+            <div onClick={() => onChangeRoute("/bookmarks")}>
+              {/* <img src="/assets/icons/bookmark_icon.svg" alt="" />  */}
+              <i className="fas fa-bookmark"></i>
+              Bookmarks</div>
           </li>
         </ul>
 
@@ -158,7 +171,10 @@ export default function SideBar({ menuOpen, setMenuOpen }: MenuType) {
       <div className="sideFooter" onClick={() => setMenuOpen(false)}>
         <ul>
           <li className={path.indexOf('edit_profile') >= 0 ? 'selected' : ''}>
-            <div onClick={() => onChangeRoute("/edit_profile")}><img src="/assets/icons/setting_icon.svg" alt="" /> Settings</div>
+            <div onClick={() => onChangeRoute("/edit_profile")}>
+              {/* <img src="/assets/icons/setting_icon.svg" alt="" />  */}
+              <i className="fas fa-cog"></i>
+              Settings</div>
           </li>
         </ul>
         {/* <div className={`change_theme`}>

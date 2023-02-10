@@ -509,10 +509,10 @@ const MyArt = () => {
         {
           !isDetail ?
             <div className={classes.top}>
-              <h1>Community Feed</h1>
+              <h2>Community Feed</h2>
               <div>
-                <span style={{marginRight:6, padding:2,color : '#666',  borderBottom: 'solid 1px #666'}}>Your Feed</span>
-                <span style={{  borderBottom: 'solid 1px #fe1de1', padding:2, background: 'linear-gradient(47.43deg, #2A01FF 0%, #FF1EE1 57%, #FFB332 100%)', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent', width: 'fit-content', color: '#262626'}}>Community</span>
+                <span style={{ marginRight: 10, padding: 2, paddingRight: 8, paddingLeft: 8, color: '#727272', borderBottom: 'solid 1px #727272', fontWeight: 600 }}>Your Feed</span>
+                <span style={{ borderImage: 'linear-gradient(47.43deg, #2A01FF 0%, #FF1EE1 57%, #FFB332 100%)', borderBottom: 'solid 1px', borderImageSlice: 1, padding: 2, paddingRight: 8, paddingLeft: 8, fontWeight: 600, background: 'linear-gradient(47.43deg, #2A01FF 0%, #FF1EE1 57%, #FFB332 100%)', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent', width: 'fit-content', color: '#262626' }}>Community</span>
               </div>
               {/* <div className="avatar">
                 <img src={user?.logo_url} alt="" />
@@ -560,7 +560,7 @@ const MyArt = () => {
               </div>
             </div>
         }
-        {!isDetail && <CollectionLIst collections={myCollection} onEditCollection={onEditCollection} onDetailCollection={onDetailCollection} />}
+        {/* {!isDetail && <CollectionLIst collections={myCollection} onEditCollection={onEditCollection} onDetailCollection={onDetailCollection} />} */}
         <Filter filter={filter} setFilter={setFilter} setPrivateType={setPrivateType} setSearchStr={setSearchStr} handleAllClick={handleAllClick} setEmoticonId={setEmoticonId} />
 
         <div className={classes.content}>
@@ -592,7 +592,7 @@ const MyArt = () => {
             <div className="btns">
               <button className='grey' onClick={() => setSelectedItems([])}>Close</button>
               <button className='grey' onClick={handleAllClick}>Selet All</button>
-              <button className='pink' style={{background:'linear-gradient(47.43deg, #2A01FF 0%, #FF1EE1 57%, #FFB332 100%)'}}>Actions <img src="/assets/icons/arrow_down_icon_01.svg" alt="" />
+              <button className='pink' style={{ background: 'linear-gradient(47.43deg, #2A01FF 0%, #FF1EE1 57%, #FFB332 100%)' }}>Actions <img src="/assets/icons/arrow_down_icon_01.svg" alt="" />
                 <div className="drodownMenu">
                   <div className="menuItem" onClick={() => onDownload()}>Download Zip</div>
                   <div className="menuItem" onClick={() => onPublish(true)}>Publish</div>

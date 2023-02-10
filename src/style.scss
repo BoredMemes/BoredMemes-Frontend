@@ -181,6 +181,9 @@ h1 {
 }
 
 .dark {
+  .MuiFormControlLabel-label {
+    color: white !important;
+  }
   .nav-background {
     background-color: #030316 !important;
   }

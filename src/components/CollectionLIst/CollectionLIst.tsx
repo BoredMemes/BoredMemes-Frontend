@@ -129,7 +129,7 @@ const CollectionLIst = ({ collections, onEditCollection, onDetailCollection }: P
             <p>{collection?.name.length > 18 ? collection?.name.substring(0,17) + "..." : collection?.name}</p>
           </div>
         ))}
-        <div className={`${classes.newCollectionCard} newCollectionCard`} onClick={() => onEditCollection()}>
+        <div className={`${classes.newCollectionCard} newCollectionCard`} style={{paddingLeft:30, paddingRight:30, width:'max-content'}} onClick={() => onEditCollection()}>
           <img src="/assets/icons/add_icon.svg" alt="" />
           <p>New Collection</p>
         </div>
