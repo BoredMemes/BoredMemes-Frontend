@@ -275,6 +275,17 @@ const useStyles = makeStyles(theme => ({
     '&.selected': {
       borderColor: '#F400F5'
     },
+
+    '& .dark': {
+      '& .menuItem': {
+        '&:hover': {
+          display: 'none !important',
+          '& .subDrodownMenu': {
+            display: 'flex',
+          }
+        },
+      },
+    }
   },
 }));
 
@@ -414,6 +425,7 @@ const PropertyCard1 = ({ item, onClick, onShow, isSelected, updateArts, isNew }:
 
   return (
     <div className={`${classes.productWrapper} ${isSelected ? 'selected' : ''} card1`} ref={ref} style={divStyle} onClick={onClick}>
+      <img src={'assets/imgs/pixia-icon.png'} style={{ position: 'absolute', zIndex: 10, margin: 8 }} width={50} alt="" />
       <div className="top" >
         {
           item?.assetUrl && item?.assetUrl !== "" ? <img src={item?.assetUrl} alt="" /> :
@@ -422,7 +434,6 @@ const PropertyCard1 = ({ item, onClick, onShow, isSelected, updateArts, isNew }:
             </div>
         }
       </div>
-
       <div className="overly">
         <div className="desc">
           <p>{item?.description}</p>

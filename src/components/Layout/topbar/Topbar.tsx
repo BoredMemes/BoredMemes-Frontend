@@ -142,7 +142,10 @@ export default function Topbar({ menuOpen, setMenuOpen }: MenuType) {
             {loginStatus ? `${truncateWalletString(account).substring(2, 0)}...${truncateWalletString(account).slice(-3)}` : 'Connect Wallet'}
           </div>
           {loginStatus &&
-            <HashLink to="/">
+            <HashLink to="/"  style={{backgroundClip: 'padding-box, border-box',backgroundImage: 'linear-gradient(90deg, white, white),linear-gradient(47.43deg, #2A01FF 0%, #FF1EE1 40%, #FFB332 100%)',backgroundOrigin: 'border-box',
+              background: 'transparent',
+              border: 'solid 2px transparent'
+            }}>
               <img src={user?.logo_url} alt="" className='avatar' />
             </HashLink>
           }

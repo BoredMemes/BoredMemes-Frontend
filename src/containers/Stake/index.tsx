@@ -9,11 +9,14 @@ import Web3WalletContext from 'hooks/Web3ReactManager';
 import { toast } from 'react-toastify';
 import { NFTStakingInfo } from 'utils/types';
 import axios from 'axios';
+import ThemeContext from "theme/ThemeContext"
+
 import MyTooltip from 'components/Widgets/MyTooltip';
 import moment from 'moment';
 const Stake = () => {
   const classes = useStyles();
   const { loginStatus, chainId, account, library } = useContext(Web3WalletContext)
+  const { theme } = useContext(ThemeContext)
 
   useEffect(() => {
     getPrices();
@@ -229,17 +232,17 @@ const Stake = () => {
                     <div className='card_com'>
                       <h5>1 Hour</h5>
                       <h6>8 USD</h6>
-                      <button><span>- ETH</span></button>
+                      <button className={theme}><span>- ETH</span></button>
                     </div>
                     <div className='card_com'>
                       <h5>1 Hour</h5>
                       <h6>8 USD</h6>
-                      <button><span>- ETH</span></button>
+                      <button className={theme}><span>- ETH</span></button>
                     </div>
                     <div className='card_com'>
                       <h5>1 Hour</h5>
                       <h6>8 USD</h6>
-                      <button><span>- ETH</span></button>
+                      <button className={theme}><span>- ETH</span></button>
                     </div>
                   </div>
                   <div>
@@ -268,20 +271,21 @@ const Stake = () => {
                 </div>
                 <div className='sub_cards'>
 
-                  <div style={{border: '1.3px solid transparent', background: 'transparent',backgroundImage: 'linear-gradient(90deg, white, white),linear-gradient(47.43deg, #2A01FF 0%, #FF1EE1 40%, #FFB332 100%)',backgroundClip: 'padding-box, border-box',backgroundOrigin: 'border-box'}}>
+                  <div className={theme} style={{ border: '1.3px solid transparent', background: 'transparent', backgroundImage: theme == 'light'? 'linear-gradient(90deg, white, white),linear-gradient(47.43deg, #2A01FF 0%, #FF1EE1 40%, #FFB332 100%)' : 'linear-gradient(90deg, black, black),linear-gradient(47.43deg, #2A01FF 0%, #FF1EE1 40%, #FFB332 100%)', backgroundClip: 'padding-box, border-box', backgroundOrigin: 'border-box' }}>
                     <h4>Basic</h4>
                     <p>200 minutes/m</p>
                     <span>Stake lock</span>
                     <span>27 USD worth</span>
                     <span>of $PIXIA</span>
                   </div>
-                  <div>
+                  <div className={theme}>
                     <h4>Standard</h4>
                     <p>15 hours/m</p>
                     <span>Stake lock</span>
                     <span>120 USD worth</span>
                     <span>of $PIXIA</span>
-                  </div><div>
+                  </div>
+                  <div className={theme}>
                     <h4>Pro</h4>
                     <p>300 minutes/m</p>
                     <span>Stake lock</span>

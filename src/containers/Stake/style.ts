@@ -748,7 +748,7 @@ export const useStyles = makeStyles(theme => ({
             background: '#f4f4f4',
             borderRadius: '15px',
             justifyContent: 'space-between',
-            '& button': {
+            '& .light': {
               padding: 4,
               textAlign: 'center',
               width: '100%',
@@ -756,6 +756,18 @@ export const useStyles = makeStyles(theme => ({
               fontWeight: 700,
               background: 'transparent !important',
               backgroundImage: 'linear-gradient(90deg, white, white),linear-gradient(47.43deg, #2A01FF 0%, #FF1EE1 40%, #FFB332 100%) !important',
+              backgroundClip: 'padding-box, border-box !important',
+              backgroundOrigin: 'border-box !important',
+              border: '2px solid transparent',
+            },
+            '& .dark': {
+              padding: 4,
+              textAlign: 'center',
+              width: '100%',
+              borderRadius: '12px',
+              fontWeight: 700,
+              background: 'transparent !important',
+              backgroundImage: 'linear-gradient(90deg, #040417, #040417),linear-gradient(47.43deg, #2A01FF 0%, #FF1EE1 40%, #FFB332 100%) !important',
               backgroundClip: 'padding-box, border-box !important',
               backgroundOrigin: 'border-box !important',
               border: '2px solid transparent',
@@ -814,9 +826,17 @@ export const useStyles = makeStyles(theme => ({
         [theme.breakpoints.down('xs')]: {
           width: '100%'
         },
-        '& div': {
-          border: 'solid 1px',
-          borderColor: 'transparent',
+        '& .dark': {
+          '&:hover': {
+            // border: 'solid 1.3px #ff32c9',
+            background: 'transparent !important',
+            backgroundImage: 'linear-gradient(90deg, #030316, #030316),linear-gradient(47.43deg, #2A01FF 0%, #FF1EE1 40%, #FFB332 100%) !important',
+            backgroundClip: 'padding-box, border-box !important',
+            backgroundOrigin: 'border-box !important',
+            border: '1.3px solid transparent',
+          },
+        },
+        '& .white': {
           '&:hover': {
             // border: 'solid 1.3px #ff32c9',
             background: 'transparent !important',
@@ -825,6 +845,10 @@ export const useStyles = makeStyles(theme => ({
             backgroundOrigin: 'border-box !important',
             border: '1.3px solid transparent',
           },
+        },
+        '& div': {
+          border: 'solid 1px',
+          borderColor: 'transparent',
           cursor: 'pointer',
           display: 'block',
           borderRadius: '8px',

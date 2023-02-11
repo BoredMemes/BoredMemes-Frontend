@@ -274,7 +274,7 @@ const Miner = () => {
 
           <div className='stake_withdraw_body'>
             <div className={`${classes.stake_card} stake_card`}>
-              <img src='assets/imgs/farm-stake-avatar1.png' />
+              <img src='assets/imgs/farm-stake-avatar1.png' height={60} />
               <div>
                 <h4>$PIXIA</h4>
                 <p>7,836,923.44</p>
@@ -303,20 +303,12 @@ const Miner = () => {
                 <span>≈ $150,09</span>
               </div>
 
-              <div style={{ paddingTop: 16 }}>
-                <button style={{
-                  marginLeft: 5, fontWeight: 600, background: 'linear-gradient(47.43deg, #2A01FF 0%, #FF1EE1 57%, #FFB332 100%)',
-                  WebkitBackgroundClip: 'text',
-                  WebkitTextFillColor: 'transparent',
-                  padding: '5px', width: '108px',
-                  height: '45px', borderRadius: '15px', textAlign: 'center', border: 'dashed 1px #ff589d', alignSelf: 'center'
-                }} onClick={() => setBoostModal(true)} >Boost</button>
-                <button style={{
-                  marginLeft: 5, fontWeight: 600,
-                  padding: '5px', background: 'linear-gradient(47.43deg, #2A01FF 0%, #FF1EE1 57%, #FFB332 100%)', width: '108px',
-                  height: '45px', borderRadius: '15px', textAlign: 'center', border: 'none', color: 'white', alignSelf: 'center'
-                }} onClick={() => setStakeModal(true)}>Stake</button>
-                <img src='assets/icons/arrow_down_icon.svg' width={20} style={{ marginLeft: 5 }} />
+              <div style={{ paddingTop: 16 }} className='miner-stake-btns'>
+                <button className='boost' onClick={() => setBoostModal(true)} >Boost</button>
+                <button className='stake' onClick={() => setStakeModal(true)}>Stake</button>
+                <div>
+                  <img src='assets/icons/arrow_down_icon.svg' width={20} style={{ marginLeft: 5 }} />
+                </div>
               </div>
             </div>
 
@@ -355,26 +347,10 @@ const Miner = () => {
                   </div>
                 </div>
               </div>
-              <div style={{ paddingTop: 16 }}>
-                <button style={{
-                  marginLeft: 5, fontWeight: 600, background: 'linear-gradient(47.43deg, #2A01FF 0%, #FF1EE1 57%, #FFB332 100%)',
-                  WebkitBackgroundClip: 'text',
-                  WebkitTextFillColor: 'transparent',
-                  padding: '5px', width: '108px',
-                  height: '45px', borderRadius: '15px', textAlign: 'center', border: 'dashed 1px #ff589d', color: '#be16d2', alignSelf: 'center'
-                }}>Compound</button>
-                <button style={{
-                  marginLeft: 5, fontWeight: 600, backgroundImage: 'linear-gradient(47.43deg, #2A01FF 0%, #FF1EE1 57%, #FFB332 100%)',
-                  WebkitBackgroundClip: 'text',
-                  WebkitTextFillColor: 'transparent',
-                  padding: '5px', width: '108px',
-                  height: '45px', borderRadius: '15px', textAlign: 'center', border: 'dashed 1px #ff589d', color: '#be16d2', alignSelf: 'center'
-                }}>Cash Out</button>
-                <button style={{
-                  marginLeft: 5, fontWeight: 600,
-                  padding: '5px', background: '#4905FB', width: '108px',
-                  height: '45px', borderRadius: '15px', textAlign: 'center', border: 'none', color: 'white', alignSelf: 'center'
-                }} onClick={() => setWithdrawModal(true)}>Withdraw</button>
+              <div className='miner-stake-btns'>
+                <button className='boost'>Compound</button>
+                <button className='boost'>Cash Out</button>
+                <button className='withdraw' onClick={() => setWithdrawModal(true)}>Withdraw</button>
               </div>
             </div>
           </div>

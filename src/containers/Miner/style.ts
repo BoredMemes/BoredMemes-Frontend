@@ -1020,7 +1020,7 @@ export const useStyles = makeStyles(theme => ({
   },
   stake_card: {
     width: '100%',
-    height: '115px',
+    height: 'fit-content',
     left: '0px',
     top: '0px',
     padding: '20px 15px',
@@ -1096,7 +1096,7 @@ export const useStyles = makeStyles(theme => ({
 
   withdraw_card: {
     width: '100%',
-    height: '115px',
+    height: 'fit-content',
     left: '0px',
     top: '0px',
     padding: '20px 15px',

@@ -563,7 +563,7 @@ const MyArt = () => {
         {!isDetail && <CollectionLIst collections={myCollection} onEditCollection={onEditCollection} onDetailCollection={onDetailCollection} />}
         <Filter filter={filter} setFilter={setFilter} setPrivateType={setPrivateType} setSearchStr={setSearchStr} handleAllClick={handleAllClick} setEmoticonId={setEmoticonId} />
 
-        <div className={classes.content}>
+        <div className={`${classes.content} card2`}>
           <Masonry
             breakpointCols={breakpointColumnsObj}
             className={classes.masonry}
