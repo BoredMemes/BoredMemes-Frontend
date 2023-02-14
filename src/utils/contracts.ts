@@ -147,7 +147,7 @@ export async function getStakingInfo(chainId, account) {
     const tokenContract = getContractObj('PixiaAi', chainId, jsonProvider);
     const _decimals = await tokenContract.decimals();
     const stakingContract = getContractObj("PixiaStaking", chainId, jsonProvider);
-    const [tTokenAmount, freeAPR, lockAPR, myStakingInfo, mClaimedETH, mClaimableETH, tDividETHLock, tStakedBoredMLock, mClaimedETHLock, mClaimableETHLock, mPercentFree] = await Promise.all([
+    const [lockedPool, unLockedPool, lockedUser, unLockedUser, lockedPayout, unLockedPayout, tStakedBoredMLock, mClaimedETHLock, mClaimableETHLock, mPercentFree] = await Promise.all([
       stakingContract.totalDividendsFree(),
       stakingContract.totalSharesFree(),
       account ? stakingContract.shares(account) : null,

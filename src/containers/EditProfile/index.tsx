@@ -297,7 +297,7 @@ const EditProfile = () => {
                 <p>Show the Bored memes community that your profile is authentic.</p>
               </Grid>
               <Grid item md={8} xs={12}>
-                <div id="telegramButton">
+                {/* <div id="telegramButton">
                   <TelegramLoginButton dataOnauth={handleTelegramResponse} botName="PixiaLoginBot" language="en" />
                 </div>
                 <LoginSocialTwitter
@@ -315,7 +315,7 @@ const EditProfile = () => {
                   }}
                 >
                   <TwitterLoginButton />
-                </LoginSocialTwitter>
+                </LoginSocialTwitter> */}
                 <TextInput
                   name="twitter"
                   disabled={!loginStatus}
