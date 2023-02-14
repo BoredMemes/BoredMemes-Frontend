@@ -14,10 +14,10 @@ export enum ConnectorNames {
   WalletLink = "WalletLink",
 }
 
-export const injected = new InjectedConnector({ supportedChainIds: process.env.NODE_ENV === "production" ? [Networks.ETH_MainNet, Networks.BSC_Mainnet] : [Networks.ETH_TestNet, Networks.BSC_Testnet]});
+export const injected = new InjectedConnector({ supportedChainIds: process.env.REACT_APP_NODE_ENV === "production" ? [Networks.ETH_MainNet, Networks.BSC_Mainnet] : [Networks.ETH_TestNet, Networks.BSC_Testnet]});
 
 export const walletconnect = new WalletConnectConnector({
-  rpc: process.env.NODE_ENV === "production" ? {
+  rpc: process.env.REACT_APP_NODE_ENV === "production" ? {
     [Networks.ETH_MainNet]: networks[Networks.ETH_MainNet].NODES,
     [Networks.BSC_Mainnet]: networks[Networks.BSC_Mainnet].NODES,
   } : {

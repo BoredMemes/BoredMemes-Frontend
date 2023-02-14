@@ -331,7 +331,7 @@ const MyArt = () => {
   const [isPublicCollection, setIsPublicCollection] = useState(false)
   const [title, setTitle] = useState('')
   const [description, setDescription] = useState('')
-  const [selectedChainId, setSelectedChainId] = useState(process.env.NODE_ENV === "production" ? 1 : 5);
+  const [selectedChainId, setSelectedChainId] = useState(process.env.REACT_APP_NODE_ENV === "production" ? 1 : 5);
   const [priceMode, setPriceMode] = useState(0);
 
   const onChangeTitle = async (e: any) => {
@@ -663,14 +663,14 @@ const MyArt = () => {
                     label={'ETHEREUM'}
                     icon={<img src="/assets/icons/eth_icon_01.svg" alt="" />}
                     iconPosition='start'
-                    handleClick={() => onChooseChain(process.env.NODE_ENV === "production" ? 1 : 5)}
-                    color={selectedChainId === (process.env.NODE_ENV === "production" ? 1 : 5) ? 'smart' : 'grey'} />
+                    handleClick={() => onChooseChain(process.env.REACT_APP_NODE_ENV === "production" ? 1 : 5)}
+                    color={selectedChainId === (process.env.REACT_APP_NODE_ENV === "production" ? 1 : 5) ? 'smart' : 'grey'} />
                   <FilledButton
                     label={'BINANCE SMART CHAIN'}
                     icon={<img src="/assets/icons/binance_icon.svg" alt="" />}
                     iconPosition='start'
-                    handleClick={() => onChooseChain(process.env.NODE_ENV === "production" ? 56 : 97)}
-                    color={selectedChainId === (process.env.NODE_ENV === "production" ? 56 : 97) ? 'smart' : 'grey'} />
+                    handleClick={() => onChooseChain(process.env.REACT_APP_NODE_ENV === "production" ? 56 : 97)}
+                    color={selectedChainId === (process.env.REACT_APP_NODE_ENV === "production" ? 56 : 97) ? 'smart' : 'grey'} />
                 </div>
               </div>
 

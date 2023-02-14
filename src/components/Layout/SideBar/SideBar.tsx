@@ -179,19 +179,19 @@ export default function SideBar({ menuOpen, setMenuOpen }: MenuType) {
       <div className="stakeInfo">
         <div className="sideStake">
           <p>PIXIA Liquidity</p>
-          <div>{distributorInfo ? distributorInfo[0].toLocaleString(undefined, { maximumFractionDigits: 2 }) : 0} {chainId === (process.env.NODE_ENV === "development" ? Networks.ETH_TestNet : Networks.ETH_MainNet) ? "ETH" : "BNB"}</div>
+          <div>{distributorInfo ? distributorInfo[0].toLocaleString(undefined, { maximumFractionDigits: 2 }) : 0} {chainId === (process.env.REACT_APP_NODE_ENV === "development" ? Networks.ETH_TestNet : Networks.ETH_MainNet) ? "ETH" : "BNB"}</div>
         </div>
         <div className="sideStake">
           <p>PIXIA Burn</p>
-          <div>{distributorInfo ? distributorInfo[1].toLocaleString(undefined, { maximumFractionDigits: 2 }) : 0} {chainId === (process.env.NODE_ENV === "development" ? Networks.ETH_TestNet : Networks.ETH_MainNet) ? "ETH" : "BNB"}</div>
+          <div>{distributorInfo ? distributorInfo[1].toLocaleString(undefined, { maximumFractionDigits: 2 }) : 0} {chainId === (process.env.REACT_APP_NODE_ENV === "development" ? Networks.ETH_TestNet : Networks.ETH_MainNet) ? "ETH" : "BNB"}</div>
         </div>
         <div className="sideStake">
           <p>Staking Reward</p>
-          <div>{distributorInfo ? distributorInfo[2].toLocaleString(undefined, { maximumFractionDigits: 2 }) : 0} {chainId === (process.env.NODE_ENV === "development" ? Networks.ETH_TestNet : Networks.ETH_MainNet) ? "ETH" : "BNB"}</div>
+          <div>{distributorInfo ? distributorInfo[2].toLocaleString(undefined, { maximumFractionDigits: 2 }) : 0} {chainId === (process.env.REACT_APP_NODE_ENV === "development" ? Networks.ETH_TestNet : Networks.ETH_MainNet) ? "ETH" : "BNB"}</div>
         </div>
         <div className="sideStake">
           <p>Caller Reward</p>
-          <div>{distributorInfo ? distributorInfo[3].toLocaleString(undefined, { maximumFractionDigits: 2 }) : 0} {chainId === (process.env.NODE_ENV === "development" ? Networks.ETH_TestNet : Networks.ETH_MainNet) ? "ETH" : "BNB"}</div>
+          <div>{distributorInfo ? distributorInfo[3].toLocaleString(undefined, { maximumFractionDigits: 2 }) : 0} {chainId === (process.env.REACT_APP_NODE_ENV === "development" ? Networks.ETH_TestNet : Networks.ETH_MainNet) ? "ETH" : "BNB"}</div>
         </div>
         <div className='fuelup' onClick={() => fuelUp()}>FUEL UP</div>
       </div>
