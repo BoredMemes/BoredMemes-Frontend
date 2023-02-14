@@ -45,9 +45,9 @@
     {
         "inputs": [
             {
-                "internalType": "uint16",
-                "name": "_royaltyBasisPoints",
-                "type": "uint16"
+                "internalType": "bool",
+                "name": "isFree",
+                "type": "bool"
             }
         ],
         "name": "createCollection",
@@ -70,6 +70,19 @@
             }
         ],
         "name": "setPrice",
+        "outputs": [],
+        "stateMutability": "nonpayable",
+        "type": "function"
+    },
+    {
+        "inputs": [
+            {
+                "internalType": "uint256",
+                "name": "_fee",
+                "type": "uint256"
+            }
+        ],
+        "name": "setTaxFee",
         "outputs": [],
         "stateMutability": "nonpayable",
         "type": "function"

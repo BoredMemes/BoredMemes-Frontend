@@ -11,6 +11,9 @@ import FormControlLabel from '@mui/material/FormControlLabel';
 import Switch, { SwitchProps } from '@mui/material/Switch';
 import Stack from '@mui/material/Stack';
 import Typography from '@mui/material/Typography';
+import { getDistributorInfo, onFuelUp } from 'utils/contracts';
+import { Networks } from 'utils';
+import { toast } from 'react-toastify';
 type MenuType = {
   menuOpen?: boolean;
   setMenuOpen?(flag: boolean): void;
@@ -69,7 +72,7 @@ const MaterialUISwitch = styled(Switch)(({ theme }) => ({
 
 export default function SideBar({ menuOpen, setMenuOpen }: MenuType) {
 
-  const { loginStatus, account, library } = useContext(Web3WalletContext)
+  const { loginStatus, account, chainId, library } = useContext(Web3WalletContext)
   const { switchNetwork } = useAuth();
 
   const search = useLocation();
@@ -87,6 +90,18 @@ export default function SideBar({ menuOpen, setMenuOpen }: MenuType) {
     // switchNetwork();
   }, [path, account, library])
 
+  useEffect(() => {
+    getDistriInfo();
+  }, [loginStatus, chainId, account]);
+
+  const [ distributorInfo, setDistributorInfo] = useState(null);
+  const getDistriInfo = async () => {
+    if (loginStatus && account){
+      const _info = await getDistributorInfo(chainId);
+      setDistributorInfo(_info);
+    }
+  }
+
   const onChangeTheme = (_theme) => {
     window.localStorage.setItem("themeId", _theme);
     setTheme(_theme);
@@ -103,6 +118,18 @@ export default function SideBar({ menuOpen, setMenuOpen }: MenuType) {
     }
     window.localStorage.setItem("themeId", theme);
     setTheme(theme);
+  }
+
+  const fuelUp = async () => {
+    if (loginStatus && chainId && account){
+      const isSuccess = await onFuelUp(chainId, library.getSigner())
+      if (isSuccess){
+        toast.success("Triggered Successfully")
+      }
+    }else{
+      toast.error("Please connect your wallet.")
+    }
+    
   }
 
   return (
@@ -152,17 +179,21 @@ export default function SideBar({ menuOpen, setMenuOpen }: MenuType) {
       <div className="stakeInfo">
         <div className="sideStake">
           <p>PIXIA Liquidity</p>
-          <div>0.5 ETH</div>
+          <div>{distributorInfo ? distributorInfo[0].toLocaleString(undefined, { maximumFractionDigits: 2 }) : 0} {chainId === (process.env.NODE_ENV === "development" ? Networks.ETH_TestNet : Networks.ETH_MainNet) ? "ETH" : "BNB"}</div>
+        </div>
+        <div className="sideStake">
+          <p>PIXIA Burn</p>
+          <div>{distributorInfo ? distributorInfo[1].toLocaleString(undefined, { maximumFractionDigits: 2 }) : 0} {chainId === (process.env.NODE_ENV === "development" ? Networks.ETH_TestNet : Networks.ETH_MainNet) ? "ETH" : "BNB"}</div>
         </div>
         <div className="sideStake">
           <p>Staking Reward</p>
-          <div>0.5 ETH</div>
+          <div>{distributorInfo ? distributorInfo[2].toLocaleString(undefined, { maximumFractionDigits: 2 }) : 0} {chainId === (process.env.NODE_ENV === "development" ? Networks.ETH_TestNet : Networks.ETH_MainNet) ? "ETH" : "BNB"}</div>
         </div>
         <div className="sideStake">
           <p>Caller Reward</p>
-          <div>0.5 ETH</div>
+          <div>{distributorInfo ? distributorInfo[3].toLocaleString(undefined, { maximumFractionDigits: 2 }) : 0} {chainId === (process.env.NODE_ENV === "development" ? Networks.ETH_TestNet : Networks.ETH_MainNet) ? "ETH" : "BNB"}</div>
         </div>
-        <div className='fuelup'>FUEL UP</div>
+        <div className='fuelup' onClick={() => fuelUp()}>FUEL UP</div>
       </div>
 
       <div className="sideFooter" onClick={() => setMenuOpen(false)}>
@@ -185,13 +216,13 @@ export default function SideBar({ menuOpen, setMenuOpen }: MenuType) {
           className={switchLabel == 'Dark Mode' ? 'black' : 'white'}
         />
         <div className="socialLinks">
-          <a href="http://twitter.com/boredmemesAi" className="twitter" target="_blank" rel="noreferrer">
+          <a href="https://twitter.com/pixiaai" className="twitter" target="_blank" rel="noreferrer">
             <i className="fab fa-twitter"></i>
           </a>
-          <a href="https://t.me/BoredMemesEntryPortal" className="telegram" target="_blank" rel="noreferrer">
+          <a href="https://t.me/PixiaAi" className="telegram" target="_blank" rel="noreferrer">
             <i className="fab fa-telegram"> </i>
           </a>
-          <a href="https://f1af1y.medium.com/bored-memes-boredm-fad095f74b97" className="medium" target="_blank" rel="noreferrer">
+          <a href="https://blog.pixia.ai/" className="medium" target="_blank" rel="noreferrer">
             <i className="fab fa-medium-m"></i>
           </a>
         </div>

@@ -11,6 +11,10 @@ import Select from "react-select";
 import AccountModal from 'components/modal/accountModal/AccountModal';
 import Web3WalletContext from 'hooks/Web3ReactManager';
 import { useAuthState } from 'context/authContext';
+import { Networks } from 'utils';
+import useAuth from 'hooks/useAuth';
+import { chainIdLocalStorageKey } from 'hooks';
+import GlobalValueContext from 'theme/GlobalValueProvider';
 type MenuType = {
   menuOpen?: boolean;
   setMenuOpen?(flag: boolean): void;
@@ -82,25 +86,31 @@ export default function Topbar({ menuOpen, setMenuOpen }: MenuType) {
   const [showConnectModal, setShowConnectModal] = useState(false);
   const [showAcountModal, setShowAcountModal] = useState(false);
   const { theme } = useContext(ThemeContext);
+  const { isDev } = useContext(GlobalValueContext);
 
   const { loginStatus, account, library, chainId } = useContext(Web3WalletContext)
+  const { switchNetwork } = useAuth();
   const { user } = useAuthState();
-
   const [networkOption, setNetworkOption] = useState(null);
+  
 
   useEffect(() => {
-    if (loginStatus && chainId) {
-      //console.log("Chain ID : ", chainId);
-      setNetworkOption(chainId !== 56 ? options[0] : options[1])
+    if (chainId) {
+      setNetworkOption(
+        chainId === (isDev ? Networks.ETH_TestNet : Networks.ETH_MainNet) ? options[0] : 
+        chainId === (isDev ? Networks.BSC_Testnet : Networks.BSC_Mainnet) ? options[1] : null)
     } else setNetworkOption(null);
-  }, [loginStatus, chainId]);
+  }, [chainId]);
 
   const options = [
-    { value: "eth", label: "ETHEREUM", customAbbreviation: "eth", chainId: 1 },
-    { value: "bin", label: "BINANCE", customAbbreviation: "bin", chainId: 56 },
+    { value: "eth", label: "ETHEREUM", customAbbreviation: "eth", chainId: isDev ? Networks.ETH_TestNet : Networks.ETH_MainNet },
+    { value: "bin", label: "BINANCE", customAbbreviation: "bin", chainId: isDev ? Networks.BSC_Testnet : Networks.BSC_Mainnet },
   ];
   const onChange = (e) => {
+    window.localStorage.setItem(chainIdLocalStorageKey, e.value !== "eth" ? process.env.REACT_APP_BSC_NETWORK_ID : process.env.REACT_APP_ETH_NETWORK_ID);
+    switchNetwork();
   }
+
   return (
     <div className="nav-background">
       <div className="topbar">
@@ -110,21 +120,6 @@ export default function Topbar({ menuOpen, setMenuOpen }: MenuType) {
             {/* <img src="/assets/BoredMemes_FontLogo 1.png" alt="" /> */}
           </HashLink>
         </div>
-        {/* <div className='top-lq-content'>
-          <div>
-            <span>PIXIA Liquidity</span>
-            <p>-Eth</p>
-          </div>
-          <div>
-            <span>Staking Reward</span>
-            <p>-Eth</p>
-          </div>
-          <div>
-            <span>Caller Reward</span>
-            <p>-Eth</p>
-          </div>
-          <button>FUEL UP</button>
-        </div> */}
         <div className="btns">
           <Select
             value={networkOption}
@@ -139,7 +134,7 @@ export default function Topbar({ menuOpen, setMenuOpen }: MenuType) {
             styles={customStyles}
           />
           <div className={loginStatus ? 'connectBtn' : '_connectBtn'} onClick={() => !loginStatus ? setShowConnectModal(true) : setShowAcountModal(true)}>
-            {loginStatus ? `${truncateWalletString(account).substring(2, 0)}...${truncateWalletString(account).slice(-3)}` : 'Connect Wallet'}
+            {loginStatus && account ? `${truncateWalletString(account).substring(2, 0)}...${truncateWalletString(account).slice(-3)}` : 'Connect Wallet'}
           </div>
           {loginStatus &&
             <HashLink to="/"  style={{backgroundClip: 'padding-box, border-box',backgroundImage: 'linear-gradient(90deg, white, white),linear-gradient(47.43deg, #2A01FF 0%, #FF1EE1 40%, #FFB332 100%)',backgroundOrigin: 'border-box',

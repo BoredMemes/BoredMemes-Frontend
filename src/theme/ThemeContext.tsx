@@ -1,7 +1,7 @@
 import { useState, createContext } from "react"
 
 const ThemeContext = createContext({
-  theme: "light",
+  theme: "dark",
   setTheme: (val : string) => {},
 })
 

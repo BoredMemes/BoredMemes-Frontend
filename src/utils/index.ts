@@ -1,10 +1,9 @@
 import { Contract } from '@ethersproject/contracts';
-import BoredMNFTABI from 'contracts/BoredMNFT.json';
-import BoredMMarketABI from 'contracts/BoredMMarket.json';
-import BoredMTokenABI from 'contracts/BoredMToken.json';
-import BoredMStakingABI from 'contracts/BoredMStaking.json';
-import BoredMFactoryABI from 'contracts/BoredMFactory.json';
-import BNBStakingABI from 'contracts/BNBStaking.json';
+import PixiaAiABI from 'contracts/PixiaAiABI.json';
+import PixiaNFTABI from 'contracts/PixiaNFTABI.json';
+import PixiaNFTFactoryABI from 'contracts/PixiaNFTFactoryABI.json';
+import PixiaStakingABI from 'contracts/PixiaStakingABI.json';
+import PixiaDistributorABI from 'contracts/PixiaDistributorABI.json';
 import { chainIdLocalStorageKey } from 'hooks';
 
 export const Networks = {
@@ -16,54 +15,51 @@ export const Networks = {
 
 export const CONTRACTS_BY_NETWORK = {
   [Networks.ETH_MainNet]: {
-    BoredMNFT: {
-      address: '0x44a488437a7F258D29d17F3674fe96cCC1307B9c',
-      abi: BoredMNFTABI,
+    PixiaAi: {
+      address: '0x4f8f53E17Ce053C5877eb17A2DAC2BA3d786b70c',
+      abi: PixiaAiABI
     },
-    BoredMMarket: {
-      address: '0x07279B444a022D0547336992076243c9d86d206a',
-      abi: BoredMMarketABI,
+    PixiaNFT: {
+      address: '0x0a871ace85e1B3fbAe54B742BCA9624fB9250eD5',
+      abi: PixiaNFTABI,
     },
-    BoredMToken: {
-      address: '0x445d711c8974d80643745a4666803d255a589390',
-      abi: BoredMTokenABI
+    PixiaNFTFactory: {
+      address: '0x0a71464443B8D2501b5e74076521c4462DB1F795',
+      abi: PixiaNFTFactoryABI
     },
-    BoredMStaking: {
-      address: '0xE0C1aB853b3a3c21Cc3C50BA6494c7AfCC8eCea7',
-      abi: BoredMStakingABI
+    PixiaStaking: {
+      address: '0xC1a1eDca948823b7c6bbbDAE53F3815e44b99430',
+      abi: PixiaStakingABI
     },
-    BoredMFactory: {
-      address: '0x1469b4977447d59d1caf901cd75346452c215edb',
-      abi: BoredMFactoryABI
+    PixiaDistributor: {
+      address: '0x2aFdDF35b069034Cb867b4749B25813DDB406a40',
+      abi: PixiaDistributorABI
     }
   },
   [Networks.ETH_TestNet]: {
-    BoredMNFT: {
-      address: '0xc8Ce162eF2B15092Cf6eAfC22459CD2637207E7f',
-      abi: BoredMNFTABI,
+    PixiaAi: {
+      address: '0x4f8f53E17Ce053C5877eb17A2DAC2BA3d786b70c',
+      abi: PixiaAiABI
     },
-    BoredMMarket: {
-      address: '0x07279B444a022D0547336992076243c9d86d206a',
-      abi: BoredMMarketABI,
+    PixiaNFT: {
+      address: '0x74841159b1721E9EBd3d822254c1Fb56dd5cc091',
+      abi: PixiaNFTABI,
     },
-    BoredMToken: {
-      address: '0x6b55A11fe85920aD8174e1d4FE701ecf4b1E482A',
-      abi: BoredMTokenABI
+    PixiaNFTFactory: {
+      address: '0x6CE3849106A8179CfA0ead47Aea715Ce2859C535',
+      abi: PixiaNFTFactoryABI
     },
-    BoredMStaking: {
-      address: '0x8b4196629F23A0dA3A4976b01b261bFB8360e600',
-      abi: BoredMStakingABI
+    PixiaStaking: {
+      address: '0xE36f3604d2b39b7664FE14a45E0C5D6c85919980',
+      abi: PixiaStakingABI
     },
-    BoredMFactory: {
-      address: '0x1469b4977447d59d1caf901cd75346452c215edb',
-      abi: BoredMFactoryABI
+    PixiaDistributor: {
+      address: '0x64F087cFdB149A2D6DfB2d62C897946aE5A4D44D',
+      abi: PixiaDistributorABI
     }
   },
   [Networks.BSC_Mainnet]: {
-    BNBStaking: {
-      address: '0x103d252e285f7Cfb198a555B82D0314F815A71E9',
-      abi: BNBStakingABI
-    }
+    
   }
 };
 

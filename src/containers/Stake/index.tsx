@@ -53,8 +53,8 @@ const Stake = () => {
     mPercentLock: 90
   });
   const onStakingInfo = async () => {
-    const _info = await getStakingInfo(account);
-    if (_info) setNftStakingInfo(_info);
+    // const _info = await getStakingInfo(account);
+    // if (_info) setNftStakingInfo(_info);
   }
 
   const [minerList, setMinerList] = useState<number[]>([0]);

@@ -43,6 +43,39 @@ export async function getBalanceOfBNB(library, account) {
   }
 }
 
+export async function getDistributorInfo(chainId){
+  const jsonProvider = new ethers.providers.JsonRpcProvider(networks[chainId].NODES);
+  const _contract = getContractObj("PixiaDistributor", chainId, jsonProvider);
+  try {
+    const LPBurn = await _contract.getAvailableEthAutoLPandBuyBackBurn();
+    const StakingCaller = await _contract.getAvailableEthtPerWallet();
+    return [
+      ethers.utils.formatEther(LPBurn[0]), 
+      ethers.utils.formatEther(LPBurn[1]), 
+      ethers.utils.formatEther(StakingCaller[1]),
+      ethers.utils.formatEther(StakingCaller[3])
+    ];
+  } catch (e) {
+    const revertMsg = JSON.parse(JSON.stringify(e))["reason"];
+    if (revertMsg) toast.error(revertMsg.replace("execution reverted: ", ""));
+    return ["0", "0", "0", "0"];
+  }
+}
+
+export async function onFuelUp(chainId, provider){
+  const jsonProvider = new ethers.providers.JsonRpcProvider(networks[chainId].NODES);
+  const _contract = getContractObj("PixiaDistributor", chainId, provider);
+  try {
+    const tx = await _contract.triggerDistribution();
+    await tx.wait(1);
+    return true;
+  } catch (e) {
+    const revertMsg = JSON.parse(JSON.stringify(e))["reason"];
+    if (revertMsg) toast.error(revertMsg.replace("execution reverted: ", ""));
+    return false;
+  }
+}
+
 export async function getMintInfo() {
   const jsonProvider = new ethers.providers.JsonRpcProvider(networks[Networks.ETH_MainNet].NODES);
   const nftContract = getContractObj("BoredMNFT", Networks.ETH_MainNet, jsonProvider);
@@ -108,13 +141,13 @@ export async function approveTokenForStaking(chainId, signer) {
   }
 }
 
-export async function getStakingInfo(account) {
+export async function getStakingInfo(chainId, account) {
   try {
-    const jsonProvider = new ethers.providers.JsonRpcProvider(networks[Networks.ETH_MainNet].NODES);
-    const BoredMContract = getContractObj('BoredMToken', Networks.ETH_MainNet, jsonProvider);
-    const BoredMDecimals = await BoredMContract.decimals();
-    const stakingContract = getContractObj("BoredMStaking", Networks.ETH_MainNet, jsonProvider);
-    const [tDividETH, tStakedBoredM, myStakingInfo, mClaimedETH, mClaimableETH, tDividETHLock, tStakedBoredMLock, mClaimedETHLock, mClaimableETHLock, mPercentFree, mPercentLock] = await Promise.all([
+    const jsonProvider = new ethers.providers.JsonRpcProvider(networks[chainId].NODES);
+    const tokenContract = getContractObj('PixiaAi', chainId, jsonProvider);
+    const _decimals = await tokenContract.decimals();
+    const stakingContract = getContractObj("PixiaStaking", chainId, jsonProvider);
+    const [tTokenAmount, freeAPR, lockAPR, myStakingInfo, mClaimedETH, mClaimableETH, tDividETHLock, tStakedBoredMLock, mClaimedETHLock, mClaimableETHLock, mPercentFree] = await Promise.all([
       stakingContract.totalDividendsFree(),
       stakingContract.totalSharesFree(),
       account ? stakingContract.shares(account) : null,
@@ -127,25 +160,26 @@ export async function getStakingInfo(account) {
       stakingContract.dividendsPercentFree(),
       stakingContract.dividendsPercentLock()
     ]);
-    const nftStakingInfo: NFTStakingInfo = {
-      tDividETH: parseFloat(ethers.utils.formatEther(tDividETH)),
-      tStakedBoredM: parseFloat(ethers.utils.formatUnits(tStakedBoredM, BoredMDecimals)),
-      mStakedBoredM: myStakingInfo ? parseFloat(ethers.utils.formatUnits(myStakingInfo.amountFree, BoredMDecimals)) : 0,
-      mEarnedETH: parseFloat(ethers.utils.formatEther(mClaimedETH.add(mClaimableETH))),
-      mClaimedETH: parseFloat(ethers.utils.formatEther(mClaimedETH)),
-      mClaimableETH: parseFloat(ethers.utils.formatEther(mClaimableETH)),
-      tDividETHLock: parseFloat(ethers.utils.formatEther(tDividETHLock)),
-      tStakedBoredMLock: parseFloat(ethers.utils.formatUnits(tStakedBoredMLock, BoredMDecimals)),
-      mStakedBoredMLock: myStakingInfo ? parseFloat(ethers.utils.formatUnits(myStakingInfo.amountLock, BoredMDecimals)) : 0,
-      mEarnedETHLock: parseFloat(ethers.utils.formatEther(mClaimedETHLock.add(mClaimableETHLock))),
-      mClaimedETHLock: parseFloat(ethers.utils.formatEther(mClaimedETHLock)),
-      mClaimableETHLock: parseFloat(ethers.utils.formatEther(mClaimableETHLock)),
-      mTimestampLock: myStakingInfo ? myStakingInfo.stakeTimestampLock.toNumber() : 0,
-      mPercentFree: mPercentFree.toNumber(),
-      mPercentLock: mPercentLock.toNumber()
-    }
+    // const nftStakingInfo: NFTStakingInfo = {
+    //   tDividETH: parseFloat(ethers.utils.formatEther(tDividETH)),
+    //   tStakedBoredM: parseFloat(ethers.utils.formatUnits(tStakedBoredM, BoredMDecimals)),
+    //   mStakedBoredM: myStakingInfo ? parseFloat(ethers.utils.formatUnits(myStakingInfo.amountFree, BoredMDecimals)) : 0,
+    //   mEarnedETH: parseFloat(ethers.utils.formatEther(mClaimedETH.add(mClaimableETH))),
+    //   mClaimedETH: parseFloat(ethers.utils.formatEther(mClaimedETH)),
+    //   mClaimableETH: parseFloat(ethers.utils.formatEther(mClaimableETH)),
+    //   tDividETHLock: parseFloat(ethers.utils.formatEther(tDividETHLock)),
+    //   tStakedBoredMLock: parseFloat(ethers.utils.formatUnits(tStakedBoredMLock, BoredMDecimals)),
+    //   mStakedBoredMLock: myStakingInfo ? parseFloat(ethers.utils.formatUnits(myStakingInfo.amountLock, BoredMDecimals)) : 0,
+    //   mEarnedETHLock: parseFloat(ethers.utils.formatEther(mClaimedETHLock.add(mClaimableETHLock))),
+    //   mClaimedETHLock: parseFloat(ethers.utils.formatEther(mClaimedETHLock)),
+    //   mClaimableETHLock: parseFloat(ethers.utils.formatEther(mClaimableETHLock)),
+    //   mTimestampLock: myStakingInfo ? myStakingInfo.stakeTimestampLock.toNumber() : 0,
+    //   mPercentFree: mPercentFree.toNumber(),
+    //   mPercentLock: mPercentLock.toNumber()
+    // }
     
-    return nftStakingInfo;
+    // return nftStakingInfo;
+    return null;
   } catch (e) {
     const revertMsg = JSON.parse(JSON.stringify(e))["reason"];
     if (revertMsg) toast.error(revertMsg.replace("execution reverted: ", ""));
