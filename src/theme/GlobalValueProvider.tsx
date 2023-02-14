@@ -11,6 +11,7 @@ export default GlobalValueContext
 export function GlobalValueProvider(props) {
     const [globalDescription, setGlobalDescription] = useState("")
     const isDev = process.env.NODE_ENV === "development";
+    console.log("Current Environment : " + process.env.NODE_ENV);
     const value = { globalDescription , setGlobalDescription, isDev }
   
     return (
