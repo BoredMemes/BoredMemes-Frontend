@@ -285,7 +285,8 @@ const MyArt = () => {
 
   const fetchCollections = async () => {
     let paramsData = {
-      owner: account?.toLowerCase()
+      owner: account?.toLowerCase(),
+      isPublic : true,
     }
     axios.get('/api/collection', { params: paramsData })
       .then((res) => {

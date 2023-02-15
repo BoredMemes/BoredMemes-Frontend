@@ -21,8 +21,9 @@ const useAuth = () => {
     console.log(connector);
     if (connector) {
       activate(connector, async (error: Error) => {
-        console.log(error);
         if (error instanceof UnsupportedChainIdError) {
+          toast.error("Unsupported Network.");
+          console.log(error);
           setupNetwork().then((hasSetup) => {
             if (hasSetup) {
               activate(connector);
