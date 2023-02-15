@@ -17,7 +17,6 @@ import { styled } from '@mui/material/styles';
 import MyTooltip from 'components/Widgets/MyTooltip';
 import CheckLock from 'components/Forms/CheckLock';
 
-
 const CustomSwitch = styled(Switch)(({ theme }) => ({
   padding: 8,
   width: 135,
@@ -132,12 +131,39 @@ const Miner = () => {
   const classes = useStyles();
   const { loginStatus, chainId, account, library } = useContext(Web3WalletContext)
 
-  const [minerList, setMinerList] = useState<number[]>([0]);
+  // const [minerList, setMinerList] = useState<number[]>([0]);
+  const [minerList, setMinerList] = useState([{
+    pixie: { val: 7836923.44, price: 15009 },
+    apr: { data1: 12, data2: 44 },
+    my_staked_pixie: { val: 7836923.44, price: 15009 },
+    my_nft_booster: 4,
+    my_earned_eth: { val: 0.15, price: 15009 },
+    lock_state: false,
+    panel: false,
+    my_nft_boosterimgs: ['img-list-item1.png', 'img-list-item2.png', 'img-list-item3.png', 'img-list-item1.png', 'img-list-item2.png'],
+  },
+  {
+    pixie: { val: 7836923.44, price: 15009 },
+    apr: { data1: 12, data2: 44 },
+    my_staked_pixie: { val: 7836923.44, price: 15009 },
+    my_nft_booster: 4,
+    my_earned_eth: { val: 0.15, price: 15009 },
+    lock_state: false,
+    panel: false,
+    my_nft_boosterimgs: ['img-list-item1.png', 'img-list-item2.png', 'img-list-item3.png', 'img-list-item1.png', 'img-list-item2.png'],
+  }
+  ]);
+
   const [isFree, setFree] = useState(false);
   const [withdrawModal, setWithdrawModal] = useState(false);
   const [createCustomModal, setCreateCustomModal] = useState(false);
   const [boostModal, setBoostModal] = useState(false);
 
+  const setPanel = (id) => {
+    let ary = minerList
+    ary[id].panel = !ary[id].panel
+    setMinerList([...ary]);
+  }
   const onAddMiner = () => {
     let alink = document.createElement('a');
     alink.href = "https://forms.gle/85zYBQ8dxiJyNq2D6";
@@ -159,7 +185,11 @@ const Miner = () => {
   const [stakeModal, setStakeModal] = useState(false);
   const [amount, setAmount] = useState(0);
   const [progress, setProgress] = useState(50);
+  const [expanded, setExpanded] = useState('');
 
+  const handleChange = (panel) => (event, isExpanded) => {
+    setExpanded(isExpanded ? panel : false);
+  };
   const [bnbStakingInfo, setBNBStakingInfo] = useState<BNBStakingInfo>({
     balance: 0,
     myShares: 0,
@@ -271,89 +301,93 @@ const Miner = () => {
               <span>Create Your Custom Pool</span>
             </div>
           </div>
+          {minerList.map((val, ind) => {
+            return (
+              <div className='stake_withdraw_body'>
+                <div className={`${classes.stake_card} stake_card`}>
+                  <img src='assets/imgs/farm-stake-avatar1.png' height={60} />
+                  <div>
+                    <h4>$PIXIA</h4>
+                    <p>{val.pixie['val']}</p>
+                    <span>{`≈ $${val.pixie['price']}`}</span>
+                  </div>
 
-          <div className='stake_withdraw_body'>
-            <div className={`${classes.stake_card} stake_card`}>
-              <img src='assets/imgs/farm-stake-avatar1.png' height={60} />
-              <div>
-                <h4>$PIXIA</h4>
-                <p>7,836,923.44</p>
-                <span>≈ $150,09</span>
-              </div>
+                  <div style={{ padding: 6 }}>
+                    <h5>APR</h5>
+                    <p> {`${val.apr['data1']}%/ ${val.apr['data2']}%`}</p>
+                  </div>
 
-              <div style={{ padding: 6 }}>
-                <h5>APR</h5>
-                <p>12%/ 44%</p>
-              </div>
+                  <div>
+                    <h5>My staked $PIXIA</h5>
+                    <p>{val.my_staked_pixie['val']}<img src='assets/icons/warning_icon_01.svg' width={10} /></p>
+                    <span>{`≈ $${val.my_staked_pixie['price']}`}</span>
+                  </div>
 
-              <div>
-                <h5>My staked $PIXIA</h5>
-                <p>7,836,923.44 <img src='assets/icons/warning_icon_01.svg' width={10} /></p>
-                <span>≈ $150,09</span>
-              </div>
+                  <div style={{ padding: 6 }}>
+                    <h5>My NFT Boosters</h5>
+                    <h3>{`${val.my_nft_booster}x`} <img src='assets/icons/warning_icon_01.svg' width={10} /></h3>
+                  </div>
 
-              <div style={{ padding: 6 }}>
-                <h5>My NFT Boosters</h5>
-                <h3>4x <img src='assets/icons/warning_icon_01.svg' width={10} /></h3>
-              </div>
+                  <div>
+                    <h5>My Earned $ETH</h5>
+                    <p>{val.my_earned_eth['val']}<img src='assets/icons/warning_icon_01.svg' width={10} /></p>
+                    <span>{`≈ $${val.my_earned_eth['price']}`}</span>
+                  </div>
 
-              <div>
-                <h5>My Earned $ETH</h5>
-                <p>0.15<img src='assets/icons/warning_icon_01.svg' width={10} /></p>
-                <span>≈ $150,09</span>
-              </div>
-
-              <div style={{ paddingTop: 16 }} className='miner-stake-btns'>
-                <button className='boost' onClick={() => setBoostModal(true)} >Boost</button>
-                <button className='stake' onClick={() => setStakeModal(true)}>Stake</button>
-                <div>
-                  <img src='assets/icons/arrow_down_icon.svg' width={20} style={{ marginLeft: 5 }} />
+                  <div style={{ paddingTop: 16 }} className='miner-stake-btns'>
+                    <button className='boost' onClick={() => setBoostModal(true)} >Boost</button>
+                    <button className='stake' onClick={() => setStakeModal(true)}>Stake</button>
+                    <div onClick={() => setPanel(ind)} className='panelBtn'>
+                      {val.panel ? <i className='fas fa-angle-up' /> : <i className='fas fa-angle-down' />}
+                    </div>
+                  </div>
                 </div>
-              </div>
-            </div>
 
-            <div className={classes.withdraw_card}>
-              <div>
-                <h5>My staked $PIXIA</h5>
-                <p>7,836,923.44<img src='assets/icons/warning_icon_01.svg' width={10} /></p>
-                <span>≈ $150,09</span>
-              </div>
+                <div className={val.panel ? `${classes.withdraw_card} accordion_panel_block` : `${classes.withdraw_card} accordion_panel_none`}>
+                  <div>
+                    <h5>My staked $PIXIA</h5>
+                    <p>{val.my_staked_pixie['val']}<img src='assets/icons/warning_icon_01.svg' width={10} /></p>
+                    <span>{`≈ $${val.my_staked_pixie['price']}`}</span>
+                  </div>
 
-              <div>
-                <h5>My Earned $ETH</h5>
-                <h6>0.15<img src='assets/icons/warning_icon_01.svg' width={10} /></h6>
-                <span>≈ $150,09</span>
-              </div>
+                  <div>
+                    <h5>My Earned $ETH</h5>
+                    <h6>0.15<img src='assets/icons/warning_icon_01.svg' width={10} /></h6>
+                    <span>≈ $150,09</span>
+                  </div>
 
-              <div>
-                <FormControlLabel
-                  control={<MaterialUISwitch sx={{ m: 1 }} defaultChecked={true} />}
-                  label={''}
-                />
-                <span style={{ display: 'block' }}>Unlock/Lock</span>
-              </div>
+                  <div>
+                    <FormControlLabel
+                      control={<MaterialUISwitch sx={{ m: 1 }} defaultChecked={true} />}
+                      label={''}
+                    />
+                    <span style={{ display: 'block' }}>Unlock/Lock</span>
+                  </div>
 
-              <div>
-                <h5>My NFT Boosters</h5>
-                <div>
-                  <span>3</span>
-                  <div className={classes.img_list}>
-                    <img src='assets/imgs/img-list-item1.png' />
-                    <img src='assets/imgs/img-list-item2.png' />
-                    <img src='assets/imgs/img-list-item3.png' />
-                    <img src='assets/imgs/img-list-item1.png' />
-                    <img src='assets/imgs/img-list-item2.png' />
-                    <img src='assets/imgs/img-list-item3.png' />
+                  <div>
+                    <h5>My NFT Boosters</h5>
+                    <div>
+                      <span>3</span>
+                      <div className={classes.img_list}>
+                        <img src='assets/imgs/img-list-item1.png' />
+                        <img src='assets/imgs/img-list-item2.png' />
+                        <img src='assets/imgs/img-list-item3.png' />
+                        <img src='assets/imgs/img-list-item1.png' />
+                        <img src='assets/imgs/img-list-item2.png' />
+                        <img src='assets/imgs/img-list-item3.png' />
+                      </div>
+                    </div>
+                  </div>
+                  <div className='miner-stake-btns'>
+                    <button className='boost'>Compound</button>
+                    <button className='boost'>Cash Out</button>
+                    <button className='withdraw' onClick={() => setWithdrawModal(true)}>Withdraw</button>
                   </div>
                 </div>
               </div>
-              <div className='miner-stake-btns'>
-                <button className='boost'>Compound</button>
-                <button className='boost'>Cash Out</button>
-                <button className='withdraw' onClick={() => setWithdrawModal(true)}>Withdraw</button>
-              </div>
-            </div>
-          </div>
+            )
+          })}
+
 
           <div className={classes.custom_create_btn}>
             <img src='assets/imgs/create-farm-icon.png' />

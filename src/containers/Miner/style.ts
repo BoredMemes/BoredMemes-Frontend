@@ -241,7 +241,8 @@ export const useStyles = makeStyles(theme => ({
       [theme.breakpoints.down('xs')]: {
         fontSize: 12,
       },
-    }
+    },
+    
   },
   right: {
     width: '280px',
@@ -1002,9 +1003,9 @@ export const useStyles = makeStyles(theme => ({
       '& .img-group': {
         marginTop: 20,
         display: 'block',
-        cursor:'pointer',
+        cursor: 'pointer',
         '&.selected': {
-          border:'solid 1px black'
+          border: 'solid 1px black'
         },
         '& img': {
           margin: 4
@@ -1012,10 +1013,10 @@ export const useStyles = makeStyles(theme => ({
       }
     }
   },
-  img_list:{
-    maxWidth:145, overflowX:'scroll',
+  img_list: {
+    maxWidth: 145, overflowX: 'scroll',
     '& img': {
-      margin:2
+      margin: 2
     },
   },
   stake_card: {
@@ -1095,6 +1096,7 @@ export const useStyles = makeStyles(theme => ({
   },
 
   withdraw_card: {
+    marginBottom: 10,
     width: '100%',
     height: 'fit-content',
     left: '0px',
