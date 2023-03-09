@@ -3,6 +3,7 @@ import PixiaAiABI from 'contracts/PixiaAiABI.json';
 import PixiaNFTABI from 'contracts/PixiaNFTABI.json';
 import PixiaNFTFactoryABI from 'contracts/PixiaNFTFactoryABI.json';
 import PixiaStakingABI from 'contracts/PixiaStakingABI.json';
+import PixiaStakingFactoryABI from 'contracts/PixiaStakingABI.json';
 import PixiaDistributorABI from 'contracts/PixiaDistributorABI.json';
 import { chainIdLocalStorageKey } from 'hooks';
 
@@ -24,7 +25,7 @@ export const CONTRACTS_BY_NETWORK = {
       abi: PixiaNFTABI,
     },
     PixiaNFTFactory: {
-      address: '0x0a71464443B8D2501b5e74076521c4462DB1F795',
+      address: '0x75a00d8b1Aa32B04E33E6FDDBa65010CA95a58a9',
       abi: PixiaNFTFactoryABI
     },
     PixiaStaking: {
@@ -46,12 +47,16 @@ export const CONTRACTS_BY_NETWORK = {
       abi: PixiaNFTABI,
     },
     PixiaNFTFactory: {
-      address: '0x6CE3849106A8179CfA0ead47Aea715Ce2859C535',
+      address: '0x75a00d8b1aa32b04e33e6fddba65010ca95a58a9',
       abi: PixiaNFTFactoryABI
     },
     PixiaStaking: {
-      address: '0xE36f3604d2b39b7664FE14a45E0C5D6c85919980',
+      address: '0x19504596555E7E4C9c7764e0Ebe82FEa922C0742',
       abi: PixiaStakingABI
+    },
+    PixiaStakingFactory: {
+      address: '0xEb3C77b76de77f2142594428853905D9555488B4',
+      abi: PixiaStakingFactoryABI
     },
     PixiaDistributor: {
       address: '0x64F087cFdB149A2D6DfB2d62C897946aE5A4D44D',

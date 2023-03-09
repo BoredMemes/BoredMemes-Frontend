@@ -420,7 +420,7 @@ const MyArt = () => {
     }
     const load_toast_id = toast.loading("Please wait...");
     try {
-      const colAddr = await createNewCollection(chainId, library.getSigner());
+      const colAddr = await createNewCollection(true, chainId, library.getSigner());
     } catch (e) {
       console.log(e);
       toast.dismiss(load_toast_id);

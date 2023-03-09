@@ -16,7 +16,7 @@ import Modal from 'components/modal';
 import FilledButton from 'components/Buttons/FilledButton';
 import TextInput from 'components/Forms/TextInput';
 import { arrayify, hashMessage } from 'ethers/lib/utils';
-import { createNewCollection } from 'utils/contracts';
+import { createNewCollection, isAddress } from 'utils/contracts';
 
 const tmp = [
   {
@@ -286,7 +286,7 @@ const MyArt = () => {
   const fetchCollections = async () => {
     let paramsData = {
       owner: account?.toLowerCase(),
-      isPublic : true,
+      isPublic: true,
     }
     axios.get('/api/collection', { params: paramsData })
       .then((res) => {
@@ -369,6 +369,7 @@ const MyArt = () => {
 
       const toast_load_id = toast.loading("Please wait...");
       let paramsData = {
+        isOnChain: false,
         address: account,
         name: title,
         description: description,
@@ -415,17 +416,39 @@ const MyArt = () => {
     setIsDetail(true);
   }
 
-  const onCreateNFTCollection = async () => {
+  const onCreateNFTCollection = async (isFree) => {
     if (!loginStatus || !account) {
       return toast.error("Please connect your wallet correctly.");
     }
     const load_toast_id = toast.loading("Please wait...");
     try {
-      const colAddr = await createNewCollection(chainId, library.getSigner());
+      const colAddr = await createNewCollection(isFree, chainId, library.getSigner());
+      if (isAddress(colAddr)) {
+        let metadata = {
+          isOnChain: true,
+          id: selectedCollection.id,
+          address: colAddr,
+          name: selectedCollection.name,
+          description: selectedCollection.description,
+        }
+        await axios
+          .post('/api/collection/update/', metadata)
+          .then((res) => {
+            toast.success("NFT Collection is created successfully.")
+            toast.dismiss(load_toast_id);
+          })
+          .catch((err) => {
+            console.log(err);
+            toast.dismiss(load_toast_id);
+            toast.error("NFT Collection Creation is failed");
+          });
+      } else {
+        toast.dismiss(load_toast_id);
+        toast.error("NFT Collection Creation is failed");
+      }
     } catch (e) {
       console.log(e);
       toast.dismiss(load_toast_id);
-      toast.error("NFT Collection Creation is failed");
     }
   }
 
@@ -554,10 +577,12 @@ const MyArt = () => {
                 <div onClick={() => onEditCollection(selectedCollection)}>
                   Edit Collection
                 </div>
-                <button onClick={() => setShowPublishCollectionModal(true)}>
-                  <p>Create NFT Collection</p>
-                  <img src="/assets/icons/add_icon_01.svg" alt="" />
-                </button>
+                {
+                  !isAddress(selectedCollection?.address) && <button onClick={() => setShowPublishCollectionModal(true)}>
+                    <p>Create NFT Collection</p>
+                    <img src="/assets/icons/add_icon_01.svg" alt="" />
+                  </button>
+                }
               </div>
             </div>
         }
@@ -593,7 +618,7 @@ const MyArt = () => {
             <div className="btns">
               <button className='grey' onClick={() => setSelectedItems([])}>Close</button>
               <button className='grey' onClick={handleAllClick}>Selet All</button>
-              <button className='pink' style={{background:'linear-gradient(47.43deg, #2A01FF 0%, #FF1EE1 57%, #FFB332 100%)'}}>Actions <img src="/assets/icons/arrow_down_icon_01.svg" alt="" />
+              <button className='pink' style={{ background: 'linear-gradient(47.43deg, #2A01FF 0%, #FF1EE1 57%, #FFB332 100%)' }}>Actions <img src="/assets/icons/arrow_down_icon_01.svg" alt="" />
                 <div className="drodownMenu">
                   <div className="menuItem" onClick={() => onDownload()}>Download Zip</div>
                   <div className="menuItem" onClick={() => onPublish(true)}>Publish</div>
@@ -703,11 +728,11 @@ const MyArt = () => {
             </div>
             <div className={classes.modalBtns}>
               {/* <FilledButton color='custom' handleClick={() => setShowEditCollectionModal(false)} /> */}
-              <button className='newCollectionCard'>
+              <button className='newCollectionCard' onClick={() => onCreateNFTCollection(false)}>
                 <p>1 ETH NFT Collection</p>
                 <h6>No fees</h6>
               </button>
-              <FilledButton label={'Free NFT Collection 3% Buy/Sell Fee'} handleClick={onSave} />
+              <FilledButton label={'Free NFT Collection 3% Buy/Sell Fee'} handleClick={() => onCreateNFTCollection(true)} />
             </div>
           </div>
 

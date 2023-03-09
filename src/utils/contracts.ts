@@ -101,10 +101,7 @@ export async function getMintInfo() {
 export async function onMintArtItem(chainId, provider, reqId, packId, packPrice) {
   const nftContract = getContractObj("BoredMNFT", chainId, provider);
   try {
-    const tx =
-      packId == 0 ? await nftContract.mintSilverPack(reqId, { value: ethers.utils.parseEther(packPrice) }) :
-        packId == 1 ? await nftContract.mintGoldPack(reqId, { value: ethers.utils.parseEther(packPrice) }) :
-          await nftContract.mintPremiumPack(reqId, { value: ethers.utils.parseEther(packPrice) });
+    const tx = await nftContract.mintPremiumPack(reqId, { value: ethers.utils.parseEther(packPrice) });
     await tx.wait(1);
     return true;
   } catch (e) {
@@ -312,17 +309,14 @@ export async function onInvest(refAddress, chainId, provider) {
   }
 }
 
-/**
-* createNewCollection(from, name, uri, bPublic, chainId, provider)
-* from : SingleFrameFixed / MultiFrameFixed
-* name : collection name
-* uri : collectioin uri
-*/
-export async function createNewCollection(chainId, provider) {
-  const factoryContract = getContractObj("BoredMFactory", chainId, provider);
-  const factoryContractInfo = getContractInfo("BoredMFactory", chainId);
+export async function createNewCollection(isFree, chainId, provider) {
+  const factoryContract = getContractObj("PixiaNFTFactory", chainId, provider);
+  const factoryContractInfo = getContractInfo("PixiaNFTFactory", chainId);
   try {
-    const tx = await factoryContract.createCollection();
+    const tx = await factoryContract.createCollection(isFree, { 
+      value: ethers.utils.parseEther(isFree ? "0" : chainId === Networks.BSC_Testnet || chainId === Networks.ETH_TestNet ? "0.001" :
+              chainId === Networks.BSC_Mainnet ? "15" : "3")
+    });
     const receipt = await tx.wait(2);
     if (receipt.confirmations) {
       const interf = new ethers.utils.Interface(factoryContractInfo.abi);
@@ -337,6 +331,49 @@ export async function createNewCollection(chainId, provider) {
       }
     }
     return false;
+  } catch (e) {
+    toast.error(JSON.parse(JSON.stringify(e))["reason"]);
+    return false;
+  }
+}
+
+
+//Pool Factory Management
+
+/**
+ * createNewPool(plan, numbers, emission, addresses, chainId, provider)
+ * plan: 0-> Free, 1-> Paid
+ * numbers: Packed value of startTime, endTime, maxLockTime, maxNftPerUser, nftMultiplier and maxLockMultiplier
+    /// startTime_ Pool reward distribution start time (reward is calculated from this time)
+    /// endTime_ Pool reward distribution end time
+    const numbers = (startAt << 176) |
+            endAt << 112) |
+            maxLockTime << 48) |
+            maxNftPerUser << 32) |
+            nftMultiplier << 16) |
+            maxLockMultiplier;
+ * addresses encodePacked bytes of stakingToken, rewardToken, boostingNft and admin account
+    /// stakingToken_: Staking token address (ETH is supported, address(0) means ETH)
+    /// rewardToken_: Reward token address (ETH is supported, address(0) means ETH)
+    /// boostingNft_: Boosting Nft collection address
+    /// dexRouter_: Dex router address for the commission fee swap
+    /// commissionToken_: Commission token to get paid
+    /// treasury_: Pool treasury address
+    /// admin_: Pool admin address
+    ethers.utils.solidityPack(
+      ["address", "address", "address", "address", "address", "address", "address"], 
+      [stakingToken, rewardToken, boostingNFT, dexRouter, commissionToken, treasury, admin])
+  * emission Reward amount per second
+*/
+export async function createNewPool(plan, numbers, emission, addresses, chainId, provider) {
+  const factoryContract = getContractObj("PixiaAiPoolFactory", chainId, provider);
+  try {
+    const tx = await factoryContract.deployPool(plan, numbers, emission, addresses, { 
+      value: ethers.utils.parseEther(plan === 0 ? "0" : chainId === Networks.BSC_Testnet || chainId === Networks.ETH_TestNet ? "0.01" :
+              chainId === Networks.BSC_Mainnet ? "15" : "3")
+    });
+    await tx.wait(2);
+    return true;
   } catch (e) {
     toast.error(JSON.parse(JSON.stringify(e))["reason"]);
     return false;
