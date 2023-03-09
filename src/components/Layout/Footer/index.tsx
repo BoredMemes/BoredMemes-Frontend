@@ -33,7 +33,7 @@ const Footer = () => {
 
   return (
     <footer className={classes.root}>
-      <p>Made with <img src="/assets/icons/heart_icon.svg" alt="" /> by F1af1Y</p>
+      <p>Made with <img src="/assets/icons/heart_icon.svg" alt="" /> by Pixia AI</p>
 
     </footer>
   );

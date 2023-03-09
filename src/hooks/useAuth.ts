@@ -22,13 +22,13 @@ const useAuth = () => {
     if (connector) {
       activate(connector, async (error: Error) => {
         if (error instanceof UnsupportedChainIdError) {
-          toast.error("Unsupported Network.");
+          
           console.log(error);
           setupNetwork().then((hasSetup) => {
             if (hasSetup) {
               activate(connector);
               // window.localStorage.setItem(connectorLocalStorageKey, connectorID);
-            }
+            }else toast.error("Unsupported Network.");
           });
         } else if (error instanceof NoEthereumProviderError) {
           toast.error('No provider was found!')

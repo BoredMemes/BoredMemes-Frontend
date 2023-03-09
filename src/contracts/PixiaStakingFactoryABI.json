@@ -1,0 +1,368 @@
+[
+    {
+        "inputs": [
+            {
+                "internalType": "address payable",
+                "name": "treasury_",
+                "type": "address"
+            },
+            {
+                "internalType": "address",
+                "name": "defaultAdmin_",
+                "type": "address"
+            },
+            {
+                "internalType": "address",
+                "name": "ethPlugin_",
+                "type": "address"
+            },
+            {
+                "internalType": "address",
+                "name": "poolImpl_",
+                "type": "address"
+            }
+        ],
+        "stateMutability": "nonpayable",
+        "type": "constructor"
+    },
+    {
+        "inputs": [],
+        "name": "InsufficientAmount",
+        "type": "error"
+    },
+    {
+        "inputs": [],
+        "name": "InvalidAddresses",
+        "type": "error"
+    },
+    {
+        "inputs": [],
+        "name": "InvalidEndTime",
+        "type": "error"
+    },
+    {
+        "inputs": [],
+        "name": "InvalidOperation",
+        "type": "error"
+    },
+    {
+        "inputs": [],
+        "name": "InvalidStartTime",
+        "type": "error"
+    },
+    {
+        "inputs": [],
+        "name": "InvalidZeroAddress",
+        "type": "error"
+    },
+    {
+        "inputs": [],
+        "name": "NotOwnedNft",
+        "type": "error"
+    },
+    {
+        "inputs": [],
+        "name": "OverflowNftLimit",
+        "type": "error"
+    },
+    {
+        "inputs": [],
+        "name": "PoolNotOpened",
+        "type": "error"
+    },
+    {
+        "inputs": [],
+        "name": "StillLocked",
+        "type": "error"
+    },
+    {
+        "inputs": [],
+        "name": "TooLongEarlyFeeTime",
+        "type": "error"
+    },
+    {
+        "inputs": [],
+        "name": "TooLongLock",
+        "type": "error"
+    },
+    {
+        "inputs": [],
+        "name": "TooMuchCommission",
+        "type": "error"
+    },
+    {
+        "inputs": [],
+        "name": "Unpermitted",
+        "type": "error"
+    },
+    {
+        "inputs": [],
+        "name": "ValueOverflow",
+        "type": "error"
+    },
+    {
+        "inputs": [],
+        "name": "WrongUsage",
+        "type": "error"
+    },
+    {
+        "anonymous": false,
+        "inputs": [
+            {
+                "indexed": false,
+                "internalType": "address",
+                "name": "pool",
+                "type": "address"
+            }
+        ],
+        "name": "NewPixiaAiPool",
+        "type": "event"
+    },
+    {
+        "anonymous": false,
+        "inputs": [
+            {
+                "indexed": true,
+                "internalType": "address",
+                "name": "previousOwner",
+                "type": "address"
+            },
+            {
+                "indexed": true,
+                "internalType": "address",
+                "name": "newOwner",
+                "type": "address"
+            }
+        ],
+        "name": "OwnershipTransferred",
+        "type": "event"
+    },
+    {
+        "inputs": [],
+        "name": "MAX_FREE_COMMISSION",
+        "outputs": [
+            {
+                "internalType": "uint16",
+                "name": "",
+                "type": "uint16"
+            }
+        ],
+        "stateMutability": "view",
+        "type": "function"
+    },
+    {
+        "inputs": [],
+        "name": "defaultAdmin",
+        "outputs": [
+            {
+                "internalType": "address",
+                "name": "",
+                "type": "address"
+            }
+        ],
+        "stateMutability": "view",
+        "type": "function"
+    },
+    {
+        "inputs": [
+            {
+                "internalType": "enum ICommon.LaunchPlan",
+                "name": "plan_",
+                "type": "uint8"
+            },
+            {
+                "internalType": "uint240",
+                "name": "numbers_",
+                "type": "uint240"
+            },
+            {
+                "internalType": "uint256",
+                "name": "emission_",
+                "type": "uint256"
+            },
+            {
+                "internalType": "bytes",
+                "name": "addresses_",
+                "type": "bytes"
+            }
+        ],
+        "name": "deployPool",
+        "outputs": [
+            {
+                "internalType": "address",
+                "name": "",
+                "type": "address"
+            }
+        ],
+        "stateMutability": "payable",
+        "type": "function"
+    },
+    {
+        "inputs": [],
+        "name": "ethPlugin",
+        "outputs": [
+            {
+                "internalType": "address",
+                "name": "",
+                "type": "address"
+            }
+        ],
+        "stateMutability": "view",
+        "type": "function"
+    },
+    {
+        "inputs": [],
+        "name": "freePlanCommission",
+        "outputs": [
+            {
+                "internalType": "uint16",
+                "name": "",
+                "type": "uint16"
+            }
+        ],
+        "stateMutability": "view",
+        "type": "function"
+    },
+    {
+        "inputs": [],
+        "name": "owner",
+        "outputs": [
+            {
+                "internalType": "address",
+                "name": "",
+                "type": "address"
+            }
+        ],
+        "stateMutability": "view",
+        "type": "function"
+    },
+    {
+        "inputs": [],
+        "name": "paidPlanCommission",
+        "outputs": [
+            {
+                "internalType": "uint256",
+                "name": "",
+                "type": "uint256"
+            }
+        ],
+        "stateMutability": "view",
+        "type": "function"
+    },
+    {
+        "inputs": [],
+        "name": "poolImpl",
+        "outputs": [
+            {
+                "internalType": "address",
+                "name": "",
+                "type": "address"
+            }
+        ],
+        "stateMutability": "view",
+        "type": "function"
+    },
+    {
+        "inputs": [],
+        "name": "renounceOwnership",
+        "outputs": [],
+        "stateMutability": "nonpayable",
+        "type": "function"
+    },
+    {
+        "inputs": [
+            {
+                "internalType": "address",
+                "name": "newOwner",
+                "type": "address"
+            }
+        ],
+        "name": "transferOwnership",
+        "outputs": [],
+        "stateMutability": "nonpayable",
+        "type": "function"
+    },
+    {
+        "inputs": [],
+        "name": "treasury",
+        "outputs": [
+            {
+                "internalType": "address payable",
+                "name": "",
+                "type": "address"
+            }
+        ],
+        "stateMutability": "view",
+        "type": "function"
+    },
+    {
+        "inputs": [
+            {
+                "internalType": "uint16",
+                "name": "freePlanCommission_",
+                "type": "uint16"
+            },
+            {
+                "internalType": "uint256",
+                "name": "paidPlanCommission_",
+                "type": "uint256"
+            }
+        ],
+        "name": "updateCommission",
+        "outputs": [],
+        "stateMutability": "nonpayable",
+        "type": "function"
+    },
+    {
+        "inputs": [
+            {
+                "internalType": "address",
+                "name": "defaultAdmin_",
+                "type": "address"
+            }
+        ],
+        "name": "updateDefaultAdmin",
+        "outputs": [],
+        "stateMutability": "nonpayable",
+        "type": "function"
+    },
+    {
+        "inputs": [
+            {
+                "internalType": "address",
+                "name": "ethPlugin_",
+                "type": "address"
+            }
+        ],
+        "name": "updateETHPlugin",
+        "outputs": [],
+        "stateMutability": "nonpayable",
+        "type": "function"
+    },
+    {
+        "inputs": [
+            {
+                "internalType": "address",
+                "name": "poolImpl_",
+                "type": "address"
+            }
+        ],
+        "name": "updatePoolImpl",
+        "outputs": [],
+        "stateMutability": "nonpayable",
+        "type": "function"
+    },
+    {
+        "inputs": [
+            {
+                "internalType": "address payable",
+                "name": "treasury_",
+                "type": "address"
+            }
+        ],
+        "name": "updateTreasury",
+        "outputs": [],
+        "stateMutability": "nonpayable",
+        "type": "function"
+    }
+]
