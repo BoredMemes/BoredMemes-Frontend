@@ -242,7 +242,7 @@ export const useStyles = makeStyles(theme => ({
         fontSize: 12,
       },
     },
-    
+
   },
   right: {
     width: '280px',
@@ -390,10 +390,11 @@ export const useStyles = makeStyles(theme => ({
   },
 
   modal: {
-    width: '100%',
+    width: 550,
     padding: 10,
     [theme.breakpoints.down('xs')]: {
       padding: '10px 7px',
+      width: 250
     },
   },
   modalTop: {
@@ -402,7 +403,12 @@ export const useStyles = makeStyles(theme => ({
     justifyContent: 'space-between',
     [theme.breakpoints.down('xs')]: {
     },
-
+    '& .topTitle': {
+      color: '#343A69',
+      '& p': {
+        color: '#343A69',
+      }
+    },
     '& span': {
       display: 'flex',
       alignItems: 'center',
@@ -484,6 +490,7 @@ export const useStyles = makeStyles(theme => ({
       fontFamily: 'Poppins',
       fontStyle: 'normal',
       fontWeight: 700,
+      color: '#343A69',
       lineHeight: '36px',
       '& img': {
         width: 60,
@@ -754,12 +761,35 @@ export const useStyles = makeStyles(theme => ({
       },
     },
   },
+  lockSelect: {
+    width: '90%',
+    marginBottom: 30,
+    marginTop: 5,
+    boxShadow: '0px 4px 14px rgba(0, 0, 0, 0.1)',
+    border: 'none',
+    padding: 20,
+    fontSize: 16,
+    borderRadius: 8,
+    '&:focus': {
+      outline: 'none',
+    },
+    '& option': {
+      padding: 10
+    },
+  },
   modalContent: {
     display: 'flex',
     alignItems: 'center',
     justifyContent: 'center',
     flexDirection: 'column',
     width: '100%',
+    paddingTop: 20,
+    '& h3': {
+      color: '#343A69',
+    },
+    '& h4': {
+      color: '#343A69',
+    },
     '& h5': {
       fontSize: 14,
       color: '#343A69',
@@ -774,6 +804,7 @@ export const useStyles = makeStyles(theme => ({
       display: 'flex',
       alignItems: 'center',
       margin: 20,
+      marginTop: 10,
       width: '100%',
       background: '#F4F4F4',
       padding: 15,
@@ -830,17 +861,17 @@ export const useStyles = makeStyles(theme => ({
       display: 'flex',
       alignItems: 'center',
       width: '100%',
-      border: '2px dashed rgba(24, 70, 232, 1)',
+      border: '2px dashed #4905FB',
       borderRadius: 7,
       marginBottom: 20,
       padding: '20px 10px',
-      background: '#cdcdd0 !important',
+      background: 'white !important',
       '& img': {
         marginRight: 10,
       },
       '& p': {
         fontSize: 14,
-        color: 'rgba(24, 70, 232, 1)',
+        color: '#4905FB',
         fontFamily: "'Josefin Sans', sans-serif",
         [theme.breakpoints.down('xs')]: {
           fontSize: 12,
@@ -1063,6 +1094,20 @@ export const useStyles = makeStyles(theme => ({
         fontWeight: 800,
         backgroundClip: 'text',
         textFillColor: 'transparent',
+      },
+      '& strong': {
+        fontFamily: 'Poppins',
+        fontStyle: 'normal',
+        fontSize: '16px',
+        lineHeight: '27px',
+        letterSpacing: '-0.005em',
+        background: 'linear-gradient(47.43deg, #2A01FF 0%, #FF1EE1 16%, #FFB332 100%)',
+        WebkitBackgroundClip: 'text',
+        WebkitTextFillColor: 'transparent',
+        fontWeight: 800,
+        backgroundClip: 'text',
+        textFillColor: 'transparent',
+        display:'block'
       },
       '& h4': {
         fontFamily: 'Poppins',

@@ -836,7 +836,7 @@ export const useStyles = makeStyles(theme => ({
             border: '1.3px solid transparent',
           },
         },
-        '& .white': {
+        '& .light': {
           '&:hover': {
             // border: 'solid 1.3px #ff32c9',
             background: 'transparent !important',

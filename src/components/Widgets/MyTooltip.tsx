@@ -32,7 +32,7 @@ const HtmlTooltip = styled(({ className, ...props }: TooltipProps) => (
       border: '1px solid #ccc',
       margin : '0px 5px',
       '& p': {
-        color : '#fff',
+        color : '#000',
       },
       
     },

@@ -125,6 +125,11 @@ h1 {
     background: white !important;
   }
 
+  select {
+    background: white;
+    color: grey !important;
+  }
+
   a {
     color: black !important
   }
@@ -203,6 +208,11 @@ h1 {
       background-origin: border-box !important;
 
     }
+  }
+
+  select {
+    background: #030316;
+    color: #ddd !important;
   }
 
   .MuiFormControlLabel-label {
@@ -815,13 +825,16 @@ h1 {
     align-self: center;
     font-weight: 700;
   }
+
   .panelBtn {
     cursor: pointer;
+
     i {
       font-size: 25px;
       color: rgba(114, 114, 114, 1);
     }
   }
+
   div {
     display: inline-block;
     padding-left: 10px;

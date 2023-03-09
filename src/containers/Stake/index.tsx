@@ -271,7 +271,7 @@ const Stake = () => {
                 </div>
                 <div className='sub_cards'>
 
-                  <div className={theme} style={{ border: '1.3px solid transparent', background: 'transparent', backgroundImage: theme == 'light'? 'linear-gradient(90deg, white, white),linear-gradient(47.43deg, #2A01FF 0%, #FF1EE1 40%, #FFB332 100%)' : 'linear-gradient(90deg, black, black),linear-gradient(47.43deg, #2A01FF 0%, #FF1EE1 40%, #FFB332 100%)', backgroundClip: 'padding-box, border-box', backgroundOrigin: 'border-box' }}>
+                  <div className={theme} style={{ border: '1.3px solid transparent', background: 'transparent', backgroundImage: theme == 'light'? 'linear-gradient(90deg, white, white),linear-gradient(47.43deg, #2A01FF 0%, #FF1EE1 40%, #FFB332 100%)' : 'linear-gradient(90deg, #030316, #030316),linear-gradient(47.43deg, #2A01FF 0%, #FF1EE1 40%, #FFB332 100%)', backgroundClip: 'padding-box, border-box', backgroundOrigin: 'border-box' }}>
                     <h4>Basic</h4>
                     <p>200 minutes/m</p>
                     <span>Stake lock</span>
