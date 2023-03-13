@@ -339,6 +339,19 @@ export async function createNewCollection(isFree, chainId, provider) {
 }
 
 //Pool Management
+export async function getBalanceOf(tokenAddress, chainId, account) {
+  const jsonProvider = new ethers.providers.JsonRpcProvider(networks[chainId].NODES);
+  const tokenContract = getERC20ContractObj(tokenAddress, jsonProvider);
+  try {
+    const decimals = await tokenContract.decimals();
+    const balance = await tokenContract.balanceOf(account);
+    return parseFloat(ethers.utils.formatUnits(balance, decimals));
+  } catch (e) {
+    console.log(e);
+    return 0;
+  }
+}
+
 export async function stakeBoostNFT(isStake, poolAddress, stakingId, nftTokenIds, provider) {
   try{
     const poolContract = getContract(poolAddress, provider);
@@ -356,12 +369,14 @@ export async function stakeBoostNFT(isStake, poolAddress, stakingId, nftTokenIds
     return false;
   }
 }
-export async function stakeToken(amount, poolAddress, s_address, provider) {
+export async function stakeToken(poolAddress, s_address, amount, lockDays, provider) {
   try{
+    console.log(poolAddress, s_address, amount, lockDays, provider);
     const poolContract = getContract(poolAddress, provider);
     const sTokenContract = getERC20ContractObj(s_address, provider);
     const _sDecimals = await sTokenContract.decimals();
-    const tx = await poolContract.stakeToken(parseFloat(ethers.utils.formatUnits(amount, _sDecimals)));
+    const tx = lockDays === 0 ? await poolContract.stakeToken(parseFloat(ethers.utils.formatUnits(amount, _sDecimals)))
+      : await poolContract.lockToken(parseFloat(ethers.utils.formatUnits(amount, _sDecimals)), lockDays * 24 * 3600);
     const receipt = await tx.wait(1);
     if (receipt.confirmations){
       return true;
@@ -375,7 +390,7 @@ export async function stakeToken(amount, poolAddress, s_address, provider) {
   }
 }
 
-export async function harvest(ess, poolAddress, provider) {
+export async function harvest(poolAddress, provider) {
   try{
     const poolContract = getContract(poolAddress, provider);
     const tx = await poolContract.harvest();
@@ -391,7 +406,6 @@ export async function harvest(ess, poolAddress, provider) {
     return false;
   }
 }
-
 
 export async function unstakeToken(amount, poolAddress, s_address, provider) {
   try{
@@ -431,11 +445,9 @@ export async function lockToken(amount, poolAddress, s_address, lockTime, provid
   }
 }
 
-export async function unlockToken(poolAddress, s_address, stakingId, newLockTime, isWithdrawing, provider) {
+export async function unlockToken(poolAddress, stakingId, newLockTime, isWithdrawing, provider) {
   try{
     const poolContract = getContract(poolAddress, provider);
-    const sTokenContract = getERC20ContractObj(s_address, provider);
-    const _sDecimals = await sTokenContract.decimals();
     const tx = await poolContract.unlockToken(stakingId, newLockTime, isWithdrawing);
     const receipt = await tx.wait(1);
     if (receipt.confirmations){
@@ -458,11 +470,12 @@ export async function getPoolInfo(pool, account, chainId) {
     const rTokenContract = getERC20ContractObj(pool.r_address, jsonProvider);
     const _rDecimals = await rTokenContract.decimals();
     const poolContract = getContract(pool.address, jsonProvider);
-    const [tStakedSupply, tBoostedSupply, tRewardSupply, nftMultiplier, stakingIds, emission] = await Promise.all([
+    const [tStakedSupply, tBoostedSupply, tRewardSupply, nftMultiplier, maxLockTime, stakingIds, emission] = await Promise.all([
       poolContract.stakedSupply(),
       poolContract.boostedSupply(),
       poolContract.rewardSupply(),
       poolContract.nftMultiplier(),
+      poolContract.maxLockTime(),
       poolContract.viewUserInfo(account),
       poolContract.emission()
     ]);
@@ -472,6 +485,7 @@ export async function getPoolInfo(pool, account, chainId) {
     let myReward = 0;
     for (const stakingId of stakingIds){
       const [ stakingInfo ] = await poolContract.viewStakingInfo(stakingId);
+      stakingInfo.stakingId = stakingId;
       stakingInfo.tokenAmount = parseFloat(ethers.utils.formatUnits(stakingInfo.tokenAmount, _sDecimals));
       mStakedAmount += stakingInfo.tokenAmount;
       stakingInfo.boostedAmount = stakingInfo.boostedAmount.toNumber();
@@ -490,6 +504,7 @@ export async function getPoolInfo(pool, account, chainId) {
     pool.tBoostedSupply = tBoostedSupply.toNumber();
     pool.rewardSupply = parseFloat(ethers.utils.formatUnits(tRewardSupply, _rDecimals));
     pool.nftMultiplier = nftMultiplier / 100;
+    pool.maxLockTime = maxLockTime.toNumber() / 24 / 3600;
     pool.stakingInfos = stakingInfos;
     pool.myReward = parseFloat(ethers.utils.formatUnits(myReward, _rDecimals));
     pool.myStakedAmount = parseFloat(ethers.utils.formatUnits(mStakedAmount, _sDecimals));
