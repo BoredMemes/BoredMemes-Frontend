@@ -120,7 +120,14 @@ h1 {
   .top-lq-content {
     background: linear-gradient(47.43deg, #c2b6fa 0%, #f8bff1 57%, #f3ddb7 100%);
   }
-
+  .updated-multiplier {
+    div{
+      background: #F4F4F4;
+      p{
+        clear: white !important;
+      }
+    }
+  }
   .MuiSwitch-track {
     background: white !important;
   }
@@ -195,6 +202,31 @@ h1 {
 .vs {
   color: black;
   width: fit-content !important;
+}
+
+.updated-multiplier {
+  justify-content: space-between;
+  display: flex;
+  margin-Bottom: 20px;
+  div {
+    width: 50%;
+    background: #030316;
+    padding: 10px;
+    margin: 4px;
+    border-radius: 6px;
+    text-align: center;
+    p {
+      font-size: 14px;
+    }
+    h6 {
+      margin-top: 20px;
+      background: linear-gradient(47.43deg, #2A01FF 0%, #FF1EE1 40%, #FFB332 100%);
+      letter-spacing: -0.005em;
+      background-clip: text;
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+  }
 }
 
 .dark {

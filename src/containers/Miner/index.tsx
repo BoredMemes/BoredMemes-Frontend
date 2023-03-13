@@ -47,7 +47,7 @@ const CustomSwitch = styled(Switch)(({ theme }) => ({
   },
   '& .MuiSwitch-track': {
     borderRadius: 22,
-    background: '#030316 !important',
+    background: 'transparent !important',
     border: 'solid 1px #aaa',
     '&:before, &:after': {
       content: '""',
@@ -71,7 +71,7 @@ const CustomSwitch = styled(Switch)(({ theme }) => ({
     // },
   },
   '& .MuiSwitch-thumb': {
-    background: 'rgba(102, 104, 131, 1)',
+    background: '#030316',
     border: 'solid 1px grey',
     boxShadow: 'none',
     width: 56,
@@ -159,7 +159,7 @@ const Miner = () => {
   }
   ]);
   const [lock, onSelectChange] = useState('Select Lock');
-
+  const [switchStake, setSwitchStake] = useState(0);
   const handleSelectChange = (event) => {
     onSelectChange(event.target.value);
   };
@@ -309,7 +309,7 @@ const Miner = () => {
             <h1>Farms with NFT boosters</h1>
             <div className={classes.custom_pool_btn} role='button' onClick={() => setCreateCustomModal(true)}>
               <img src='assets/imgs/create-farm-icon.png' width={20} />
-              <span>Create Your Custom Pool</span>
+              <span>Create Your Custom Farm</span>
             </div>
           </div>
           {minerList.map((val, ind) => {
@@ -385,8 +385,7 @@ const Miner = () => {
 
                   <div>
                     <h5>My Earned $ETH</h5>
-                    <h6>0.15</h6>
-                    <span style={{ display: 'flex' }}>≈ $150,09
+                    <h6 style={{ display: 'flex' }}>0.15
                       <MyTooltip
                         text={
                           <>
@@ -394,6 +393,8 @@ const Miner = () => {
                             <p>14,356.38 $PIXIA - 12.09 $USDT</p>
                           </>}
                       />
+                    </h6>
+                    <span>≈ $150,09
                     </span>
                   </div>
 
@@ -417,7 +418,7 @@ const Miner = () => {
                       />
                     </h5>
                     <div>
-                      <span>3</span>
+                      <span>4X</span>
                       <div className={classes.img_list}>
                         <img src='assets/imgs/img-list-item1.png' />
                         <img src='assets/imgs/img-list-item2.png' />
@@ -429,8 +430,8 @@ const Miner = () => {
                     </div>
                   </div>
                   <div className='miner-stake-btns'>
-                    <button className='boost'>Compound</button>
                     <button className='boost'>Cash Out</button>
+                    <button className='boost'>Relock</button>
                     <button className='withdraw' onClick={() => setWithdrawModal(1)}>Withdraw</button>
                   </div>
                 </div>
@@ -802,11 +803,11 @@ const Miner = () => {
                 padding: '5px', width: '50%', background: 'linear-gradient(47.43deg, #2A01FF 0%, #FF1EE1 57%, #FFB332 100%);',
                 WebkitBackgroundClip: 'text',
                 WebkitTextFillColor: 'transparent',
-                height: '45px', borderRadius: '15px', textAlign: 'center', border: 'dashed 1px #ff589d', color: '#be16d2', alignSelf: 'center'
+                height: '45px', borderRadius: '15px', textAlign: 'center', border: 'dashed 1px #ff589d', color: '#be16d2', alignSelf: 'center', cursor:'pointer'
               }} onClick={() => setStakeModal(false)} className="cancel-btn">Cancel</button>
               <button style={{
                 padding: '5px', background: 'linear-gradient(47.43deg, #2A01FF 0%, #FF1EE1 57%, #FFB332 100%)', width: '50%',
-                height: '45px', borderRadius: '15px', textAlign: 'center', border: 'none', color: 'white', alignSelf: 'center'
+                height: '45px', borderRadius: '15px', textAlign: 'center', border: 'none', color: 'white', alignSelf: 'center', cursor:'pointer'
               }}>Stake</button>
             </div>
           </div>
@@ -830,18 +831,6 @@ const Miner = () => {
             </div>
             <div className={classes.modalContent}>
               <h3 className='w-100 mt-2'>Select lock</h3>
-              {/* <Select
-                labelId="demo-simple-select-label"
-                id="demo-simple-select"
-                value={lock}
-                label="Age"
-                className={classes.lockSelect}
-                onChange={handleSelectChange}
-              >
-                <MenuItem value={10}>Ten</MenuItem>
-                <MenuItem value={20}>Twenty</MenuItem>
-                <MenuItem value={30}>Thirty</MenuItem>
-              </Select> */}
               <select className={classes.lockSelect} value={lock} onChange={handleSelectChange}>
                 <option value={10}>Lock1</option>
                 <option value={20}>Lock2</option>
@@ -898,11 +887,11 @@ const Miner = () => {
                 padding: '5px', width: '50%', background: 'linear-gradient(47.43deg, #2A01FF 0%, #FF1EE1 57%, #FFB332 100%);',
                 WebkitBackgroundClip: 'text',
                 WebkitTextFillColor: 'transparent',
-                height: '45px', borderRadius: '15px', textAlign: 'center', border: 'dashed 1px #ff589d', color: '#be16d2', alignSelf: 'center'
+                height: '45px', borderRadius: '15px', textAlign: 'center', border: 'dashed 1px #ff589d', color: '#be16d2', alignSelf: 'center',cursor:'pointer'
               }} onClick={() => setWithdrawModal(0)} className="cancel-btn">Cancel</button>
               <button style={{
                 padding: '5px', background: 'linear-gradient(47.43deg, #2A01FF 0%, #FF1EE1 57%, #FFB332 100%)', width: '50%',
-                height: '45px', borderRadius: '15px', textAlign: 'center', border: 'none', color: 'white', alignSelf: 'center'
+                height: '45px', borderRadius: '15px', textAlign: 'center', border: 'none', color: 'white', alignSelf: 'center',cursor:'pointer'
               }}>Withdraw</button>
             </div>
           </div>
@@ -981,159 +970,221 @@ const Miner = () => {
             <div className={`${classes.createModalTop}`}>
               <span className='topTitle'>
                 <div>
-                  <h4>Create Your Custom Pool</h4>
+                  <h4>Create Your Custom Farm</h4>
                 </div>
               </span>
               <button className="closeBtn" onClick={() => setCreateCustomModal(false)}><img src="/assets/icons/close_icon_01.svg" alt="" /></button>
             </div>
             <div className={`${classes.createModalAddContent}`}>
               <div>
-                <p>Token Smart Contract (Used To Stake)</p>
+                <p style={{display:'flex'}}>Deposit Token Smart Contract
+                <MyTooltip
+                    text={
+                      <>
+                        <p>Token Smart Contract to be used for staking.</p>
+                      </>}
+                  />
+                </p>
                 <input type="text" placeholder='0x0000dead' />
               </div>
-              <div>
-                <p>Token Ticker (Used To Stake)</p>
-                <input type="text" placeholder='PIXIA' />
-              </div>
-              <div style={{ position: 'relative' }}>
+              {/* <div style={{ position: 'relative' }}>
                 <img src='assets/imgs/farm-stake-avatar1.png' width={50} style={{ position: 'absolute', top: 38, left: 8 }} />
                 <p>Token image (Used To Stake)</p>
                 <input type="text" placeholder='Token-picture.jpg 131KB' style={{ paddingLeft: 60 }} />
-              </div>
+              </div> */}
               <div>
-                <p>Reward Token Smart Contract (Distributed)</p>
+                <p style={{display:'flex'}}>Reward Token Smart Contract
+                <MyTooltip
+                    text={
+                      <>
+                        <p>Token Smart Contract to be distributed as rewards.</p>
+                      </>}
+                  />
+                </p>
                 <input type="text" placeholder='0x0000dead' />
               </div>
               <div>
-                <p>Reward Token Ticker</p>
-                <input type="text" placeholder='PIXIA' />
+                <p style={{display:'flex'}}>Reward Amount per second (in ETH)
+                <MyTooltip
+                    text={
+                      <>
+                        <p>Rewards to be allocated each second. Set a value in ETH.</p>
+                      </>}
+                  />
+                </p>
+                <input type="text" placeholder='0.001' />
               </div>
               <div>
-                <p>Reward Token Decimals</p>
-                <input type="text" placeholder='PIXIA' />
+                <p style={{display:'flex'}}>Max Lock Period (Days)
+                <MyTooltip
+                    text={
+                      <>
+                        <p>Stakers are able to choose a lock period from 0 days to Max days implemented here.</p>
+                      </>}
+                  />
+                </p>
+                <input type="text" placeholder='365' />
               </div>
               <div>
-                <p>NFT Collection Smart Contract (Booster)</p>
+                <p style={{display:'flex'}}>Max Lock Multiplier
+                <MyTooltip
+                    text={
+                      <>
+                        <p>Lock Multiplier value  applies for the max lock period.</p>
+                        <p>If the staker select a lesser period, the Lock Multiplier is calculated proportionally.</p>
+                      </>}
+                  />
+                </p>
+                <input type="text" placeholder='1.2' />
+              </div>
+              <h3 style={{ color: '#eee !important', textAlign: 'left', width: '100%', marginTop: '15px' , display:'flex'}}>Cooldown
+                <MyTooltip
+                  text={
+                    <>
+                      <p>Cooldown is applied to Unlocked Staking Only. The fees are sent to the Cooldown wallet.</p>
+                    </>}
+                />
+              </h3>
+              <div style={{ display: 'flex',textAlign:'center', justifyContent:'between' }}>
+                <div style={{width:'47.5%'}}>
+                  <p>Early Withdraw Period (Days)</p>
+                  <input type="text" placeholder='3' style={{textAlign:'center' }}/>
+                </div>
+                <div style={{width:'47.5%'}}>
+                  <p>Early Withdraw Fee (%)</p>
+                  <input type="text" placeholder='120' style={{textAlign:'center' }}/>
+                </div>
+              </div>
+              <div>
+                <p style={{textAlign:'center', maxWidth:'100%' }}>Cooldown wallet receiver
+                </p>
+                <input type="text" placeholder='0x0000dead' style={{textAlign:'center'}} />
+              </div>
+              <div>
+                <p style={{ display: 'flex', }}>NFT Collection Smart Contract
+                  <MyTooltip
+                    text={
+                      <>
+                        <p>NFTs part of this collection  will be eligible for booster/multiplier to your pool.</p>
+                      </>}
+                  />
+                </p >
                 <input type="text" placeholder='0x0000dead' />
               </div>
-                  <div>
+              <div>
                 <p style={{ display: 'flex' }}>NFT Booster Max Multiplier
                   <MyTooltip
                     text={
                       <>
-                        <p>Multiplier effect value that applies for the max lock period. </p>
-                        <p>The multiplier value is calculated proportionally to the max multiplier and lock period.</p>
-                        <p>Multiplier values are added for staking multiple NFTs on one lock period.</p>
+                        <p>NFT Multiplier value applies for staking an NFT.</p>
+                        <p>NFT multiplier Formula:1 + ( Number of NFTs x NFT Multiplier)</p>
+                        <p>Multiplier value includes one decimal, examples 0.2, 0.5, 1.3, etc...</p>
                       </>}
                   />
-                </p>
-                <input type="text" placeholder='3' />
+                </p >
+                <input type="text" placeholder='0.3' />
               </div>
-            <h3 style={{ color: '#eee !important', textAlign: 'left', width: '100%', marginTop: '15px' , display:'flex'}}>Staking Options
-            <MyTooltip
-              text={
-                <>
-                           <p>Set a Max Lock Period and a Max corresponding APY. Then APY will be calculated proportionally to chosen lock period by the user, and, max lock period.</p>
-                  <p>To get 1% APY, input must be 10. To get 12% APY, input must be 120.</p>
-                </>}
-            />
-            </h3>
-              <div style={{ display: 'flex',textAlign:'center' }}>
-            <div>
-              <p>Max Lock Period</p>
-              <p>(Days)</p>
-                  <input type="text" placeholder='0' style={{textAlign:'center' }}/>
-            </div>
-            <div>
-              <p>Max APY</p>
-              <p>(‰)</p>
-                  <input type="text" placeholder='10' style={{textAlign:'center' }}/>
-            </div>
-            </div>
-              {/* <div>
+              <div className = 'btn-wrapper' style = {{ display: 'flex' }}>
                 <button style={{
-                  padding: '5px', width: '100%', background: 'transparent',
-                  height: '45px', borderRadius: '15px', textAlign: 'center', border: 'dashed 1px #ff589d', color: '#be16d2', alignSelf: 'center',
-                }} onClick={() => setStakeModal(false)} className="cancel-btn">Add A Pool
-                </button>
-          </div> */}
-          <div className='btn-wrapper' style={{ display: 'flex' }}>
-            <button style={{
-              padding: '5px', width: '46%',
-              height: '65px', borderRadius: '15px', textAlign: 'center', border: 'dashed 1px #ff589d', alignSelf: 'center', marginLeft: 10,
-              background: 'linear-gradient(47.43deg, #2A01FF 0%, #FF1EE1 16%, #FFB332 100%)',
-              WebkitBackgroundClip: 'text',
-              WebkitTextFillColor: 'transparent',
-              fontWeight: 800,
-              fontSize: 18,
-              backgroundClip: 'text',
-            }} onClick={() => setStakeModal(false)} className="cancel-btn">- 1 ETH Staking Pool
-              <span style={{ color: '#be16d2 !important', fontSize: 10, display: 'block' }}>No fees</span></button>
-            <button style={{
-              padding: '5px', fontSize: 18, background: 'linear-gradient(47.43deg, #2A01FF 0%, #FF1EE1 57%, #FFB332 100%)', width: '46%', marginLeft: 10,
-              height: '65px', borderRadius: '15px', textAlign: 'center', border: 'none', color: 'white', alignSelf: 'center',
-                }}>Free Staking Pool <p style={{ color: 'white', fontSize: 10 }}>- % Fee on Rewards</p>
-          </button>
-        </div>
-            </div >
-          </div >
+                    padding: '5px', width: '46%',
+                    height: '65px', borderRadius: '15px', textAlign: 'center', border: 'dashed 1px #ff589d', alignSelf: 'center', marginLeft: 10,
+                    background: 'linear-gradient(47.43deg, #2A01FF 0%, #FF1EE1 16%, #FFB332 100%)',
+                    WebkitBackgroundClip: 'text',
+                    WebkitTextFillColor: 'transparent',
+                    fontWeight: 800,
+                    fontSize: 18,
+                    backgroundClip: 'text',cursor:'pointer'
+                          }} onClick = {() => setStakeModal(false)} className = "cancel-btn" > - 1 ETH Staking Pool
+                    <span style = {{color: '#be16d2 !important', fontSize: 10, display: 'block' }}> No fees</span>
+                  </button>
+                  <button style={{
+                    padding: '5px', fontSize: 18, background: 'linear-gradient(47.43deg, #2A01FF 0%, #FF1EE1 57%, #FFB332 100%)', width: '46%', marginLeft: 10,
+                    height: '65px', borderRadius: '15px', textAlign: 'center', border: 'none', color: 'white', alignSelf: 'center',cursor:'pointer'
+                              
+                  }}>Free Staking Pool <p style={{ color: 'white', fontSize: 10 }}>- % Fee on Rewards</p></button>
+              </div>
+            </div>
+          </div>
         </>}
-/>
-
-  < Modal
-show = { boostModal }
-maxWidth = 'sm'
-children = {<>
-  <div className={classes.boostModal}>
-    <div className={classes.modalTop}>
-      <span className='topTitle'>
-        <img src="/assets/imgs/farm-stake-avatar1.png" alt="" />
-        <div>
-          <h4>Withdraw from $BoredM in Farm</h4>
-          <span style={{ color: '#aaa', fontSize: 14 }}>NFT Balance: 9</span>
-        </div>
-        <div className="customSwitchText">
-          <span>Stake</span>
-          <span>Unstake</span>
-        </div>
-        <FormControlLabel
-          control={<CustomSwitch defaultChecked />}
-          label=""
         />
-      </span>
-    </div>
-    <div className={`${classes.modalContent} boostModalContent`}>
-      <div className='img-group'>
-        <img src='assets/imgs/boost-img-1.png' />
-        <img src='assets/imgs/boost-img-2.png' />
-        <img src='assets/imgs/boost-img-3.png' />
-        <img src='assets/imgs/boost-img-4.png' />
-        <img src='assets/imgs/boost-img-5.png' />
-        <img src='assets/imgs/boost-img-6.png' />
-        <img src='assets/imgs/boost-img-7.png' />
-        <img src='assets/imgs/boost-img-8.png' />
-        <img src='assets/imgs/boost-img-9.png' />
-      </div>
-      <p style={{ textAlign: 'left', width: '100%', marginTop: 30, marginBottom: 30 }}>Select your NFTs to stake.</p>
-    </div>
-    <div className={classes.modalBtns}>
-      <button style={{
-        padding: '5px', width: '50%',
-        background: 'linear-gradient(47.43deg, #2A01FF 0%, #FF1EE1 57%, #FFB332 100%);',
-        WebkitBackgroundClip: 'text',
-        WebkitTextFillColor: 'transparent',
-        height: '45px', borderRadius: '15px', textAlign: 'center', border: 'dashed 1px #ff589d', color: '#be16d2', alignSelf: 'center'
-      }} onClick={() => setBoostModal(false)} className="cancel-btn">Cancel</button>
-      <button style={{
-        padding: '5px', background: 'linear-gradient(47.43deg, #2A01FF 0%, #FF1EE1 57%, #FFB332 100%)', width: '50%',
-        height: '45px', borderRadius: '15px', textAlign: 'center', border: 'none', color: 'white', alignSelf: 'center'
-      }}>Stake</button>
-    </div>
-  </div>
 
-        </>}
-/>
-    </>
+        <Modal
+        show={ boostModal }
+        maxWidth='sm'
+        children={
+          <>
+          <div className={classes.boostModal}>
+            <div className={classes.modalTop}>
+              <span className='topTitle'>
+                <img src="/assets/imgs/farm-stake-avatar1.png" alt="" />
+                <div>
+                  <h4>Boost $PIXIA with NFTs</h4>
+                  <span style={{ color: '#aaa', fontSize: 14 }}>NFT Balance: 9</span>
+            </div>
+            <div className="customSwitchText">
+              <div onClick={()=>setSwitchStake(1)} className={`${switchStake === 1 && 'actived'}`}>
+                Stake
+              </div>
+              <div onClick={()=>setSwitchStake(0)} className={`${switchStake === 0 && 'deactived'}`}>
+                Unstake
+              </div>
+            </div>
+            </span>
+            </div>
+            <div className={`${classes.modalContent} boostModalContent`}>
+              {switchStake === 1 && <div className="warning">
+                <img src="/assets/icons/warning_icon.png" alt="" />
+                <p>NFTs boosting effect applies to one lock.
+First select the lock to associate your NFT with, then, 
+select the NFTs you want to stake/Unstake.</p>
+              </div>}
+              <h5 className='w-100 mt-2' style={{textAlign:'left'}}>Select lock</h5>
+              <select className={classes.lockSelect} value={lock} onChange={handleSelectChange}>
+                <option value={10}>Lock1</option>
+                <option value={20}>Lock2</option>
+                <option value={30}>Lock3</option>
+              </select>
+              <h5 className='w-100 mt-2' style={{textAlign:'left'}}>Select your NFTs</h5>
+              <div className='img-group'>
+                  <img src='assets/imgs/boost-img-1.png' />
+                  <img src='assets/imgs/boost-img-2.png' />
+                  <img src='assets/imgs/boost-img-3.png' />
+                  <img src='assets/imgs/boost-img-4.png' />
+                  <img src='assets/imgs/boost-img-5.png' />
+                  <img src='assets/imgs/boost-img-6.png' />
+                  <img src='assets/imgs/boost-img-7.png' />
+                  <img src='assets/imgs/boost-img-8.png' />
+                  <img src='assets/imgs/boost-img-9.png' />
+              </div>
+              <h5 className='w-100 mt-2' style={{textAlign:'left'}}>Updated Multiplier and APR</h5>
+              <div className={`w-100 flex justify-between updated-multiplier`}>
+                <div className='w-1/2'>
+                  <p>New Multiplier</p>
+                  <h6>- x</h6>
+                </div>
+                <div className='w-1/2'>
+                  <p>New APR</p>
+                  <h6>- %</h6>
+                </div>
+              </div>
+              </div>
+              <div className={classes.modalBtns}>
+                <button style={{
+                  padding: '5px', width: '50%',
+                  background: 'linear-gradient(47.43deg, #2A01FF 0%, #FF1EE1 57%, #FFB332 100%);',
+                  WebkitBackgroundClip: 'text',
+                  WebkitTextFillColor: 'transparent',
+                  height: '45px', borderRadius: '15px', textAlign: 'center', border: 'dashed 1px #ff589d', color: '#be16d2', alignSelf: 'center',cursor:'pointer'
+                }} onClick={() => setBoostModal(false)} className="cancel-btn">Cancel</button>
+                <button style={{
+                  padding: '5px', background: 'linear-gradient(47.43deg, #2A01FF 0%, #FF1EE1 57%, #FFB332 100%)', width: '50%',
+                  height: '45px', borderRadius: '15px', textAlign: 'center', border: 'none', color: 'white', alignSelf: 'center',cursor:'pointer'
+                }}> Stake</button>
+              </div>
+            </div>
+            </>}
+          />
+        </>
   );
 };
 

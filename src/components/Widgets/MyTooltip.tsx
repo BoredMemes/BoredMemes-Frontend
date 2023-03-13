@@ -18,6 +18,7 @@ const useStyles = makeStyles(theme => ({
     backgroundColor : '#ffffff00',
     padding : 0,
     color : '#727272',
+    WebkitTextFillColor:'grey'
   },
   
 }));

@@ -562,7 +562,6 @@ export const useStyles = makeStyles(theme => ({
         fontSize: 14,
         color: '#343A69',
         width: '100%',
-        textAlign: 'end',
         marginBottom: 20,
         [theme.breakpoints.down('xs')]: {
           fontSize: 12,
@@ -1021,13 +1020,27 @@ export const useStyles = makeStyles(theme => ({
       padding: '10px 7px',
     },
     '& .customSwitchText': {
-      right: 20,
-      display: 'flex',
-      position: 'absolute',
-      '& span': {
-        fontSize: 12,
-        marginLeft: 10,
-        color: '#3b485e'
+      display:'flex',
+      marginLeft:-38,
+      borderRadius:6,
+      background:'#030316',
+      '& div':{
+        cursor:'pointer',
+        padding:'8px 12px',
+        fontSize:12,
+        color:'grey'
+      },
+      '& .actived':{
+        background: 'linear-gradient(47.43deg, #2A01FF 0%, #FF1EE1 57%, #FFB332 100%)',
+        borderBottomLeftRadius:6,
+        borderTopLeftRadius:6,
+        color:'white !important'
+      },
+      '& .deactived':{
+        background: '#666883',
+        borderBottomRightRadius:6,
+        borderTopRightRadius:6,
+        color:'white !important'
       }
     },
     '& .boostModalContent': {
@@ -1044,6 +1057,7 @@ export const useStyles = makeStyles(theme => ({
       }
     }
   },
+  
   img_list: {
     maxWidth: 145, overflowX: 'scroll',
     '& img': {
