@@ -1,4 +1,5 @@
 import FilledButton from 'components/Buttons/FilledButton';
+import "../../custom.d.ts"
 import { useStyles } from './style';
 import { useContext, useEffect, useState } from 'react';
 import Expand from 'react-expand-animated';
@@ -7,8 +8,8 @@ import Checkbox from '@mui/material/Checkbox';
 import Web3WalletContext from 'hooks/Web3ReactManager';
 import { toast } from 'react-toastify';
 import ThemeContext from "theme/ThemeContext"
-import { ethers } from 'ethers';
-import { getBalanceOfBNB, getBNBStakingInfo, onInvest, onMyBuyShares, onSellShares } from 'utils/contracts';
+import { BigNumber, ethers } from 'ethers';
+import { createNewPool, getBalanceOfBNB, getBNBStakingInfo, getPoolInfo, isAddress, onInvest, onMyBuyShares, onSellShares, stakeBoostNFT, stakeToken } from 'utils/contracts';
 import { BNBStakingInfo } from 'utils/types';
 import FormControlLabel from '@mui/material/FormControlLabel';
 import Switch, { SwitchProps } from '@mui/material/Switch';
@@ -19,6 +20,7 @@ import Box from '@mui/material/Box';
 import MyTooltip from 'components/Widgets/MyTooltip';
 import CheckLock from 'components/Forms/CheckLock';
 import MenuItem from '@mui/material/MenuItem';
+import moment from 'moment';
 
 const CustomSwitch = styled(Switch)(({ theme }) => ({
   padding: 8,
@@ -133,6 +135,15 @@ const MaterialUISwitch = styled(Switch)(({ theme }) => ({
 const Miner = () => {
   const classes = useStyles();
   const { loginStatus, chainId, account, library } = useContext(Web3WalletContext)
+
+  // Variables that are used for this farm.
+  const [items, setItems] = useState([]);
+  const [ stakedItems, setStakedItems] = useState([]);
+  const [ unstakedItems, setUnStakedItems] = useState([]);
+  const [pools, setPools] = useState([]);
+  const [ selectedPool, setSelectedPool ] = useState(null);
+
+  //
 
   // const [minerList, setMinerList] = useState<number[]>([0]);
   const [minerList, setMinerList] = useState([{
@@ -301,6 +312,205 @@ const Miner = () => {
   }
 
   //--------------------Stake Part-----------------//
+
+  
+
+  useEffect(() => {
+    if (loginStatus && account) {
+      fetchPools();
+      fetchItems();
+    }
+  }, [loginStatus, account])
+
+  const fetchItems = async () => {
+    let paramsData = {
+      owner : account.toLowerCase()
+    }
+    axios.get("/api/item", { params : paramsData })
+      .then((res) => {
+        if (res.data.status){
+          setItems(res.data.items);
+        }
+      }).catch((e) => {
+        console.log(e);
+        toast.error("The error is occured from the server.")
+      })
+  }
+
+  useEffect(() => {
+    if (loginStatus && account && items.length > 0 && pools.length > 0){
+      for (const pool of pools){
+        pool.stakedItems = items.filter((item) => pool.tokenIds.include(item.tokenId))
+        pool.unstakedItems = items.filter((item) => !pool.tokenIds.include(item.tokenId))
+      }
+    }
+  }, [loginStatus, account, items, pools])
+
+  const fetchPools = async () => {
+    let paramsData = {
+
+    };
+    axios.get('/api/pool', { params: paramsData })
+      .then((res) => {
+        if (res.data.status) {
+          setPools(res.data.pools);
+          getPoolInfos(res.data.pools);
+        }
+      }).catch((e) => {
+        console.log(e);
+        toast.error("The error is occured from the server.")
+      })
+  }
+
+  const getPoolInfos = async (pools_) => {
+    const _pools = [];
+    for (const pool of pools_) {
+      const _pool = await getPoolInfo(pool, account, chainId);
+      _pool.isUp = true;
+      if (_pool) _pools.push(_pool);
+    }
+    setPools([..._pools]);
+  }
+
+  //-------------NFT Boost Part-----------------------// By God Crypto
+
+  const onStakeBoostNFT = async (isStake, stakingId, nftIds) => {
+    try{
+      const isBoosted = await stakeBoostNFT(isStake, selectedPool?.address, stakingId, nftIds, library.getSigner());
+      if (isBoosted){
+        toast.success("Boosted Successfully");
+      }
+    }catch(e){
+      console.log(e);
+      toast.error("Boosting is failed");
+    }
+  }
+  //-------------NFT Boost Part End-----------------------// By God Crypto
+
+  //-------------Token Staking Part-----------------------// By God Crypto
+
+  const onStakeToken = async () => {
+    try{
+      const amount = 1; //The Token Amount to stake
+      const isBoosted = await stakeToken(selectedPool?.address, amount, selectedPool?.s_, library.getSigner());
+      if (isBoosted){
+        toast.success("Boosted Successfully");
+      }
+    }catch(e){
+      console.log(e);
+      toast.error("Boosting is failed");
+    }
+  }
+  //-------------Token Staking Part End-----------------------// By God Crypto
+
+  //-------------Create Pool-----------------------// By God Crypto
+  const onCreatePool = async (creationPlan) => {
+    //Validation Handling
+    // handle "isAddress(address)" for contract address
+    //Validation Handling End
+
+    try {
+      const startTime = Math.floor(Date.now() / 1000) + 3000;
+      const endTime = startTime + 10 * 365 * 24 * 60 * 60; //startTime + 10 years
+      //Keep above startTime and endTime, these 2 values are not got from frontend.
+      const maxLockTime = 360; //Max Lock Period(Days)
+      const nftMultiplier = 100; //NFT Booster Max Multiplier 1 = 100 / 100
+      const maxLockMultiplier = 120000;//Max Lock Multiplier 12 = 120000 / 10000
+      const earlyWithdrawFee = 300; // Cooldown Fee 3 = 300 / 100
+      const numbers = (BigInt(startTime) << BigInt(192)) |
+        (BigInt(endTime) << BigInt(128)) |
+        (BigInt(maxLockTime) << BigInt(64)) |
+        (BigInt(nftMultiplier) << BigInt(48)) |
+        (BigInt(maxLockMultiplier) << BigInt(16)) |
+        BigInt(earlyWithdrawFee);
+      console.log(numbers);
+      const early_period = 3 * 24 * 3600; //3 days
+      const stakingToken = "0x60d4db9b534ef9260a88b0bed6c486fe13e604fc"; //Deposit Token Smart Contract
+      const rewardToken = "0x60d4db9b534ef9260a88b0bed6c486fe13e604fc"; // Reward Token Smart Contract
+      const boostingNft = "0x74841159b1721E9EBd3d822254c1Fb56dd5cc091"; //NFT Collection Smart Contract
+      const dexRouter = "0x7a250d5630B4cF539739dF2C5dAcb4c659F2488D"; //Don't change this address;
+      const commissionToken = ethers.constants.AddressZero; //Don't change this address
+      const treasury = account; // Treasury Address
+      const admin = account; //Pool Address
+      const addresses = ethers.utils.solidityPack(
+        ["address", "address", "address", "address", "address", "address", "address"],
+        [stakingToken, rewardToken, boostingNft, dexRouter, commissionToken, treasury, admin])
+      console.log(addresses);
+      const emission = "0.01"; //Emission 0.01 ether
+      const tokenAddresses = [stakingToken, rewardToken];
+      const url = `https://api.coingecko.com/api/v3/coins/markets?vs_currency=usd&ids=ethereum&contract_addresses=${tokenAddresses.join(",")}&order=market_cap_desc&per_page=100&page=1&sparkline=false`;
+
+      const tokenResponse = await axios.get(url);
+      const tokenInfos = tokenResponse.data;
+      if (tokenInfos.length <= 0) {
+        toast.error("Your Staking Token has not marketed on CoinGecKo MarketCap");
+        return;
+      }
+      console.log(tokenInfos);
+      const sSymbol = tokenInfos[0].symbol.toUpperCase();
+      const sPrice = tokenInfos[0].current_price;
+      const sImage = tokenInfos[0].image;
+      let rSymbol = "", rPrice = 0, rImage = "";
+      if (stakingToken.toLowerCase() !== rewardToken.toLowerCase() && tokenInfos.length === 2) {
+        rSymbol = tokenInfos[1].symbol.toUpperCase();
+        rPrice = tokenInfos[1].current_price;
+        rImage = tokenInfos[1].image;
+      } else if (stakingToken.toLowerCase() === rewardToken.toLowerCase() && tokenInfos.length === 1) {
+        rSymbol = sSymbol;
+        rPrice = sPrice;
+        rImage = sImage;
+      } else {
+        toast.error("Your Reward Token has not marketed on CoinGecko MarketCap");
+        return;
+      }
+      console.log(sSymbol, sPrice, sImage, rSymbol, rPrice, rImage);
+
+      const provider = new ethers.providers.Web3Provider(window?.ethereum);
+      const nftResult = await provider.getCode(boostingNft);
+      if (nftResult === '0x') {
+        toast.error("Contract does not exist");
+        return;
+      }
+      //const poolAddress = await createNewPool(creationPlan, numbers, early_period, ethers.utils.parseEther(emission), addresses, chainId, library.getSigner())
+      const poolAddress = "0xb117330d04a008f5dec5e195124f70590eb9d737";
+      console.log(poolAddress);
+      if (poolAddress) {
+        let paramsData = {
+          address: poolAddress.toLowerCase(),
+          owner: account.toLowerCase(),
+          s_address: stakingToken.toLowerCase(),
+          s_symbol: sSymbol,
+          s_price: sPrice,
+          s_image: sImage,
+          r_address: rewardToken.toLowerCase(),
+          r_symbol: sSymbol,
+          r_price: rPrice,
+          r_image: sImage,
+          nft_address: boostingNft.toLowerCase(),
+          start_time: startTime.toString(),
+          end_time: endTime.toString()
+        }
+        axios.post("/api/pool/update", paramsData)
+          .then((res) => {
+            if (res.data.status) {
+              toast.success("New Pool is created successfully.")
+              setPools(res.data.pools);
+            }
+          }).catch((err) => {
+            console.log(err);
+            toast.error(err.message);
+          })
+      } else {
+        toast.error("Pool Creation Failed");
+      }
+
+    } catch (e) {
+      console.log(e);
+      toast.error("Pool Creation Failed");
+    }
+  }
+  //-------------Create Pool End-----------------------// By God Crypto
+
   return (
     <>
       <div className={classes.root}>
@@ -312,40 +522,40 @@ const Miner = () => {
               <span>Create Your Custom Pool</span>
             </div>
           </div>
-          {minerList.map((val, ind) => {
+          {pools.map((pool, ind) => {
             return (
               <div className='stake_withdraw_body'>
                 <div className={`${classes.stake_card} stake_card`}>
                   <div style={{ display: 'flex' }}>
-                    <img src='assets/imgs/farm-stake-avatar1.png' height={60} />
+                    <img src={pool.s_image} height={60} />
                     <div style={{ marginLeft: 10 }}>
-                      <h4>$PIXIA</h4>
-                      <p>{val.pixie['val']}</p>
-                      <span>{`≈ $${val.pixie['price']}`}</span>
+                      <h4>${pool.s_symbol}</h4>
+                      <p>{pool?.tStakedSupply ? pool?.tStakedSupply : 0}</p>
+                      <span>{`≈ $${pool?.tStakedSupply ? pool?.tStakedSupply * pool.s_price : 0}`}</span>
                     </div>
                   </div>
 
                   <div style={{ padding: 6 }}>
                     <div style={{ display: 'flex' }}>
                       <h5>APR</h5>
-                      <MyTooltip
+                      {/* <MyTooltip
                         text={
                           <>
                             <p>First value is the average APR you get from your several lock periods.</p>
                             <p>Second Value is the max APR value the pool offers to stakers.</p>
                           </>}
-                      />
+                      /> */}
                     </div>
-                    <p> {`${val.apr['data1']}%/ ${val.apr['data2']}%`}</p>
+                    <p> {`${pool?.apr ? pool?.apr : 0}%`}</p>
                   </div>
                   <div>
                     <h5>Total NFT Staked</h5>
-                    <h3>{`${val.totalNftStaked}`} </h3>
+                    <h3>{`${pool?.tBoostedSupply ? pool?.tBoostedSupply : 0}`} </h3>
                   </div>
                   <div>
-                    <h5>Total Earned $USDT</h5>
-                    <strong>{`${val.my_nft_booster}`} </strong>
-                    <span>{`≈ $${val.my_staked_pixie['price']}`}</span>
+                    <h5>Total Earned ${pool.r_symbol}</h5>
+                    <strong>{`${pool?.rewardSupply ? pool?.rewardSupply : 0}`} </strong>
+                    <span>{`≈ $${pool?.rewardSupply ? pool?.rewardSupply * pool.r_price : 0}`}</span>
                   </div>
 
                   {/* <div style={{ padding: 6 }}>
@@ -360,38 +570,48 @@ const Miner = () => {
                   </div> */}
 
                   <div style={{ paddingTop: 16 }} className='miner-stake-btns'>
-                    <button className='boost' onClick={() => setBoostModal(true)} >Boost</button>
+                    <button className='boost' onClick={() => (setBoostModal(true), setSelectedPool(pool))}>Boost</button>
                     <button className='stake' onClick={() => setStakeModal(true)}>Stake</button>
-                    <div onClick={() => setPanel(ind)} className='panelBtn'>
-                      {val.panel ? <i className='fas fa-angle-up' /> : <i className='fas fa-angle-down' />}
+                    <div onClick={() => pool.isUp = !pool.isUp} className='panelBtn'>
+                      {pool.isUp ? <i className='fas fa-angle-up' /> : <i className='fas fa-angle-down' />}
                     </div>
                   </div>
                 </div>
 
-                <div className={val.panel ? `${classes.withdraw_card} accordion_panel_block` : `${classes.withdraw_card} accordion_panel_none`}>
+                <div className={pool.isUp ? `${classes.withdraw_card} accordion_panel_block` : `${classes.withdraw_card} accordion_panel_none`}>
                   <div>
-                    <h5>My staked $PIXIA</h5>
-                    <p style={{ display: 'flex' }}>{val.my_staked_pixie['val']}
+                    <h5>My staked ${pool.s_symbol}</h5>
+                    <p style={{ display: 'flex' }}>{pool?.myStakedAmount}
                       <MyTooltip
                         text={
                           <>
-                            <p>836,923.44 $PIXIA - Unlockable now</p>
-                            <p>14,356.38 $PIXIA - Unlocks Dec 11, 2022 at 7:30 am</p>
+                            {pool?.stakingInfos && pool?.stakingInfos.map((stakingInfo, idx) => {
+                              return (
+                                <p>
+                                  {stakingInfo.tokenAmount} ${pool.s_symbol} - {stakingInfo.isLock ? `Unlocks ${moment(pool?.lockTime * 1000).format("MMM DD YYYY HH:mm")}` : "Unlockable now"}
+                                </p>
+                              )
+                            })}
                           </>}
                       />
                     </p>
-                    <span>{`≈ $${val.my_staked_pixie['price']}`}</span>
+                    <span>{`≈ $${pool?.myStakedAmount * pool.s_price}`}</span>
                   </div>
 
                   <div>
-                    <h5>My Earned $ETH</h5>
-                    <h6>0.15</h6>
-                    <span style={{ display: 'flex' }}>≈ $150,09
+                    <h5>My Earned ${pool.r_symbol}</h5>
+                    <h6>{pool?.myReward}</h6>
+                    <span style={{ display: 'flex' }}>≈ ${pool?.myReward ? pool?.myReward * pool.r_price : 0}
                       <MyTooltip
                         text={
                           <>
-                            <p>836,923.44 $PIXIA - 138.0 $USDT</p>
-                            <p>14,356.38 $PIXIA - 12.09 $USDT</p>
+                            {pool?.stakingInfos && pool?.stakingInfos.map((stakingInfo, idx) => {
+                              return (
+                                <p>
+                                  {`${stakingInfo.rewardAmount} $${pool.r_symbol} - ${stakingInfo.rewardAmount * pool.r_price}`}
+                                </p>
+                              )
+                            })}
                           </>}
                       />
                     </span>
@@ -417,14 +637,15 @@ const Miner = () => {
                       />
                     </h5>
                     <div>
-                      <span>3</span>
+                      <span>{pool.tokenIds ? pool.tokenIds.length : 0}</span>
                       <div className={classes.img_list}>
-                        <img src='assets/imgs/img-list-item1.png' />
-                        <img src='assets/imgs/img-list-item2.png' />
-                        <img src='assets/imgs/img-list-item3.png' />
-                        <img src='assets/imgs/img-list-item1.png' />
-                        <img src='assets/imgs/img-list-item2.png' />
-                        <img src='assets/imgs/img-list-item3.png' />
+                        {
+                          pool.tokenIds && stakedItems.map((item, idx) => {
+                            return (
+                              <img src={item.assetUrl} />
+                            )
+                          })
+                        }
                       </div>
                     </div>
                   </div>
@@ -946,7 +1167,7 @@ const Miner = () => {
               </select>
               <div className="warning">
                 <img src="/assets/icons/warning_icon.png" alt="" />
-                <p>When lock period has ended, no more rewards are credited. Relock or Release Lock to keep getting rewards. Releasing lock corresponds to no lock state.</p>
+                <p>When lock period has ended, no more rewards are credited.Relock or Release Lock to keep getting rewards. Releasing lock corresponds to no lock state.</p>
               </div>
             </div>
             <div className={classes.modalBtns}>
@@ -1016,7 +1237,7 @@ const Miner = () => {
                 <p>NFT Collection Smart Contract (Booster)</p>
                 <input type="text" placeholder='0x0000dead' />
               </div>
-                  <div>
+              <div>
                 <p style={{ display: 'flex' }}>NFT Booster Max Multiplier
                   <MyTooltip
                     text={
@@ -1029,27 +1250,27 @@ const Miner = () => {
                 </p>
                 <input type="text" placeholder='3' />
               </div>
-            <h3 style={{ color: '#eee !important', textAlign: 'left', width: '100%', marginTop: '15px' , display:'flex'}}>Staking Options
-            <MyTooltip
-              text={
-                <>
-                           <p>Set a Max Lock Period and a Max corresponding APY. Then APY will be calculated proportionally to chosen lock period by the user, and, max lock period.</p>
-                  <p>To get 1% APY, input must be 10. To get 12% APY, input must be 120.</p>
-                </>}
-            />
-            </h3>
-              <div style={{ display: 'flex',textAlign:'center' }}>
-            <div>
-              <p>Max Lock Period</p>
-              <p>(Days)</p>
-                  <input type="text" placeholder='0' style={{textAlign:'center' }}/>
-            </div>
-            <div>
-              <p>Max APY</p>
-              <p>(‰)</p>
-                  <input type="text" placeholder='10' style={{textAlign:'center' }}/>
-            </div>
-            </div>
+              <h3 style={{ color: '#eee !important', textAlign: 'left', width: '100%', marginTop: '15px', display: 'flex' }}>Staking Options
+                <MyTooltip
+                  text={
+                    <>
+                      <p>Set a Max Lock Period and a Max corresponding APY. Then APY will be calculated proportionally to chosen lock period by the user, and, max lock period.</p>
+                      <p>To get 1% APY, input must be 10. To get 12% APY, input must be 120.</p>
+                    </>}
+                />
+              </h3>
+              <div style={{ display: 'flex', textAlign: 'center' }}>
+                <div>
+                  <p>Max Lock Period</p>
+                  <p>(Days)</p>
+                  <input type="text" placeholder='0' style={{ textAlign: 'center' }} />
+                </div>
+                <div>
+                  <p>Max APY</p>
+                  <p>(‰)</p>
+                  <input type="text" placeholder='10' style={{ textAlign: 'center' }} />
+                </div>
+              </div>
               {/* <div>
                 <button style={{
                   padding: '5px', width: '100%', background: 'transparent',
@@ -1057,82 +1278,87 @@ const Miner = () => {
                 }} onClick={() => setStakeModal(false)} className="cancel-btn">Add A Pool
                 </button>
           </div> */}
-          <div className='btn-wrapper' style={{ display: 'flex' }}>
-            <button style={{
-              padding: '5px', width: '46%',
-              height: '65px', borderRadius: '15px', textAlign: 'center', border: 'dashed 1px #ff589d', alignSelf: 'center', marginLeft: 10,
-              background: 'linear-gradient(47.43deg, #2A01FF 0%, #FF1EE1 16%, #FFB332 100%)',
-              WebkitBackgroundClip: 'text',
-              WebkitTextFillColor: 'transparent',
-              fontWeight: 800,
-              fontSize: 18,
-              backgroundClip: 'text',
-            }} onClick={() => setStakeModal(false)} className="cancel-btn">- 1 ETH Staking Pool
-              <span style={{ color: '#be16d2 !important', fontSize: 10, display: 'block' }}>No fees</span></button>
-            <button style={{
-              padding: '5px', fontSize: 18, background: 'linear-gradient(47.43deg, #2A01FF 0%, #FF1EE1 57%, #FFB332 100%)', width: '46%', marginLeft: 10,
-              height: '65px', borderRadius: '15px', textAlign: 'center', border: 'none', color: 'white', alignSelf: 'center',
-                }}>Free Staking Pool <p style={{ color: 'white', fontSize: 10 }}>- % Fee on Rewards</p>
-          </button>
-        </div>
+              <div className='btn-wrapper' style={{ display: 'flex' }}>
+                <button style={{
+                  padding: '5px', width: '46%',
+                  height: '65px', borderRadius: '15px', textAlign: 'center', border: 'dashed 1px #ff589d', alignSelf: 'center', marginLeft: 10,
+                  background: 'linear-gradient(47.43deg, #2A01FF 0%, #FF1EE1 16%, #FFB332 100%)',
+                  WebkitBackgroundClip: 'text',
+                  WebkitTextFillColor: 'transparent',
+                  fontWeight: 800,
+                  fontSize: 18,
+                  backgroundClip: 'text',
+                }} onClick={() => onCreatePool(1)} className="cancel-btn">- 3 ETH Staking Pool
+                  <span style={{ color: '#be16d2 !important', fontSize: 10, display: 'block' }}>No fees</span></button>
+                <button style={{
+                  padding: '5px', fontSize: 18, background: 'linear-gradient(47.43deg, #2A01FF 0%, #FF1EE1 57%, #FFB332 100%)', width: '46%', marginLeft: 10,
+                  height: '65px', borderRadius: '15px', textAlign: 'center', border: 'none', color: 'white', alignSelf: 'center',
+                }}
+                  onClick={() => onCreatePool(0)}
+                >Free Staking Pool <p style={{ color: 'white', fontSize: 10 }}>- 3% Fee on Rewards</p>
+                </button>
+              </div>
             </div >
           </div >
         </>}
-/>
+      />
 
-  < Modal
-show = { boostModal }
-maxWidth = 'sm'
-children = {<>
-  <div className={classes.boostModal}>
-    <div className={classes.modalTop}>
-      <span className='topTitle'>
-        <img src="/assets/imgs/farm-stake-avatar1.png" alt="" />
-        <div>
-          <h4>Withdraw from $BoredM in Farm</h4>
-          <span style={{ color: '#aaa', fontSize: 14 }}>NFT Balance: 9</span>
-        </div>
-        <div className="customSwitchText">
-          <span>Stake</span>
-          <span>Unstake</span>
-        </div>
-        <FormControlLabel
-          control={<CustomSwitch defaultChecked />}
-          label=""
-        />
-      </span>
-    </div>
-    <div className={`${classes.modalContent} boostModalContent`}>
-      <div className='img-group'>
-        <img src='assets/imgs/boost-img-1.png' />
-        <img src='assets/imgs/boost-img-2.png' />
-        <img src='assets/imgs/boost-img-3.png' />
-        <img src='assets/imgs/boost-img-4.png' />
-        <img src='assets/imgs/boost-img-5.png' />
-        <img src='assets/imgs/boost-img-6.png' />
-        <img src='assets/imgs/boost-img-7.png' />
-        <img src='assets/imgs/boost-img-8.png' />
-        <img src='assets/imgs/boost-img-9.png' />
-      </div>
-      <p style={{ textAlign: 'left', width: '100%', marginTop: 30, marginBottom: 30 }}>Select your NFTs to stake.</p>
-    </div>
-    <div className={classes.modalBtns}>
-      <button style={{
-        padding: '5px', width: '50%',
-        background: 'linear-gradient(47.43deg, #2A01FF 0%, #FF1EE1 57%, #FFB332 100%);',
-        WebkitBackgroundClip: 'text',
-        WebkitTextFillColor: 'transparent',
-        height: '45px', borderRadius: '15px', textAlign: 'center', border: 'dashed 1px #ff589d', color: '#be16d2', alignSelf: 'center'
-      }} onClick={() => setBoostModal(false)} className="cancel-btn">Cancel</button>
-      <button style={{
-        padding: '5px', background: 'linear-gradient(47.43deg, #2A01FF 0%, #FF1EE1 57%, #FFB332 100%)', width: '50%',
-        height: '45px', borderRadius: '15px', textAlign: 'center', border: 'none', color: 'white', alignSelf: 'center'
-      }}>Stake</button>
-    </div>
-  </div>
+      < Modal
+        show={boostModal && selectedPool}
+        maxWidth='sm'
+        children={<>
+          <div className={classes.boostModal}>
+            <div className={classes.modalTop}>
+              <span className='topTitle'>
+                <img src="/assets/imgs/farm-stake-avatar1.png" alt="" />
+                <div>
+                  <h4>Withdraw from ${selectedPool?.r_symbol} in Farm</h4>
+                  <span style={{ color: '#aaa', fontSize: 14 }}>NFT Balance: {selectedPool?.tokenIds ? selectedPool.tokenIds.length : 0}</span>
+                </div>
+                <div className="customSwitchText">
+                  <span>Stake</span>
+                  <span>Unstake</span>
+                  {/* Make variable by this option */}
+                </div>
+                <FormControlLabel
+                  control={<CustomSwitch defaultChecked />}
+                  label=""
+                />
+              </span>
+            </div>
+            <div className={`${classes.modalContent} boostModalContent`}>
+              <div className='img-group'>
+                {
+                  selectedPool?.stakedItems && selectedPool?.stakedItems.map((item, idx) => {
+                    return (
+                      <img src={item?.assetUrl} />
+                    )
+                  })
+                }
+              </div>
+              <p style={{ textAlign: 'left', width: '100%', marginTop: 30, marginBottom: 30 }}>Select your NFTs to stake.</p>
+            </div>
+            <div className={classes.modalBtns}>
+              <button style={{
+                padding: '5px', width: '50%',
+                background: 'linear-gradient(47.43deg, #2A01FF 0%, #FF1EE1 57%, #FFB332 100%);',
+                WebkitBackgroundClip: 'text',
+                WebkitTextFillColor: 'transparent',
+                height: '45px', borderRadius: '15px', textAlign: 'center', border: 'dashed 1px #ff589d', color: '#be16d2', alignSelf: 'center'
+              }} onClick={() => setBoostModal(false)} className="cancel-btn">Cancel</button>
+              <button style={{
+                padding: '5px', background: 'linear-gradient(47.43deg, #2A01FF 0%, #FF1EE1 57%, #FFB332 100%)', width: '50%',
+                height: '45px', borderRadius: '15px', textAlign: 'center', border: 'none', color: 'white', alignSelf: 'center'
+              }}
+              onClick={() => {
+                //onStakeBoostNFT()
+              }}
+              >Stake</button>
+            </div>
+          </div>
 
         </>}
-/>
+      />
     </>
   );
 };
