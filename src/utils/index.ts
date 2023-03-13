@@ -2,9 +2,9 @@ import { Contract } from '@ethersproject/contracts';
 import PixiaAiABI from 'contracts/PixiaAiABI.json';
 import PixiaNFTABI from 'contracts/PixiaNFTABI.json';
 import PixiaNFTFactoryABI from 'contracts/PixiaNFTFactoryABI.json';
-import PixiaStakingABI from 'contracts/PixiaStakingABI.json';
-import PixiaStakingFactoryABI from 'contracts/PixiaStakingABI.json';
-import PixiaDistributorABI from 'contracts/PixiaDistributorABI.json';
+import PixiaAiPoolABI from 'contracts/PixiaAiPoolABI.json';
+import PixiaAiPoolFactoryABI from 'contracts/PixiaAiPoolFactoryABI.json';
+import PixiaAiDistributorABI from 'contracts/PixiaAiDistributorABI.json';
 import { chainIdLocalStorageKey } from 'hooks';
 
 export const Networks = {
@@ -28,13 +28,17 @@ export const CONTRACTS_BY_NETWORK = {
       address: '0x75a00d8b1Aa32B04E33E6FDDBa65010CA95a58a9',
       abi: PixiaNFTFactoryABI
     },
-    PixiaStaking: {
-      address: '0xC1a1eDca948823b7c6bbbDAE53F3815e44b99430',
-      abi: PixiaStakingABI
+    PixiaAiPool: {
+      address: '',
+      abi: PixiaAiPoolABI
     },
-    PixiaDistributor: {
-      address: '0x2aFdDF35b069034Cb867b4749B25813DDB406a40',
-      abi: PixiaDistributorABI
+    PixiaAiPoolFactory: {
+      address: '',
+      abi: PixiaAiPoolFactoryABI
+    },
+    PixiaAiDistributor: {
+      address: '',
+      abi: PixiaAiDistributorABI
     }
   },
   [Networks.ETH_TestNet]: {
@@ -50,17 +54,17 @@ export const CONTRACTS_BY_NETWORK = {
       address: '0x75a00d8b1aa32b04e33e6fddba65010ca95a58a9',
       abi: PixiaNFTFactoryABI
     },
-    PixiaStaking: {
-      address: '0x19504596555E7E4C9c7764e0Ebe82FEa922C0742',
-      abi: PixiaStakingABI
+    PixiaAiPool: {
+      address: '0xFe5c4142b536a04382B7D44aa5b8337d9C78d495',
+      abi: PixiaAiPoolABI
     },
-    PixiaStakingFactory: {
-      address: '0xEb3C77b76de77f2142594428853905D9555488B4',
-      abi: PixiaStakingFactoryABI
+    PixiaAiPoolFactory: {
+      address: '0xe2142FBbCCdf7Aaf9F62D75b983044027B26E9F8',
+      abi: PixiaAiPoolFactoryABI
     },
-    PixiaDistributor: {
-      address: '0x64F087cFdB149A2D6DfB2d62C897946aE5A4D44D',
-      abi: PixiaDistributorABI
+    PixiaAiDistributor: {
+      address: '0xA68A0FA353474F9839F6d7bb3baB452FDB6a6CBf',
+      abi: PixiaAiDistributorABI
     }
   },
   [Networks.BSC_Mainnet]: {
@@ -116,6 +120,56 @@ export function getContractInfo(name, chainId = null) {
   }
 }
 
+export const ERC20_ABI = [
+  {
+    "inputs": [],
+    "name": "decimals",
+    "outputs": [
+      {
+        "internalType": "uint8",
+        "name": "",
+        "type": "uint8"
+      }
+    ],
+    "payable": false,
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "constant": true,
+    "inputs": [
+      {
+        "name": "_owner",
+        "type": "address"
+      }
+    ],
+    "name": "balanceOf",
+    "outputs": [
+      {
+        "name": "balance",
+        "type": "uint256"
+      }
+    ],
+    "payable": false,
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "constant": true,
+    "inputs": [],
+    "name": "totalSupply",
+    "outputs": [
+      {
+        "name": "",
+        "type": "uint256"
+      }
+    ],
+    "payable": false,
+    "stateMutability": "view",
+    "type": "function"
+  }
+];
+
 export function truncateWalletString(walletAddress) {
   if (!walletAddress) return walletAddress;
   const lengthStr = walletAddress.length;
@@ -146,5 +200,14 @@ export function getContractObj(name, chainId, provider) {
   const info = getContractInfo(name, chainId);
   return !!info && new Contract(info.address, info.abi, provider);
 }
+
+export function getContract(address, provider){
+  return new Contract(address, PixiaAiPoolABI, provider);
+}
+
+export function getERC20ContractObj(token_address, provider){
+  return new Contract(token_address, ERC20_ABI, provider);
+}
+
 
 export const shorter = str => (str?.length > 8 ? str.slice(0, 6) + '...' + str.slice(-4) : str);

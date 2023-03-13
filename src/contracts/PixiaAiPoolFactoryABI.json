@@ -27,76 +27,22 @@
     },
     {
         "inputs": [],
-        "name": "InsufficientAmount",
-        "type": "error"
-    },
-    {
-        "inputs": [],
-        "name": "InvalidAddresses",
-        "type": "error"
-    },
-    {
-        "inputs": [],
-        "name": "InvalidEndTime",
-        "type": "error"
-    },
-    {
-        "inputs": [],
-        "name": "InvalidOperation",
-        "type": "error"
-    },
-    {
-        "inputs": [],
-        "name": "InvalidStartTime",
-        "type": "error"
-    },
-    {
-        "inputs": [],
         "name": "InvalidZeroAddress",
         "type": "error"
     },
     {
-        "inputs": [],
-        "name": "NotOwnedNft",
-        "type": "error"
-    },
-    {
-        "inputs": [],
-        "name": "OverflowNftLimit",
-        "type": "error"
-    },
-    {
-        "inputs": [],
-        "name": "PoolNotOpened",
-        "type": "error"
-    },
-    {
-        "inputs": [],
-        "name": "StillLocked",
-        "type": "error"
-    },
-    {
-        "inputs": [],
-        "name": "TooLongEarlyFeeTime",
-        "type": "error"
-    },
-    {
-        "inputs": [],
-        "name": "TooLongLock",
-        "type": "error"
-    },
-    {
-        "inputs": [],
-        "name": "TooMuchCommission",
-        "type": "error"
-    },
-    {
-        "inputs": [],
-        "name": "Unpermitted",
-        "type": "error"
-    },
-    {
-        "inputs": [],
+        "inputs": [
+            {
+                "internalType": "uint16",
+                "name": "expected",
+                "type": "uint16"
+            },
+            {
+                "internalType": "uint16",
+                "name": "value",
+                "type": "uint16"
+            }
+        ],
         "name": "ValueOverflow",
         "type": "error"
     },
@@ -112,6 +58,12 @@
                 "indexed": false,
                 "internalType": "address",
                 "name": "pool",
+                "type": "address"
+            },
+            {
+                "indexed": false,
+                "internalType": "address",
+                "name": "owner",
                 "type": "address"
             }
         ],
@@ -171,9 +123,14 @@
                 "type": "uint8"
             },
             {
-                "internalType": "uint240",
+                "internalType": "uint256",
                 "name": "numbers_",
-                "type": "uint240"
+                "type": "uint256"
+            },
+            {
+                "internalType": "uint64",
+                "name": "early_period_",
+                "type": "uint64"
             },
             {
                 "internalType": "uint256",

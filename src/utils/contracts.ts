@@ -1,7 +1,8 @@
 import '@ethersproject/shims';
+import axios from 'axios';
 import { BigNumber, ethers } from 'ethers';
 import { toast } from 'react-toastify';
-import { getContractInfo, getContractObj, Networks, networks } from '.';
+import { getContract, getContractInfo, getContractObj, getERC20ContractObj, Networks, networks } from '.';
 import { BNBStakingInfo, NFTStakingInfo } from './types';
 
 export function isAddress(address) {
@@ -43,15 +44,15 @@ export async function getBalanceOfBNB(library, account) {
   }
 }
 
-export async function getDistributorInfo(chainId){
+export async function getDistributorInfo(chainId) {
   const jsonProvider = new ethers.providers.JsonRpcProvider(networks[chainId].NODES);
   const _contract = getContractObj("PixiaDistributor", chainId, jsonProvider);
   try {
     const LPBurn = await _contract.getAvailableEthAutoLPandBuyBackBurn();
     const StakingCaller = await _contract.getAvailableEthtPerWallet();
     return [
-      ethers.utils.formatEther(LPBurn[0]), 
-      ethers.utils.formatEther(LPBurn[1]), 
+      ethers.utils.formatEther(LPBurn[0]),
+      ethers.utils.formatEther(LPBurn[1]),
       ethers.utils.formatEther(StakingCaller[1]),
       ethers.utils.formatEther(StakingCaller[3])
     ];
@@ -62,7 +63,7 @@ export async function getDistributorInfo(chainId){
   }
 }
 
-export async function onFuelUp(chainId, provider){
+export async function onFuelUp(chainId, provider) {
   const jsonProvider = new ethers.providers.JsonRpcProvider(networks[chainId].NODES);
   const _contract = getContractObj("PixiaDistributor", chainId, provider);
   try {
@@ -174,7 +175,7 @@ export async function getStakingInfo(chainId, account) {
     //   mPercentFree: mPercentFree.toNumber(),
     //   mPercentLock: mPercentLock.toNumber()
     // }
-    
+
     // return nftStakingInfo;
     return null;
   } catch (e) {
@@ -313,9 +314,9 @@ export async function createNewCollection(isFree, chainId, provider) {
   const factoryContract = getContractObj("PixiaNFTFactory", chainId, provider);
   const factoryContractInfo = getContractInfo("PixiaNFTFactory", chainId);
   try {
-    const tx = await factoryContract.createCollection(isFree, { 
+    const tx = await factoryContract.createCollection(isFree, {
       value: ethers.utils.parseEther(isFree ? "0" : chainId === Networks.BSC_Testnet || chainId === Networks.ETH_TestNet ? "0.001" :
-              chainId === Networks.BSC_Mainnet ? "15" : "3")
+        chainId === Networks.BSC_Mainnet ? "15" : "3")
     });
     const receipt = await tx.wait(2);
     if (receipt.confirmations) {
@@ -337,21 +338,192 @@ export async function createNewCollection(isFree, chainId, provider) {
   }
 }
 
+//Pool Management
+export async function stakeBoostNFT(isStake, poolAddress, stakingId, nftTokenIds, provider) {
+  try{
+    const poolContract = getContract(poolAddress, provider);
+    const tx = isStake ?  await poolContract.stakeBoostNft(stakingId, nftTokenIds) :
+      await poolContract.unstakeBoostNft(stakingId, nftTokenIds);
+    const receipt = await tx.wait(1);
+    if (receipt.confirmations){
+      return true;
+    }
+    return false;
+  }catch(e){
+    console.log(e);
+    const revertMsg = JSON.parse(JSON.stringify(e))["reason"];
+    if (revertMsg) toast.error(revertMsg.replace("execution reverted: ", ""));
+    return false;
+  }
+}
+export async function stakeToken(amount, poolAddress, s_address, provider) {
+  try{
+    const poolContract = getContract(poolAddress, provider);
+    const sTokenContract = getERC20ContractObj(s_address, provider);
+    const _sDecimals = await sTokenContract.decimals();
+    const tx = await poolContract.stakeToken(parseFloat(ethers.utils.formatUnits(amount, _sDecimals)));
+    const receipt = await tx.wait(1);
+    if (receipt.confirmations){
+      return true;
+    }
+    return false;
+  }catch(e){
+    console.log(e);
+    const revertMsg = JSON.parse(JSON.stringify(e))["reason"];
+    if (revertMsg) toast.error(revertMsg.replace("execution reverted: ", ""));
+    return false;
+  }
+}
+
+export async function harvest(ess, poolAddress, provider) {
+  try{
+    const poolContract = getContract(poolAddress, provider);
+    const tx = await poolContract.harvest();
+    const receipt = await tx.wait(1);
+    if (receipt.confirmations){
+      return true;
+    }
+    return false;
+  }catch(e){
+    console.log(e);
+    const revertMsg = JSON.parse(JSON.stringify(e))["reason"];
+    if (revertMsg) toast.error(revertMsg.replace("execution reverted: ", ""));
+    return false;
+  }
+}
+
+
+export async function unstakeToken(amount, poolAddress, s_address, provider) {
+  try{
+    const poolContract = getContract(poolAddress, provider);
+    const sTokenContract = getERC20ContractObj(s_address, provider);
+    const _sDecimals = await sTokenContract.decimals();
+    const tx = await poolContract.unstakeToken(parseFloat(ethers.utils.formatUnits(amount, _sDecimals)));
+    const receipt = await tx.wait(1);
+    if (receipt.confirmations){
+      return true;
+    }
+    return false;
+  }catch(e){
+    console.log(e);
+    const revertMsg = JSON.parse(JSON.stringify(e))["reason"];
+    if (revertMsg) toast.error(revertMsg.replace("execution reverted: ", ""));
+    return false;
+  }
+}
+
+export async function lockToken(amount, poolAddress, s_address, lockTime, provider) {
+  try{
+    const poolContract = getContract(poolAddress, provider);
+    const sTokenContract = getERC20ContractObj(s_address, provider);
+    const _sDecimals = await sTokenContract.decimals();
+    const tx = await poolContract.lockToken(parseFloat(ethers.utils.formatUnits(amount, _sDecimals)), lockTime);
+    const receipt = await tx.wait(1);
+    if (receipt.confirmations){
+      return true;
+    }
+    return false;
+  }catch(e){
+    console.log(e);
+    const revertMsg = JSON.parse(JSON.stringify(e))["reason"];
+    if (revertMsg) toast.error(revertMsg.replace("execution reverted: ", ""));
+    return false;
+  }
+}
+
+export async function unlockToken(poolAddress, s_address, stakingId, newLockTime, isWithdrawing, provider) {
+  try{
+    const poolContract = getContract(poolAddress, provider);
+    const sTokenContract = getERC20ContractObj(s_address, provider);
+    const _sDecimals = await sTokenContract.decimals();
+    const tx = await poolContract.unlockToken(stakingId, newLockTime, isWithdrawing);
+    const receipt = await tx.wait(1);
+    if (receipt.confirmations){
+      return true;
+    }
+    return false;
+  }catch(e){
+    console.log(e);
+    const revertMsg = JSON.parse(JSON.stringify(e))["reason"];
+    if (revertMsg) toast.error(revertMsg.replace("execution reverted: ", ""));
+    return false;
+  }
+}
+
+export async function getPoolInfo(pool, account, chainId) {
+  try {
+    const jsonProvider = new ethers.providers.JsonRpcProvider(networks[chainId].NODES);
+    const sTokenContract = getERC20ContractObj(pool.s_address, jsonProvider);
+    const _sDecimals = await sTokenContract.decimals();
+    const rTokenContract = getERC20ContractObj(pool.r_address, jsonProvider);
+    const _rDecimals = await rTokenContract.decimals();
+    const poolContract = getContract(pool.address, jsonProvider);
+    const [tStakedSupply, tBoostedSupply, tRewardSupply, nftMultiplier, stakingIds, emission] = await Promise.all([
+      poolContract.stakedSupply(),
+      poolContract.boostedSupply(),
+      poolContract.rewardSupply(),
+      poolContract.nftMultiplier(),
+      poolContract.viewUserInfo(account),
+      poolContract.emission()
+    ]);
+    const stakingInfos = [];
+    let nftTokenIds = [];
+    let mStakedAmount = 0;
+    let myReward = 0;
+    for (const stakingId of stakingIds){
+      const [ stakingInfo ] = await poolContract.viewStakingInfo(stakingId);
+      stakingInfo.tokenAmount = parseFloat(ethers.utils.formatUnits(stakingInfo.tokenAmount, _sDecimals));
+      mStakedAmount += stakingInfo.tokenAmount;
+      stakingInfo.boostedAmount = stakingInfo.boostedAmount.toNumber();
+      stakingInfo.lastDepositAt = stakingInfo.lastDepositAt.toNumber();
+      stakingInfo.lockTime = stakingInfo.lockTime.toNumber();
+      stakingInfo.rewardAmount = await poolContract.pendingReward(stakingId);
+      myReward = stakingInfo.rewardAmount;
+      nftTokenIds.push(stakingInfo.nftIds);
+      stakingInfos.push(stakingInfo);
+    }
+    if (nftTokenIds.length > 0)nftTokenIds = nftTokenIds.filter((elem, index, self) => {
+      return index === self.indexOf(elem);
+    });
+    pool.tokenIds = nftTokenIds;
+    pool.tStakedSupply = parseFloat(ethers.utils.formatUnits(tStakedSupply, _sDecimals));
+    pool.tBoostedSupply = tBoostedSupply.toNumber();
+    pool.rewardSupply = parseFloat(ethers.utils.formatUnits(tRewardSupply, _rDecimals));
+    pool.nftMultiplier = nftMultiplier / 100;
+    pool.stakingInfos = stakingInfos;
+    pool.myReward = parseFloat(ethers.utils.formatUnits(myReward, _rDecimals));
+    pool.myStakedAmount = parseFloat(ethers.utils.formatUnits(mStakedAmount, _sDecimals));
+    pool.apr = pool.tStakedSupply === 0 ? 0 : parseFloat(ethers.utils.formatEther(emission)) * ( 365 * 24 * 3600 ) * pool.r_price / (pool.tStakedSupply * pool.s_price);
+    //pool.apr = emission * seconds_per_year * reward token price / (total staked token amount * staking token price)
+    return pool;
+  } catch (e) {
+    console.log(e);
+    const revertMsg = JSON.parse(JSON.stringify(e))["reason"];
+    if (revertMsg) toast.error(revertMsg.replace("execution reverted: ", ""));
+    return false;
+  }
+}
+
 
 //Pool Factory Management
 
 /**
  * createNewPool(plan, numbers, emission, addresses, chainId, provider)
  * plan: 0-> Free, 1-> Paid
- * numbers: Packed value of startTime, endTime, maxLockTime, maxNftPerUser, nftMultiplier and maxLockMultiplier
+ * numbers: Packed value of startTime, endTime, maxLockTime, nftMultiplier and maxLockMultiplier
     /// startTime_ Pool reward distribution start time (reward is calculated from this time)
     /// endTime_ Pool reward distribution end time
-    const numbers = (startAt << 176) |
-            endAt << 112) |
-            maxLockTime << 48) |
-            maxNftPerUser << 32) |
-            nftMultiplier << 16) |
-            maxLockMultiplier;
+    /// nftMultiplier_ Nft boost multiplier
+    /// maxLockTime_ Max lock timeline
+    /// maxLockMultiplier_ Max lock boost multiplier
+    /// earlyWithdrawFee - Early Withdraw Fee
+    const numbers = (startAt << 192) |
+            (endAt << 128) |
+            (maxLockTime << 64) |
+            (nftMultiplier << 48) |
+            (maxLockMultiplier << 16) |
+            earlyWithdrawFee;
+ * early_period_ Early Withdraw Time
  * addresses encodePacked bytes of stakingToken, rewardToken, boostingNft and admin account
     /// stakingToken_: Staking token address (ETH is supported, address(0) means ETH)
     /// rewardToken_: Reward token address (ETH is supported, address(0) means ETH)
@@ -365,15 +537,29 @@ export async function createNewCollection(isFree, chainId, provider) {
       [stakingToken, rewardToken, boostingNFT, dexRouter, commissionToken, treasury, admin])
   * emission Reward amount per second
 */
-export async function createNewPool(plan, numbers, emission, addresses, chainId, provider) {
+export async function createNewPool(plan, numbers, early_period, emission, addresses, chainId, provider) {
   const factoryContract = getContractObj("PixiaAiPoolFactory", chainId, provider);
+  const factoryContractInfo = getContractInfo("PixiaAiPoolFactory", chainId);
   try {
-    const tx = await factoryContract.deployPool(plan, numbers, emission, addresses, { 
-      value: ethers.utils.parseEther(plan === 0 ? "0" : chainId === Networks.BSC_Testnet || chainId === Networks.ETH_TestNet ? "0.01" :
-              chainId === Networks.BSC_Mainnet ? "15" : "3")
+    const tx = await factoryContract.deployPool(plan, numbers, early_period, emission, addresses, {
+      value: ethers.utils.parseEther(plan === 0 ? "0" : (chainId === Networks.BSC_Testnet || chainId === Networks.ETH_TestNet) ? "0.01" :
+        chainId === Networks.BSC_Mainnet ? "15" : "3")
     });
-    await tx.wait(2);
-    return true;
+    const receipt = await tx.wait(2);
+    if (receipt.confirmations) {
+      const interf = new ethers.utils.Interface(factoryContractInfo.abi);
+      const logs = receipt.logs;
+      let poolAddress = "";
+      for (let index = 0; index < logs.length; index++) {
+        const log = logs[index];
+        if (factoryContractInfo.address?.toLowerCase() === log.address?.toLowerCase()) {
+          console.log(log);
+          poolAddress = interf.parseLog(log).args.pool?.toLowerCase();
+          return poolAddress;
+        }
+      }
+    }
+    return false;
   } catch (e) {
     toast.error(JSON.parse(JSON.stringify(e))["reason"]);
     return false;
