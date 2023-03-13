@@ -614,7 +614,7 @@ const Miner = () => {
                             })}
                           </>}
                       />
-                    </h6>
+                      </span>
                     <span>≈ $150,09
                     </span>
                   </div>
