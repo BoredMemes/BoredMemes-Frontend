@@ -556,6 +556,7 @@ export async function createNewPool(plan, numbers, early_period, emission, addre
   const factoryContract = getContractObj("PixiaAiPoolFactory", chainId, provider);
   const factoryContractInfo = getContractInfo("PixiaAiPoolFactory", chainId);
   try {
+    console.log(plan, numbers, early_period, emission, addresses);
     const tx = await factoryContract.deployPool(plan, numbers, early_period, emission, addresses, {
       value: ethers.utils.parseEther(plan === 0 ? "0" : (chainId === Networks.BSC_Testnet || chainId === Networks.ETH_TestNet) ? "0.01" :
         chainId === Networks.BSC_Mainnet ? "15" : "3")

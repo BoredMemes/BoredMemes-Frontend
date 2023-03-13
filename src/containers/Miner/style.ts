@@ -635,8 +635,9 @@ export const useStyles = makeStyles(theme => ({
         borderRadius: 8,
         fontFamily: "'Josefin Sans', sans-serif",
         fontSize: 18,
+        color:'grey',
         [theme.breakpoints.down('xs')]: {
-          fontSize: 14,
+          fontSize: 14
         },
       },
 
