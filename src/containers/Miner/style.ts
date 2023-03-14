@@ -761,6 +761,299 @@ export const useStyles = makeStyles(theme => ({
       },
     },
   },
+  wooModal: {
+    width: '100%',
+    [theme.breakpoints.down('xs')]: {
+      padding: '10px 7px',
+    },
+  },
+  wooModalTop: {
+    display: 'flex',
+    width: '100%',
+    background: '#030316',
+    justifyContent: 'space-between',
+    padding: '22px 34px',
+    [theme.breakpoints.down('xs')]: {
+      padding: '6px 10px',
+    },
+
+    '& .topTitle': {
+      display: 'flex',
+      alignItems: 'center',
+      fontFamily: 'Poppins',
+      fontStyle: 'normal',
+      fontWeight: 700,
+      color: '#343A69',
+      lineHeight: '36px',
+      '& img': {
+        width: 60,
+        height: 60,
+        marginRight: 10,
+        [theme.breakpoints.down('xs')]: {
+          marginRight: 7,
+          width: 50,
+          height: 50,
+        },
+      },
+      '& h4': {
+        fontWeight: 700,
+        fontSize: 20,
+        color: '#727272 !important',
+        width: 300,
+        [theme.breakpoints.down('xs')]: {
+          fontSize: 12,
+          width: 150,
+        },
+      },
+      '& p': {
+        fontSize: 12,
+        color: '#343A69',
+        fontFamily: "'Josefin Sans', sans-serif",
+      },
+    },
+    '& button': {
+      width: 30,
+      height: 30,
+      display: 'flex',
+      alignItems: 'center',
+      justifyContent: 'center',
+      border: 'none',
+      cursor: 'pointer',
+      transition: 'all 0.3s ease',
+      background: 'rgba(127, 129, 158, 0.8)',
+      borderRadius: 30,
+      '&:hover': {
+        background: '#727272aa'
+      },
+      [theme.breakpoints.down('xs')]: {
+        marginTop: 4,
+        width: 25,
+        height: 25,
+      },
+      '& img': {
+        width: 15,
+        height: 15,
+        [theme.breakpoints.down('xs')]: {
+          width: 18,
+          height: 18,
+        },
+      },
+    },
+  },
+  wooModalContent: {
+    modalContent: {
+      display: 'flex',
+      alignItems: 'center',
+      justifyContent: 'center',
+      flexDirection: 'column',
+      width: '100%',
+      padding: '37px 88px 20px 68px',
+      [theme.breakpoints.down('xs')]: {
+        padding: '17px 38px 10px 28px',
+      },
+      '& h5': {
+        fontSize: 14,
+        color: '#343A69',
+        width: '100%',
+        marginBottom: 20,
+        [theme.breakpoints.down('xs')]: {
+          fontSize: 12,
+        },
+      },
+      '& h3, input, textarea': {
+        fontSize: 18,
+        [theme.breakpoints.down('xs')]: {
+          fontSize: 14,
+        },
+      },
+      '& textarea': {
+        height: 140,
+        [theme.breakpoints.down('xs')]: {
+          height: 120,
+        },
+      },
+      '& .row': {
+        display: 'flex',
+        alignItems: 'center',
+        justifyContent: 'space-between',
+        width: '100%',
+        borderRadius: 7,
+
+        '& p': {
+          fontSize: 18,
+          color: '#262626',
+          fontFamily: 'Poppins',
+          [theme.breakpoints.down('xs')]: {
+            fontSize: 12,
+          },
+        },
+      },
+      '& .modal_switch': {
+        width: 64,
+        height: 40,
+        [theme.breakpoints.down('xs')]: {
+          width: 48,
+          height: 32.
+        },
+      }
+    },
+  },
+  wooModalAddContent: {
+    display: 'flex',
+    alignItems: 'center',
+    justifyContent: 'center',
+    flexDirection: 'column',
+    width: '100%',
+    padding: '20px 40px',
+    '& .btn-wrapper': {
+      '& button': {
+        [theme.breakpoints.down('xs')]: {
+          width: '100% !important',
+          marginLeft: '0px !important',
+          marginTop: 8
+        },
+      }
+    },
+    '& div': {
+      marginTop: 15,
+      width: '100%',
+      '& div': {
+        width: '50%'
+      },
+      '& input': {
+        width: '95%',
+        border: 'solid 1px white',
+        background: 'rgba(3, 3, 22, 1)',
+        padding: 21,
+        borderRadius: 8,
+        fontFamily: "'Josefin Sans', sans-serif",
+        fontSize: 18,
+        color:'grey',
+        [theme.breakpoints.down('xs')]: {
+          fontSize: 14
+        },
+      },
+
+    },
+    '& p': {
+      fontSize: 14,
+      color: '#343A69',
+      width: '100%',
+      maxWidth: 350,
+      marginBottom: 10,
+      [theme.breakpoints.down('xs')]: {
+        fontSize: 12,
+      },
+    },
+
+    '& .btns': {
+      width: '100%',
+      display: 'flex',
+      alignItems: 'center',
+      justifyContent: 'center',
+      flexDirection: 'column',
+      marginBottom: 20,
+      gridArea: 'auto',
+      gap: 20,
+      '& button': {
+        maxWidth: 254,
+        width: '100%',
+        cursor: 'pointer',
+        transition: 'all 0.3s ease',
+        borderRadius: 15,
+        display: 'flex',
+        justifyContent: 'center',
+        alignItems: 'center',
+        height: 80,
+        position: 'relative',
+
+        [theme.breakpoints.down('xs')]: {
+          width: '100%',
+          height: 40,
+        },
+        '& p': {
+          margin: 0,
+        },
+      },
+      '& .collectionCard': {
+        background: 'linear-gradient(94.46deg, #F400F5 0.38%, #D300F5 100%);',
+        border: 'none',
+        '& p': {
+          fontSize: 16,
+          color: '#fff',
+          [theme.breakpoints.down('xs')]: {
+            fontSize: 12,
+          },
+        },
+        '&:hover': {
+          background: 'linear-gradient(94.46deg, #F400F5AA 0.38%, #D300F5AA 100%);',
+        },
+      },
+      '& .newCollectionCard': {
+        background: 'linear-gradient(#fff 0 0) padding-box, linear-gradient(47.43deg, #2A01FF 0%, #FF1EE1 57%, #FFB332 100%) border-box;',
+        border: '2px dashed #fff',
+        [theme.breakpoints.down('xs')]: {
+          width: '100%',
+          height: 60,
+        },
+        '& img': {
+          marginRight: 10,
+          [theme.breakpoints.down('xs')]: {
+            width: 20,
+          },
+        },
+        '& p': {
+          background: 'linear-gradient(47.43deg, #2A01FF 0%, #FF1EE1 57%, #FFB332 100%);',
+          WebkitBackgroundClip: 'text',
+          WebkitTextFillColor: 'transparent',
+          width: 'fit-content',
+          color: '#262626',
+          [theme.breakpoints.down('xs')]: {
+            fontSize: 12,
+          },
+        },
+      },
+
+
+    },
+    '& .chooseBtns': {
+      width: '100%',
+      marginBottom: 20,
+      maxWidth: 350,
+      '& h4': {
+        fontSize: 14,
+        color: '#343A69',
+        width: '100%',
+        maxWidth: 350,
+        marginBottom: 10,
+        [theme.breakpoints.down('xs')]: {
+          fontSize: 12,
+        },
+      },
+    },
+    '& .row': {
+      display: 'flex',
+      alignItems: 'center',
+      justifyContent: 'flex-start',
+      width: '100%',
+      gridArea: 'auto',
+      gap: 10,
+      [theme.breakpoints.down('xs')]: {
+        // flexDirection : 'column',
+      },
+      '& button': {
+        width: 'fit-content',
+        maxWidth: '50%',
+        fontSize: 12,
+        [theme.breakpoints.down('xs')]: {
+          maxWidth: '50%',
+          fontSize: 10,
+          padding: 5,
+          // width : '100%',
+        },
+      },
+    },
+  },
   lockSelect: {
     width: '90%',
     marginBottom: 30,
@@ -1011,6 +1304,124 @@ export const useStyles = makeStyles(theme => ({
       '& div': {
         transition: 'all 0.3s ease',
       }
+    },
+  },
+
+  processModal: {
+    width: '100%',
+    padding : 10,
+    [theme.breakpoints.down('xs')]: {
+      padding : '10px 7px',
+    },
+  },
+  processModalTop: {
+    display: 'flex',
+    width: '100%',
+    justifyContent : 'space-between',
+    [theme.breakpoints.down('xs')]: {
+    },
+
+    '& span': {
+      display: 'flex',
+      alignItems: 'center',
+      marginRight : 10,
+      '& img': {
+        width : 60,
+        height : 60,
+        marginRight : 10,
+        [theme.breakpoints.down('xs')]: {
+          marginRight : 7,
+          width : 50,
+          height : 50,
+        },
+      },
+      '& h4': {
+        fontWeight: 700,
+        fontSize: 16,
+        color : '#343A69',
+        width: 300,
+        [theme.breakpoints.down('xs')]: {
+          fontSize: 12,
+          width: 150,
+        },
+      },
+    },
+    '& button': {
+      width : 30,
+      height : 30,
+      display: 'flex',
+      alignItems: 'center',
+      justifyContent : 'center',
+      border : 'none',
+      cursor : 'pointer',
+      transition : 'all 0.3s ease',
+      background : '#ffffff00',
+      '&:hover':{
+        background : '#F4F4F4'
+      },
+      [theme.breakpoints.down('xs')]: {
+        width : 25,
+        height : 25,
+      },
+      '& img': {
+        [theme.breakpoints.down('xs')]: {
+          width : 18,
+          height : 18,
+        },
+      },
+    },
+  },
+  processModalContent: {
+    display: 'flex',
+    alignItems: 'center',
+    justifyContent : 'center',
+    flexDirection : 'column',
+    width: '100%',
+    
+    '& span': {
+      display: 'flex',
+      alignItems: 'center',
+      margin : 20,
+      
+      '& img': {
+        width : 60,
+        height : 60,
+        marginRight : 10,
+        animation: 'loadingAni 1s linear 0s infinite forwards',
+        [theme.breakpoints.down('xs')]: {
+          width : 30,
+          height : 30,
+        },
+      },
+      '& p': {
+        fontSize : 14,
+        color : '#343A69',
+        [theme.breakpoints.down('xs')]: {
+          fontSize: 12,
+        },
+      },
+      
+    },
+    '& .warning': {
+      display: 'flex',
+      alignItems: 'center',
+      width: '100%',
+      border: '3px solid #F3AC3D33',
+      borderRadius: 7,
+      marginBottom : 20,
+      padding : 10,
+      
+      '& img': {
+        marginRight : 10,
+      },
+      '& p': {
+        fontSize : 14,
+        color : '#F3AC3D',
+        fontFamily: "'Josefin Sans', sans-serif",
+        [theme.breakpoints.down('xs')]: {
+          fontSize: 12,
+        },
+      },
     },
   },
 

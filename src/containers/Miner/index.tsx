@@ -10,9 +10,12 @@ import { addReward, createNewPool, getBalanceOf, getPoolInfo, harvest, stakeBoos
 import axios from 'axios';
 import MyTooltip from 'components/Widgets/MyTooltip';
 import moment from 'moment';
+import { useHistory } from "react-router-dom";
 
 const Miner = () => {
   const classes = useStyles();
+  const history = useHistory();
+  const { theme } = useContext(ThemeContext);
   const { loginStatus, chainId, account, library } = useContext(Web3WalletContext)
 
   // Variables that are used for this farm.
@@ -30,7 +33,10 @@ const Miner = () => {
   };
 
   const [createCustomModal, setCreateCustomModal] = useState(false);
+  const [wooModal, setWooModal] = useState(true);
   const [boostModal, setBoostModal] = useState(false);
+  const [processingModal, setProcessingModal] = useState(true);
+  const [successTrans, setSuccessTrans] = useState(false);
 
   const [stakeModal, setStakeModal] = useState(false);//Staking
   const [amount, setAmount] = useState(0); //Staking
@@ -156,7 +162,7 @@ const Miner = () => {
       .then((res) => {
         if (res.data.status) {
           const _pools = [];
-          for ( const pool of res.data.pools){
+          for (const pool of res.data.pools) {
             pool.isUp = false;
             _pools.push(pool);
           }
@@ -183,7 +189,7 @@ const Miner = () => {
     for (const pool of pools) {
       if (pool.address === pool_.address) {
         const _pool = await getPoolInfo(pool, account, chainId);
-        if (_pool)_pools.push(_pool);
+        if (_pool) _pools.push(_pool);
       } else _pools.push(pool);
     }
     setPools([..._pools]);
@@ -196,7 +202,7 @@ const Miner = () => {
   const onUpdatePoolExpand = async (pool_) => {
     const _pools = [];
     for (const pool of pools) {
-      if (pool.address === pool_.address)_pools.push(pool_);
+      if (pool.address === pool_.address) _pools.push(pool_);
       else _pools.push(pool);
     }
     setPools([..._pools]);
@@ -207,15 +213,21 @@ const Miner = () => {
   const onStakeBoostNFT = async (isStake, stakingId, nftIds) => {
     try {
       if (nftIds.length <= 0) return;
+      setProcessingModal(true);
       const isBoosted = await stakeBoostNFT(isStake, selectedPool?.address, stakingId, nftIds, library.getSigner());
       if (isBoosted) {
         toast.success("Boosted Successfully");
-        setBoostModal(false);
         onSyncPool(selectedPool);
+        setSuccessTrans(true);
+      } else {
+        toast.error("NFT Boosting is failed")
+        setProcessingModal(false)
       }
+
     } catch (e) {
       console.log(e);
       toast.error("Boosting is failed");
+      setProcessingModal(false)
     }
   }
   //-------------NFT Boost Part End-----------------------// By God Crypto
@@ -226,15 +238,22 @@ const Miner = () => {
     try {
       if (lockDays < 0) return toast.error("The lock date could not be 0.")
       if (amount <= 0) return toast.error("The amount could not be 0 or less.")
+
+      setProcessingModal(true)
       const isStaked = await stakeToken(selectedPool?.address, selectedPool?.s_address, amount, lockDays, account, library.getSigner());
       if (isStaked) {
         toast.success("Staked Successfully");
         setStakeModal(false);
         onSyncPool(selectedPool);
+        setSuccessTrans(true);
+      } else {
+        toast.error("Staking Token is failed")
+        setProcessingModal(false)
       }
     } catch (e) {
       console.log(e);
       toast.error("Staking is failed");
+      setProcessingModal(false)
     }
   }
   //-------------Token Staking Part End-----------------------// By God Crypto
@@ -244,20 +263,27 @@ const Miner = () => {
       if (!loginStatus || !account) {
         return toast.error("Connect your wallet.");
       }
+      setProcessingModal(true)
       const isHarvested = await harvest(pool.address, library.getSigner())
       if (isHarvested) {
         toast.success("Cashed out successfully.")
         onSyncPool(pool)
-      } else toast.error("Failed");
+        setSuccessTrans(true);
+      } else {
+        toast.error("Harvesting is failed.");
+        setProcessingModal(false)
+      }
     } catch (e) {
       console.log(e);
       toast.error("Cash Out is failed")
+      setProcessingModal(false)
     }
   }
 
   const onUnLockToken = async (withdrawMode) => { // 0: withdraw, 1: release, 2: relock
     try {
       if (selectedStakingInfo && selectedPool) {
+        setProcessingModal(true)
         const isUnlocked = selectedStakingInfo.lockTime > 0 ? await unlockToken(
           selectedPool.address,
           selectedStakingInfo.stakingId,
@@ -273,27 +299,36 @@ const Miner = () => {
         if (isUnlocked) {
           toast.success("Success");
           onSyncPool(selectedPool);
+          setSuccessTrans(true);
+        } else {
+          toast.error("Your transaction is failed");
+          setProcessingModal(false)
         }
       }
     } catch (e) {
       console.log(e);
       toast.error("The action is failed");
+      setProcessingModal(false)
     }
   }
 
   const onAddReward = async () => {
     try {
       if (selectedPool) {
+        setProcessingModal(true)
         const isAdded = await addReward(selectedPool.address, selectedPool.r_address, amountReward, library.getSigner());
         if (isAdded) {
-          return toast.success("Added The Reward Successfully");
+          toast.success("Added The Reward Successfully");
+          setSuccessTrans(true);
+        } else {
+          toast.error("Not added the reward for some reasons.")
+          setProcessingModal(false);
         }
       }
-      toast.error("Failed");
-      //const isAdded = 
     } catch (e) {
       console.log(e);
       toast.error("Adding Reward is failed");
+      setProcessingModal(false);
     }
   }
 
@@ -323,6 +358,7 @@ const Miner = () => {
     }
 
     try {
+      setProcessingModal(true)
       const startTime = Math.floor(Date.now() / 1000) + 3000;
       const endTime = startTime + 10 * 365 * 24 * 60 * 60; //startTime + 10 years
       //Keep above startTime and endTime, these 2 values are not got from frontend.
@@ -407,19 +443,28 @@ const Miner = () => {
           .then((res) => {
             if (res.data.status) {
               toast.success("New Pool is created successfully.")
-              setPools(res.data.pools);
+              const _pools = [];
+              for (const pool of res.data.pools) {
+                pool.isUp = false;
+                _pools.push(pool);
+              }
+              setPools(_pools);
+              setSuccessTrans(true);
             }
           }).catch((err) => {
             console.log(err);
+
+            setProcessingModal(false)
             toast.error(err.message);
           })
       } else {
+        setProcessingModal(false)
         toast.error("Pool Creation Failed");
       }
-
     } catch (e) {
       console.log(e);
       toast.error("Pool Creation Failed");
+      setProcessingModal(false)
     }
   }
   //-------------Create Pool End-----------------------// By God Crypto
@@ -439,7 +484,7 @@ const Miner = () => {
             return (
               <div className='stake_withdraw_body'>
                 <div className={`${classes.stake_card} stake_card`}>
-                  <div style={{ display: 'flex' }} onClick={() => { setRewardModal(true); setSelectedPool(pool)}}>
+                  <div style={{ display: 'flex', cursor: 'pointer' }} onClick={() => { setRewardModal(true); setSelectedPool(pool) }}>
                     <img src={pool.s_image} height={60} />
                     <div style={{ marginLeft: 10 }}>
                       <h4>${pool.s_symbol}</h4>
@@ -485,7 +530,7 @@ const Miner = () => {
                   <div style={{ paddingTop: 16 }} className='miner-stake-btns'>
                     <button className='boost' onClick={() => (setBoostModal(true), setSelectedPool(pool))}>Boost</button>
                     <button className='stake' onClick={() => (setStakeModal(true), setSelectedPool(pool))}>Stake</button>
-                    <div onClick={() => {pool.isUp = !pool.isUp; onUpdatePoolExpand(pool)}} className='panelBtn'>
+                    <div onClick={() => { pool.isUp = !pool.isUp; onUpdatePoolExpand(pool) }} className='panelBtn'>
                       {pool.isUp ? <i className='fas fa-angle-up' /> : <i className='fas fa-angle-down' />}
                     </div>
                   </div>
@@ -793,7 +838,7 @@ const Miner = () => {
                 padding: '5px', background: 'linear-gradient(47.43deg, #2A01FF 0%, #FF1EE1 57%, #FFB332 100%)', width: '50%',
                 height: '45px', borderRadius: '15px', textAlign: 'center', border: 'none', color: 'white', alignSelf: 'center', cursor: 'pointer'
               }}
-                onClick={() => onAddReward()} 
+                onClick={() => onAddReward()}
               >Add Rewards</button>
             </div>
           </div>
@@ -897,7 +942,7 @@ const Miner = () => {
                 padding: '5px', background: 'linear-gradient(47.43deg, #2A01FF 0%, #FF1EE1 57%, #FFB332 100%)', width: '50%',
                 height: '45px', borderRadius: '15px', textAlign: 'center', border: 'none', color: 'white', alignSelf: 'center', cursor: 'pointer'
               }}
-                onClick={() => onUnLockToken(0)} //Withdraw Mode : 0
+                onClick={() => onUnLockToken(1)} //Withdraw Mode : 1
               >Withdraw</button>
             </div>
           </div>
@@ -914,7 +959,7 @@ const Miner = () => {
               <span className='topTitle'>
                 <img src='assets/imgs/farm-stake-avatar1.png' />
                 <div>
-                  <h3>Relock or Release Lock </h3>
+                  <h3>Relock or Unlock </h3>
                   <h3>For ${selectedPool?.r_symbol} in Farm</h3>
                 </div>
               </span>
@@ -938,7 +983,7 @@ const Miner = () => {
               </select>
               <div className="warning">
                 <img src="/assets/icons/warning_icon.png" alt="" />
-                <p>When lock period has ended, no more rewards are credited.Relock or Release Lock to keep getting rewards. Releasing lock corresponds to no lock state.</p>
+                <p>When the lock period has ended, no more rewards are credited. Relock or Unlock to keep rewards flowing. Unlock corresponds to staking with no lock.</p>
               </div>
             </div>
             <div className={classes.modalBtns}>
@@ -960,9 +1005,9 @@ const Miner = () => {
                   WebkitTextFillColor: 'transparent',
                   height: '45px', borderRadius: '15px', textAlign: 'center', border: 'dashed 1px #ff589d', color: '#be16d2', alignSelf: 'center'
                 }} className="cancel-btn"
-                  onClick={() => onUnLockToken(1)}
+                  onClick={() => onUnLockToken(0)}
                 >
-                  Release Lock
+                  Unlock
                 </button>
               }
               {
@@ -1135,6 +1180,39 @@ const Miner = () => {
         </>}
       />
 
+      <Modal
+        show={wooModal}
+        maxWidth='sm'
+        children={<>
+          <div className={classes.wooModal}>
+            <div className={`${classes.wooModalTop}`}>
+              <span className='topTitle'>
+                <div>
+                  <h4>Wooohoooo!</h4>
+                </div>
+              </span>
+              <button className="closeBtn" onClick={() => setWooModal(false)}><img src="/assets/icons/close_icon_01.svg" alt="" /></button>
+            </div>
+            <div className={`${classes.wooModalAddContent}`}>
+              <div>
+                <p style={{ display: 'flex' }}>Congrats, you just created your custom Staking Pool successfully!</p>
+                <p style={{ display: 'flex' }}>Add reward tokens to the staking pool to start distributing rewards by clicking your logo on the farm page.</p>
+                <p style={{ display: 'flex' }}>Make sure to exclude the staking smart contract from your custom token tax, max transaction and max wallet limits.</p>
+              </div>
+              <div className='btn-wrapper' style={{ display: 'flex' }}>
+                <button style={{
+                  padding: '5px', fontSize: 18, background: 'linear-gradient(47.43deg, #2A01FF 0%, #FF1EE1 57%, #FFB332 100%)', width: '46%', marginLeft: 10,
+                  height: '65px', borderRadius: '15px', textAlign: 'center', border: 'none', color: 'white', alignSelf: 'center', cursor: 'pointer'
+                }}
+                  onClick={() => setWooModal(false)}
+                >Start Staking
+                </button>
+              </div>
+            </div >
+          </div >
+        </>}
+      />
+
       < Modal
         show={boostModal && selectedPool}
         maxWidth='sm'
@@ -1238,6 +1316,60 @@ const Miner = () => {
               > {switchStake === 1 ? "Stake" : "Unstake"}</button>
             </div>
           </div>
+        </>}
+      />
+
+      <Modal
+        show={processingModal}
+        maxWidth='sm'
+        children={<>
+          <div className={classes.processModal}>
+            <div className={classes.processModalTop}>
+              <span>
+                {theme === 'dark' ? <img src="/assets/imgs/logo.png" alt="" /> : <img src="/assets/logo.png" alt="" />}
+                <h4>Your transaction is beeing processed</h4>
+              </span>
+              {/* <button className="closeBtn" onClick={() => setProcessingModal(false)}><img src="/assets/icons/close_icon.svg" alt="" /></button> */}
+            </div>
+            {
+              successTrans ?
+                <div className={classes.processModalContent}>
+                  <span>
+                    <img src="/assets/icons/2.png" alt="" />
+                  </span>
+                  <div className="warning">
+                    <img src="/assets/icons/warning_icon.svg" alt="" />
+                    <p>Validate your transaction to continue.</p>
+                  </div>
+                </div> :
+                <div className={classes.modalBtns}>
+                  <button style={{
+                    padding: '5px', width: '50%',
+                    background: 'linear-gradient(47.43deg, #2A01FF 0%, #FF1EE1 57%, #FFB332 100%);',
+                    WebkitBackgroundClip: 'text',
+                    WebkitTextFillColor: 'transparent',
+                    height: '45px', borderRadius: '15px', textAlign: 'center', border: 'dashed 1px #ff589d', color: '#be16d2', alignSelf: 'center', cursor: 'pointer'
+                  }} onClick={() => {
+                    setSuccessTrans(false);
+                    setProcessingModal(false);
+                    history.push("/my_art");
+                  }}
+                    className="cancel-btn">
+                    My Art
+                  </button>
+                  <button style={{
+                    padding: '5px', background: 'linear-gradient(47.43deg, #2A01FF 0%, #FF1EE1 57%, #FFB332 100%)', width: '50%',
+                    height: '45px', borderRadius: '15px', textAlign: 'center', border: 'none', color: 'white', alignSelf: 'center', cursor: 'pointer'
+                  }}
+                    onClick={() => {
+                      setSuccessTrans(false);
+                      setProcessingModal(false);
+                    }}
+                  > Staking Pools </button>
+                </div>
+            }
+          </div>
+
         </>}
       />
     </>
