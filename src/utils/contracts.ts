@@ -411,7 +411,6 @@ export async function stakeToken(poolAddress, s_address, amount, lockDays, accou
         return true;
       }
     }
-
     return false;
   } catch (e) {
     console.log(e);
@@ -443,6 +442,7 @@ export async function unstakeToken(amount, poolAddress, s_address, provider) {
     const poolContract = getContract(poolAddress, provider);
     const sTokenContract = getERC20ContractObj(s_address, provider);
     const _sDecimals = await sTokenContract.decimals();
+    console.log(ethers.utils.parseUnits(amount.toString(), _sDecimals))
     const tx = await poolContract.unstakeToken(ethers.utils.parseUnits(amount.toString(), _sDecimals));
     const receipt = await tx.wait(1);
     if (receipt.confirmations) {
@@ -478,9 +478,27 @@ export async function lockToken(amount, poolAddress, s_address, lockTime, provid
 
 export async function unlockToken(poolAddress, stakingId, newLockTime, isWithdrawing, provider) {
   try {
-    console.log(poolAddress, stakingId, newLockTime, isWithdrawing)
     const poolContract = getContract(poolAddress, provider);
     const tx = await poolContract.unlockToken(stakingId, newLockTime, isWithdrawing);
+    const receipt = await tx.wait(1);
+    if (receipt.confirmations) {
+      return true;
+    }
+    return false;
+  } catch (e) {
+    console.log(e);
+    const revertMsg = JSON.parse(JSON.stringify(e))["reason"];
+    if (revertMsg) toast.error(revertMsg.replace("execution reverted: ", ""));
+    return false;
+  }
+}
+
+export async function addReward(poolAddress, r_address, amount, provider) {
+  try {
+    const poolContract = getContract(poolAddress, provider);
+    const rTokenContract = getERC20ContractObj(r_address, provider);
+    const _rDecimals = await rTokenContract.decimals();
+    const tx = await poolContract.addReward(ethers.utils.parseUnits(amount.toString(), _rDecimals));
     const receipt = await tx.wait(1);
     if (receipt.confirmations) {
       return true;
@@ -502,9 +520,8 @@ export async function getPoolInfo(pool, account, chainId) {
     const rTokenContract = getERC20ContractObj(pool.r_address, jsonProvider);
     const _rDecimals = await rTokenContract.decimals();
     const poolContract = getContract(pool.address, jsonProvider);
-    const [tStakedSupply, tBoostedSupply, startAt, nftMultiplier, maxLockTime, stakingIds, _emission] = await Promise.all([
+    const [tStakedSupply, startAt, nftMultiplier, maxLockTime, stakingIds, _emission] = await Promise.all([
       poolContract.stakedSupply(),
-      poolContract.boostedSupply(),
       poolContract.startAt(),
       poolContract.nftMultiplier(),
       poolContract.maxLockTime(),

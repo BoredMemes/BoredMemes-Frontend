@@ -932,6 +932,7 @@ export const useStyles = makeStyles(theme => ({
   modalBtns: {
     display: 'flex',
     alignItems: 'center',
+    justifyContent: 'center',
     width: '100%',
     gridTemplateColumns: 'auto auto auto',
     gap: 20,
