@@ -35,7 +35,7 @@ const Routes = () => {
             <Route exact path="/community_feed" component={CommunityFeed} />
             <Route exact path="/personal_feed" component={PersonalFeed} />
             <Route exact path="/bookmarks" component={Bookmarks} />
-            <Route exact path="/miner" component={Miner} />
+            <Route exact path="/staking" component={Miner} />
             <Route exact path="/settings" component={EditProfile} />
             <Route exact path="/edit_profile" component={EditProfile} />
             <Route exact path="/create_nft_collection/:id" component={CreateNFTCollection} />

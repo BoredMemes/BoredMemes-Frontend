@@ -168,7 +168,7 @@ export default function SideBar({ menuOpen, setMenuOpen }: MenuType) {
         <h3>Rewards</h3>
         <ul>
           <li className={path === 'miner' ? 'selected' : ''}>
-            <div onClick={() => onChangeRoute("/miner")}><img src="/assets/icons/farms_icon.svg" alt="" /> Farms</div>
+            <div onClick={() => onChangeRoute("/staking")}><img src="/assets/icons/farms_icon.svg" alt="" /> Farms</div>
           </li>
           <li className={path === '' ? 'selected' : ''}>
             <div onClick={() => onChangeRoute("")}><img src="/assets/icons/manage_hub_icon.svg" alt="" /> Manage Hub</div>

@@ -352,37 +352,68 @@ export async function getBalanceOf(tokenAddress, chainId, account) {
   }
 }
 
+export async function isTokenApprovedForPool(poolAddress, tokenAddress, account, amount, provider) {
+  const poolContract = getContract(poolAddress, provider);
+  const tokenContract = getERC20ContractObj(tokenAddress, provider);
+  const allowance = await tokenContract.allowance(account, poolContract.address);
+  if (BigNumber.from(toWei(amount)).gt(allowance)) {
+    return false;
+  }
+  return true;
+}
+
+export async function approveTokenForPool(poolAddress, tokenAddress, provider) {
+  const poolContract = getContract(poolAddress, provider);
+  const tokenContract = getERC20ContractObj(tokenAddress, provider);
+
+  const approveAmount = '0xFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF';
+  try {
+    const approve_tx = await tokenContract.approve(poolContract.address, approveAmount);
+    await approve_tx.wait(1);
+    return true;
+  } catch (e) {
+    const revertMsg = JSON.parse(JSON.stringify(e))["reason"];
+    if (revertMsg) toast.error(revertMsg.replace("execution reverted: ", ""));
+    return false;
+  }
+}
+
 export async function stakeBoostNFT(isStake, poolAddress, stakingId, nftTokenIds, provider) {
-  try{
+  try {
     const poolContract = getContract(poolAddress, provider);
-    const tx = isStake ?  await poolContract.stakeBoostNft(stakingId, nftTokenIds) :
+    const tx = isStake ? await poolContract.stakeBoostNft(stakingId, nftTokenIds) :
       await poolContract.unstakeBoostNft(stakingId, nftTokenIds);
     const receipt = await tx.wait(1);
-    if (receipt.confirmations){
+    if (receipt.confirmations) {
       return true;
     }
     return false;
-  }catch(e){
+  } catch (e) {
     console.log(e);
     const revertMsg = JSON.parse(JSON.stringify(e))["reason"];
     if (revertMsg) toast.error(revertMsg.replace("execution reverted: ", ""));
     return false;
   }
 }
-export async function stakeToken(poolAddress, s_address, amount, lockDays, provider) {
-  try{
+export async function stakeToken(poolAddress, s_address, amount, lockDays, account, provider) {
+  try {
     console.log(poolAddress, s_address, amount, lockDays, provider);
     const poolContract = getContract(poolAddress, provider);
     const sTokenContract = getERC20ContractObj(s_address, provider);
     const _sDecimals = await sTokenContract.decimals();
-    const tx = lockDays === 0 ? await poolContract.stakeToken(parseFloat(ethers.utils.formatUnits(amount, _sDecimals)))
-      : await poolContract.lockToken(parseFloat(ethers.utils.formatUnits(amount, _sDecimals)), lockDays * 24 * 3600);
-    const receipt = await tx.wait(1);
-    if (receipt.confirmations){
-      return true;
+    let isApproved = await isTokenApprovedForPool(poolAddress, s_address, account, amount, provider);
+    if (!isApproved) isApproved = await approveTokenForPool(poolAddress, s_address, provider);
+    if (isApproved) {
+      const tx = lockDays === 0 ? await poolContract.stakeToken(ethers.utils.parseUnits(amount.toString(), _sDecimals))
+        : await poolContract.lockToken(ethers.utils.parseUnits(amount.toString(), _sDecimals), lockDays * 24 * 3600);
+      const receipt = await tx.wait(1);
+      if (receipt.confirmations) {
+        return true;
+      }
     }
+
     return false;
-  }catch(e){
+  } catch (e) {
     console.log(e);
     const revertMsg = JSON.parse(JSON.stringify(e))["reason"];
     if (revertMsg) toast.error(revertMsg.replace("execution reverted: ", ""));
@@ -391,15 +422,15 @@ export async function stakeToken(poolAddress, s_address, amount, lockDays, provi
 }
 
 export async function harvest(poolAddress, provider) {
-  try{
+  try {
     const poolContract = getContract(poolAddress, provider);
     const tx = await poolContract.harvest();
     const receipt = await tx.wait(1);
-    if (receipt.confirmations){
+    if (receipt.confirmations) {
       return true;
     }
     return false;
-  }catch(e){
+  } catch (e) {
     console.log(e);
     const revertMsg = JSON.parse(JSON.stringify(e))["reason"];
     if (revertMsg) toast.error(revertMsg.replace("execution reverted: ", ""));
@@ -408,17 +439,17 @@ export async function harvest(poolAddress, provider) {
 }
 
 export async function unstakeToken(amount, poolAddress, s_address, provider) {
-  try{
+  try {
     const poolContract = getContract(poolAddress, provider);
     const sTokenContract = getERC20ContractObj(s_address, provider);
     const _sDecimals = await sTokenContract.decimals();
-    const tx = await poolContract.unstakeToken(parseFloat(ethers.utils.formatUnits(amount, _sDecimals)));
+    const tx = await poolContract.unstakeToken(ethers.utils.parseUnits(amount.toString(), _sDecimals));
     const receipt = await tx.wait(1);
-    if (receipt.confirmations){
+    if (receipt.confirmations) {
       return true;
     }
     return false;
-  }catch(e){
+  } catch (e) {
     console.log(e);
     const revertMsg = JSON.parse(JSON.stringify(e))["reason"];
     if (revertMsg) toast.error(revertMsg.replace("execution reverted: ", ""));
@@ -427,17 +458,17 @@ export async function unstakeToken(amount, poolAddress, s_address, provider) {
 }
 
 export async function lockToken(amount, poolAddress, s_address, lockTime, provider) {
-  try{
+  try {
     const poolContract = getContract(poolAddress, provider);
     const sTokenContract = getERC20ContractObj(s_address, provider);
     const _sDecimals = await sTokenContract.decimals();
-    const tx = await poolContract.lockToken(parseFloat(ethers.utils.formatUnits(amount, _sDecimals)), lockTime);
+    const tx = await poolContract.lockToken(ethers.utils.parseUnits(amount.toString(), _sDecimals), lockTime);
     const receipt = await tx.wait(1);
-    if (receipt.confirmations){
+    if (receipt.confirmations) {
       return true;
     }
     return false;
-  }catch(e){
+  } catch (e) {
     console.log(e);
     const revertMsg = JSON.parse(JSON.stringify(e))["reason"];
     if (revertMsg) toast.error(revertMsg.replace("execution reverted: ", ""));
@@ -446,15 +477,16 @@ export async function lockToken(amount, poolAddress, s_address, lockTime, provid
 }
 
 export async function unlockToken(poolAddress, stakingId, newLockTime, isWithdrawing, provider) {
-  try{
+  try {
+    console.log(poolAddress, stakingId, newLockTime, isWithdrawing)
     const poolContract = getContract(poolAddress, provider);
     const tx = await poolContract.unlockToken(stakingId, newLockTime, isWithdrawing);
     const receipt = await tx.wait(1);
-    if (receipt.confirmations){
+    if (receipt.confirmations) {
       return true;
     }
     return false;
-  }catch(e){
+  } catch (e) {
     console.log(e);
     const revertMsg = JSON.parse(JSON.stringify(e))["reason"];
     if (revertMsg) toast.error(revertMsg.replace("execution reverted: ", ""));
@@ -470,10 +502,10 @@ export async function getPoolInfo(pool, account, chainId) {
     const rTokenContract = getERC20ContractObj(pool.r_address, jsonProvider);
     const _rDecimals = await rTokenContract.decimals();
     const poolContract = getContract(pool.address, jsonProvider);
-    const [tStakedSupply, tBoostedSupply, tRewardSupply, nftMultiplier, maxLockTime, stakingIds, emission] = await Promise.all([
+    const [tStakedSupply, tBoostedSupply, startAt, nftMultiplier, maxLockTime, stakingIds, _emission] = await Promise.all([
       poolContract.stakedSupply(),
       poolContract.boostedSupply(),
-      poolContract.rewardSupply(),
+      poolContract.startAt(),
       poolContract.nftMultiplier(),
       poolContract.maxLockTime(),
       poolContract.viewUserInfo(account),
@@ -483,32 +515,36 @@ export async function getPoolInfo(pool, account, chainId) {
     let nftTokenIds = [];
     let mStakedAmount = 0;
     let myReward = 0;
-    for (const stakingId of stakingIds){
-      const [ stakingInfo ] = await poolContract.viewStakingInfo(stakingId);
+    for (const stakingId of stakingIds) {
+      const _stakingInfo = await poolContract.viewStakingInfo(stakingId);
+      const stakingInfo = { ..._stakingInfo }
       stakingInfo.stakingId = stakingId;
-      stakingInfo.tokenAmount = parseFloat(ethers.utils.formatUnits(stakingInfo.tokenAmount, _sDecimals));
+      stakingInfo.tokenAmount = parseFloat(ethers.utils.formatUnits(_stakingInfo.tokenAmount.toString(), _sDecimals));
       mStakedAmount += stakingInfo.tokenAmount;
-      stakingInfo.boostedAmount = stakingInfo.boostedAmount.toNumber();
-      stakingInfo.lastDepositAt = stakingInfo.lastDepositAt.toNumber();
-      stakingInfo.lockTime = stakingInfo.lockTime.toNumber();
-      stakingInfo.rewardAmount = await poolContract.pendingReward(stakingId);
-      myReward = stakingInfo.rewardAmount;
-      nftTokenIds.push(stakingInfo.nftIds);
+      stakingInfo.boostedAmount = parseFloat(ethers.utils.formatUnits(_stakingInfo.boostedAmount.toString(), _sDecimals));;
+      stakingInfo.lastDepositAt = _stakingInfo.lastDepositAt.toNumber();
+      stakingInfo.lockTime = _stakingInfo.lockTime.toNumber();
+      stakingInfo.rewardAmount = await poolContract['pendingReward(bytes32)'](stakingId);
+      stakingInfo.rewardAmount = parseFloat(ethers.utils.formatUnits(stakingInfo.rewardAmount.toString(), _rDecimals));;
+      myReward += stakingInfo.rewardAmount;
+      if (stakingInfo.nftIds.length > 0)nftTokenIds = [...nftTokenIds, ...stakingInfo.nftIds];
       stakingInfos.push(stakingInfo);
     }
-    if (nftTokenIds.length > 0)nftTokenIds = nftTokenIds.filter((elem, index, self) => {
+    if (nftTokenIds.length > 0) nftTokenIds = nftTokenIds.filter((elem, index, self) => {
       return index === self.indexOf(elem);
     });
+    const emission = parseFloat(ethers.utils.formatUnits(_emission, _rDecimals));
     pool.tokenIds = nftTokenIds;
     pool.tStakedSupply = parseFloat(ethers.utils.formatUnits(tStakedSupply, _sDecimals));
-    pool.tBoostedSupply = tBoostedSupply.toNumber();
-    pool.rewardSupply = parseFloat(ethers.utils.formatUnits(tRewardSupply, _rDecimals));
+    //pool.tBoostedSupply = parseFloat(ethers.utils.formatUnits(tBoostedSupply, _sDecimals));
+    pool.rewardSupply = (emission * (Date.now() / 1000 - startAt));
     pool.nftMultiplier = nftMultiplier / 100;
     pool.maxLockTime = maxLockTime.toNumber() / 24 / 3600;
     pool.stakingInfos = stakingInfos;
-    pool.myReward = parseFloat(ethers.utils.formatUnits(myReward, _rDecimals));
-    pool.myStakedAmount = parseFloat(ethers.utils.formatUnits(mStakedAmount, _sDecimals));
-    pool.apr = pool.tStakedSupply === 0 ? 0 : parseFloat(ethers.utils.formatEther(emission)) * ( 365 * 24 * 3600 ) * pool.r_price / (pool.tStakedSupply * pool.s_price);
+    pool.myReward = myReward;
+    pool.myStakedAmount = mStakedAmount;
+    pool.apr = pool.tStakedSupply === 0 ? 0 : emission * (365 * 24 * 3600) * pool.r_price / (pool.tStakedSupply * pool.s_price);
+    console.log(pool);
     //pool.apr = emission * seconds_per_year * reward token price / (total staked token amount * staking token price)
     return pool;
   } catch (e) {

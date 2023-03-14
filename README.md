@@ -1,1 +1,1 @@
-# BoredMemes-Frontend UI
+# Pixia Ai-Frontend UI

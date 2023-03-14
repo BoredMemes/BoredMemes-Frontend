@@ -1,137 +1,17 @@
-import FilledButton from 'components/Buttons/FilledButton';
 import "../../custom.d.ts"
 import { useStyles } from './style';
 import { useContext, useEffect, useState } from 'react';
-import Expand from 'react-expand-animated';
 import Modal from 'components/modal';
-import Checkbox from '@mui/material/Checkbox';
 import Web3WalletContext from 'hooks/Web3ReactManager';
 import { toast } from 'react-toastify';
 import ThemeContext from "theme/ThemeContext"
 import { BigNumber, ethers } from 'ethers';
 import { createNewPool, getBalanceOf, getBalanceOfBNB, getBNBStakingInfo, getPoolInfo, harvest, isAddress, onInvest, onMyBuyShares, onSellShares, stakeBoostNFT, stakeToken, unlockToken } from 'utils/contracts';
 import { BNBStakingInfo } from 'utils/types';
-import FormControlLabel from '@mui/material/FormControlLabel';
-import Switch, { SwitchProps } from '@mui/material/Switch';
 import axios from 'axios';
-import { styled } from '@mui/material/styles';
-import Select from '@mui/material/Select';
-import Box from '@mui/material/Box';
 import MyTooltip from 'components/Widgets/MyTooltip';
-import CheckLock from 'components/Forms/CheckLock';
-import MenuItem from '@mui/material/MenuItem';
 import moment from 'moment';
 
-const CustomSwitch = styled(Switch)(({ theme }) => ({
-  padding: 8,
-  width: 135,
-  marginLeft: -15,
-  height: 54,
-  borderRadius: '20px !important',
-  '& .MuiSwitch-switchBase': {
-    marginTop: 10,
-    padding: 0,
-    transform: 'translateX(10px)',
-    '&.Mui-checked': {
-      value: 'sg',
-      color: '#fff',
-      transform: 'translateX(66px)',
-      // '& .MuiSwitch-thumb:before': {
-      //   background: `url('assets/icons/lock_icon.svg')`,
-      //   backgroundRepeat: 'no-repeat'
-      // },
-      // '& + .MuiSwitch-track': {
-      //   opacity: 1,
-      //   backgroundColor: theme.palette.mode === 'dark' ? '#eee' : '#000',
-      //   border: 'solid 1px #ef1ce3'
-      // },
-    },
-  },
-  '& .MuiSwitch-track': {
-    borderRadius: 22,
-    background: 'transparent !important',
-    border: 'solid 1px #aaa',
-    '&:before, &:after': {
-      content: '""',
-      position: 'absolute',
-      top: '50%',
-      transform: 'translateY(-50%)',
-      width: 21,
-      height: 21,
-    },
-    // '&:before': {
-    //   backgroundImage: `url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" height="16" width="16" viewBox="0 0 24 24"><path fill="${encodeURIComponent(
-    //     theme.palette.getContrastText(theme.palette.primary.main),
-    //   )}" d="M21,7L9,19L3.5,13.5L4.91,12.09L9,16.17L19.59,5.59L21,7Z"/></svg>')`,
-    //   left: 12,
-    // },
-    // '&:after': {
-    //   backgroundImage: `url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" height="16" width="16" viewBox="0 0 24 24"><path fill="${encodeURIComponent(
-    //     theme.palette.getContrastText(theme.palette.primary.main),
-    //   )}" d="M19,13H5V11H19V13Z" /></svg>')`,
-    //   right: 12,
-    // },
-  },
-  '& .MuiSwitch-thumb': {
-    background: '#030316',
-    border: 'solid 1px grey',
-    boxShadow: 'none',
-    width: 56,
-    height: 31,
-    margin: 2,
-    borderRadius: '15px !important'
-  },
-}));
-
-const MaterialUISwitch = styled(Switch)(({ theme }) => ({
-  width: 60,
-  height: 37,
-  padding: 7,
-  '& .MuiSwitch-switchBase': {
-    margin: 1,
-    padding: 0,
-    transform: 'translateX(8px)',
-    '&.Mui-checked': {
-      value: 'sg',
-      color: '#fff',
-      transform: 'translateX(32px)',
-      '& .MuiSwitch-thumb:before': {
-        background: `url('assets/icons/lock_icon.svg')`,
-        backgroundRepeat: 'no-repeat'
-      },
-      '& + .MuiSwitch-track': {
-        opacity: 1,
-        backgroundColor: theme.palette.mode === 'dark' ? '#eee' : '#000',
-        border: 'solid 1px #ef1ce3'
-      },
-    },
-  },
-  '& .MuiSwitch-thumb': {
-    backgroundColor: theme.palette.mode === 'dark' ? 'transparent' : 'transparent',
-    width: 22,
-    height: 14,
-    marginTop: 8,
-    boxShadow: 'none',
-    '&:before': {
-      content: "''",
-      position: 'absolute',
-      width: '100%',
-      height: '100%',
-      left: 0,
-      top: 8,
-      backgroundRepeat: 'no-repeat',
-      backgroundPosition: 'center',
-      backgroundSize: 'contain',
-      background: `url('assets/icons/unlock-icon.png')`,
-    },
-  },
-  '& .MuiSwitch-track': {
-    opacity: 1,
-    backgroundColor: theme.palette.mode === 'dark' ? '#eee' : '#000',
-    border: 'solid 1px #ef1ce3',
-    borderRadius: 20 / 2,
-  },
-}));
 const Miner = () => {
   const classes = useStyles();
   const { loginStatus, chainId, account, library } = useContext(Web3WalletContext)
@@ -172,7 +52,10 @@ const Miner = () => {
   const [selectedStakingInfo, setSelectedStakingInfo] = useState(undefined);
 
   const handleSelectChange = (event) => {
-    setSelectedStakingInfo(event.target.value);
+    if (selectedPool && event.target.value.length !== 0) {
+      const _stakingInfo = selectedPool.stakingInfos.filter((info) => info.stakingId === event.target.value);
+      setSelectedStakingInfo(_stakingInfo[0]);
+    }
   };
 
   const [isFree, setFree] = useState(false);
@@ -311,7 +194,7 @@ const Miner = () => {
     }
   }, [progress1, stakeModal, balanceOfToken])
   const onMax = async () => {
-    setAmount(balanceOfToken)
+    setProgress1(100);
   }
 
   const [lockDays, setLockDays] = useState(0);
@@ -371,8 +254,10 @@ const Miner = () => {
     for (const pool of pools) {
       if (pool.address === pool_.address) {
         const _pool = await getPoolInfo(pool, account, chainId);
-        _pool.isUp = true;
-        _pools.push(_pool);
+        if (_pool) {
+          _pool.isUp = true;
+          _pools.push(_pool);
+        }
       } else _pools.push(pool);
     }
     setPools([..._pools]);
@@ -406,7 +291,7 @@ const Miner = () => {
     try {
       if (lockDays < 0) return toast.error("The lock date could not be 0.")
       if (amount <= 0) return toast.error("The amount could not be 0 or less.")
-      const isStaked = await stakeToken(selectedPool?.address, selectedPool?.s_address, amount, lockDays, library.getSigner());
+      const isStaked = await stakeToken(selectedPool?.address, selectedPool?.s_address, amount, lockDays, account, library.getSigner());
       if (isStaked) {
         toast.success("Staked Successfully");
         setStakeModal(false);
@@ -437,10 +322,11 @@ const Miner = () => {
 
   const onUnLockToken = async (withdrawMode) => { // 0: withdraw, 1: release, 2: relock
     try {
+      console.log(selectedStakingInfo, selectedPool, withdrawMode);
       if (selectedStakingInfo && selectedPool) {
         const isUnlocked = await unlockToken(
           selectedPool.address,
-          selectedPool.stakingId,
+          selectedStakingInfo.stakingId,
           withdrawMode === 2 ? selectedStakingInfo.lockTime : 0,
           withdrawMode === 1,
           library.getSigner()
@@ -458,15 +344,15 @@ const Miner = () => {
 
   //-------------Create Pool-----------------------// By God Crypto
 
-  const [ stakingToken, setStakingToken ] = useState("0x60d4db9b534ef9260a88b0bed6c486fe13e604fc")
-  const [ rewardToken, setRewardToken ] = useState("0x60d4db9b534ef9260a88b0bed6c486fe13e604fc")
-  const [ emission, setEmission ] = useState(0.001)
-  const [ maxLockTime, setMaxLockTime ] = useState(360);
-  const [ maxLockMultiplier, setMaxLockMultiplier ] = useState(12);
-  const [ earlyWithdrawFee, setEarlyWithdrawFee ] = useState(3)
-  const [ early_period, setEarlyPeriod ] = useState(3)
-  const [ boostingNft, setBoostingNft ] = useState("0x74841159b1721E9EBd3d822254c1Fb56dd5cc091")
-  const [ nftMultiplier, setNftMultiplier ] = useState(1)
+  const [stakingToken, setStakingToken] = useState("0x60d4db9b534ef9260a88b0bed6c486fe13e604fc")
+  const [rewardToken, setRewardToken] = useState("0x60d4db9b534ef9260a88b0bed6c486fe13e604fc")
+  const [emission, setEmission] = useState(0.001)
+  const [maxLockTime, setMaxLockTime] = useState(360);
+  const [maxLockMultiplier, setMaxLockMultiplier] = useState(12);
+  const [earlyWithdrawFee, setEarlyWithdrawFee] = useState(3)
+  const [early_period, setEarlyPeriod] = useState(3)
+  const [boostingNft, setBoostingNft] = useState("0x74841159b1721E9EBd3d822254c1Fb56dd5cc091")
+  const [nftMultiplier, setNftMultiplier] = useState(1)
 
   const onCreatePool = async (creationPlan) => {
     //Validation Handling
@@ -474,10 +360,10 @@ const Miner = () => {
     //Validation Handling End
     if (!stakingToken || !rewardToken || !emission || !maxLockTime || !maxLockMultiplier || !earlyWithdrawFee || !early_period || !boostingNft || !nftMultiplier)
       return toast.error("Fill out all fields");
-    if ( stakingToken.length === 0 || rewardToken.length === 0 || boostingNft.length === 0){
+    if (stakingToken.length === 0 || rewardToken.length === 0 || boostingNft.length === 0) {
       return toast.error("Contract Address should not be empty.")
     }
-    if (emission <= 0 || maxLockTime <= 0 ||maxLockMultiplier <= 0 ||earlyWithdrawFee <= 0 ||early_period <= 0 ||nftMultiplier <= 0){
+    if (emission <= 0 || maxLockTime <= 0 || maxLockMultiplier <= 0 || earlyWithdrawFee <= 0 || early_period <= 0 || nftMultiplier <= 0) {
       return toast.error("The constants should not be more than 0.")
     }
 
@@ -485,7 +371,7 @@ const Miner = () => {
       const startTime = Math.floor(Date.now() / 1000) + 3000;
       const endTime = startTime + 10 * 365 * 24 * 60 * 60; //startTime + 10 years
       //Keep above startTime and endTime, these 2 values are not got from frontend.
-      const _maxLockTime = maxLockTime * 24 * 3600; //Max Lock Period(Days)
+      const _maxLockTime = Math.floor(maxLockTime * 24 * 3600); //Max Lock Period(Days)
       const _nftMultiplier = nftMultiplier * 100; //NFT Booster Max Multiplier 1 = 100 / 100
       const _maxLockMultiplier = maxLockMultiplier * 10000;//Max Lock Multiplier 12 = 120000 / 10000
       const _earlyWithdrawFee = earlyWithdrawFee * 100; // Cooldown Fee 3 = 300 / 100
@@ -602,8 +488,8 @@ const Miner = () => {
                     <img src={pool.s_image} height={60} />
                     <div style={{ marginLeft: 10 }}>
                       <h4>${pool.s_symbol}</h4>
-                      <p>{pool?.tStakedSupply ? pool?.tStakedSupply : 0}</p>
-                      <span>{`≈ $${pool?.tStakedSupply ? pool?.tStakedSupply * pool.s_price : 0}`}</span>
+                      <p>{pool?.tStakedSupply ? pool?.tStakedSupply.toLocaleString(undefined, { maximumFractionDigits: 2 }) : 0}</p>
+                      <span>{`≈ $${pool?.tStakedSupply ? (pool?.tStakedSupply * pool.s_price).toLocaleString(undefined, { maximumFractionDigits: 2 }) : 0}`}</span>
                     </div>
                   </div>
 
@@ -618,16 +504,16 @@ const Miner = () => {
                           </>}
                       /> */}
                     </div>
-                    <p> {`${pool?.apr ? pool?.apr : 0}%`}</p>
+                    <p> {`${pool?.apr ? pool?.apr.toLocaleString(undefined, { maximumFractionDigits: 2 }) : 0}%`}</p>
                   </div>
-                  <div>
+                  {/* <div>
                     <h5>Total NFT Staked</h5>
                     <h3>{`${pool?.tBoostedSupply ? pool?.tBoostedSupply : 0}`} </h3>
-                  </div>
+                  </div> */}
                   <div>
                     <h5>Total Earned ${pool.r_symbol}</h5>
-                    <strong>{`${pool?.rewardSupply ? pool?.rewardSupply : 0}`} </strong>
-                    <span>{`≈ $${pool?.rewardSupply ? pool?.rewardSupply * pool.r_price : 0}`}</span>
+                    <strong>{`${pool?.rewardSupply ? pool?.rewardSupply.toLocaleString(undefined, { maximumFractionDigits: 2 }) : 0}`} </strong>
+                    <span>{`≈ $${pool?.rewardSupply ? (pool?.rewardSupply * pool.r_price).toLocaleString(undefined, { maximumFractionDigits: 2 }) : 0}`}</span>
                   </div>
 
                   {/* <div style={{ padding: 6 }}>
@@ -653,34 +539,37 @@ const Miner = () => {
                 <div className={pool.isUp ? `${classes.withdraw_card} accordion_panel_block` : `${classes.withdraw_card} accordion_panel_none`}>
                   <div>
                     <h5>My staked ${pool.s_symbol}</h5>
-                    <p style={{ display: 'flex' }}>{pool?.myStakedAmount}
+                    <p style={{ display: 'flex' }}>{!pool?.myStakedAmount ? 0 : pool?.myStakedAmount.toLocaleString(undefined, { maximumFractionDigits: 2 })}
                       <MyTooltip
                         text={
                           <>
                             {pool?.stakingInfos && pool?.stakingInfos.map((stakingInfo, idx) => {
                               return (
                                 <p>
-                                  {stakingInfo.tokenAmount} ${pool.s_symbol} - {stakingInfo.isLock ? `Unlocks ${moment(stakingInfo?.lockTime * 1000).format("MMM DD YYYY HH:mm")}` : "Unlockable now"}
+                                  {stakingInfo.tokenAmount.toLocaleString(undefined, { maximumFractionDigits: 2 })}
+                                  ${pool.s_symbol} -
+                                  {stakingInfo.isLocked ? `Unlocks ${moment((stakingInfo?.lastDepositAt + stakingInfo?.lockTime) * 1000).format("MMM DD, YYYY")}` : "Unlockable now"}
                                 </p>
                               )
                             })}
                           </>}
                       />
                     </p>
-                    <span>{`≈ $${pool?.myStakedAmount * pool.s_price}`}</span>
+                    <span>{`≈ $${(pool?.myStakedAmount * pool.s_price).toLocaleString(undefined, { maximumFractionDigits: 2 })}`}</span>
                   </div>
 
                   <div>
                     <h5>My Earned ${pool.r_symbol}</h5>
-                    <h6>{pool?.myReward}</h6>
-                    <span style={{ display: 'flex' }}>≈ ${pool?.myReward ? pool?.myReward * pool.r_price : 0}
+                    <h6>{!pool?.myReward ? 0 : pool?.myReward.toLocaleString(undefined, { maximumFractionDigits: 2 })}</h6>
+                    <span style={{ display: 'flex' }}>≈ ${pool?.myReward ? (pool?.myReward * pool.r_price).toLocaleString(undefined, { maximumFractionDigits: 2 }) : 0}
                       <MyTooltip
                         text={
                           <>
                             {pool?.stakingInfos && pool?.stakingInfos.map((stakingInfo, idx) => {
                               return (
                                 <p>
-                                  {`${stakingInfo.rewardAmount} $${pool.r_symbol} - ${stakingInfo.rewardAmount * pool.r_price}`}
+                                  {`${stakingInfo.rewardAmount.toLocaleString(undefined, { maximumFractionDigits: 2 })} 
+                                  $${pool.r_symbol} - ${(stakingInfo.rewardAmount * pool.r_price).toLocaleString(undefined, { maximumFractionDigits: 2 })}`}
                                 </p>
                               )
                             })}
@@ -747,7 +636,9 @@ const Miner = () => {
             <div className={classes.modalContent}>
               <h3 className='w-100 mt-2'>Enter ${selectedPool?.s_symbol} Amount to stake</h3>
               <span className='input-span'>
-                <input type="number" onChange={e => onChangeVal(e)} placeholder={"Amount"} value={amount === 0 ? "Amount" : amount} />
+                <input type="number" onChange={e => onChangeVal(e)} placeholder={"Amount"}
+                  value={amount === 0 ? "Amount" : amount}
+                />
                 <button onClick={onMax}>Max</button>
               </span>
               <h5>Balance : {balanceOfToken.toLocaleString(undefined, { maximumFractionDigits: 2 })} ${selectedPool?.s_symbol}</h5>
@@ -874,7 +765,7 @@ const Miner = () => {
         </>}
       />
       <Modal
-        show={withdrawModal === 1}
+        show={withdrawModal === 1 && selectedPool}
         maxWidth='sm'
         children={<>
           <div className={classes.modal}>
@@ -883,22 +774,20 @@ const Miner = () => {
                 <img src='assets/imgs/farm-stake-avatar1.png' />
                 <div>
                   <h3>Withdraw from {selectedPool?.s_symbol} in Farm</h3>
-                  <p>{selectedPool?.tStakedSupply} ${selectedPool?.s_symbol} staked</p>
+                  <p>{selectedPool?.tStakedSupply.toLocaleString(undefined, { maximumFractionDigits: 2 })} ${selectedPool?.s_symbol} staked</p>
                 </div>
               </span>
             </div>
             <div className={classes.modalContent}>
               <h3 className='w-100 mt-2'>Select lock</h3>
-              <select className={classes.lockSelect} value={selectedStakingInfo ?
-                `${selectedStakingInfo?.tokenAmount} &${selectedPool?.s_symbol} - 
-                ${selectedStakingInfo?.isLocked ? "Unlockable now" : "Unlocks" + moment(selectedStakingInfo?.lockTime * 1000).format("MMM DD, YYYY")}` : "Select Option to stake."
-              } onChange={handleSelectChange}>
+              <select className={classes.lockSelect} value={selectedStakingInfo?.stakingId} onChange={handleSelectChange}>
+                <option value="">Select One Option</option>
                 {
                   selectedPool?.stakingInfos && selectedPool?.stakingInfos.map((stakingInfo, idx) => {
                     return (
-                      <option value={stakingInfo}>{
-                        `${stakingInfo.tokenAmount} &${selectedPool?.s_symbol} - 
-                        ${stakingInfo.isLocked ? "Unlockable now" : "Unlocks" + moment(stakingInfo?.lockTime * 1000).format("MMM DD, YYYY")}`
+                      <option value={stakingInfo.stakingId}>{
+                        `${stakingInfo.tokenAmount.toLocaleString(undefined, { maximumFractionDigits: 2 })} $${selectedPool?.s_symbol} - 
+                        ${!stakingInfo.isLocked ? "Unlockable now" : "Unlocks " + moment((stakingInfo?.lastDepositAt + stakingInfo?.lockTime) * 1000).format("MMM DD, YYYY")}`
                       }</option>
                     )
                   })
@@ -956,7 +845,11 @@ const Miner = () => {
                 WebkitBackgroundClip: 'text',
                 WebkitTextFillColor: 'transparent',
                 height: '45px', borderRadius: '15px', textAlign: 'center', border: 'dashed 1px #ff589d', color: '#be16d2', alignSelf: 'center', cursor: 'pointer'
-              }} onClick={() => setWithdrawModal(0)} className="cancel-btn">Cancel</button>
+              }} onClick={() => {
+                setWithdrawModal(0);
+                setSelectedPool(undefined);
+                setSelectedStakingInfo(undefined);
+              }} className="cancel-btn">Cancel</button>
               <button style={{
                 padding: '5px', background: 'linear-gradient(47.43deg, #2A01FF 0%, #FF1EE1 57%, #FFB332 100%)', width: '50%',
                 height: '45px', borderRadius: '15px', textAlign: 'center', border: 'none', color: 'white', alignSelf: 'center', cursor: 'pointer'
@@ -970,7 +863,7 @@ const Miner = () => {
       />
 
       <Modal
-        show={withdrawModal === 2}
+        show={withdrawModal === 2 && selectedPool}
         maxWidth='sm'
         children={<>
           <div className={classes.modal}>
@@ -985,16 +878,14 @@ const Miner = () => {
             </div>
             <div className={classes.modalContent}>
               <h3 className='w-100 mt-2'>Select lock</h3>
-              <select className={classes.lockSelect} value={selectedStakingInfo ?
-                `${selectedStakingInfo?.tokenAmount} &${selectedPool?.s_symbol} - 
-                ${selectedStakingInfo?.isLocked ? "Unlockable now" : "Unlocks" + moment(selectedStakingInfo?.lockTime * 1000).format("MMM DD, YYYY")}` : "Select Option to stake."
-              } onChange={handleSelectChange}>
+              <select className={classes.lockSelect} value={selectedStakingInfo?.stakingId} onChange={handleSelectChange}>
+                <option value="">Select One Option</option>
                 {
                   selectedPool?.stakingInfos && selectedPool?.stakingInfos.map((stakingInfo, idx) => {
                     return (
-                      <option value={stakingInfo}>{
-                        `${stakingInfo.tokenAmount} &${selectedPool?.s_symbol} - 
-                        ${stakingInfo.isLocked ? "Unlockable now" : "Unlocks" + moment(stakingInfo?.lockTime * 1000).format("MMM DD, YYYY")}`
+                      <option value={stakingInfo.stakingId}>{
+                        `${stakingInfo.tokenAmount.toLocaleString(undefined, { maximumFractionDigits: 2 })} $${selectedPool?.s_symbol} - 
+                          ${!stakingInfo.isLocked ? "Unlockable now" : "Unlocks " + moment((stakingInfo?.lastDepositAt + stakingInfo?.lockTime) * 1000).format("MMM DD, YYYY")}`
                       }</option>
                     )
                   })
@@ -1011,7 +902,11 @@ const Miner = () => {
                 WebkitBackgroundClip: 'text',
                 WebkitTextFillColor: 'transparent',
                 height: '45px', borderRadius: '15px', textAlign: 'center', border: 'dashed 1px #ff589d', color: '#be16d2', alignSelf: 'center'
-              }} onClick={() => setWithdrawModal(0)} className="cancel-btn">Cancel</button>
+              }} onClick={() => {
+                setWithdrawModal(0);
+                setSelectedPool(undefined);
+                setSelectedStakingInfo(undefined);
+              }} className="cancel-btn">Cancel</button>
               <button style={{
                 padding: '5px', width: '50%', background: 'linear-gradient(47.43deg, #2A01FF 0%, #FF1EE1 57%, #FFB332 100%);',
                 WebkitBackgroundClip: 'text',
@@ -1060,7 +955,7 @@ const Miner = () => {
                       </>}
                   />
                 </p>
-                <input type="text" placeholder='0x0000dead' value={stakingToken} onChange={(e) => setStakingToken(e.target.value)}/>
+                <input type="text" placeholder='0x0000dead' value={stakingToken} onChange={(e) => setStakingToken(e.target.value)} />
               </div>
               {/* <div style={{ position: 'relative' }}>
                 <img src='assets/imgs/farm-stake-avatar1.png' width={50} style={{ position: 'absolute', top: 38, left: 8 }} />
@@ -1076,7 +971,7 @@ const Miner = () => {
                       </>}
                   />
                 </p>
-                <input type="text" placeholder='0x0000dead' value={rewardToken} onChange={(e) => setRewardToken(e.target.value)}/>
+                <input type="text" placeholder='0x0000dead' value={rewardToken} onChange={(e) => setRewardToken(e.target.value)} />
               </div>
               <div>
                 <p style={{ display: 'flex' }}>Reward Amount per second (in ETH)
@@ -1087,7 +982,7 @@ const Miner = () => {
                       </>}
                   />
                 </p>
-                <input type="number" placeholder='0.001' value={emission} onChange={(e) => setEmission(parseFloat(e.target.value))}/>
+                <input type="number" placeholder='0.001' value={emission} onChange={(e) => setEmission(parseFloat(e.target.value))} />
               </div>
               <div>
                 <p style={{ display: 'flex' }}>Max Lock Period (Days)
@@ -1098,7 +993,7 @@ const Miner = () => {
                       </>}
                   />
                 </p>
-                <input type="number" placeholder='365' value={maxLockTime} onChange={(e) => setMaxLockTime(parseFloat(e.target.value))}/>
+                <input type="number" placeholder='365' value={maxLockTime} onChange={(e) => setMaxLockTime(parseFloat(e.target.value))} />
               </div>
               <div>
                 <p style={{ display: 'flex' }}>Max Lock Multiplier
@@ -1110,7 +1005,7 @@ const Miner = () => {
                       </>}
                   />
                 </p>
-                <input type="number" placeholder='365' value={maxLockMultiplier} onChange={(e) => setMaxLockMultiplier(parseFloat(e.target.value))}/>
+                <input type="number" placeholder='365' value={maxLockMultiplier} onChange={(e) => setMaxLockMultiplier(parseFloat(e.target.value))} />
               </div>
               <h3 style={{ color: '#eee !important', textAlign: 'left', width: '100%', marginTop: '15px', display: 'flex' }}>Cooldown
                 <MyTooltip
@@ -1123,13 +1018,13 @@ const Miner = () => {
               <div style={{ display: 'flex', textAlign: 'center', justifyContent: 'between' }}>
                 <div style={{ width: '47.5%' }}>
                   <p>Early Withdraw Period (Days)</p>
-                  <input type="number" placeholder='3' style={{ textAlign: 'center' }} 
+                  <input type="number" placeholder='3' style={{ textAlign: 'center' }}
                     value={early_period} onChange={(e) => setEarlyPeriod(parseFloat(e.target.value))}
                   />
                 </div>
                 <div style={{ width: '47.5%' }}>
                   <p>Early Withdraw Fee (%)</p>
-                  <input type="text" placeholder='120' style={{ textAlign: 'center' }} 
+                  <input type="text" placeholder='120' style={{ textAlign: 'center' }}
                     value={earlyWithdrawFee} onChange={(e) => setEarlyWithdrawFee(parseFloat(e.target.value))}
                   />
                 </div>
@@ -1148,7 +1043,7 @@ const Miner = () => {
                       </>}
                   />
                 </p >
-                <input type="text" placeholder='0x0000dead' value={boostingNft} onChange={(e) => setBoostingNft(e.target.value)}/>
+                <input type="text" placeholder='0x0000dead' value={boostingNft} onChange={(e) => setBoostingNft(e.target.value)} />
               </div>
               <div>
                 <p style={{ display: 'flex' }}>NFT Booster Max Multiplier
@@ -1161,7 +1056,7 @@ const Miner = () => {
                       </>}
                   />
                 </p >
-                <input type="number" placeholder='365' value={nftMultiplier} onChange={(e) => setNftMultiplier(parseFloat(e.target.value))}/>
+                <input type="number" placeholder='365' value={nftMultiplier} onChange={(e) => setNftMultiplier(parseFloat(e.target.value))} />
               </div>
               <div className='btn-wrapper' style={{ display: 'flex' }}>
                 <button style={{
@@ -1225,16 +1120,14 @@ const Miner = () => {
                 </p>
               </div>}
               <h5 className='w-100 mt-2' style={{ textAlign: 'left' }}>Select lock</h5>
-              <select className={classes.lockSelect} value={selectedStakingInfo ?
-                `${selectedStakingInfo?.tokenAmount} &${selectedPool?.s_symbol} - 
-                ${selectedStakingInfo?.isLocked ? "Unlockable now" : "Unlocks" + moment(selectedStakingInfo?.lockTime * 1000).format("MMM DD, YYYY")}` : "Select Option to stake."
-              } onChange={handleSelectChange}>
+              <select className={classes.lockSelect} value={selectedStakingInfo?.stakingId} onChange={handleSelectChange}>
+                <option value="">Select One Option</option>
                 {
                   selectedPool?.stakingInfos && selectedPool?.stakingInfos.map((stakingInfo, idx) => {
                     return (
-                      <option value={stakingInfo}>{
-                        `${stakingInfo.tokenAmount} &${selectedPool?.s_symbol} - 
-                        ${stakingInfo.isLocked ? "Unlockable now" : "Unlocks" + moment(stakingInfo?.lockTime * 1000).format("MMM DD, YYYY")}`
+                      <option value={stakingInfo.stakingId}>{
+                        `${stakingInfo.tokenAmount.toLocaleString(undefined, { maximumFractionDigits: 2 })} $${selectedPool?.s_symbol} - 
+                        ${!stakingInfo.isLocked ? "Unlockable now" : "Unlocks " + moment((stakingInfo?.lastDepositAt + stakingInfo?.lockTime) * 1000).format("MMM DD, YYYY")}`
                       }</option>
                     )
                   })
@@ -1277,6 +1170,7 @@ const Miner = () => {
                 WebkitTextFillColor: 'transparent',
                 height: '45px', borderRadius: '15px', textAlign: 'center', border: 'dashed 1px #ff589d', color: '#be16d2', alignSelf: 'center', cursor: 'pointer'
               }} onClick={() => {
+                setWithdrawModal(0);
                 setBoostModal(false);
                 setSelectedPool(undefined);
                 setSelectedStakingInfo(undefined);
