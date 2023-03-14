@@ -241,7 +241,13 @@ h1 {
 
     }
   }
-
+  .spinner {
+    &__circle {
+      &-inner {
+        background-color: #333333 !important;
+      }
+    }
+  }
   select {
     background: #030316;
     color: #ddd !important;
@@ -917,4 +923,67 @@ h1 {
   100% {
     transform: rotate(-360deg);
   }
+}
+
+
+
+$primaryColor: #fff;
+$secondaryColor: #eee;
+
+@keyframes spin {
+	100% {
+		transform: rotate(360deg);
+	}
+}
+
+* {
+	box-sizing: border-box;
+	padding: 0;
+	margin: 0;
+	text-rendering: optimizeLegibility;
+	-webkit-font-smoothing: antialiased;
+	-moz-osx-font-smoothing: grayscale;
+	-webkit-tap-highlight-color: rgba(0,0,0,0);
+}
+
+.spinner {
+	position: absolute;
+	top: 50%;
+	left: 50%;
+	transform: translate(-50%, -50%);
+
+	&__circle {
+		position: relative;
+		width: 54px;
+		height: 54px;
+		overflow: hidden;
+		background:linear-gradient(47.43deg, #2A01FF 0%, #FF1EE1 57%, #FFB332 100%);
+		border-radius: 100%;
+		animation: spin 1s infinite linear;
+
+		&-inner,
+		&-gradient {
+			position: absolute;
+			width: 40px;
+			height: 40px;
+			transform: translate(-50%, -50%);
+		}
+
+		&-inner {
+			top: 50%;
+			left: 50%;
+			background-color: white;
+			border-radius: 100%;
+		}
+
+		&-gradient {
+			top: -24px;
+			left: 6px;
+			background-color: $primaryColor;
+			background-image:    -moz-linear-gradient(0deg,$primaryColor 0%,$secondaryColor 50%);
+			background-image: -webkit-linear-gradient(0deg,$primaryColor 0%,$secondaryColor 50%);
+			background-image:         linear-gradient(0deg,$primaryColor 0%,$secondaryColor 50%);
+			transform: rotate(-45deg);
+		}
+	}
 }
