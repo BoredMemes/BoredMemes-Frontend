@@ -6,7 +6,7 @@ import Web3WalletContext from 'hooks/Web3ReactManager';
 import { toast } from 'react-toastify';
 import ThemeContext from "theme/ThemeContext"
 import { ethers } from 'ethers';
-import { addReward, createNewPool, getBalanceOf, getPoolInfo, harvest, stakeBoostNFT, stakeToken, unlockToken, unstakeToken } from 'utils/contracts';
+import { addReward, createNewPool, getBalanceOf, getPoolInfo, harvest, isAddress, stakeBoostNFT, stakeToken, unlockToken, unstakeToken } from 'utils/contracts';
 import axios from 'axios';
 import MyTooltip from 'components/Widgets/MyTooltip';
 import moment from 'moment';
@@ -24,6 +24,7 @@ const Miner = () => {
   const [selectedPool, setSelectedPool] = useState(null);
   const [switchStake, setSwitchStake] = useState(0);
   const [selectedStakingInfo, setSelectedStakingInfo] = useState(undefined);
+  const [wooAddress, setWooAddress] = useState("");
 
   const handleSelectChange = (event) => {
     if (selectedPool && event.target.value.length !== 0) {
@@ -33,7 +34,7 @@ const Miner = () => {
   };
 
   const [createCustomModal, setCreateCustomModal] = useState(false);
-  const [wooModal, setWooModal] = useState(true);
+  const [wooModal, setWooModal] = useState(false);
   const [boostModal, setBoostModal] = useState(false);
   const [processingModal, setProcessingModal] = useState(false);
   const [successTrans, setSuccessTrans] = useState(false);
@@ -345,9 +346,6 @@ const Miner = () => {
   const [nftMultiplier, setNftMultiplier] = useState(1)
 
   const onCreatePool = async (creationPlan) => {
-    //Validation Handling
-    // handle "isAddress(address)" for contract address
-    //Validation Handling End
     if (!stakingToken || !rewardToken || !emission || !maxLockTime || !maxLockMultiplier || !earlyWithdrawFee || !early_period || !boostingNft || !nftMultiplier)
       return toast.error("Fill out all fields");
     if (stakingToken.length === 0 || rewardToken.length === 0 || boostingNft.length === 0) {
@@ -442,13 +440,13 @@ const Miner = () => {
         axios.post("/api/pool/update", paramsData)
           .then((res) => {
             if (res.data.status) {
-              toast.success("New Pool is created successfully.")
               const _pools = [];
               for (const pool of res.data.pools) {
                 pool.isUp = false;
                 _pools.push(pool);
               }
               setPools(_pools);
+              setWooAddress(poolAddress);
               setSuccessTrans(true);
             }
           }).catch((err) => {
@@ -1187,11 +1185,15 @@ const Miner = () => {
                 <p style={{ display: 'flex' }}>Add reward tokens to the staking pool to start distributing rewards by clicking your logo on the farm page.</p>
                 <p style={{ display: 'flex' }}>Make sure to exclude the staking smart contract from your custom token tax, max transaction and max wallet limits.</p>
               </div>
-              <div className="address"><p>0x000000000000000000000000000000000000dEaD <img src="/assets/icons/copy-icon.png" alt="" /></p></div>
+              {
+                wooAddress && isAddress(wooAddress) &&
+                <div className="address" onClick={() => navigator.clipboard.writeText(wooAddress)}>
+                  <p>{wooAddress} <img src="/assets/icons/copy-icon.png" alt="" /></p>
+                </div>
+              }
               <div className='btn-wrapper' style={{ display: 'flex' }}>
-                <button className="staking-btn"
-                  onClick={() => setWooModal(false)}
-                >Start Staking
+                <button className="staking-btn" onClick={() => setWooModal(false)}>
+                  Start Staking
                 </button>
               </div>
             </div >
@@ -1311,7 +1313,7 @@ const Miner = () => {
         maxWidth='sm'
         children={<>
           <div className={classes.processModal}>
-            {successTrans
+            {!successTrans
               ?
               <>
                 <div className={classes.processModalTop}>
