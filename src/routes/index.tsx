@@ -8,8 +8,8 @@ import CreateArt from 'containers/CreateArt';
 import CommunityFeed from 'containers/CommunityFeed';
 import PersonalFeed from 'containers/PersonalFeed';
 import Bookmarks from 'containers/Bookmarks';
-import Miner from 'containers/Miner';
-import Stake from 'containers/Stake';
+import Staking from 'containers/Pool';
+import Hub from 'containers/Hub';
 import Login from 'containers/Login';
 import EditProfile from 'containers/EditProfile';
 import CreateNFTCollection from 'containers/CreateNFTCollection';
@@ -29,13 +29,13 @@ const Routes = () => {
           !isLoginPage &&
           <Layout>
             <ScrollToTop />
-            <Route exact path="/" component={Stake} />
+            <Route exact path="/" component={Hub} />
             <Route exact path="/my_art" component={MyArt} />
             {/* <Route exact path="/create_art" component={CreateArt} /> */}
             <Route exact path="/community_feed" component={CommunityFeed} />
             <Route exact path="/personal_feed" component={PersonalFeed} />
             <Route exact path="/bookmarks" component={Bookmarks} />
-            <Route exact path="/staking" component={Miner} />
+            <Route exact path="/staking" component={Staking} />
             <Route exact path="/settings" component={EditProfile} />
             <Route exact path="/edit_profile" component={EditProfile} />
             <Route exact path="/create_nft_collection/:id" component={CreateNFTCollection} />

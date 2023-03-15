@@ -35,7 +35,7 @@ const Miner = () => {
   const [createCustomModal, setCreateCustomModal] = useState(false);
   const [wooModal, setWooModal] = useState(true);
   const [boostModal, setBoostModal] = useState(false);
-  const [processingModal, setProcessingModal] = useState(true);
+  const [processingModal, setProcessingModal] = useState(false);
   const [successTrans, setSuccessTrans] = useState(false);
 
   const [stakeModal, setStakeModal] = useState(false);//Staking
@@ -1332,7 +1332,7 @@ const Miner = () => {
               {/* <button className="closeBtn" onClick={() => setProcessingModal(false)}><img src="/assets/icons/close_icon.svg" alt="" /></button> */}
             </div>
             {
-              successTrans ?
+              !successTrans ?
                 <div className={classes.processModalContent}>
                   <span>
                     <img src="/assets/icons/2.png" alt="" />
