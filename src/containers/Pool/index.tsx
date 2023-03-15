@@ -34,7 +34,7 @@ const Miner = () => {
   };
 
   const [createCustomModal, setCreateCustomModal] = useState(false);
-  const [wooModal, setWooModal] = useState(true);
+  const [wooModal, setWooModal] = useState(false);
   const [boostModal, setBoostModal] = useState(false);
   const [processingModal, setProcessingModal] = useState(false);
   const [successTrans, setSuccessTrans] = useState(false);
