@@ -631,7 +631,6 @@ const Miner = () => {
                 <img src='assets/imgs/farm-stake-avatar1.png' />
                 <h2>Stake ${selectedPool?.s_symbol} in Farm</h2>
               </span>
-              {/* <button className="closeBtn" onClick={() => setStakeModal(false)}><img src="/assets/icons/close_icon.svg" alt="" /></button> */}
             </div>
             <div className={classes.modalContent}>
               <h3 className='w-100 mt-2'>Enter ${selectedPool?.s_symbol} Amount to stake</h3>
@@ -1156,21 +1155,9 @@ const Miner = () => {
                 <input type="number" placeholder='365' value={nftMultiplier} onChange={(e) => setNftMultiplier(parseFloat(e.target.value))} />
               </div>
               <div className='btn-wrapper' style={{ display: 'flex' }}>
-                <button style={{
-                  padding: '5px', width: '46%',
-                  height: '65px', borderRadius: '15px', textAlign: 'center', border: 'dashed 1px #ff589d', alignSelf: 'center', marginLeft: 10,
-                  background: 'linear-gradient(47.43deg, #2A01FF 0%, #FF1EE1 16%, #FFB332 100%)',
-                  WebkitBackgroundClip: 'text',
-                  WebkitTextFillColor: 'transparent',
-                  fontWeight: 800,
-                  fontSize: 18,
-                  backgroundClip: 'text', cursor: 'pointer'
-                }} onClick={() => onCreatePool(1)} className="cancel-btn">- 3 ETH Staking Pool
+                <button onClick={() => onCreatePool(1)} className="cancel-btn">- 3 ETH Staking Pool
                   <span style={{ color: '#be16d2 !important', fontSize: 10, display: 'block' }}>No fees</span></button>
-                <button style={{
-                  padding: '5px', fontSize: 18, background: 'linear-gradient(47.43deg, #2A01FF 0%, #FF1EE1 57%, #FFB332 100%)', width: '46%', marginLeft: 10,
-                  height: '65px', borderRadius: '15px', textAlign: 'center', border: 'none', color: 'white', alignSelf: 'center', cursor: 'pointer'
-                }}
+                <button className="stake-btn"
                   onClick={() => onCreatePool(0)}
                 >Free Staking Pool <p style={{ color: 'white', fontSize: 10 }}>- 3% Fee on Rewards</p>
                 </button>
@@ -1183,6 +1170,7 @@ const Miner = () => {
       <Modal
         show={wooModal}
         maxWidth='sm'
+        contentClass={classes.wooModalRoot}
         children={<>
           <div className={classes.wooModal}>
             <div className={`${classes.wooModalTop}`}>
@@ -1199,11 +1187,9 @@ const Miner = () => {
                 <p style={{ display: 'flex' }}>Add reward tokens to the staking pool to start distributing rewards by clicking your logo on the farm page.</p>
                 <p style={{ display: 'flex' }}>Make sure to exclude the staking smart contract from your custom token tax, max transaction and max wallet limits.</p>
               </div>
+              <div className="address"><p>0x000000000000000000000000000000000000dEaD <img src="/assets/icons/copy-icon.png" alt="" /></p></div>
               <div className='btn-wrapper' style={{ display: 'flex' }}>
-                <button style={{
-                  padding: '5px', fontSize: 18, background: 'linear-gradient(47.43deg, #2A01FF 0%, #FF1EE1 57%, #FFB332 100%)', width: '46%', marginLeft: 10,
-                  height: '65px', borderRadius: '15px', textAlign: 'center', border: 'none', color: 'white', alignSelf: 'center', cursor: 'pointer'
-                }}
+                <button className="staking-btn"
                   onClick={() => setWooModal(false)}
                 >Start Staking
                 </button>
@@ -1321,55 +1307,71 @@ const Miner = () => {
 
       <Modal
         show={processingModal}
+        contentClass={classes.processModalRoot}
         maxWidth='sm'
         children={<>
           <div className={classes.processModal}>
-            <div className={classes.processModalTop}>
-              <span>
-                {theme === 'dark' ? <img src="/assets/imgs/logo.png" alt="" /> : <img src="/assets/logo.png" alt="" />}
-                <h4>Your transaction is beeing processed</h4>
-              </span>
-              {/* <button className="closeBtn" onClick={() => setProcessingModal(false)}><img src="/assets/icons/close_icon.svg" alt="" /></button> */}
-            </div>
-            {
-              !successTrans ?
+            {successTrans
+              ?
+              <>
+                <div className={classes.processModalTop}>
+                  <span>
+                    {theme === 'dark' ? <img src="/assets/imgs/logo.png" alt="" /> : <img src="/assets/logo.png" alt="" />}
+                    <h4>Your transaction is beeing processed</h4>
+                  </span>
+                </div>
                 <div className={classes.processModalContent}>
                   <span>
                     <img src="/assets/icons/2.png" alt="" />
                   </span>
                   <div className="warning">
-                    <img src="/assets/icons/warning_icon.svg" alt="" />
+                    <img src="/assets/icons/warning_icon.png" alt="" />
                     <p>Validate your transaction to continue.</p>
                   </div>
-                </div> :
-                <div className={classes.modalBtns}>
-                  <button style={{
-                    padding: '5px', width: '50%',
-                    background: 'linear-gradient(47.43deg, #2A01FF 0%, #FF1EE1 57%, #FFB332 100%);',
-                    WebkitBackgroundClip: 'text',
-                    WebkitTextFillColor: 'transparent',
-                    height: '45px', borderRadius: '15px', textAlign: 'center', border: 'dashed 1px #ff589d', color: '#be16d2', alignSelf: 'center', cursor: 'pointer'
-                  }} onClick={() => {
-                    setSuccessTrans(false);
-                    setProcessingModal(false);
-                    history.push("/my_art");
-                  }}
-                    className="cancel-btn">
-                    My Art
-                  </button>
-                  <button style={{
-                    padding: '5px', background: 'linear-gradient(47.43deg, #2A01FF 0%, #FF1EE1 57%, #FFB332 100%)', width: '50%',
-                    height: '45px', borderRadius: '15px', textAlign: 'center', border: 'none', color: 'white', alignSelf: 'center', cursor: 'pointer'
-                  }}
-                    onClick={() => {
+                </div>
+              </>
+              :
+              <>
+                <div className={classes.processModalTop}>
+                  <span className='topTitle'>
+                    <img src='assets/imgs/farm-stake-avatar1.png' />
+                    <div>
+                      <h3>Wooohoooo! </h3>
+                    </div>
+                  </span>
+                  <button className="closeBtn" onClick={() => setProcessingModal(false)}><img src="/assets/icons/close_icon_01.svg" alt="" /></button>
+                </div>
+                <p className="success-transaction">Your transaction was successful</p>
+                <div className={classes.processModalContent}>
+                  <div className={classes.modalBtns}>
+                    <button style={{
+                      padding: '5px', width: '50%',
+                      background: 'linear-gradient(47.43deg, #2A01FF 0%, #FF1EE1 57%, #FFB332 100%);',
+                      WebkitBackgroundClip: 'text',
+                      WebkitTextFillColor: 'transparent',
+                      height: '45px', borderRadius: '15px', textAlign: 'center', border: 'dashed 1px #ff589d', color: '#be16d2', alignSelf: 'center', cursor: 'pointer'
+                    }} onClick={() => {
                       setSuccessTrans(false);
                       setProcessingModal(false);
+                      history.push("/my_art");
                     }}
-                  > Staking Pools </button>
+                      className="cancel-btn">
+                      My Art
+                    </button>
+                    <button style={{
+                      padding: '5px', background: 'linear-gradient(47.43deg, #2A01FF 0%, #FF1EE1 57%, #FFB332 100%)', width: '50%',
+                      height: '45px', borderRadius: '15px', textAlign: 'center', border: 'none', color: 'white', alignSelf: 'center', cursor: 'pointer'
+                    }}
+                      onClick={() => {
+                        setSuccessTrans(false);
+                        setProcessingModal(false);
+                      }}
+                    > Staking Pools </button>
+                  </div>
                 </div>
+              </>
             }
           </div>
-
         </>}
       />
     </>

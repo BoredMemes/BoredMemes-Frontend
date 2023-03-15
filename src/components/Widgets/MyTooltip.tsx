@@ -54,7 +54,7 @@ const MyTooltip = ({ text }) => {
         </>
       }
     >
-      <button className={classes.root} onClick={() => setShowTooltip(!showTooltip)}><i className="fas fa-exclamation-circle"></i></button>
+      <button className={classes.root} onClick={() => setShowTooltip(!showTooltip)}><img src="/assets/icons/tooltip-icon.svg" alt="" /></button>
     </HtmlTooltip>
   );
 };
