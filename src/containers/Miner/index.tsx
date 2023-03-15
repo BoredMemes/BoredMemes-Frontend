@@ -11,7 +11,6 @@ import axios from 'axios';
 import MyTooltip from 'components/Widgets/MyTooltip';
 import moment from 'moment';
 import { useHistory } from "react-router-dom";
-import CircularProgress from '@mui/material/CircularProgress';
 
 const Miner = () => {
   const classes = useStyles();
@@ -1157,9 +1156,21 @@ const Miner = () => {
                 <input type="number" placeholder='365' value={nftMultiplier} onChange={(e) => setNftMultiplier(parseFloat(e.target.value))} />
               </div>
               <div className='btn-wrapper' style={{ display: 'flex' }}>
-                <button onClick={() => onCreatePool(1)} className="cancel-btn">- 3 ETH Staking Pool
+                <button style={{
+                  padding: '5px', width: '46%',
+                  height: '65px', borderRadius: '15px', textAlign: 'center', border: 'dashed 1px #ff589d', alignSelf: 'center', marginLeft: 10,
+                  background: 'linear-gradient(47.43deg, #2A01FF 0%, #FF1EE1 16%, #FFB332 100%)',
+                  WebkitBackgroundClip: 'text',
+                  WebkitTextFillColor: 'transparent',
+                  fontWeight: 800,
+                  fontSize: 18,
+                  backgroundClip: 'text', cursor: 'pointer'
+                }} onClick={() => onCreatePool(1)} className="cancel-btn">- 3 ETH Staking Pool
                   <span style={{ color: '#be16d2 !important', fontSize: 10, display: 'block' }}>No fees</span></button>
-                <button className="stake-btn"
+                <button style={{
+                  padding: '5px', fontSize: 18, background: 'linear-gradient(47.43deg, #2A01FF 0%, #FF1EE1 57%, #FFB332 100%)', width: '46%', marginLeft: 10,
+                  height: '65px', borderRadius: '15px', textAlign: 'center', border: 'none', color: 'white', alignSelf: 'center', cursor: 'pointer'
+                }}
                   onClick={() => onCreatePool(0)}
                 >Free Staking Pool <p style={{ color: 'white', fontSize: 10 }}>- 3% Fee on Rewards</p>
                 </button>
@@ -1171,41 +1182,34 @@ const Miner = () => {
 
       <Modal
         show={wooModal}
-        contentClass={classes.wooModalRoot}
         maxWidth='sm'
         children={<>
           <div className={classes.wooModal}>
-            <div className={classes.wooModalTop}>
+            <div className={`${classes.wooModalTop}`}>
               <span className='topTitle'>
-                <img src='assets/imgs/farm-stake-avatar1.png' />
                 <div>
-                  <h3>Wooohoooo! </h3>
+                  <h4>Wooohoooo!</h4>
                 </div>
               </span>
               <button className="closeBtn" onClick={() => setWooModal(false)}><img src="/assets/icons/close_icon_01.svg" alt="" /></button>
             </div>
-            <p>Your transaction was successful</p>
-            <div className={classes.modalBtns}>
-              <button style={{
-                padding: '5px', width: '50%', background: 'linear-gradient(47.43deg, #2A01FF 0%, #FF1EE1 57%, #FFB332 100%);',
-                WebkitBackgroundClip: 'text',
-                WebkitTextFillColor: 'transparent',
-                height: '45px', borderRadius: '15px', textAlign: 'center', border: 'dashed 1px #ff589d', color: '#be16d2', alignSelf: 'center', cursor: 'pointer'
-              }} onClick={() => {
-                setSuccessTrans(false);
-                setProcessingModal(false);
-                history.push("/my_art");
-              }} className="cancel-btn">My Art</button>
-              <button style={{
-                padding: '5px', background: 'linear-gradient(47.43deg, #2A01FF 0%, #FF1EE1 57%, #FFB332 100%)', width: '50%',
-                height: '45px', borderRadius: '15px', textAlign: 'center', border: 'none', color: 'white', alignSelf: 'center', cursor: 'pointer'
-              }}
-                onClick={() => {
-                  setWooModal(false);
+            <div className={`${classes.wooModalAddContent}`}>
+              <div>
+                <p style={{ display: 'flex' }}>Congrats, you just created your custom Staking Pool successfully!</p>
+                <p style={{ display: 'flex' }}>Add reward tokens to the staking pool to start distributing rewards by clicking your logo on the farm page.</p>
+                <p style={{ display: 'flex' }}>Make sure to exclude the staking smart contract from your custom token tax, max transaction and max wallet limits.</p>
+              </div>
+              <div className='btn-wrapper' style={{ display: 'flex' }}>
+                <button style={{
+                  padding: '5px', fontSize: 18, background: 'linear-gradient(47.43deg, #2A01FF 0%, #FF1EE1 57%, #FFB332 100%)', width: '46%', marginLeft: 10,
+                  height: '65px', borderRadius: '15px', textAlign: 'center', border: 'none', color: 'white', alignSelf: 'center', cursor: 'pointer'
                 }}
-              >Staking Pools</button>
-            </div>
-          </div>
+                  onClick={() => setWooModal(false)}
+                >Start Staking
+                </button>
+              </div>
+            </div >
+          </div >
         </>}
       />
 
@@ -1321,27 +1325,51 @@ const Miner = () => {
         children={<>
           <div className={classes.processModal}>
             <div className={classes.processModalTop}>
-              <span className='topTitle'>
-                <img src='assets/imgs/farm-stake-avatar1.png' />
-                <div>
-                  <h4>Your transaction is beeing processed </h4>
-                </div>
+              <span>
+                {theme === 'dark' ? <img src="/assets/imgs/logo.png" alt="" /> : <img src="/assets/logo.png" alt="" />}
+                <h4>Your transaction is beeing processed</h4>
               </span>
-              <button className="closeBtn" onClick={() => setProcessingModal(false)}><img src="/assets/icons/close_icon_01.svg" alt="" /></button>
+              {/* <button className="closeBtn" onClick={() => setProcessingModal(false)}><img src="/assets/icons/close_icon.svg" alt="" /></button> */}
             </div>
+            {
+              successTrans ?
+                <div className={classes.processModalContent}>
+                  <span>
+                    <img src="/assets/icons/2.png" alt="" />
+                  </span>
+                  <div className="warning">
+                    <img src="/assets/icons/warning_icon.svg" alt="" />
+                    <p>Validate your transaction to continue.</p>
+                  </div>
+                </div> :
+                <div className={classes.modalBtns}>
+                  <button style={{
+                    padding: '5px', width: '50%',
+                    background: 'linear-gradient(47.43deg, #2A01FF 0%, #FF1EE1 57%, #FFB332 100%);',
+                    WebkitBackgroundClip: 'text',
+                    WebkitTextFillColor: 'transparent',
+                    height: '45px', borderRadius: '15px', textAlign: 'center', border: 'dashed 1px #ff589d', color: '#be16d2', alignSelf: 'center', cursor: 'pointer'
+                  }} onClick={() => {
+                    setSuccessTrans(false);
+                    setProcessingModal(false);
+                    history.push("/my_art");
+                  }}
+                    className="cancel-btn">
+                    My Art
+                  </button>
+                  <button style={{
+                    padding: '5px', background: 'linear-gradient(47.43deg, #2A01FF 0%, #FF1EE1 57%, #FFB332 100%)', width: '50%',
+                    height: '45px', borderRadius: '15px', textAlign: 'center', border: 'none', color: 'white', alignSelf: 'center', cursor: 'pointer'
+                  }}
+                    onClick={() => {
+                      setSuccessTrans(false);
+                      setProcessingModal(false);
+                    }}
+                  > Staking Pools </button>
+                </div>
+            }
           </div>
-          <div style={{ margin: 'auto', width: 'fit-content', marginTop:6, marginBottom:6 }}>
-            <div className="spinner__circle">
-              <div className="spinner__circle-gradient"></div>
-              <div className="spinner__circle-inner"></div>
-            </div>
-          </div>
-          <div className={classes.modalContent}>
-            <div className="warning">
-              <img src="/assets/icons/warning_icon.png" alt="" />
-              <p>Validate your transaction to continue.</p>
-            </div>
-          </div>
+
         </>}
       />
     </>

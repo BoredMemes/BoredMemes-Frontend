@@ -460,6 +460,9 @@ export const useStyles = makeStyles(theme => ({
   },
   createModal: {
     width: '100%',
+    [theme.breakpoints.down('xs')]: {
+      padding: '10px 7px',
+    },
   },
   createModalRootContent: {
     maxWidth: '636px',
@@ -506,7 +509,7 @@ export const useStyles = makeStyles(theme => ({
         width: 300,
         [theme.breakpoints.down('xs')]: {
           fontSize: 12,
-          width: 200,
+          width: 150,
         },
       },
       '& p': {
@@ -609,42 +612,12 @@ export const useStyles = makeStyles(theme => ({
     flexDirection: 'column',
     width: '100%',
     padding: '20px 40px',
-    [theme.breakpoints.down('xs')]: {
-      padding: '10px 20px',
-    },
     '& .btn-wrapper': {
       '& button': {
         [theme.breakpoints.down('xs')]: {
           width: '100% !important',
           marginLeft: '0px !important',
-          marginTop: 8,
-          margin:4,
-        },
-      },
-      '& .cancel-btn': {
-        padding: '5px', width: '46%',
-        height: '65px', borderRadius: '15px', textAlign: 'center', border: 'dashed 1px #ff589d', alignSelf: 'center', marginLeft: 10,
-        background: 'linear-gradient(47.43deg, #2A01FF 0%, #FF1EE1 16%, #FFB332 100%)',
-        WebkitBackgroundClip: 'text',
-        WebkitTextFillColor: 'transparent',
-        fontWeight: 800,
-        fontSize: 18,
-        backgroundClip: 'text', cursor: 'pointer',
-        [theme.breakpoints.down('xs')]: {
-          fontWeight: 600,
-          fontSize: 12,
-          height: '45px',
-          borderRadius: '6px',
-        },
-      },
-      '& .stake-btn': {
-        padding: '5px', fontSize: 18, background: 'linear-gradient(47.43deg, #2A01FF 0%, #FF1EE1 57%, #FFB332 100%)', width: '46%', marginLeft: 10,
-        height: '65px', borderRadius: '15px', textAlign: 'center', border: 'none', color: 'white', alignSelf: 'center', cursor: 'pointer',
-        [theme.breakpoints.down('xs')]: {
-          fontWeight: 600,
-          fontSize: 12,
-          height: '45px',
-          borderRadius: '6px',
+          marginTop: 8
         },
       }
     },
@@ -662,7 +635,7 @@ export const useStyles = makeStyles(theme => ({
         borderRadius: 8,
         fontFamily: "'Josefin Sans', sans-serif",
         fontSize: 18,
-        color: 'grey',
+        color:'grey',
         [theme.breakpoints.down('xs')]: {
           fontSize: 14
         },
@@ -788,47 +761,30 @@ export const useStyles = makeStyles(theme => ({
       },
     },
   },
-  wooModalRoot: {
-    margin: 0
-  },
   wooModal: {
-    width: '450px',
-    paddingBottom: 10,
+    width: '100%',
     [theme.breakpoints.down('xs')]: {
-      width: '270px',
+      padding: '10px 7px',
     },
-    '& p': {
-      background: 'linear-gradient(47.43deg, #2A01FF 0%, #FF1EE1 57%, #FFB332 100%);',
-      WebkitBackgroundClip: 'text',
-      WebkitTextFillColor: 'transparent',
-      color: '#262626',
-      fontWeight: 500,
-      fontSize: 20,
-      marginTop: 50,
-      marginBottom: 70,
-      textAlign: 'center',
-      width: '100%',
-      [theme.breakpoints.down('xs')]: {
-        marginTop: 30,
-        marginBottom: 30,
-      },
-    }
   },
   wooModalTop: {
     display: 'flex',
     width: '100%',
+    background: '#030316',
     justifyContent: 'space-between',
+    padding: '22px 34px',
     [theme.breakpoints.down('xs')]: {
+      padding: '6px 10px',
     },
+
     '& .topTitle': {
-      color: '#343A69',
-      '& p': {
-        color: '#343A69',
-      }
-    },
-    '& span': {
       display: 'flex',
       alignItems: 'center',
+      fontFamily: 'Poppins',
+      fontStyle: 'normal',
+      fontWeight: 700,
+      color: '#343A69',
+      lineHeight: '36px',
       '& img': {
         width: 60,
         height: 60,
@@ -841,13 +797,18 @@ export const useStyles = makeStyles(theme => ({
       },
       '& h4': {
         fontWeight: 700,
-        fontSize: 16,
-        color: '#343A69',
+        fontSize: 20,
+        color: '#727272 !important',
         width: 300,
         [theme.breakpoints.down('xs')]: {
           fontSize: 12,
           width: 150,
         },
+      },
+      '& p': {
+        fontSize: 12,
+        color: '#343A69',
+        fontFamily: "'Josefin Sans', sans-serif",
       },
     },
     '& button': {
@@ -967,7 +928,7 @@ export const useStyles = makeStyles(theme => ({
         borderRadius: 8,
         fontFamily: "'Josefin Sans', sans-serif",
         fontSize: 18,
-        color: 'grey',
+        color:'grey',
         [theme.breakpoints.down('xs')]: {
           fontSize: 14
         },
@@ -1347,73 +1308,65 @@ export const useStyles = makeStyles(theme => ({
   },
 
   processModal: {
-    width: '450px',
-    paddingBottom: 10,
+    width: '100%',
+    padding : 10,
     [theme.breakpoints.down('xs')]: {
-      width: '270px',
+      padding : '10px 7px',
     },
   },
   processModalTop: {
     display: 'flex',
     width: '100%',
-    justifyContent: 'space-between',
+    justifyContent : 'space-between',
     [theme.breakpoints.down('xs')]: {
     },
-    '& .topTitle': {
-      color: '#343A69',
-      '& p': {
-        color: '#343A69',
-      }
-    },
+
     '& span': {
       display: 'flex',
       alignItems: 'center',
+      marginRight : 10,
       '& img': {
-        width: 60,
-        height: 60,
-        marginRight: 10,
+        width : 60,
+        height : 60,
+        marginRight : 10,
         [theme.breakpoints.down('xs')]: {
-          marginRight: 7,
-          width: 50,
-          height: 50,
+          marginRight : 7,
+          width : 50,
+          height : 50,
         },
       },
       '& h4': {
         fontWeight: 700,
         fontSize: 16,
-        color: '#343A69',
-        width: 350,
+        color : '#343A69',
+        width: 300,
         [theme.breakpoints.down('xs')]: {
           fontSize: 12,
-          width: 180,
+          width: 150,
         },
       },
     },
     '& button': {
-      width: 30,
-      height: 30,
+      width : 30,
+      height : 30,
       display: 'flex',
       alignItems: 'center',
-      justifyContent: 'center',
-      border: 'none',
-      cursor: 'pointer',
-      transition: 'all 0.3s ease',
-      background: 'rgba(127, 129, 158, 0.8)',
-      borderRadius: 30,
-      '&:hover': {
-        background: '#727272aa'
+      justifyContent : 'center',
+      border : 'none',
+      cursor : 'pointer',
+      transition : 'all 0.3s ease',
+      background : '#ffffff00',
+      '&:hover':{
+        background : '#F4F4F4'
       },
       [theme.breakpoints.down('xs')]: {
-        marginTop: 4,
-        width: 25,
-        height: 25,
+        width : 25,
+        height : 25,
       },
       '& img': {
-        width: 15,
-        height: 15,
         [theme.breakpoints.down('xs')]: {
-          width: 18,
-          height: 18,
+          width : 18,
+          height : 18,
         },
       },
     },
@@ -1421,33 +1374,33 @@ export const useStyles = makeStyles(theme => ({
   processModalContent: {
     display: 'flex',
     alignItems: 'center',
-    justifyContent: 'center',
-    flexDirection: 'column',
+    justifyContent : 'center',
+    flexDirection : 'column',
     width: '100%',
-
+    
     '& span': {
       display: 'flex',
       alignItems: 'center',
-      margin: 20,
-
+      margin : 20,
+      
       '& img': {
-        width: 60,
-        height: 60,
-        marginRight: 10,
+        width : 60,
+        height : 60,
+        marginRight : 10,
         animation: 'loadingAni 1s linear 0s infinite forwards',
         [theme.breakpoints.down('xs')]: {
-          width: 30,
-          height: 30,
+          width : 30,
+          height : 30,
         },
       },
       '& p': {
-        fontSize: 14,
-        color: '#343A69',
+        fontSize : 14,
+        color : '#343A69',
         [theme.breakpoints.down('xs')]: {
           fontSize: 12,
         },
       },
-
+      
     },
     '& .warning': {
       display: 'flex',
@@ -1455,15 +1408,15 @@ export const useStyles = makeStyles(theme => ({
       width: '100%',
       border: '3px solid #F3AC3D33',
       borderRadius: 7,
-      marginBottom: 20,
-      padding: 10,
-
+      marginBottom : 20,
+      padding : 10,
+      
       '& img': {
-        marginRight: 10,
+        marginRight : 10,
       },
       '& p': {
-        fontSize: 14,
-        color: '#F3AC3D',
+        fontSize : 14,
+        color : '#F3AC3D',
         fontFamily: "'Josefin Sans', sans-serif",
         [theme.breakpoints.down('xs')]: {
           fontSize: 12,
@@ -1480,27 +1433,27 @@ export const useStyles = makeStyles(theme => ({
       padding: '10px 7px',
     },
     '& .customSwitchText': {
-      display: 'flex',
-      marginLeft: -38,
-      borderRadius: 6,
-      background: '#030316',
-      '& div': {
-        cursor: 'pointer',
-        padding: '8px 12px',
-        fontSize: 12,
-        color: 'grey'
+      display:'flex',
+      marginLeft:-38,
+      borderRadius:6,
+      background:'#030316',
+      '& div':{
+        cursor:'pointer',
+        padding:'8px 12px',
+        fontSize:12,
+        color:'grey'
       },
-      '& .actived': {
+      '& .actived':{
         background: 'linear-gradient(47.43deg, #2A01FF 0%, #FF1EE1 57%, #FFB332 100%)',
-        borderBottomLeftRadius: 6,
-        borderTopLeftRadius: 6,
-        color: 'white !important'
+        borderBottomLeftRadius:6,
+        borderTopLeftRadius:6,
+        color:'white !important'
       },
-      '& .deactived': {
+      '& .deactived':{
         background: '#666883',
-        borderBottomRightRadius: 6,
-        borderTopRightRadius: 6,
-        color: 'white !important'
+        borderBottomRightRadius:6,
+        borderTopRightRadius:6,
+        color:'white !important'
       }
     },
     '& .boostModalContent': {
@@ -1517,7 +1470,7 @@ export const useStyles = makeStyles(theme => ({
       }
     }
   },
-
+  
   img_list: {
     maxWidth: 145, overflowX: 'scroll',
     '& img': {
@@ -1581,7 +1534,7 @@ export const useStyles = makeStyles(theme => ({
         fontWeight: 800,
         backgroundClip: 'text',
         textFillColor: 'transparent',
-        display: 'block'
+        display:'block'
       },
       '& h4': {
         fontFamily: 'Poppins',
