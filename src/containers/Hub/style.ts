@@ -733,7 +733,7 @@ export const useStyles = makeStyles(theme => ({
             }
           },
           '& .card_wrapper': {
-            marginTop:30,
+            marginTop: 30,
             [theme.breakpoints.down('xs')]: {
               display: 'block'
             },
@@ -744,7 +744,7 @@ export const useStyles = makeStyles(theme => ({
               padding: '8px 20px',
               '& span': {
                 fontWeight: '400 !important',
-                fontSize:14
+                fontSize: 14
               }
             },
             '& .right-card': {
@@ -752,9 +752,9 @@ export const useStyles = makeStyles(theme => ({
               background: '#030316',
               borderRadius: 10,
               '& span': {
-                width:'50%',
-                textAlign:'center',
-                padding:'10px 15px',
+                width: '50%',
+                textAlign: 'center',
+                padding: '10px 15px',
                 backgroundImage: 'linear-gradient(47.43deg, #2A01FF 0%, #FF1EE1 40%, #FFB332 100%);',
                 backgroundClip: 'text !important',
                 WebkitBackgroundClip: 'text  !important',
@@ -774,6 +774,7 @@ export const useStyles = makeStyles(theme => ({
             borderRadius: '15px',
             justifyContent: 'space-between',
             '& .light': {
+              cursor: 'pointer',
               padding: '10px 4px',
               textAlign: 'center',
               width: '100%',
@@ -786,6 +787,7 @@ export const useStyles = makeStyles(theme => ({
               border: '1px solid transparent',
             },
             '& .dark': {
+              cursor: 'pointer',
               padding: '10px 4px',
               textAlign: 'center',
               width: '100%',
@@ -798,6 +800,7 @@ export const useStyles = makeStyles(theme => ({
               border: '1px solid transparent',
             },
             '& span': {
+              cursor: 'pointer',
               backgroundImage: 'linear-gradient(47.43deg, #2A01FF 0%, #FF1EE1 40%, #FFB332 100%);',
               backgroundClip: 'text !important',
               WebkitBackgroundClip: 'text  !important',
