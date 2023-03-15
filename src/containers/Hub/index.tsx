@@ -23,7 +23,7 @@ const Hub = () => {
   }, [loginStatus, chainId, account, library])
 
   const [plans, setPlans] = useState([]);
-  const [ selectedPlan, setSelectedPlan ] = useState(null);
+  const [selectedPlan, setSelectedPlan] = useState(null);
   const getPlans = async () => {
     axios.get("/api/plans")
       .then((res) => {
@@ -82,20 +82,26 @@ const Hub = () => {
                 <div className='card'>
                   <h3>Get More Hours</h3>
                   <div className="card_wrapper">
-                    <div className='card_com'>
-                      <h5>1 Hour</h5>
-                      <h6>8 USD</h6>
-                      <button className={theme}><span>- ETH</span></button>
+                    <div className='left-card'>
+                      <span>
+                        1
+                      </span>
+                      <span>
+                        Hours
+                      </span>
                     </div>
-                    <div className='card_com'>
-                      <h5>1 Hour</h5>
-                      <h6>8 USD</h6>
-                      <button className={theme}><span>- ETH</span></button>
+                    <div className='right-card'>
+                      <span>
+                      0.005 ETH
+                      </span>
+                      <span>
+                      ≈ 8 USD
+                      </span>
                     </div>
+                  </div>
+                  <div>
                     <div className='card_com'>
-                      <h5>1 Hour</h5>
-                      <h6>8 USD</h6>
-                      <button className={theme}><span>- ETH</span></button>
+                      <button className={theme}><span>Buy More Hours</span></button>
                     </div>
                   </div>
                   <div>
@@ -126,15 +132,15 @@ const Hub = () => {
                   {
                     plans.map((plan, idx) => {
                       return <>
-                        <div className={theme} onClick={() => setSelectedPlan(plan)} 
+                        <div className={theme} onClick={() => setSelectedPlan(plan)}
                           style={selectedPlan && plan.id === selectedPlan?.id ? { border: '1.3px solid transparent', background: 'transparent', backgroundImage: theme == 'light' ? 'linear-gradient(90deg, white, white),linear-gradient(47.43deg, #2A01FF 0%, #FF1EE1 40%, #FFB332 100%)' : 'linear-gradient(90deg, #030316, #030316),linear-gradient(47.43deg, #2A01FF 0%, #FF1EE1 40%, #FFB332 100%)', backgroundClip: 'padding-box, border-box', backgroundOrigin: 'border-box' } : {}}
-                          >
+                        >
                           <h4>{plan.name}</h4>
                           <p>{plan.hours} hours/m</p>
                           <span>Stake lock</span>
                           <span>{plan.amount} USD worth</span>
                           <span>of $PIXIA</span>
-                          { plan?.isMode && <span>Private Mode</span> }
+                          {plan?.isMode && <span>Private Mode</span>}
                         </div>
                       </>
                     })

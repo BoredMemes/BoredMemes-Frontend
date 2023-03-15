@@ -733,44 +733,69 @@ export const useStyles = makeStyles(theme => ({
             }
           },
           '& .card_wrapper': {
+            marginTop:30,
             [theme.breakpoints.down('xs')]: {
               display: 'block'
             },
+            '& .left-card': {
+              background: '#030316 !important',
+              border: '0.25px solid #787878',
+              borderRadius: 10,
+              padding: '8px 20px',
+              '& span': {
+                fontWeight: '400 !important',
+                fontSize:14
+              }
+            },
+            '& .right-card': {
+              border: '0.25px solid #030316',
+              background: '#030316',
+              borderRadius: 10,
+              '& span': {
+                width:'50%',
+                textAlign:'center',
+                padding:'10px 15px',
+                backgroundImage: 'linear-gradient(47.43deg, #2A01FF 0%, #FF1EE1 40%, #FFB332 100%);',
+                backgroundClip: 'text !important',
+                WebkitBackgroundClip: 'text  !important',
+                color: 'transparent !important',
+                fontWeight: '600',
+                fontSize: '12px',
+                lineHeight: '1.2rem',
+              }
+            }
           },
           '& .card_com': {
-            width: '30%',
+            width: '100%',
             display: 'flex',
             flexDirection: 'column',
             alignItems: 'center',
-            padding: '10px 20px',
             gap: '10px',
-            height: '109px',
-            background: '#f4f4f4',
             borderRadius: '15px',
             justifyContent: 'space-between',
             '& .light': {
-              padding: 4,
+              padding: '10px 4px',
               textAlign: 'center',
               width: '100%',
-              borderRadius: '12px',
+              borderRadius: '6px',
               fontWeight: 700,
               background: 'transparent !important',
               backgroundImage: 'linear-gradient(90deg, white, white),linear-gradient(47.43deg, #2A01FF 0%, #FF1EE1 40%, #FFB332 100%) !important',
               backgroundClip: 'padding-box, border-box !important',
               backgroundOrigin: 'border-box !important',
-              border: '2px solid transparent',
+              border: '1px solid transparent',
             },
             '& .dark': {
-              padding: 4,
+              padding: '10px 4px',
               textAlign: 'center',
               width: '100%',
-              borderRadius: '12px',
+              borderRadius: '6px',
               fontWeight: 700,
               background: 'transparent !important',
               backgroundImage: 'linear-gradient(90deg, #040417, #040417),linear-gradient(47.43deg, #2A01FF 0%, #FF1EE1 40%, #FFB332 100%) !important',
               backgroundClip: 'padding-box, border-box !important',
               backgroundOrigin: 'border-box !important',
-              border: '2px solid transparent',
+              border: '1px solid transparent',
             },
             '& span': {
               backgroundImage: 'linear-gradient(47.43deg, #2A01FF 0%, #FF1EE1 40%, #FFB332 100%);',
