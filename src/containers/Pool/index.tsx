@@ -6,7 +6,7 @@ import Web3WalletContext from 'hooks/Web3ReactManager';
 import { toast } from 'react-toastify';
 import ThemeContext from "theme/ThemeContext"
 import { ethers } from 'ethers';
-import { addReward, createNewPool, getBalanceOf, getPoolInfo, harvest, stakeBoostNFT, stakeToken, unlockToken, unstakeToken } from 'utils/contracts';
+import { addReward, createNewPool, getBalanceOf, getPoolInfo, harvest, isAddress, stakeBoostNFT, stakeToken, unlockToken, unstakeToken } from 'utils/contracts';
 import axios from 'axios';
 import MyTooltip from 'components/Widgets/MyTooltip';
 import moment from 'moment';
@@ -24,6 +24,7 @@ const Miner = () => {
   const [selectedPool, setSelectedPool] = useState(null);
   const [switchStake, setSwitchStake] = useState(0);
   const [selectedStakingInfo, setSelectedStakingInfo] = useState(undefined);
+  const [wooAddress, setWooAddress] = useState("");
 
   const handleSelectChange = (event) => {
     if (selectedPool && event.target.value.length !== 0) {
@@ -449,6 +450,7 @@ const Miner = () => {
                 _pools.push(pool);
               }
               setPools(_pools);
+              setWooAddress(poolAddress);
               setSuccessTrans(true);
             }
           }).catch((err) => {
@@ -1187,11 +1189,15 @@ const Miner = () => {
                 <p style={{ display: 'flex' }}>Add reward tokens to the staking pool to start distributing rewards by clicking your logo on the farm page.</p>
                 <p style={{ display: 'flex' }}>Make sure to exclude the staking smart contract from your custom token tax, max transaction and max wallet limits.</p>
               </div>
-              <div className="address"><p>0x000000000000000000000000000000000000dEaD <img src="/assets/icons/copy-icon.png" alt="" /></p></div>
+              {
+                wooAddress && isAddress(wooAddress) &&
+                <div className="address" onClick={() => navigator.clipboard.writeText(wooAddress)}>
+                  <p>{wooAddress} <img src="/assets/icons/copy-icon.png" alt="" /></p>
+                </div>
+              }
               <div className='btn-wrapper' style={{ display: 'flex' }}>
-                <button className="staking-btn"
-                  onClick={() => setWooModal(false)}
-                >Start Staking
+                <button className="staking-btn" onClick={() => setWooModal(false)}>
+                  Start Staking
                 </button>
               </div>
             </div >
@@ -1311,7 +1317,7 @@ const Miner = () => {
         maxWidth='sm'
         children={<>
           <div className={classes.processModal}>
-            {successTrans
+            {!successTrans
               ?
               <>
                 <div className={classes.processModalTop}>
