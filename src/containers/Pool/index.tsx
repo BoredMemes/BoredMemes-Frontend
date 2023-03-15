@@ -346,9 +346,6 @@ const Miner = () => {
   const [nftMultiplier, setNftMultiplier] = useState(1)
 
   const onCreatePool = async (creationPlan) => {
-    //Validation Handling
-    // handle "isAddress(address)" for contract address
-    //Validation Handling End
     if (!stakingToken || !rewardToken || !emission || !maxLockTime || !maxLockMultiplier || !earlyWithdrawFee || !early_period || !boostingNft || !nftMultiplier)
       return toast.error("Fill out all fields");
     if (stakingToken.length === 0 || rewardToken.length === 0 || boostingNft.length === 0) {
@@ -443,7 +440,6 @@ const Miner = () => {
         axios.post("/api/pool/update", paramsData)
           .then((res) => {
             if (res.data.status) {
-              toast.success("New Pool is created successfully.")
               const _pools = [];
               for (const pool of res.data.pools) {
                 pool.isUp = false;
