@@ -1355,7 +1355,7 @@ const Miner = () => {
                     }} onClick={() => {
                       setSuccessTrans(false);
                       setProcessingModal(false);
-                      history.push("/my_art");
+                      history.push("/my_art/"+ account);
                     }}
                       className="cancel-btn">
                       My Art

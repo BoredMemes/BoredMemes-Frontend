@@ -294,7 +294,7 @@ const EditProfile = () => {
             <Grid container justifyContent="space-between" spacing={4}>
               <Grid item md={4} xs={12}>
                 <h2>Verify your profile.</h2>
-                <p>Show the Bored memes community that your profile is authentic.</p>
+                <p>Show the Pixia Ai community that your profile is authentic.</p>
               </Grid>
               <Grid item md={8} xs={12}>
                 {/* <div id="telegramButton">
@@ -500,7 +500,7 @@ const EditProfile = () => {
 
               <div className="warning">
                 <img src="/assets/icons/warning_icon.svg" alt="" />
-                <p>Bored Memes uses this signature to verify that you’re the owner of this Ethereum address.</p>
+                <p>Pixia Ai uses this signature to verify that you’re the owner of this Ethereum address.</p>
               </div>
             </div>
             <div className={classes.modalBtns}>

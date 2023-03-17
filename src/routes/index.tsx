@@ -30,7 +30,7 @@ const Routes = () => {
           <Layout>
             <ScrollToTop />
             <Route exact path="/" component={Hub} />
-            <Route exact path="/my_art" component={MyArt} />
+            <Route exact path="/my_art/:address" component={MyArt} />
             {/* <Route exact path="/create_art" component={CreateArt} /> */}
             <Route exact path="/community_feed" component={CommunityFeed} />
             <Route exact path="/personal_feed" component={PersonalFeed} />
@@ -39,7 +39,7 @@ const Routes = () => {
             <Route exact path="/settings" component={EditProfile} />
             <Route exact path="/edit_profile" component={EditProfile} />
             <Route exact path="/create_nft_collection/:id" component={CreateNFTCollection} />
-            <Route exact path="/view_art/:new/:id" component={ViewArt} />
+            <Route exact path="/view_art/:new/:id/:col" component={ViewArt} />
 
             {/* <Route path="/detail/:tokenID" component={Setting} />EditProfile */}
 

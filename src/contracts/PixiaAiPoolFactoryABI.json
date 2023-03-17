@@ -90,6 +90,25 @@
         "type": "event"
     },
     {
+        "anonymous": false,
+        "inputs": [
+            {
+                "indexed": false,
+                "internalType": "uint256",
+                "name": "hours_",
+                "type": "uint256"
+            },
+            {
+                "indexed": false,
+                "internalType": "address",
+                "name": "owner",
+                "type": "address"
+            }
+        ],
+        "name": "onCreditsBought",
+        "type": "event"
+    },
+    {
         "inputs": [],
         "name": "MAX_FREE_COMMISSION",
         "outputs": [
@@ -100,6 +119,19 @@
             }
         ],
         "stateMutability": "view",
+        "type": "function"
+    },
+    {
+        "inputs": [
+            {
+                "internalType": "uint256",
+                "name": "hours_",
+                "type": "uint256"
+            }
+        ],
+        "name": "buyCredits",
+        "outputs": [],
+        "stateMutability": "payable",
         "type": "function"
     },
     {

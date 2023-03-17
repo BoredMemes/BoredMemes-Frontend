@@ -745,7 +745,26 @@ export const useStyles = makeStyles(theme => ({
               '& span': {
                 fontWeight: '400 !important',
                 fontSize: 14
-              }
+              },
+              '& input': {
+                width: '90%',
+                border: 'none',
+                color: 'white',
+                background: '#ffffff00',
+                fontFamily: "'Josefin Sans', sans-serif",
+                fontSize: 16,
+                [theme.breakpoints.down('xs')]: {
+                  fontSize: 14,
+                },
+                '&:focus': {
+                  outline: 'none',
+                },
+              },
+              '& input[type=number]::-webkit-inner-spin-button, input[type=number]::-webkit-outer-spin-button': {
+                appearance: 'none',
+                // -webkit-appearance: 'none',
+                margin: 0,
+              },
             },
             '& .right-card': {
               border: '0.25px solid #030316',

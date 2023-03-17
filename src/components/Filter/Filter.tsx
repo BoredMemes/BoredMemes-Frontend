@@ -298,10 +298,10 @@ const Filter = ({ filter, setFilter, setPrivateType, searchStr, setSearchStr, ha
             <button onClick={() => setFilter('new')} className={`${filter === 'new' ? 'activeBtn filterBtn':'filterBtn'}`}>New</button>
           </span>
           <span className="select">
-            <button onClick={() => setFilter('oldest')} className={`${filter === 'oldest' ? 'activeBtn filterBtn':'filterBtn'}`}>Oldest</button>
+            <button onClick={() => setFilter('top')} className={`${filter === 'top' ? 'activeBtn filterBtn':'filterBtn'}`}>Top</button>
           </span>
           <span className="select">
-            <button onClick={() => setFilter('top')} className={`${filter === 'top' ? 'activeBtn filterBtn':'filterBtn'}`}>Top</button>
+            <button onClick={() => setFilter('nft')} className={`${filter === 'nft' ? 'activeBtn filterBtn':'filterBtn'}`}>NFT</button>
           </span>
           <div className="smalBtns">
             <button onClick={() => onShowImages()} className={`imgBtn`}>

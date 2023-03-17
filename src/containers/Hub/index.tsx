@@ -4,7 +4,7 @@ import { useContext, useEffect, useState } from 'react';
 import Expand from 'react-expand-animated';
 import Modal from 'components/modal';
 import CheckLock from 'components/Forms/CheckLock';
-import { getBalanceOfBoredM, getBNBStakingInfo, getStakingInfo, onRewardClaim, onBoredMStake, onBoredMUnStake } from 'utils/contracts';
+import { getBalanceOfBoredM, getBNBStakingInfo, getStakingInfo, onRewardClaim, onBoredMStake, onBoredMUnStake, onMoreHours } from 'utils/contracts';
 import Web3WalletContext from 'hooks/Web3ReactManager';
 import { toast } from 'react-toastify';
 import { NFTStakingInfo } from 'utils/types';
@@ -13,17 +13,24 @@ import ThemeContext from "theme/ThemeContext"
 
 import MyTooltip from 'components/Widgets/MyTooltip';
 import moment from 'moment';
+import { useAuthState } from 'context/authContext';
 const Hub = () => {
   const classes = useStyles();
   const { loginStatus, chainId, account, library } = useContext(Web3WalletContext)
   const { theme } = useContext(ThemeContext)
+  const { user } = useAuthState();
 
   useEffect(() => {
-    getPlans();
+    if (account){
+      getPlans();
+    }
+    fetchRates();
+    
   }, [loginStatus, chainId, account, library])
 
   const [plans, setPlans] = useState([]);
   const [selectedPlan, setSelectedPlan] = useState(null);
+  const [ moreHours, setMoreHours ] = useState(1)
   const getPlans = async () => {
     axios.get("/api/plans")
       .then((res) => {
@@ -33,6 +40,47 @@ const Hub = () => {
         console.log(err);
       })
   }
+
+  const [ ethPrice, setEthPrice ] = useState(0);
+  const [ pixiaPrice, setPixiaPrice ] = useState(0);
+  const fetchRates = async () => {
+    axios.get("/api/getrates", { params: {}})
+      .then((res) => {
+        setEthPrice(res.data.eth);
+        setPixiaPrice(res.data.boredm);
+      }).catch((e) => {
+        console.log(e);
+        toast.error("The error is occured from the server.")
+      })
+  }
+
+  const getMoreHours = async () => {
+    try{
+      if (!loginStatus || !account){
+        return toast.error("Connect your wallet");
+      }
+      const load_toast_id = toast.loading("Buying More Hours");
+      const isBought = await onMoreHours(moreHours, chainId, library.getSigner());
+      if (isBought){
+        toast.success("Bought Hours Successfully");
+      }else toast.error("Failed");
+      toast.dismiss(load_toast_id);
+
+    }catch(e){
+      console.log(e)
+    }
+  }
+
+  const getHours = (credit_) => {
+    try{
+      const _hour = Math.floor(credit_ / 60);
+      const _second = credit_ % 60;
+      return _second <= 0 ? `${_hour}h` : `${_hour}h ${_second}m`;
+    }catch(e){
+      console.log(e);
+    }
+  }
+
   return (
     <>
       <div className={classes.root}>
@@ -66,15 +114,15 @@ const Hub = () => {
                   <h3>Hours Detail</h3>
                   <div>
                     <p>Plan hours</p>
-                    <span>96h 35m / 120h</span>
+                    <span>{getHours(user?.plan_credits) || "0h"} / {plans.length > 0 ? plans[user?.planId]?.hours : 0}h</span>
                   </div>
                   <div>
                     <p>Additional</p>
-                    <span>4h</span>
+                    <span>{getHours(user?.additional_credits) || "0h"}</span>
                   </div>
                   <div>
                     <p>Bonus</p>
-                    <span>0h</span>
+                    <span>{getHours(user?.bonus_credits) || "0h"}</span>
                   </div>
                   <div>
                   </div>
@@ -83,25 +131,25 @@ const Hub = () => {
                   <h3>Get More Hours</h3>
                   <div className="card_wrapper">
                     <div className='left-card'>
-                      <span>
-                        1
-                      </span>
+                      <input type="number" onChange={e => setMoreHours(parseInt(e.target.value))} placeholder={"Amount"}
+                        value={moreHours}
+                      />
                       <span>
                         Hours
                       </span>
                     </div>
                     <div className='right-card'>
                       <span>
-                      0.005 ETH
+                        0.005 ETH
                       </span>
                       <span>
-                      ≈ 8 USD
+                        ≈ {ethPrice * 0.005} USD
                       </span>
                     </div>
                   </div>
                   <div>
                     <div className='card_com'>
-                      <button className={theme}><span>Buy More Hours</span></button>
+                      <button className={theme} onClick={getMoreHours}><span>Buy More Hours</span></button>
                     </div>
                   </div>
                   <div>
@@ -136,7 +184,7 @@ const Hub = () => {
                           style={selectedPlan && plan.id === selectedPlan?.id ? { border: '1.3px solid transparent', background: 'transparent', backgroundImage: theme == 'light' ? 'linear-gradient(90deg, white, white),linear-gradient(47.43deg, #2A01FF 0%, #FF1EE1 40%, #FFB332 100%)' : 'linear-gradient(90deg, #030316, #030316),linear-gradient(47.43deg, #2A01FF 0%, #FF1EE1 40%, #FFB332 100%)', backgroundClip: 'padding-box, border-box', backgroundOrigin: 'border-box' } : {}}
                         >
                           <h4>{plan.name}</h4>
-                          <p>{plan.hours} hours/m</p>
+                          <p>{plan.hours} hours/month</p>
                           <span>Stake lock</span>
                           <span>{plan.amount} USD worth</span>
                           <span>of $PIXIA</span>

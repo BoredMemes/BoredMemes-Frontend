@@ -8,15 +8,17 @@ import FilledButton from 'components/Buttons/FilledButton';
 import { useHistory } from 'react-router-dom';
 import { useAuthState } from 'context/authContext';
 import moment from 'moment';
+import { onMintArt } from 'utils/contracts';
 
 const ViewArt = () => {
   const classes = useStyles();
-  const { loginStatus, account } = useContext(Web3WalletContext)
+  const { loginStatus, account, chainId, library } = useContext(Web3WalletContext)
   const { user } = useAuthState();
 
   const [isNew, setNew] = useState(false);
   const [itemId, setItemId] = useState(undefined);
   const [itemCollection, setItemCollection] = useState(undefined);
+  const [defaultCollection, setDefaultCollection] = useState(null);
   const [item, setItem] = useState(undefined);
   const location = useHistory()
   useEffect(() => {
@@ -25,9 +27,11 @@ const ViewArt = () => {
     if (paths.length >= 4) {
       let isNew = paths[2] === "new";
       setNew(isNew);
-      setItemId(paths[3])
-      if (!isNew && paths.length >= 5) {
-        setItemCollection(paths[4]);
+      if (isNew) {
+        setItemId(paths[3])
+      } else if (!isNew && paths.length >= 5) {
+        setItemId(paths[4])
+        setItemCollection(paths[3]);
       }
     }
   }, [location.location.pathname])
@@ -35,6 +39,7 @@ const ViewArt = () => {
   useEffect(() => {
     if (loginStatus) {
       fetchItems();
+      fetchDefaultCollection();
     }
   }, [loginStatus, isNew, itemId])
 
@@ -55,11 +60,42 @@ const ViewArt = () => {
       })
   }
 
+  const fetchDefaultCollection = async () => {
+    const res = await axios.get(`/api/collection/default`);
+    setDefaultCollection(res.data.collection);
+  }
+
   // Edit collection
   const [showEditCollectionModal, setShowEditCollectionModal] = useState(false)
 
-  const onCreateNFT = () => {
-    setShowEditCollectionModal(false)
+  const onCreateNFT = async () => {
+    if (!loginStatus || !account) {
+      return toast.error("Please connect your wallet correctly.")
+    }
+    if (!defaultCollection) {
+      return toast.error("Default Pixia Ai Nft Collection is not ready.")
+    }
+    const load_toast_id = toast.loading("Please wait");
+    try {
+      const isMinted = await onMintArt(
+        defaultCollection.address,
+        [item.id],
+        library.getSigner()
+      )
+
+      if (isMinted) {
+        toast.success("Minted Successfully.")
+        setTimeout(() => {
+          window.location.reload();
+        }, 1000)
+      } else {
+        toast.error("Failed");
+      };
+      toast.dismiss(load_toast_id);
+    } catch (e) {
+      console.log(e);
+      toast.dismiss(load_toast_id);
+    }
   }
 
   // Selection Logic
@@ -196,10 +232,10 @@ const ViewArt = () => {
               <div className="avatar">
                 <img src={item?.ownerUser?.logo_url} alt="" />
                 <p>{item?.ownerUser?.name}</p>
-                <button className='follow' style={{background : '#d2c4f5',color : 'rgba(73, 5, 251, 1)',fontWeight:600,borderRadius : 10,border:'none', padding:'3px 10px', marginLeft:20}}>follow</button>
+                <button className='follow' style={{ background: '#d2c4f5', color: 'rgba(73, 5, 251, 1)', fontWeight: 600, borderRadius: 10, border: 'none', padding: '3px 10px', marginLeft: 20 }}>follow</button>
               </div>
               <div className="btns">
-                
+
                 <div className="smallBtn dropdown">
                   <img src="/assets/icons/more_icon.svg" alt="" />
                   <div className="drodownMenu">
@@ -273,10 +309,11 @@ const ViewArt = () => {
                 <span>{item?.thumbSize}</span>
                 <span>{item?.name}</span>
               </div>
-
-              <div className={classes.modalBtnsDetail}>
-                <FilledButton label={'Create NFT'} icon={<img src="/assets/icons/add_icon_01.svg" alt="" />} iconPosition='end' handleClick={() => setShowEditCollectionModal(true)} />
-              </div>
+              {
+                isNew && <div className={classes.modalBtnsDetail}>
+                  <FilledButton label={'Create NFT'} icon={<img src="/assets/icons/add_icon_01.svg" alt="" />} iconPosition='end' handleClick={() => setShowEditCollectionModal(true)} />
+                </div>
+              }
             </div>
           </div>
         </div>

@@ -1,6 +1,17 @@
 [
     {
-        "inputs": [],
+        "inputs": [
+            {
+                "internalType": "address",
+                "name": "defaultAdmin_",
+                "type": "address"
+            },
+            {
+                "internalType": "address",
+                "name": "nftImpl_",
+                "type": "address"
+            }
+        ],
         "stateMutability": "nonpayable",
         "type": "constructor"
     },
@@ -15,6 +26,12 @@
             },
             {
                 "indexed": false,
+                "internalType": "uint256",
+                "name": "collectionId",
+                "type": "uint256"
+            },
+            {
+                "indexed": false,
                 "internalType": "address",
                 "name": "owner",
                 "type": "address"
@@ -22,6 +39,38 @@
         ],
         "name": "CollectionCreated",
         "type": "event"
+    },
+    {
+        "anonymous": false,
+        "inputs": [
+            {
+                "indexed": true,
+                "internalType": "address",
+                "name": "previousOwner",
+                "type": "address"
+            },
+            {
+                "indexed": true,
+                "internalType": "address",
+                "name": "newOwner",
+                "type": "address"
+            }
+        ],
+        "name": "OwnershipTransferred",
+        "type": "event"
+    },
+    {
+        "inputs": [],
+        "name": "PRICE",
+        "outputs": [
+            {
+                "internalType": "uint256",
+                "name": "",
+                "type": "uint256"
+            }
+        ],
+        "stateMutability": "view",
+        "type": "function"
     },
     {
         "inputs": [
@@ -45,9 +94,14 @@
     {
         "inputs": [
             {
-                "internalType": "bool",
-                "name": "isFree",
-                "type": "bool"
+                "internalType": "enum PixiaAiNFTFactory.Plan",
+                "name": "_plan",
+                "type": "uint8"
+            },
+            {
+                "internalType": "uint256",
+                "name": "collectionId",
+                "type": "uint256"
             }
         ],
         "name": "createCollection",
@@ -62,14 +116,125 @@
         "type": "function"
     },
     {
+        "inputs": [],
+        "name": "defaultAdmin",
+        "outputs": [
+            {
+                "internalType": "address",
+                "name": "",
+                "type": "address"
+            }
+        ],
+        "stateMutability": "view",
+        "type": "function"
+    },
+    {
+        "inputs": [],
+        "name": "nftImpl",
+        "outputs": [
+            {
+                "internalType": "address",
+                "name": "",
+                "type": "address"
+            }
+        ],
+        "stateMutability": "view",
+        "type": "function"
+    },
+    {
+        "inputs": [],
+        "name": "owner",
+        "outputs": [
+            {
+                "internalType": "address",
+                "name": "",
+                "type": "address"
+            }
+        ],
+        "stateMutability": "view",
+        "type": "function"
+    },
+    {
+        "inputs": [],
+        "name": "renounceOwnership",
+        "outputs": [],
+        "stateMutability": "nonpayable",
+        "type": "function"
+    },
+    {
+        "inputs": [],
+        "name": "royaltyBasisPoints",
+        "outputs": [
+            {
+                "internalType": "uint16",
+                "name": "",
+                "type": "uint16"
+            }
+        ],
+        "stateMutability": "view",
+        "type": "function"
+    },
+    {
+        "inputs": [],
+        "name": "royaltyReceiver",
+        "outputs": [
+            {
+                "internalType": "address",
+                "name": "",
+                "type": "address"
+            }
+        ],
+        "stateMutability": "view",
+        "type": "function"
+    },
+    {
         "inputs": [
             {
                 "internalType": "address",
-                "name": "_adminAddr",
+                "name": "_defaultAdmin",
                 "type": "address"
             }
         ],
         "name": "setAdminAddr",
+        "outputs": [],
+        "stateMutability": "nonpayable",
+        "type": "function"
+    },
+    {
+        "inputs": [
+            {
+                "internalType": "string",
+                "name": "_baseUri",
+                "type": "string"
+            }
+        ],
+        "name": "setBaseURI",
+        "outputs": [],
+        "stateMutability": "nonpayable",
+        "type": "function"
+    },
+    {
+        "inputs": [
+            {
+                "internalType": "uint256",
+                "name": "_price",
+                "type": "uint256"
+            }
+        ],
+        "name": "setMintPrice",
+        "outputs": [],
+        "stateMutability": "nonpayable",
+        "type": "function"
+    },
+    {
+        "inputs": [
+            {
+                "internalType": "address",
+                "name": "_nftImpl",
+                "type": "address"
+            }
+        ],
+        "name": "setNftImpl",
         "outputs": [],
         "stateMutability": "nonpayable",
         "type": "function"
@@ -90,12 +255,66 @@
     {
         "inputs": [
             {
+                "internalType": "address[]",
+                "name": "_collections",
+                "type": "address[]"
+            },
+            {
+                "internalType": "address",
+                "name": "_receiver",
+                "type": "address"
+            },
+            {
                 "internalType": "uint16",
                 "name": "_fee",
                 "type": "uint16"
             }
         ],
-        "name": "setTaxFee",
+        "name": "setRoyaltyInfoForCollections",
+        "outputs": [],
+        "stateMutability": "nonpayable",
+        "type": "function"
+    },
+    {
+        "inputs": [
+            {
+                "internalType": "address",
+                "name": "_receiver",
+                "type": "address"
+            },
+            {
+                "internalType": "uint16",
+                "name": "_fee",
+                "type": "uint16"
+            }
+        ],
+        "name": "setRoyaltyInfos",
+        "outputs": [],
+        "stateMutability": "nonpayable",
+        "type": "function"
+    },
+    {
+        "inputs": [
+            {
+                "internalType": "address",
+                "name": "newOwner",
+                "type": "address"
+            }
+        ],
+        "name": "transferOwnership",
+        "outputs": [],
+        "stateMutability": "nonpayable",
+        "type": "function"
+    },
+    {
+        "inputs": [
+            {
+                "internalType": "address",
+                "name": "owner_",
+                "type": "address"
+            }
+        ],
+        "name": "updateOwner",
         "outputs": [],
         "stateMutability": "nonpayable",
         "type": "function"

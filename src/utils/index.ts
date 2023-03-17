@@ -47,11 +47,11 @@ export const CONTRACTS_BY_NETWORK = {
       abi: PixiaAiABI
     },
     PixiaNFT: {
-      address: '0x74841159b1721E9EBd3d822254c1Fb56dd5cc091',
+      address: '0xE7ceF4f586626da0dC22bAfa6aca2b5D6Aaab28E',
       abi: PixiaNFTABI,
     },
     PixiaNFTFactory: {
-      address: '0x75a00d8b1aa32b04e33e6fddba65010ca95a58a9',
+      address: '0x39B68c168FCA55AecE543d2F64544D95CB848645',
       abi: PixiaNFTFactoryABI
     },
     PixiaAiPool: {
@@ -59,7 +59,7 @@ export const CONTRACTS_BY_NETWORK = {
       abi: PixiaAiPoolABI
     },
     PixiaAiPoolFactory: {
-      address: '0xe2142FBbCCdf7Aaf9F62D75b983044027B26E9F8',
+      address: '0x80ff253688665EcC5C885888E4D3d2771AE50466',
       abi: PixiaAiPoolFactoryABI
     },
     PixiaAiDistributor: {
@@ -372,6 +372,10 @@ export function truncateHashString(txhash) {
 export function getContractObj(name, chainId, provider) {
   const info = getContractInfo(name, chainId);
   return !!info && new Contract(info.address, info.abi, provider);
+}
+
+export function getNFTContract(address, provider) {
+  return new Contract(address, PixiaNFTABI, provider);
 }
 
 export function getContract(address, provider){

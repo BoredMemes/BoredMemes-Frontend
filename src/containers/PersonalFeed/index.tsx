@@ -414,20 +414,6 @@ const MyArt = () => {
     setIsDetail(true);
   }
 
-  const onCreateNFTCollection = async () => {
-    if (!loginStatus || !account) {
-      return toast.error("Please connect your wallet correctly.");
-    }
-    const load_toast_id = toast.loading("Please wait...");
-    try {
-      const colAddr = await createNewCollection(true, chainId, library.getSigner());
-    } catch (e) {
-      console.log(e);
-      toast.dismiss(load_toast_id);
-      toast.error("NFT Collection Creation is failed");
-    }
-  }
-
   // Selection Logic
 
   const [selectedItems, setSelectedItems] = useState([])

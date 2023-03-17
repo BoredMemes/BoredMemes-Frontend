@@ -140,7 +140,7 @@ export default function SideBar({ menuOpen, setMenuOpen }: MenuType) {
         <ul className='bbr'>
           {loginStatus && <></>}
           <li className={path.indexOf('my_art') >= 0 ? 'selected' : ''}>
-            <div onClick={() => onChangeRoute("/my_art")}>
+            <div onClick={() => onChangeRoute("/my_art/" + account)}>
               {/* <img src="/assets/icons/home_icon.svg" alt="" /> */}
               <i className="fas fa-home"></i>
               My Art</div>

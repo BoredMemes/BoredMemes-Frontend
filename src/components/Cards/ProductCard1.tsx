@@ -2,17 +2,18 @@ import { makeStyles } from '@material-ui/core/styles';
 import axios from 'axios';
 import Web3WalletContext from 'hooks/Web3ReactManager';
 import { useContext, useLayoutEffect, useRef, useState } from 'react';
-import { useAuthState } from 'context/authContext';
-import { useHistory } from 'react-router-dom';
 import { toast } from 'react-toastify';
 
 interface PropsType {
   item?: any;
+  user?: any;
   onClick?: any;
   updateArts?: any;
   onShow?: any;
   isSelected?: boolean
-  isNew?: boolean
+  isNew?: boolean,
+  setSelectedItems?: any,
+  onCreateNFT?: any
 }
 
 interface StyleType {
@@ -289,10 +290,9 @@ const useStyles = makeStyles(theme => ({
   },
 }));
 
-const PropertyCard1 = ({ item, onClick, onShow, isSelected, updateArts, isNew }: PropsType) => {
+const PropertyCard1 = ({ item, setSelectedItems, onCreateNFT, user, onClick, onShow, isSelected, updateArts, isNew }: PropsType) => {
   const classes = useStyles();
   const { loginStatus, account } = useContext(Web3WalletContext)
-  const { user } = useAuthState();
 
   const handleBookmark = async (item) => {
     if (!loginStatus) {
@@ -336,7 +336,9 @@ const PropertyCard1 = ({ item, onClick, onShow, isSelected, updateArts, isNew }:
   const copyHandle = (type) => {
     if (item?.description === "") return;
     let textarea = document.createElement("textarea");
-    textarea.textContent = type === 0 ? item?.fullCommand : type === 1 ? item?.description : "Item Link";
+    textarea.textContent = type === 0 ? item?.fullCommand :
+      type === 1 ? item?.description :
+        `${process.env.REACT_APP_API_URL}view_art/${isNew ? "new" : "onchain"}/${isNew ? item?.id : item?.tokenId}`;
     //textarea.textContent = "dfghjkl;";
     textarea.style.position = "fixed"; // Prevent scrolling to bottom of page in Microsoft Edge.
     document.body.appendChild(textarea);
@@ -422,6 +424,10 @@ const PropertyCard1 = ({ item, onClick, onShow, isSelected, updateArts, isNew }:
     window.open(link, "_blank");
   }
 
+  const gotoProfile = (account) => {
+    window.open(`/my_art/${account}`, "_blank");
+  }
+
 
   return (
     <div className={`${classes.productWrapper} ${isSelected ? 'selected' : ''} card1`} ref={ref} style={divStyle} onClick={onClick}>
@@ -439,7 +445,7 @@ const PropertyCard1 = ({ item, onClick, onShow, isSelected, updateArts, isNew }:
           <p>{item?.description}</p>
         </div>
         <div className="footer">
-          <div className="avatar">
+          <div className="avatar" onClick={() => gotoProfile(item?.ownerUser?.address)}>
             <img src={item?.ownerUser?.logo_url} alt="" />
             <p>{item?.ownerUser?.name}</p>
           </div>
@@ -456,17 +462,21 @@ const PropertyCard1 = ({ item, onClick, onShow, isSelected, updateArts, isNew }:
                     <div className="menuItem" onClick={() => copyHandle(2)}><img src="/assets/icons/link_icon.svg" alt="" /> Link</div>
                   </div>
                 </div>
-                <div className="menuItem" onClick={() => onGotoPage(`/create_nft_collection/${item?.tokenId}`)}>
-                  <img src="/assets/icons/createNFT_icon.svg" alt="" /> Create NFT
-                </div>
-                <div className="menuItem" onClick={() => onGotoPage(`/view_art/${isNew ? "new" : "onchain"}/${isNew ? item?.id : item?.tokenId}`)}>
+                {
+                  isNew && <div className="menuItem" onClick={() => { setSelectedItems(item); onCreateNFT() }}>
+                    <img src="/assets/icons/createNFT_icon.svg" alt="" /> Create NFT
+                  </div>
+                }
+
+                {/* </div><div className="menuItem" onClick={() => onGotoPage(`/view_art/${isNew ? "new" : "onchain"}/${isNew ? item?.id : item?.tokenId}`)}> */}
+                <div className="menuItem" onClick={() => onGotoPage(`/view_art/${isNew ? "new" : "items"}/${isNew ? item?.id + "/art" : item?.itemCollection + "/" + item?.tokenId}`)}>
                   <img src="/assets/icons/newTab_icon.svg" alt="" /> Open new tab
                 </div>
                 <div className="menuItem" onClick={() => onDownload()}>
                   <img src="/assets/icons/download_icon.svg" alt="" /> Save image
                 </div>
                 {
-                  account?.toLowerCase() !== item?.ownerUser?.address.toLowerCase() && <div className="menuItem" onClick={() => onFollow()}>
+                  loginStatus && account?.toLowerCase() !== item?.ownerUser?.address.toLowerCase() && <div className="menuItem" onClick={() => onFollow()}>
                     <img src="/assets/icons/follow_icon.svg" alt="" /> {user?.followers.includes(item?.ownerUser?.address.toLowerCase()) ? "Unfollow" : "Follow"} {item?.ownerUser?.name.length > 6 ? item?.ownerUser?.name.substring(0, 6) + "..." : item?.ownerUser?.name}
                   </div>
                 }
@@ -492,28 +502,30 @@ const PropertyCard1 = ({ item, onClick, onShow, isSelected, updateArts, isNew }:
               </div>}
 
             <div className="smallBtn ml-3" onClick={() => handleBookmark(item)}>
-              {(item?.bookmarks && item?.bookmarks.includes(account?.toLowerCase())) ?
+              {(loginStatus && item?.bookmarks && item?.bookmarks.includes(account?.toLowerCase())) ?
                 <img src="/assets/icons/bookmark_full_icon.svg" alt="" /> :
                 <img src="/assets/icons/bookmark_line_icon.svg" alt="" />}
             </div>
-
-            <div className="smallBtn ml-3 dropdown">
-              <img src="/assets/icons/face_icon.svg" alt="" />
-              <div className="drodownMenu1">
-                <div className="menuItem" onClick={() => handleEmoticon(0)}>
-                  <img src="/assets/icons/image 185.png" alt="" />
-                </div>
-                <div className="menuItem" onClick={() => handleEmoticon(1)}>
-                  <img src="/assets/icons/Grimacing Face.png" alt="" />
-                </div>
-                <div className="menuItem" onClick={() => handleEmoticon(2)}>
-                  <img src="/assets/icons/Star-Struck.png" alt="" />
-                </div>
-                <div className="menuItem" onClick={() => handleEmoticon(3)}>
-                  <img src="/assets/icons/Smiling Face with Heart-Eyes.png" alt="" />
+            {
+              loginStatus && <div className="smallBtn ml-3 dropdown">
+                <img src="/assets/icons/face_icon.svg" alt="" />
+                <div className="drodownMenu1">
+                  <div className="menuItem" onClick={() => handleEmoticon(0)}>
+                    <img src="/assets/icons/image 185.png" alt="" />
+                  </div>
+                  <div className="menuItem" onClick={() => handleEmoticon(1)}>
+                    <img src="/assets/icons/Grimacing Face.png" alt="" />
+                  </div>
+                  <div className="menuItem" onClick={() => handleEmoticon(2)}>
+                    <img src="/assets/icons/Star-Struck.png" alt="" />
+                  </div>
+                  <div className="menuItem" onClick={() => handleEmoticon(3)}>
+                    <img src="/assets/icons/Smiling Face with Heart-Eyes.png" alt="" />
+                  </div>
                 </div>
               </div>
-            </div>
+            }
+
           </div>
         </div>
       </div>

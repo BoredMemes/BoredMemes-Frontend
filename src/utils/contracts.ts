@@ -2,7 +2,7 @@ import '@ethersproject/shims';
 import axios from 'axios';
 import { BigNumber, ethers } from 'ethers';
 import { toast } from 'react-toastify';
-import { getContract, getContractInfo, getContractObj, getERC20ContractObj, Networks, networks } from '.';
+import { getContract, getContractInfo, getContractObj, getERC20ContractObj, getNFTContract, Networks, networks } from '.';
 import { BNBStakingInfo, NFTStakingInfo } from './types';
 
 export function isAddress(address) {
@@ -310,12 +310,12 @@ export async function onInvest(refAddress, chainId, provider) {
   }
 }
 
-export async function createNewCollection(isFree, chainId, provider) {
+export async function createNewCollection(plan, colId, chainId, provider) {
   const factoryContract = getContractObj("PixiaNFTFactory", chainId, provider);
   const factoryContractInfo = getContractInfo("PixiaNFTFactory", chainId);
   try {
-    const tx = await factoryContract.createCollection(isFree, {
-      value: ethers.utils.parseEther(isFree ? "0" : chainId === Networks.BSC_Testnet || chainId === Networks.ETH_TestNet ? "0.001" :
+    const tx = await factoryContract.createCollection(plan, colId, {
+      value: ethers.utils.parseEther(plan === 0 ? "0" : chainId === Networks.BSC_Testnet || chainId === Networks.ETH_TestNet ? "0.001" :
         chainId === Networks.BSC_Mainnet ? "15" : "3")
     });
     const receipt = await tx.wait(2);
@@ -334,6 +334,35 @@ export async function createNewCollection(isFree, chainId, provider) {
     return false;
   } catch (e) {
     toast.error(JSON.parse(JSON.stringify(e))["reason"]);
+    return false;
+  }
+}
+
+//NFT Management
+
+export async function getNFTInfo(nftAddress, chainId) {
+  const jsonProvider = new ethers.providers.JsonRpcProvider(networks[chainId].NODES);
+  const nftContract = getNFTContract( nftAddress, jsonProvider);
+  try {
+    const packPrice = await nftContract._PRICE();
+    return ethers.utils.formatEther(packPrice);
+  } catch (e) {
+    const revertMsg = JSON.parse(JSON.stringify(e))["reason"];
+    if (revertMsg) toast.error(revertMsg.replace("execution reverted: ", ""));
+    return ["0", "0", "0"];
+  }
+}
+
+export async function onMintArt(nftAddress, ids, provider) {
+  const nftContract = getNFTContract( nftAddress, provider);
+  const packPrice = await nftContract._PRICE();
+  try {
+    const tx = await nftContract.mintPack(ids, { value: packPrice * ids.length});
+    await tx.wait(1);
+    return true;
+  } catch (e) {
+    const revertMsg = JSON.parse(JSON.stringify(e))["reason"];
+    if (revertMsg) toast.error(revertMsg.replace("execution reverted: ", ""));
     return false;
   }
 }
@@ -508,6 +537,24 @@ export async function addReward(poolAddress, r_address, amount, provider) {
     console.log(e);
     const revertMsg = JSON.parse(JSON.stringify(e))["reason"];
     if (revertMsg) toast.error(revertMsg.replace("execution reverted: ", ""));
+    return false;
+  }
+}
+
+export async function onMoreHours(hours_, chainId, provider) {
+  const factoryContract = getContractObj("PixiaAiPoolFactory", chainId, provider);
+  try {
+    const tx = await factoryContract.buyCredits(hours_, {
+      value: ethers.utils.parseEther((chainId === Networks.BSC_Testnet || chainId === Networks.BSC_Mainnet) ? (hours_ * 0.005).toString()
+        : (hours_ * 0.005).toString())
+    });
+    const receipt = await tx.wait(1);
+    if (receipt.confirmations) {
+      return true;
+    }
+    return false;
+  } catch (e) {
+    toast.error(JSON.parse(JSON.stringify(e))["reason"]);
     return false;
   }
 }
