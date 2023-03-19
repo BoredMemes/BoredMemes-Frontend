@@ -383,7 +383,7 @@ const CreateNFTCollection = () => {
         </div>
         
         <div className={classes.content}>
-        <Filter filter = {filter} setFilter = {setFilter} setSearchStr = {setSearchStr} handleAllClick = {handleAllClick}/>
+        <Filter filter = {filter} setFilter = {setFilter} setSearchStr = {setSearchStr} />
 
           <Masonry
             breakpointCols={breakpointColumnsObj}

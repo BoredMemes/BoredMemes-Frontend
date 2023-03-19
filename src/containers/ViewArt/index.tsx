@@ -22,7 +22,6 @@ const ViewArt = () => {
   const [item, setItem] = useState(undefined);
   const location = useHistory()
   useEffect(() => {
-    console.log(location.location.pathname);
     const paths = location.location.pathname.split("/");
     if (paths.length >= 4) {
       let isNew = paths[2] === "new";
@@ -201,24 +200,6 @@ const ViewArt = () => {
     }
   }
 
-  const onGotoPage = (link: string) => {
-    location.push(link)
-  }
-
-  const [startYear, setStartYear] = useState('')
-  const [startDay, setStartDay] = useState(0)
-  const [startMon, setStartMon] = useState('')
-  const [startHour, setStartHour] = useState('')
-
-  useEffect(() => {
-    var st = new Date(item?.timestamp * 1000)
-    setStartYear(st.toString().split(' ')[3])
-    setStartDay(parseInt(st.toString().split(' ')[2]))
-    setStartMon(st.toString().split(' ')[1])
-    setStartHour(st.toString().split(' ')[4])
-
-  }, [setStartMon, setStartDay, item?.timestamp]);
-
   return (
     <>
       <div className={`${classes.root} mainContainer`}>
@@ -232,7 +213,7 @@ const ViewArt = () => {
               <div className="avatar">
                 <img src={item?.ownerUser?.logo_url} alt="" />
                 <p>{item?.ownerUser?.name}</p>
-                <button className='follow' style={{ background: '#d2c4f5', color: 'rgba(73, 5, 251, 1)', fontWeight: 600, borderRadius: 10, border: 'none', padding: '3px 10px', marginLeft: 20 }}>follow</button>
+                <button onClick={onFollow}>{user?.followers.includes(item?.ownerUser?.address.toLowerCase()) ? "Unfollow" : "Follow"}</button>
               </div>
               <div className="btns">
 

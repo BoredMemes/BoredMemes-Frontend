@@ -22,6 +22,7 @@ const useStyles = makeStyles(theme => ({
     //background: '#F400F5',
     background: 'linear-gradient(47.43deg, #2A01FF 0%, #FF1EE1 57%, #FFB332 100%);',
     borderRadius: 15,
+    marginBottom: 15,
     display: 'flex',
     justifyContent: 'center',
     alignItems: 'center',

@@ -23,7 +23,8 @@ import { CONTRACTS_BY_NETWORK, Networks } from 'utils';
 const MyArt = () => {
   const classes = useStyles();
   const { loginStatus, account, library, chainId } = useContext(Web3WalletContext)
-  const MAX_MINT_CNT = 1;
+  const MAX_MINT_CNT = 30;
+  const history = useHistory();
   const location = useLocation();
   let owner = location.pathname.split('/')[2].toLowerCase();
   const breakpointColumnsObj = {
@@ -48,7 +49,21 @@ const MyArt = () => {
   const [selectedCollection, setSelectedCollection] = useState(null);
   const [defaultCollection, setDefaultCollection] = useState(null);
 
+  // Edit collection
+  const [showEditCollectionModal, setShowEditCollectionModal] = useState(false)
+  const [showPublishCollectionModal, setShowPublishCollectionModal] = useState(false)
+  const [isDetail, setIsDetail] = useState(false);
+  const [isPublicCollection, setIsPublicCollection] = useState(true)
+  const [title, setTitle] = useState('')
+  const [description, setDescription] = useState('')
+  const [selectedChainId, setSelectedChainId] = useState(process.env.REACT_APP_NODE_ENV === "production" ? 1 : 5);
+
   useEffect(() => {
+    if (loginStatus && account && owner === "undefined") {
+      history.push("/my_art/" + account);
+      window.location.reload();
+      return;
+    }
     if (!isAddress(owner)) {
       owner = loginStatus ? account : null;
       if (!owner) return;
@@ -58,7 +73,14 @@ const MyArt = () => {
     fetchItems();
     fetchCollections();
     fetchDefaultCollection();
-  }, [owner, filter, searchStr, emoticonId, privateType])
+  }, [loginStatus, account, owner, filter, searchStr, emoticonId, privateType])
+
+  useEffect(() => {
+    if (isDetail && selectedCollection) {
+      fetchItems();
+      setIsPublicCollection(selectedCollection.isPublic);
+    }
+  }, [isDetail, selectedCollection])
 
   const fetchUsers = async () => {
     const res = await axios.get(`/api/user/${owner}`);
@@ -66,21 +88,20 @@ const MyArt = () => {
   }
 
   const fetchItems = async () => {
-    console.log("Fetch Items");
     let paramsData = {
       emoticonAddr: owner?.toLowerCase(),
       owner: owner?.toLowerCase(),
       searchTxt: searchStr,
       emoticonId: emoticonId,
-      progress: 0,
+      progress: filter === "nft" ? undefined : 0,
       privateType: privateType,
       filter: filter,
+      itemCollection: filter === "nft" && selectedCollection && isDetail ? selectedCollection.address : undefined,
+      collectionId: filter !== "nft" && selectedCollection && isDetail ? selectedCollection.id : undefined,
     }
     axios.get(filter !== "nft" ? "/api/art" : "/api/item", { params: paramsData })
       .then((res) => {
-        console.log(res.data.items)
         setMyArt(res.data.items);
-        //setMyArt(tmp);
       }).catch((e) => {
         console.log(e.message);
         toast.error(e.message);
@@ -89,18 +110,16 @@ const MyArt = () => {
 
   const fetchDefaultCollection = async () => {
     const res = await axios.get(`/api/collection/default`);
-    console.log(res.data.collection);
     setDefaultCollection(res.data.collection);
   }
 
   const fetchCollections = async () => {
     let paramsData = {
       owner: owner?.toLowerCase(),
-      isPublic: true,
+      //isPublic: true,
     }
     axios.get('/api/collection', { params: paramsData })
       .then((res) => {
-        console.log(res.data.collections);
         setMyCollection(res.data.collections);
       }).catch((e) => {
         console.log(e.message);
@@ -134,15 +153,7 @@ const MyArt = () => {
     }
   }
 
-  // Edit collection
-  const [showEditCollectionModal, setShowEditCollectionModal] = useState(false)
-  const [showPublishCollectionModal, setShowPublishCollectionModal] = useState(false)
-  const [isDetail, setIsDetail] = useState(false);
-  const [isPublicCollection, setIsPublicCollection] = useState(false)
-  const [title, setTitle] = useState('')
-  const [description, setDescription] = useState('')
-  const [selectedChainId, setSelectedChainId] = useState(process.env.REACT_APP_NODE_ENV === "production" ? 1 : 5);
-  const [priceMode, setPriceMode] = useState(0);
+
 
   const onChangeTitle = async (e: any) => {
     if (e === null || e === '') {
@@ -193,7 +204,7 @@ const MyArt = () => {
           toast.success((!isDetail ? "Created" : "Saved") + " Collection Successfully!")
           console.log(res.data.collections);
           setMyCollection(res.data.collections);
-          if (isDetail) {
+          if (selectedCollection) {
             for (const collection of res.data.collections) {
               if (selectedCollection.id === collection.id) {
                 setSelectedCollection(collection);
@@ -214,15 +225,33 @@ const MyArt = () => {
       toast.error("Failed");
     }
   }
+
+  const onDelete = () => {
+    if (selectedCollection && !isAddress(selectedCollection.address)) {
+      let paramsData = {
+        collectionId: selectedCollection.id
+      }
+      axios.get("/api/collection/delete/", { params: paramsData })
+        .then((res) => {
+          toast.success("Success");
+        }).catch((e) => {
+          console.log(e);
+          toast.error(e.message);
+        })
+    }
+  }
+
   const onEditCollection = (d: any) => {
     setDescription(d?.description)
     setTitle(d?.title)
     setShowEditCollectionModal(true)
   }
 
-  const onDetailCollection = (collection: any) => {
+  const onDetailCollection = async (collection: any) => {
+    setSelectedItems([]);
     setSelectedCollection(collection);
     setIsDetail(true);
+    
   }
   const onCreateNFTCollection = async (plan) => {
     if (!loginStatus || !account) {
@@ -244,8 +273,7 @@ const MyArt = () => {
           .then((res) => {
             toast.success("NFT Collection is created successfully.")
             toast.dismiss(load_toast_id);
-            const _collection = res.data.collections.filter((_col) => _col.id === selectedCollection.id)
-            setSelectedCollection(_collection[0]);
+            setSelectedCollection(res.data.collection);
             setShowPublishCollectionModal(false)
           })
           .catch((err) => {
@@ -313,6 +341,7 @@ const MyArt = () => {
   // Selection Logic
 
   const [selectedItems, setSelectedItems] = useState([])
+  const [isAllSelected, setAllSelected] = useState(false);
 
   const handleClick = (isSelected, item) => {
     const isNew = filter !== "nft";
@@ -330,6 +359,15 @@ const MyArt = () => {
       setSelectedItems([...myArt]);
     }
   }
+
+  useEffect(() => {
+    setSelectedItems(isAllSelected ? [...myArt] : []);
+  }, [isAllSelected])
+
+  useEffect(() => {
+    const isAllSelected = selectedItems.length > 0 && myArt.length === selectedItems.length;
+    setAllSelected(isAllSelected);
+  }, [selectedItems])
 
   const onChooseChain = (_chainId) => {
     setSelectedChainId(_chainId);
@@ -466,8 +504,7 @@ const MyArt = () => {
                     </a>
                   </div>
                   <p>
-                    AI that can generate art, create NFT collections, staking contracts and much more!
-                    Unleash Your AI Potential.
+                    {user?.bio}
                   </p>
                 </div>
               </div>
@@ -506,13 +543,14 @@ const MyArt = () => {
             </div>
         }
         {!isDetail && <CollectionLIst collections={myCollection} onEditCollection={onEditCollection} onDetailCollection={onDetailCollection} />}
-        <Filter 
-          filter={filter} 
-          setFilter={setFilter} 
-          setPrivateType={setPrivateType} 
-          setSearchStr={setSearchStr} 
-          handleAllClick={handleAllClick} 
-          setEmoticonId={setEmoticonId} 
+        <Filter
+          filter={filter}
+          setFilter={setFilter}
+          setPrivateType={setPrivateType}
+          setSearchStr={setSearchStr}
+          setEmoticonId={setEmoticonId}
+          isAllSelected={isAllSelected}
+          setAllSelected={setAllSelected}
         />
 
         <div className={`${classes.content} card2`}>
@@ -547,13 +585,13 @@ const MyArt = () => {
                 />)
             })}
           </Masonry>
-          <div className="sticky" style={{ opacity: selectedItems.length !== 0 ? 1 : 0, zIndex: selectedItems.length !== 0 ? 0 : -1 }}>
+          <div className="sticky" style={{ opacity: selectedItems.length !== 0 ? 1 : 0, zIndex: selectedItems.length !== 0 ? 10 : -1 }}>
             <div className="left">
               <p>Selected : {selectedItems.length}</p>
             </div>
             <div className="btns">
               <button className='grey' onClick={() => setSelectedItems([])}>Close</button>
-              <button className='grey' onClick={handleAllClick}>Selet All</button>
+              <button className='grey' onClick={() => setAllSelected(true)}>Select All</button>
               <button className='pink' style={{ background: 'linear-gradient(47.43deg, #2A01FF 0%, #FF1EE1 57%, #FFB332 100%)' }}>Actions <img src="/assets/icons/arrow_down_icon_01.svg" alt="" />
                 <div className="drodownMenu">
                   <div className="menuItem" onClick={() => onDownload()}>Download Zip</div>
@@ -594,13 +632,18 @@ const MyArt = () => {
 
               <TextInput isMulti label={<>{'Description'} <span>Optional</span></>} wrapperClass={classes.myInputWrap} placeholder='Elon Musk as Santa Floki' value={!isDetail ? description : selectedCollection?.description} onChangeData={(d) => onChangeDescription(d)} />
               <p className={classes.text_number}>1/255</p>
-              <div className="row">
-                <p>Public Collection</p>
-                <MaterialUISwitch onChange={e => setIsPublicCollection(!e.target.checked)} className='modal_switch' />
-              </div>
+              {
+                user?.planId === 3 && <div className="row">
+                  <p>Public Collection</p>
+                  <MaterialUISwitch defaultChecked={isPublicCollection} onChange={e => setIsPublicCollection(!isPublicCollection)} className='modal_switch' />
+                </div>
+              }
             </div>
             <div className={classes.modalBtns}>
-              <FilledButton color='custom' handleClick={() => setShowEditCollectionModal(false)} />
+              <FilledButton color='secondary' label={'Cancel'} handleClick={() => setShowEditCollectionModal(false)} />
+              {
+                selectedCollection && !isAddress(selectedCollection.address) && <FilledButton label={'Delete'} handleClick={onDelete} />
+              }
               <FilledButton label={!isDetail ? 'Create' : 'Save'} handleClick={onSave} />
             </div>
           </div>

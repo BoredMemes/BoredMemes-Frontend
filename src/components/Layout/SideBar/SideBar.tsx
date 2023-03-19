@@ -83,6 +83,7 @@ export default function SideBar({ menuOpen, setMenuOpen }: MenuType) {
   const { theme, setTheme } = useContext(ThemeContext)
   const onChangeRoute = (route) => {
     history.push(route);
+    window.location.reload();
   }
 
   useEffect(() => {

@@ -73,9 +73,9 @@ export const useStyles = makeStyles(theme => ({
           transition : 'all 0.3s ease',
           padding : 5,
           borderRadius : 40,
-          '&:hover': {
-            background: '#D9D9D9',
-          },
+          // '&:hover': {
+          //   background: '#D9D9D9',
+          // },
           '& img': {
             marginRight: 7,
             height : 35,
@@ -92,6 +92,16 @@ export const useStyles = makeStyles(theme => ({
             whiteSpace: 'normal',
             WebkitBoxOrient: 'vertical',
             fontSize : 12,
+          },
+          '& button': {
+            cursor: 'pointer',
+            background: '#d2c4f5', 
+            color: 'rgba(73, 5, 251, 1)', 
+            fontWeight: 600, 
+            borderRadius: 10, 
+            border: 'none', 
+            padding: '3px 10px', 
+            marginLeft: 20,
           }
         },
         '& .btns': {

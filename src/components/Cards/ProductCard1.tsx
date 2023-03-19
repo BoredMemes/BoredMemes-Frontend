@@ -431,7 +431,7 @@ const PropertyCard1 = ({ item, setSelectedItems, onCreateNFT, user, onClick, onS
 
   return (
     <div className={`${classes.productWrapper} ${isSelected ? 'selected' : ''} card1`} ref={ref} style={divStyle} onClick={onClick}>
-      <img src={'assets/imgs/pixia-icon.png'} style={{ position: 'absolute', zIndex: 10, margin: 8 }} width={50} alt="" />
+      <img src={'/assets/imgs/pixia-icon.png'} style={{ position: 'absolute', zIndex: 10, margin: 8 }} width={50} alt="" />
       <div className="top" >
         {
           item?.assetUrl && item?.assetUrl !== "" ? <img src={item?.assetUrl} alt="" /> :

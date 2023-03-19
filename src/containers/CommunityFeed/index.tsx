@@ -547,7 +547,7 @@ const MyArt = () => {
             </div>
         }
         {/* {!isDetail && <CollectionLIst collections={myCollection} onEditCollection={onEditCollection} onDetailCollection={onDetailCollection} />} */}
-        <Filter filter={filter} setFilter={setFilter} setPrivateType={setPrivateType} setSearchStr={setSearchStr} handleAllClick={handleAllClick} setEmoticonId={setEmoticonId} />
+        <Filter filter={filter} setFilter={setFilter} setPrivateType={setPrivateType} setSearchStr={setSearchStr}  setEmoticonId={setEmoticonId} />
 
         <div className={`${classes.content} card2`}>
           <Masonry

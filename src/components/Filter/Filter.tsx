@@ -6,9 +6,10 @@ interface PropsType {
   setFilter?: any;
   searchStr?: string;
   setSearchStr?: any;
-  handleAllClick ?: any;
   setEmoticonId ?: any;
   setPrivateType ?: any;
+  isAllSelected?: boolean;
+  setAllSelected?: any;
 }
 
 const useStyles = makeStyles(theme => ({
@@ -251,7 +252,7 @@ const useStyles = makeStyles(theme => ({
  
 }));
 
-const Filter = ({ filter, setFilter, setPrivateType, searchStr, setSearchStr, handleAllClick, setEmoticonId }: PropsType) => {
+const Filter = ({ filter, setFilter, setPrivateType, searchStr, setSearchStr, isAllSelected, setAllSelected, setEmoticonId }: PropsType) => {
   const classes = useStyles();
 
   const [ searchTxt, setSearchTxt] = useState("");
@@ -268,10 +269,8 @@ const Filter = ({ filter, setFilter, setPrivateType, searchStr, setSearchStr, ha
   useEffect(() => {
     setPrivateType(stateShowImage === 0 ? undefined : stateShowImage === 1 ? 1 : 0)
   }, [stateShowImage])
-  const [isAll, setIsAll] = useState(false)
   const onSelectAll = ()=>{
-    setIsAll(!isAll)
-    handleAllClick()
+    setAllSelected(!isAllSelected);
 
   }
   return (
@@ -287,7 +286,7 @@ const Filter = ({ filter, setFilter, setPrivateType, searchStr, setSearchStr, ha
             </span>
             <div className="btns">
               <button><img src="/assets/icons/refresh_icon.svg" alt="" onClick={() => setSearchStr(searchTxt)}/></button>
-              <button onClick={onSelectAll} style = {{borderColor : isAll ? '#F400F5' : '#F400F500'}}><img src="/assets/icons/select_icon.svg" alt="" /></button>
+              <button onClick={onSelectAll} style = {{borderColor : isAllSelected ? '#F400F5' : '#F400F500'}}><img src="/assets/icons/select_icon.svg" alt="" /></button>
             </div>
           </div>
 
