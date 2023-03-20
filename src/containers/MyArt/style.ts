@@ -131,6 +131,39 @@ export const useStyles = makeStyles(theme => ({
         },
       }
     },
+    '& h2': {
+      fontSize: 32,
+      color: '#fff',
+      textShadow: '5px 5px 10px #000000aa',
+      [theme.breakpoints.down('xs')]: {
+        fontSize: 18,
+      },
+    },
+    '& .feedBtns' : { 
+      marginRight: 10, 
+      padding: 2, 
+      paddingRight: 8, 
+      paddingLeft: 8, 
+      color: '#727272', 
+      borderBottom: 'solid 1px #727272', 
+      fontWeight: 600,
+      cursor:'pointer' 
+    },
+    '& .activeFeedBtns' : { 
+      borderImage: 'linear-gradient(47.43deg, #2A01FF 0%, #FF1EE1 57%, #FFB332 100%)', 
+      borderBottom: 'solid 1px', 
+      borderImageSlice: 1, 
+      padding: 2, 
+      paddingRight: 8, 
+      paddingLeft: 8, 
+      fontWeight: 600, 
+      background: 'linear-gradient(47.43deg, #2A01FF 0%, #FF1EE1 57%, #FFB332 100%)', 
+      WebkitBackgroundClip: 'text', 
+      WebkitTextFillColor: 'transparent', 
+      width: 'fit-content', 
+      color: '#262626',
+      cursor:'pointer' 
+    },
   },
 
   topdetail: {

@@ -149,21 +149,19 @@ export default function SideBar({ menuOpen, setMenuOpen }: MenuType) {
           {/* <li className={path.indexOf('create_art') >= 0 ? 'selected' : ''}>
             <div onClick={() => onChangeRoute("/create_art")}><img src="/assets/icons/create_icon.svg" alt="" /> Create Art</div>
           </li> */}
-          <li className={path.indexOf('community_feed') >= 0 ? 'selected' : ''}>
-            <div onClick={() => onChangeRoute("/community_feed")}><img src="/assets/icons/community_icon.svg" alt="" /> Community Feed</div>
+          <li className={path.indexOf('community_feed') >= 0 || path.indexOf('personal_feed') >= 0 || path.indexOf('bookmarks') >= 0 ? 'selected' : ''}>
+            <div onClick={() => onChangeRoute("/community_feed")}><img src="/assets/icons/community_icon.svg" alt="" /> Explorer</div>
           </li>
-          <li className={path.indexOf('personal_feed') >= 0 ? 'selected' : ''}>
+          {/* <li className={path.indexOf('personal_feed') >= 0 ? 'selected' : ''}>
             <div onClick={() => onChangeRoute("/personal_feed")}>
-              {/* <img src="/assets/icons/personal_icon.svg" alt="" />  */}
               <i className="fab fa-microsoft"></i>
               Personal Feed</div>
-          </li>
-          <li className={path.indexOf('bookmarks') >= 0 ? 'selected' : ''}>
+          </li> */}
+          {/* <li className={path.indexOf('bookmarks') >= 0 ? 'selected' : ''}>
             <div onClick={() => onChangeRoute("/bookmarks")}>
-              {/* <img src="/assets/icons/bookmark_icon.svg" alt="" />  */}
               <i className="fas fa-bookmark"></i>
               Bookmarks</div>
-          </li>
+          </li> */}
         </ul>
 
         <h3>Rewards</h3>

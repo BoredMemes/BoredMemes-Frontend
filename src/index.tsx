@@ -28,7 +28,7 @@ ReactDOM.render(
       <Web3ReactManager>
         <AuthProvider>
           <RefreshContextProvider>
-            <ToastContainer />
+            <ToastContainer position="top-left" />
             <App />
           </RefreshContextProvider>
         </AuthProvider>

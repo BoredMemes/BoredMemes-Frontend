@@ -18,15 +18,20 @@ import { arrayify, hashMessage } from 'ethers/lib/utils';
 import { createNewCollection, isAddress, onMintArt } from 'utils/contracts';
 import { useHistory, useLocation } from 'react-router-dom';
 import { CONTRACTS_BY_NETWORK, Networks } from 'utils';
+import { useAuthState } from 'context/authContext';
+type PropsType = {
+  feedMode?: number//0- My Arts, 1- Community Feed, 2- Personal Feed, 3- Bookmarks
+}
+const MyArt = ({ feedMode }: PropsType) => {
 
-const MyArt = () => {
   const classes = useStyles();
   const { loginStatus, account, library, chainId } = useContext(Web3WalletContext)
+  const { user } = useAuthState();
 
   const MAX_MINT_CNT = 30;
   const history = useHistory();
   const location = useLocation();
-  let owner = location.pathname.split('/')[2].toLowerCase();
+  let owner = feedMode === 0 ? location.pathname.split('/')[2].toLowerCase() : account;
   const breakpointColumnsObj = {
     // default: 4,
     3840: 7,
@@ -59,21 +64,28 @@ const MyArt = () => {
   const [selectedChainId, setSelectedChainId] = useState(process.env.REACT_APP_NODE_ENV === "production" ? 1 : 5);
 
   useEffect(() => {
-    if (loginStatus && account && owner === "undefined") {
+    if (!loginStatus || !account){
+      return;
+    }
+    if (feedMode === 2 && !user)return;
+    if (feedMode === 0 && loginStatus && account && owner === "undefined") {
       history.push("/my_art/" + account);
       window.location.reload();
       return;
     }
     if (!isAddress(owner)) {
       owner = loginStatus ? account : null;
-      if (!owner) return;
+      if (feedMode === 0 && !owner) return;
     }
     setSelectedItems([]);
-    fetchUsers();
     fetchItems();
-    fetchCollections();
-    fetchDefaultCollection();
-  }, [loginStatus, account, owner, filter, searchStr, emoticonId, privateType])
+    if (feedMode === 0){
+      fetchUsers();
+      fetchCollections();
+      fetchDefaultCollection();
+    }
+    
+  }, [loginStatus, account, owner, filter, searchStr, emoticonId, privateType, user])
 
   useEffect(() => {
     if (isDetail && selectedCollection) {
@@ -84,21 +96,21 @@ const MyArt = () => {
 
   const fetchUsers = async () => {
     const res = await axios.get(`/api/user/${owner}`);
-    console.log(res.data.user.followers);
     setProfile(res.data.user);
   }
 
   const fetchItems = async () => {
     let paramsData = {
-      emoticonAddr: emoticonId !== undefined && emoticonId >= 0 ? owner?.toLowerCase() : undefined,
-      owner: owner?.toLowerCase(),
+      emoticonAddr: loginStatus && account ? owner?.toLowerCase() : undefined,
+      owner: feedMode !== 1 ? ( feedMode !== 2 ? owner?.toLowerCase() : user?.followers) : undefined,
       searchTxt: searchStr,
       emoticonId: emoticonId,
       progress: filter === "nft" ? undefined : 0,
-      privateType: privateType,
+      privateType: filter === "nft" ? undefined : feedMode === 0 ? privateType : 1,
       filter: filter,
       itemCollection: filter === "nft" && selectedCollection && isDetail ? selectedCollection.address : undefined,
       collectionId: filter !== "nft" && selectedCollection && isDetail ? selectedCollection.id : undefined,
+      bookmarks: feedMode === 3 && loginStatus && account ? account : undefined,
     }
     axios.get(filter !== "nft" ? "/api/art" : "/api/item", { params: paramsData })
       .then((res) => {
@@ -206,11 +218,7 @@ const MyArt = () => {
           console.log(res.data.collections);
           setMyCollection(res.data.collections);
           if (selectedCollection) {
-            for (const collection of res.data.collections) {
-              if (selectedCollection.id === collection.id) {
-                setSelectedCollection(collection);
-              }
-            }
+            setSelectedCollection(res.data.collection);
           }
           setTitle("");
           setDescription("");
@@ -232,11 +240,17 @@ const MyArt = () => {
       let paramsData = {
         collectionId: selectedCollection.id
       }
+      const toast_load_id = toast.loading("Please wait...");
       axios.get("/api/collection/delete/", { params: paramsData })
         .then((res) => {
           toast.success("Success");
+          toast.dismiss(toast_load_id);
+          setTimeout(() => {
+            window.location.reload();
+          }, 800)
         }).catch((e) => {
           console.log(e);
+          toast.dismiss(toast_load_id);
           toast.error(e.message);
         })
     }
@@ -252,7 +266,7 @@ const MyArt = () => {
     setSelectedItems([]);
     setSelectedCollection(collection);
     setIsDetail(true);
-    
+
   }
   const onCreateNFTCollection = async (plan) => {
     if (!loginStatus || !account) {
@@ -265,7 +279,8 @@ const MyArt = () => {
         let metadata = {
           isOnChain: true,
           id: selectedCollection.id,
-          address: colAddr.toString().toLowerCase(),
+          address: account, 
+          itemCollection: colAddr.toString().toLowerCase(),
           name: title,
           description: description,
         }
@@ -367,7 +382,7 @@ const MyArt = () => {
   }, [isAllSelected])
 
   useEffect(() => {
-    if (!selectable)setSelectedItems([]);
+    if (!selectable) setSelectedItems([]);
   }, [selectable])
 
   useEffect(() => {
@@ -483,72 +498,92 @@ const MyArt = () => {
     }
   }
 
+  const gotoTab = (_feedMode) => {
+    _feedMode === 1 ? history.push('/community_feed') :
+    _feedMode === 2 ? history.push('/personal_feed') :
+    history.push('/bookmarks');
+  }
+
   return (
     <>
       <div className={`${classes.root} mainContainer`}>
         {
-          !isDetail ?
-            <div className={classes.top}>
-              <div className="avatar">
-                <img src={profile?.logo_url} alt="" />
-                <span>
-                  <h3>{profile?.name}</h3>
-                  <div className="follows">
-                    <p>{profile?.followers.length || 0} Following</p>
+          feedMode === 0 && <>
+            {
+              !isDetail ?
+                <div className={classes.top}>
+                  <div className="avatar">
+                    <img src={profile?.logo_url} alt="" />
+                    <span>
+                      <h3>{profile?.name}</h3>
+                      <div className="follows">
+                        <p>{profile?.followers.length || 0} Following</p>
+                      </div>
+                    </span>
                   </div>
-                </span>
-              </div>
-              <div className="right">
-                {/* <p>{profile?.bio}</p> */}
-                <div className="socialLinks">
-                  <div style={{ maxWidth: 30 }}>
-                    <a href={"http://twitter.com/" + profile?.social_twitter_id} className="twitter" target="_blank" rel="noreferrer">
-                      <i className="fab fa-twitter"></i>
-                    </a>
-                    <a href={"https://t.me/" + profile?.social_telegram_id} className="telegram" target="_blank" rel="noreferrer">
-                      <i className="fab fa-telegram"> </i>
-                    </a>
+                  <div className="right">
+                    {/* <p>{profile?.bio}</p> */}
+                    <div className="socialLinks">
+                      <div style={{ maxWidth: 30 }}>
+                        <a href={"http://twitter.com/" + profile?.social_twitter_id} className="twitter" target="_blank" rel="noreferrer">
+                          <i className="fab fa-twitter"></i>
+                        </a>
+                        <a href={"https://t.me/" + profile?.social_telegram_id} className="telegram" target="_blank" rel="noreferrer">
+                          <i className="fab fa-telegram"> </i>
+                        </a>
+                      </div>
+                      <p>
+                        {profile?.bio}
+                      </p>
+                    </div>
                   </div>
-                  <p>
-                    {profile?.bio}
-                  </p>
+                </div> :
+                <div className={classes.topdetail} style={myArt.length > 0 ? { backgroundImage: `url('${myArt[0]?.assetUrl}')` } : {}}>
+                  <div className="avatar">
+                    <img src={profile?.logo_url} alt="" />
+                    <span>
+                      <h3>{profile?.name}</h3>
+                    </span>
+                  </div>
+                  <div className="right">
+                    <p>{selectedCollection?.description}</p>
+                  </div>
+                  <div className="title">
+                    <h2>{selectedCollection?.name}</h2>
+                  </div>
+                  <div className="btns">
+                    <div onClick={() => onEditCollection(selectedCollection)}>
+                      Edit Collection
+                    </div>
+                    {
+                      !isAddress(selectedCollection?.address) && <button onClick={() => setShowPublishCollectionModal(true)}>
+                        <p>Create NFT Collection</p>
+                        <img src="/assets/icons/add_icon_01.svg" alt="" />
+                      </button>
+                    }
+                    {
+                      isAddress(selectedCollection?.address) &&
+                      <button onClick={() => onMintArts(selectedCollection)}>
+                        <p>Mint Added Arts to Collection</p>
+                        <img src="/assets/icons/add_icon_01.svg" alt="" />
+                      </button>
+                    }
+                  </div>
                 </div>
-              </div>
-            </div> :
-            <div className={classes.topdetail} style={myArt.length > 0 ? { backgroundImage: `url('${myArt[0]?.assetUrl}')` } : {}}>
-              <div className="avatar">
-                <img src={profile?.logo_url} alt="" />
-                <span>
-                  <h3>{profile?.name}</h3>
-                </span>
-              </div>
-              <div className="right">
-                <p>{selectedCollection?.description}</p>
-              </div>
-              <div className="title">
-                <h2>{selectedCollection?.name}</h2>
-              </div>
-              <div className="btns">
-                <div onClick={() => onEditCollection(selectedCollection)}>
-                  Edit Collection
-                </div>
-                {
-                  !isAddress(selectedCollection?.address) && <button onClick={() => setShowPublishCollectionModal(true)}>
-                    <p>Create NFT Collection</p>
-                    <img src="/assets/icons/add_icon_01.svg" alt="" />
-                  </button>
-                }
-                {
-                  isAddress(selectedCollection?.address) &&
-                  <button onClick={() => onMintArts(selectedCollection)}>
-                    <p>Mint Added Arts to Collection</p>
-                    <img src="/assets/icons/add_icon_01.svg" alt="" />
-                  </button>
-                }
-              </div>
-            </div>
+            }
+          </>
         }
-        {!isDetail && <CollectionLIst collections={myCollection} onEditCollection={onEditCollection} onDetailCollection={onDetailCollection} />}
+        {feedMode === 0 && !isDetail && <CollectionLIst collections={myCollection} onEditCollection={onEditCollection} onDetailCollection={onDetailCollection} />}
+        {
+          feedMode !== 0 && <div className={classes.top}>
+            <h2>{feedMode === 1 ? "Community Feed" : feedMode === 2 ? "Your Feed" : "Bookmarks"}</h2>
+            <div>
+              <span className={feedMode === 3 ? "activeFeedBtns" : "feedBtns"} onClick={() => gotoTab(3)}>Bookmarks</span>
+              <span className={feedMode === 2 ? "activeFeedBtns" : "feedBtns"} onClick={() => gotoTab(2)}>Your Feed</span>
+              <span className={feedMode === 1 ? "activeFeedBtns" : "feedBtns"} onClick={() => gotoTab(1)}>Community</span>
+            </div>
+          </div>
+        }
         <Filter
           filter={filter}
           setFilter={setFilter}

@@ -9,7 +9,7 @@ function App() {
   return (
     <ThemeProvider>
       <GlobalValueProvider>
-        <SnackbarProvider maxSnack={3} anchorOrigin={{ vertical: 'top', horizontal: 'right' }}>
+        <SnackbarProvider maxSnack={3} anchorOrigin={{ vertical: 'top', horizontal: 'left' }}>
           <Router basename={process.env.PUBLIC_URL}>
             <Routes />
           </Router>
