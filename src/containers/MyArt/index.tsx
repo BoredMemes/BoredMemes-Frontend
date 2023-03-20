@@ -8,7 +8,6 @@ import JSZip from "jszip";
 import FileSaver from "file-saver";
 import ViewModal from 'components/modal/viewModal/ViewModal';
 import Web3WalletContext from 'hooks/Web3ReactManager';
-import { useAuthState } from 'context/authContext';
 import axios from 'axios';
 import { toast } from 'react-toastify';
 import CollectionLIst from 'components/CollectionLIst/CollectionLIst';
@@ -23,6 +22,7 @@ import { CONTRACTS_BY_NETWORK, Networks } from 'utils';
 const MyArt = () => {
   const classes = useStyles();
   const { loginStatus, account, library, chainId } = useContext(Web3WalletContext)
+
   const MAX_MINT_CNT = 30;
   const history = useHistory();
   const location = useLocation();
@@ -39,7 +39,7 @@ const MyArt = () => {
     768: 2,
     450: 1,
   };
-  const [user, setUser] = useState(null);
+  const [profile, setProfile] = useState(null);
   const [filter, setFilter] = useState('new');
   const [searchStr, setSearchStr] = useState('');
   const [privateType, setPrivateType] = useState(undefined);
@@ -84,12 +84,13 @@ const MyArt = () => {
 
   const fetchUsers = async () => {
     const res = await axios.get(`/api/user/${owner}`);
-    setUser(res.data.user);
+    console.log(res.data.user.followers);
+    setProfile(res.data.user);
   }
 
   const fetchItems = async () => {
     let paramsData = {
-      emoticonAddr: owner?.toLowerCase(),
+      emoticonAddr: emoticonId !== undefined && emoticonId >= 0 ? owner?.toLowerCase() : undefined,
       owner: owner?.toLowerCase(),
       searchTxt: searchStr,
       emoticonId: emoticonId,
@@ -341,6 +342,7 @@ const MyArt = () => {
   // Selection Logic
 
   const [selectedItems, setSelectedItems] = useState([])
+  const [selectable, setSelectable] = useState(false);
   const [isAllSelected, setAllSelected] = useState(false);
 
   const handleClick = (isSelected, item) => {
@@ -363,6 +365,10 @@ const MyArt = () => {
   useEffect(() => {
     setSelectedItems(isAllSelected ? [...myArt] : []);
   }, [isAllSelected])
+
+  useEffect(() => {
+    if (!selectable)setSelectedItems([]);
+  }, [selectable])
 
   useEffect(() => {
     const isAllSelected = selectedItems.length > 0 && myArt.length === selectedItems.length;
@@ -484,36 +490,36 @@ const MyArt = () => {
           !isDetail ?
             <div className={classes.top}>
               <div className="avatar">
-                <img src={user?.logo_url} alt="" />
+                <img src={profile?.logo_url} alt="" />
                 <span>
-                  <h3>{user?.name}</h3>
+                  <h3>{profile?.name}</h3>
                   <div className="follows">
-                    <p>{user?.followers.length || 0} Following</p>
+                    <p>{profile?.followers.length || 0} Following</p>
                   </div>
                 </span>
               </div>
               <div className="right">
-                {/* <p>{user?.bio}</p> */}
+                {/* <p>{profile?.bio}</p> */}
                 <div className="socialLinks">
                   <div style={{ maxWidth: 30 }}>
-                    <a href={"http://twitter.com/" + user?.social_twitter_id} className="twitter" target="_blank" rel="noreferrer">
+                    <a href={"http://twitter.com/" + profile?.social_twitter_id} className="twitter" target="_blank" rel="noreferrer">
                       <i className="fab fa-twitter"></i>
                     </a>
-                    <a href={"https://t.me/" + user?.social_telegram_id} className="telegram" target="_blank" rel="noreferrer">
+                    <a href={"https://t.me/" + profile?.social_telegram_id} className="telegram" target="_blank" rel="noreferrer">
                       <i className="fab fa-telegram"> </i>
                     </a>
                   </div>
                   <p>
-                    {user?.bio}
+                    {profile?.bio}
                   </p>
                 </div>
               </div>
             </div> :
             <div className={classes.topdetail} style={myArt.length > 0 ? { backgroundImage: `url('${myArt[0]?.assetUrl}')` } : {}}>
               <div className="avatar">
-                <img src={user?.logo_url} alt="" />
+                <img src={profile?.logo_url} alt="" />
                 <span>
-                  <h3>{user?.name}</h3>
+                  <h3>{profile?.name}</h3>
                 </span>
               </div>
               <div className="right">
@@ -548,9 +554,11 @@ const MyArt = () => {
           setFilter={setFilter}
           setPrivateType={setPrivateType}
           setSearchStr={setSearchStr}
+          emoticonId={emoticonId}
           setEmoticonId={setEmoticonId}
-          isAllSelected={isAllSelected}
-          setAllSelected={setAllSelected}
+          selectable={selectable}
+          setSelectable={setSelectable}
+          fetchItems={fetchItems}
         />
 
         <div className={`${classes.content} card2`}>
@@ -577,10 +585,11 @@ const MyArt = () => {
                   isNew={filter !== "nft"}
                   updateArts={updateArts}
                   item={item}
-                  user={user}
+                  profile={profile}
+                  setProfile={setProfile}
                   setSelectedItems={setSelectedItems}
                   onCreateNFT={onCreateNFT}
-                  onClick={() => handleClick(isSelected, item)}
+                  onClick={() => selectable && handleClick(isSelected, item)}
                   isSelected={isSelected}
                 />)
             })}
@@ -591,7 +600,7 @@ const MyArt = () => {
             </div>
             <div className="btns">
               <button className='grey' onClick={() => setSelectedItems([])}>Close</button>
-              <button className='grey' onClick={() => setAllSelected(true)}>Select All</button>
+              <button className='grey' onClick={() => setAllSelected(!isAllSelected)}>{isAllSelected ? "Deselect All" : "Select All"}</button>
               <button className='pink' style={{ background: 'linear-gradient(47.43deg, #2A01FF 0%, #FF1EE1 57%, #FFB332 100%)' }}>Actions <img src="/assets/icons/arrow_down_icon_01.svg" alt="" />
                 <div className="drodownMenu">
                   <div className="menuItem" onClick={() => onDownload()}>Download Zip</div>
@@ -633,7 +642,7 @@ const MyArt = () => {
               <TextInput isMulti label={<>{'Description'} <span>Optional</span></>} wrapperClass={classes.myInputWrap} placeholder='Elon Musk as Santa Floki' value={!isDetail ? description : selectedCollection?.description} onChangeData={(d) => onChangeDescription(d)} />
               <p className={classes.text_number}>1/255</p>
               {
-                user?.planId === 3 && <div className="row">
+                profile?.planId === 3 && <div className="row">
                   <p>Public Collection</p>
                   <MaterialUISwitch defaultChecked={isPublicCollection} onChange={e => setIsPublicCollection(!isPublicCollection)} className='modal_switch' />
                 </div>

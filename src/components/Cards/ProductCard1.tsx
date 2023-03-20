@@ -1,12 +1,15 @@
 import { makeStyles } from '@material-ui/core/styles';
 import axios from 'axios';
 import Web3WalletContext from 'hooks/Web3ReactManager';
+import { getUser, useAuthDispatch, useAuthState } from 'context/authContext';
 import { useContext, useLayoutEffect, useRef, useState } from 'react';
 import { toast } from 'react-toastify';
+import { useDispatch } from 'react-redux';
 
 interface PropsType {
   item?: any;
-  user?: any;
+  profile?: any;
+  setProfile?: any;
   onClick?: any;
   updateArts?: any;
   onShow?: any;
@@ -290,9 +293,11 @@ const useStyles = makeStyles(theme => ({
   },
 }));
 
-const PropertyCard1 = ({ item, setSelectedItems, onCreateNFT, user, onClick, onShow, isSelected, updateArts, isNew }: PropsType) => {
+const PropertyCard1 = ({ item, setSelectedItems, onCreateNFT, profile, setProfile, onClick, onShow, isSelected, updateArts, isNew }: PropsType) => {
   const classes = useStyles();
   const { loginStatus, account } = useContext(Web3WalletContext)
+  const { user } = useAuthState();
+  const dispatch = useAuthDispatch();
 
   const handleBookmark = async (item) => {
     if (!loginStatus) {
@@ -307,8 +312,9 @@ const PropertyCard1 = ({ item, setSelectedItems, onCreateNFT, user, onClick, onS
     }
     axios.post("/api/item/bookmark", paramsData)
       .then((res) => {
-        console.log(res.data.item);
-        updateArts(res.data.item);
+        item.bookmarks = res.data.item.bookmarks;
+        item.bookmarkCount = res.data.item.bookmarkCount;
+        updateArts(item);
       }).catch((e) => {
         console.log(e);
       })
@@ -327,7 +333,7 @@ const PropertyCard1 = ({ item, setSelectedItems, onCreateNFT, user, onClick, onS
     }
     axios.post("/api/user/follow", paramsData)
       .then((res) => {
-        console.log(res.data.user);
+        getUser(dispatch, account);
       }).catch((e) => {
         console.log(e);
       })
@@ -408,7 +414,6 @@ const PropertyCard1 = ({ item, setSelectedItems, onCreateNFT, user, onClick, onS
   function updateDimensions() {
     let x = parseInt(item.ratio.split(':')[0])
     let y = parseInt(item.ratio.split(':')[1])
-    console.log(ref.current.offsetWidth, x)
     setDivStyle({ height: ((ref.current.offsetWidth * y) / x) + "px" })
   }
 

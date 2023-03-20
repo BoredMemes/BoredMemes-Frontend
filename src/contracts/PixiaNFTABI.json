@@ -134,19 +134,6 @@
         "anonymous": false,
         "inputs": [
             {
-                "indexed": false,
-                "internalType": "uint8",
-                "name": "version",
-                "type": "uint8"
-            }
-        ],
-        "name": "Initialized",
-        "type": "event"
-    },
-    {
-        "anonymous": false,
-        "inputs": [
-            {
                 "indexed": true,
                 "internalType": "address",
                 "name": "from",
@@ -211,25 +198,6 @@
             }
         ],
         "stateMutability": "view",
-        "type": "function"
-    },
-    {
-        "inputs": [
-            {
-                "internalType": "address",
-                "name": "_address",
-                "type": "address"
-            }
-        ],
-        "name": "addressToString",
-        "outputs": [
-            {
-                "internalType": "string",
-                "name": "",
-                "type": "string"
-            }
-        ],
-        "stateMutability": "pure",
         "type": "function"
     },
     {

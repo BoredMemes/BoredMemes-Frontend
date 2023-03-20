@@ -130,6 +130,13 @@
     },
     {
         "inputs": [],
+        "name": "initCollections",
+        "outputs": [],
+        "stateMutability": "nonpayable",
+        "type": "function"
+    },
+    {
+        "inputs": [],
         "name": "nftImpl",
         "outputs": [
             {

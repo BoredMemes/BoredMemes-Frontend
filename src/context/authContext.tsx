@@ -20,7 +20,7 @@ export const initialState = {
  */
 
 const AuthStateContext = createContext(initialState);
-const AuthDispatchContext = createContext({});
+const AuthDispatchContext = createContext(undefined);
 
 export function useAuthState() {
     const context = React.useContext(AuthStateContext);

@@ -6,7 +6,7 @@ import { toast } from 'react-toastify';
 import Modal from 'components/modal';
 import FilledButton from 'components/Buttons/FilledButton';
 import { useHistory } from 'react-router-dom';
-import { useAuthState } from 'context/authContext';
+import { getUser, useAuthDispatch, useAuthState } from 'context/authContext';
 import moment from 'moment';
 import { onMintArt } from 'utils/contracts';
 
@@ -14,6 +14,7 @@ const ViewArt = () => {
   const classes = useStyles();
   const { loginStatus, account, chainId, library } = useContext(Web3WalletContext)
   const { user } = useAuthState();
+  const dispatch = useAuthDispatch();
 
   const [isNew, setNew] = useState(false);
   const [itemId, setItemId] = useState(undefined);
@@ -132,8 +133,8 @@ const ViewArt = () => {
       toAddress: item?.ownerUser?.address.toLowerCase()
     }
     axios.post("/api/user/follow", paramsData)
-      .then((res) => {
-        console.log(res.data.user);
+      .then(async (res) => {
+        getUser(dispatch, account);
       }).catch((e) => {
         console.log(e);
       })
