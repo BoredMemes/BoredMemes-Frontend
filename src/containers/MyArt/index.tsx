@@ -44,6 +44,7 @@ const MyArt = ({ feedMode }: PropsType) => {
     768: 2,
     450: 1,
   };
+  const [isLoading, setLoading] = useState(false);
   const [profile, setProfile] = useState(null);
   const [filter, setFilter] = useState('new');
   const [searchStr, setSearchStr] = useState('');
@@ -64,10 +65,10 @@ const MyArt = ({ feedMode }: PropsType) => {
   const [selectedChainId, setSelectedChainId] = useState(process.env.REACT_APP_NODE_ENV === "production" ? 1 : 5);
 
   useEffect(() => {
-    if (!loginStatus || !account){
+    if (!loginStatus || !account) {
       return;
     }
-    if (feedMode === 2 && !user)return;
+    if (feedMode === 2 && !user) return;
     if (feedMode === 0 && loginStatus && account && owner === "undefined") {
       history.push("/my_art/" + account);
       window.location.reload();
@@ -79,12 +80,12 @@ const MyArt = ({ feedMode }: PropsType) => {
     }
     setSelectedItems([]);
     fetchItems();
-    if (feedMode === 0){
+    if (feedMode === 0) {
       fetchUsers();
       fetchCollections();
       fetchDefaultCollection();
     }
-    
+
   }, [loginStatus, account, owner, filter, searchStr, emoticonId, privateType, user])
 
   useEffect(() => {
@@ -100,9 +101,10 @@ const MyArt = ({ feedMode }: PropsType) => {
   }
 
   const fetchItems = async () => {
+    setLoading(true);
     let paramsData = {
       emoticonAddr: loginStatus && account ? owner?.toLowerCase() : undefined,
-      owner: feedMode !== 1 ? ( feedMode !== 2 ? owner?.toLowerCase() : user?.followers) : undefined,
+      owner: (feedMode === 0 || feedMode === 2) ? (feedMode !== 2 ? owner?.toLowerCase() : user?.followers) : undefined,
       searchTxt: searchStr,
       emoticonId: emoticonId,
       progress: filter === "nft" ? undefined : 0,
@@ -110,14 +112,16 @@ const MyArt = ({ feedMode }: PropsType) => {
       filter: filter,
       itemCollection: filter === "nft" && selectedCollection && isDetail ? selectedCollection.address : undefined,
       collectionId: filter !== "nft" && selectedCollection && isDetail ? selectedCollection.id : undefined,
-      bookmarks: feedMode === 3 && loginStatus && account ? account : undefined,
+      bookmarks: feedMode === 3 && loginStatus && account ? account.toLowerCase() : undefined,
     }
     axios.get(filter !== "nft" ? "/api/art" : "/api/item", { params: paramsData })
       .then((res) => {
         setMyArt(res.data.items);
+        setLoading(false);
       }).catch((e) => {
         console.log(e.message);
         toast.error(e.message);
+        setLoading(false);
       })
   }
 
@@ -279,7 +283,7 @@ const MyArt = ({ feedMode }: PropsType) => {
         let metadata = {
           isOnChain: true,
           id: selectedCollection.id,
-          address: account, 
+          address: account,
           itemCollection: colAddr.toString().toLowerCase(),
           name: title,
           description: description,
@@ -411,20 +415,28 @@ const MyArt = ({ feedMode }: PropsType) => {
     }
   }
 
-  const onPublish = (isPublic) => {
+  const onPublish = (isPublic, _selectedItems) => {
     if (!loginStatus || !account) {
       return toast.error("Please connect your wallet correctly.");
     }
     let paramsData = {
       address: account,
-      itemIds: selectedItems.map((_item) => filter !== "nft" ? _item.id : _item.tokenId),
-      collections: filter !== "nft" ? [] : selectedItems.map((_item) => _item.itemCollection),
+      itemIds: _selectedItems.map((_item) => filter !== "nft" ? _item.id : _item.tokenId),
+      collections: filter !== "nft" ? [] : _selectedItems.map((_item) => _item.itemCollection),
       isPublic: isPublic,
       isNew: filter !== "nft"
     }
     const load_toast_id = toast.loading("Please wait...")
     axios.post("/api/publish", paramsData)
       .then((res) => {
+        for (const art of myArt){
+          for (const _item of res.data.items){
+            if ((filter !== "nft" && _item.id === art.id) || (filter === "nft" && _item.tokenId === art.tokenId && _item.itemCollection === art.itemCollection)){
+              art.privateType = _item.privateType;
+            }
+          }
+        }
+        setMyArt([...myArt]);
         toast.success((isPublic ? "Published" : "Unpublished") + " Successfully")
         toast.dismiss(load_toast_id);
       }).catch((e) => {
@@ -434,11 +446,14 @@ const MyArt = ({ feedMode }: PropsType) => {
       })
   }
   const onDownload = () => {
+    if (!user) return;
+    const load_toast_id = toast.loading("Please wait...");
     const zip = new JSZip();
     const zipFile = zip.folder("images");
     const list = selectedItems.map(async (item, index) => {
-      const fileUrl = item.thumbnail;
-      const response = await fetch(item.thumbnail);
+      const fileUrl = user?.planId <= 0 && user?.additional_plans ? item.watermark : item.thumbnail;
+      //const fileUrl = item.watermark;
+      const response = await fetch(fileUrl);
       const data = await response.blob();
       const name = fileUrl.split("/")[fileUrl.split("/").length - 1];
       zipFile.file(name, data);
@@ -448,6 +463,7 @@ const MyArt = ({ feedMode }: PropsType) => {
       zip.generateAsync({ type: "blob" })
         .then((content) => {
           FileSaver.saveAs(content, "images");
+          toast.dismiss(load_toast_id);
         })
     })
   }
@@ -500,8 +516,8 @@ const MyArt = ({ feedMode }: PropsType) => {
 
   const gotoTab = (_feedMode) => {
     _feedMode === 1 ? history.push('/community_feed') :
-    _feedMode === 2 ? history.push('/personal_feed') :
-    history.push('/bookmarks');
+      _feedMode === 2 ? history.push('/personal_feed') :
+        history.push('/bookmarks');
   }
 
   return (
@@ -585,6 +601,9 @@ const MyArt = ({ feedMode }: PropsType) => {
           </div>
         }
         <Filter
+          feedMode={feedMode}
+          isLoading={isLoading}
+          setLoading={setLoading}
           filter={filter}
           setFilter={setFilter}
           setPrivateType={setPrivateType}
@@ -625,7 +644,9 @@ const MyArt = ({ feedMode }: PropsType) => {
                   setSelectedItems={setSelectedItems}
                   onCreateNFT={onCreateNFT}
                   onClick={() => selectable && handleClick(isSelected, item)}
+                  selectable={selectable}
                   isSelected={isSelected}
+                  onPublish={onPublish}
                 />)
             })}
           </Masonry>
@@ -640,9 +661,9 @@ const MyArt = ({ feedMode }: PropsType) => {
                 <div className="drodownMenu">
                   <div className="menuItem" onClick={() => onDownload()}>Download Zip</div>
                   {
-                    filter !== "nft" && <>
-                      <div className="menuItem" onClick={() => onPublish(true)}>Publish</div>
-                      <div className="menuItem" onClick={() => onPublish(false)}>Unpublish</div>
+                    feedMode === 0 && filter !== "nft" && <>
+                      <div className="menuItem" onClick={() => onPublish(true, selectedItems)}>Publish</div>
+                      <div className="menuItem" onClick={() => onPublish(false, selectedItems)}>Unpublish</div>
                       <div className="menuItem" onClick={() => setShowCreateColllectionModal(true)}>Create NFT</div>
                       <div className="menuItem" onClick={() => onAdd()}>Add To Collection</div>
                       <div className="menuItem" onClick={() => onRemove()}>Remove From Collection</div>

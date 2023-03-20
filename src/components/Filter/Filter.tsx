@@ -2,6 +2,9 @@ import { makeStyles } from '@material-ui/core/styles';
 import { useEffect, useState } from 'react';
 
 interface PropsType {
+  feedMode?: number;
+  isLoading?: boolean;
+  setLoading?: any;
   filter?: string;
   setFilter?: any;
   setSearchStr?: any;
@@ -132,6 +135,21 @@ const useStyles = makeStyles(theme => ({
           '&:hover': {
             background: '#F0F2F5',
           },
+        },
+        '& .loadingImg': {
+          border: '1px #F400F500 solid',
+          background: '#ffffff00',
+          cursor: 'pointer',
+          transition: 'all 0.3s ease',
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'center',
+          width: 25,
+          height: 25,
+          borderRadius: 35,
+        },
+        '& .rotateBtns': {
+          animation: 'loadingAni .5s linear 0s infinite backwards',
         }
       }
     },
@@ -276,7 +294,7 @@ const useStyles = makeStyles(theme => ({
 
 }));
 
-const Filter = ({ filter, setFilter, setPrivateType, setSearchStr, selectable, setSelectable, emoticonId, setEmoticonId, fetchItems }: PropsType) => {
+const Filter = ({ feedMode, isLoading, setLoading, filter, setFilter, setPrivateType, setSearchStr, selectable, setSelectable, emoticonId, setEmoticonId, fetchItems }: PropsType) => {
   const classes = useStyles();
 
   const [searchTxt, setSearchTxt] = useState("");
@@ -313,7 +331,7 @@ const Filter = ({ filter, setFilter, setPrivateType, setSearchStr, selectable, s
               <input type="text" placeholder="Search" value={searchTxt} onChange={(e) => setSearchTxt(e.target.value)} />
             </span>
             <div className="btns">
-              <button><img src="/assets/icons/refresh_icon.svg" alt="" onClick={() => fetchItems()} /></button>
+              <img className={`loadingImg ${isLoading && "rotateBtns"}`} src="/assets/icons/refresh_icon.svg" alt=""/>
               <button onClick={() => setSelectable(!selectable)} style={{ borderColor: selectable ? '#F400F5' : '#F400F500' }}><img src="/assets/icons/select_icon.svg" alt="" /></button>
             </div>
           </div>
@@ -331,23 +349,26 @@ const Filter = ({ filter, setFilter, setPrivateType, setSearchStr, selectable, s
             <button onClick={() => setFilter('nft')} className={`${filter === 'nft' ? 'activeBtn filterBtn' : 'filterBtn'}`}>NFT</button>
           </span>
           <div className="smalBtns">
-            <button onClick={() => onShowImages()} className={`imgBtn`}>
-              {stateShowImage === 0 ?
-                <img src="/assets/icons/show_all_icon.svg" alt="" /> :
-                stateShowImage === 1 ?
-                  <img src="/assets/icons/show_icon.svg" alt="" /> :
-                  <img src="/assets/icons/show_private_icon.svg" alt="" />}
-            </button>
-            <button className={`${ emoticonId === 0 ? "activeLikeBtn" : "likeBtn"}`} onClick={() => setEmoticonId(emoticonId === 0 ? -1 : 0)}>
+            {
+              feedMode === 0 && <button onClick={() => onShowImages()} className={`imgBtn`}>
+                {stateShowImage === 0 ?
+                  <img src="/assets/icons/show_all_icon.svg" alt="" /> :
+                  stateShowImage === 1 ?
+                    <img src="/assets/icons/show_icon.svg" alt="" /> :
+                    <img src="/assets/icons/show_private_icon.svg" alt="" />}
+              </button>
+            }
+
+            <button className={`${emoticonId === 0 ? "activeLikeBtn" : "likeBtn"}`} onClick={() => setEmoticonId(emoticonId === 0 ? -1 : 0)}>
               <img src="/assets/icons/image 185.png" alt="" />
             </button>
-            <button className={`${ emoticonId === 1 ? "activeLikeBtn" : "likeBtn"}`} onClick={() => setEmoticonId(emoticonId === 1 ? -1 : 1)}>
+            <button className={`${emoticonId === 1 ? "activeLikeBtn" : "likeBtn"}`} onClick={() => setEmoticonId(emoticonId === 1 ? -1 : 1)}>
               <img src="/assets/icons/Grimacing Face.png" alt="" />
             </button>
-            <button className={`${ emoticonId === 2 ? "activeLikeBtn" : "likeBtn"}`} onClick={() => setEmoticonId(emoticonId === 2 ? -1 : 2)}>
+            <button className={`${emoticonId === 2 ? "activeLikeBtn" : "likeBtn"}`} onClick={() => setEmoticonId(emoticonId === 2 ? -1 : 2)}>
               <img src="/assets/icons/Star-Struck.png" alt="" />
             </button>
-            <button className={`${ emoticonId === 3 ? "activeLikeBtn" : "likeBtn"}`} onClick={() => setEmoticonId(emoticonId === 3 ? -1 : 3)}>
+            <button className={`${emoticonId === 3 ? "activeLikeBtn" : "likeBtn"}`} onClick={() => setEmoticonId(emoticonId === 3 ? -1 : 3)}>
               <img src="/assets/icons/Smiling Face with Heart-Eyes.png" alt="" />
             </button>
           </div>

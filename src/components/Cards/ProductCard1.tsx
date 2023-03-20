@@ -16,7 +16,9 @@ interface PropsType {
   isSelected?: boolean
   isNew?: boolean,
   setSelectedItems?: any,
-  onCreateNFT?: any
+  onCreateNFT?: any,
+  onPublish?: any,
+  selectable?: boolean
 }
 
 interface StyleType {
@@ -293,7 +295,7 @@ const useStyles = makeStyles(theme => ({
   },
 }));
 
-const PropertyCard1 = ({ item, setSelectedItems, onCreateNFT, profile, setProfile, onClick, onShow, isSelected, updateArts, isNew }: PropsType) => {
+const PropertyCard1 = ({ item, setSelectedItems, onCreateNFT, selectable, profile, setProfile, onClick, onShow, isSelected, updateArts, isNew, onPublish }: PropsType) => {
   const classes = useStyles();
   const { loginStatus, account } = useContext(Web3WalletContext)
   const { user } = useAuthState();
@@ -344,7 +346,7 @@ const PropertyCard1 = ({ item, setSelectedItems, onCreateNFT, profile, setProfil
     let textarea = document.createElement("textarea");
     textarea.textContent = type === 0 ? item?.fullCommand :
       type === 1 ? item?.description :
-        `${process.env.REACT_APP_API_URL}view_art/${isNew ? "new" : "onchain"}/${isNew ? item?.id : item?.tokenId}`;
+      user?.planId <= 0 && user?.additional_plans ? item.watermark : item.thumbnail;
     //textarea.textContent = "dfghjkl;";
     textarea.style.position = "fixed"; // Prevent scrolling to bottom of page in Microsoft Edge.
     document.body.appendChild(textarea);
@@ -361,8 +363,9 @@ const PropertyCard1 = ({ item, setSelectedItems, onCreateNFT, profile, setProfil
   };
 
   const onDownload = () => {
-    if (item?.thumbnail !== "")
-      fetch(item?.thumbnail).then(response => {
+    const fileUrl = user?.planId <= 0 && user?.additional_plans ? item.watermark : item.thumbnail;
+    if (fileUrl.length !== 0)
+      fetch(fileUrl).then(response => {
         response.blob().then(blob => {
           // Creating new object of PDF file
           const fileURL = window.URL.createObjectURL(blob);
@@ -370,7 +373,7 @@ const PropertyCard1 = ({ item, setSelectedItems, onCreateNFT, profile, setProfil
           let alink = document.createElement('a');
           alink.href = fileURL;
           alink.setAttribute('target', '_blank');
-          alink.download = item?.thumbnail.split('/')[item?.thumbnail.split('/').length - 1];
+          alink.download = fileUrl.split('/')[fileUrl.split('/').length - 1];
           alink.click();
           // Append to html link element page
           document.body.appendChild(alink);
@@ -436,10 +439,13 @@ const PropertyCard1 = ({ item, setSelectedItems, onCreateNFT, profile, setProfil
 
   return (
     <div className={`${classes.productWrapper} ${isSelected ? 'selected' : ''} card1`} ref={ref} style={divStyle} onClick={onClick}>
-      <img src={'/assets/imgs/pixia-icon.png'} style={{ position: 'absolute', zIndex: 10, margin: 8 }} width={50} alt="" />
+      { user?.planId <= 0 && user?.additional_plans && 
+        <img src={'/assets/imgs/pixia-icon.png'} style={{ position: 'absolute', zIndex: 10, margin: 8 }} width={50} alt="" />
+      }
+      
       <div className="top" >
         {
-          item?.assetUrl && item?.assetUrl !== "" ? <img src={item?.assetUrl} alt="" /> :
+          item?.assetUrl && item?.assetUrl !== "" ? <img src={item?.assetUrl} alt="" onClick={() => !selectable && onGotoPage(`/view_art/${isNew ? "new" : "items"}/${isNew ? item?.id + "/art" : item?.itemCollection + "/" + item?.tokenId}`)}/> :
             <div>
               Awaiting Design
             </div>
@@ -477,6 +483,13 @@ const PropertyCard1 = ({ item, setSelectedItems, onCreateNFT, profile, setProfil
                 <div className="menuItem" onClick={() => onGotoPage(`/view_art/${isNew ? "new" : "items"}/${isNew ? item?.id + "/art" : item?.itemCollection + "/" + item?.tokenId}`)}>
                   <img src="/assets/icons/newTab_icon.svg" alt="" /> Open new tab
                 </div>
+                {
+                  loginStatus && account && user && user.planId === 3 && item?.owner.includes(account.toLowerCase()) && 
+                    <div className="menuItem" onClick={() => onPublish(item?.privateType === 0, [item])}>
+                      <img src={item?.privateType === 1 ? "/assets/icons/unpublish.svg" : "/assets/icons/publish.svg"} alt="" /> 
+                      { item?.privateType === 1 ? "Unpublish" : "Publish"}
+                    </div>
+                }
                 <div className="menuItem" onClick={() => onDownload()}>
                   <img src="/assets/icons/download_icon.svg" alt="" /> Save image
                 </div>
