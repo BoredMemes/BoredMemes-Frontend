@@ -158,7 +158,7 @@ const ViewArt = () => {
   };
 
   const onDownload = () => {
-    const fileUrl = user?.planId <= 0 && user?.additional_plans ? item.watermark : item.thumbnail;
+    const fileUrl = user?.planId <= 0 && user?.additional_credits <= 0 ? item.watermark : item.thumbnail;
     if (fileUrl !== "")
       fetch(fileUrl).then(response => {
         response.blob().then(blob => {

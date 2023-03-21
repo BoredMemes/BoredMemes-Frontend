@@ -54,13 +54,19 @@ export async function getDistributorInfo(chainId) {
       _contract.getTotalEthForAutoLPandBuyback(),
       _contract.getTotalEthSentToWallets()
     ]);
-    
+    const totalEvenue = 
+      parseFloat(ethers.utils.formatEther(totalForLP[0])) + 
+      parseFloat(ethers.utils.formatEther(totalForLP[1])) + 
+      parseFloat(ethers.utils.formatEther(totalETH[0])) + 
+      parseFloat(ethers.utils.formatEther(totalETH[1])) + 
+      parseFloat(ethers.utils.formatEther(totalETH[2])) + 
+      parseFloat(ethers.utils.formatEther(totalETH[3]))
     return [
       parseFloat(ethers.utils.formatEther(LPBurn[0])),
       parseFloat(ethers.utils.formatEther(LPBurn[1])),
       parseFloat(ethers.utils.formatEther(StakingCaller[1])),
       parseFloat(ethers.utils.formatEther(StakingCaller[3])),
-      parseFloat(ethers.utils.formatEther(totalForLP[0] + totalForLP[1] + totalETH[0] + totalETH[1] + totalETH[2] + totalETH[3]))
+      totalEvenue
     ];
   } catch (e) {
     console.log(e);
@@ -71,8 +77,7 @@ export async function getDistributorInfo(chainId) {
 }
 
 export async function onFuelUp(chainId, provider) {
-  const jsonProvider = new ethers.providers.JsonRpcProvider(networks[chainId].NODES);
-  const _contract = getContractObj("PixiaDistributor", chainId, provider);
+  const _contract = getContractObj("PixiaAiDistributor", chainId, provider);
   try {
     const tx = await _contract.triggerDistribution();
     await tx.wait(1);

@@ -14,6 +14,7 @@ import ThemeContext from "theme/ThemeContext"
 import MyTooltip from 'components/Widgets/MyTooltip';
 import moment from 'moment';
 import { useAuthState } from 'context/authContext';
+import Faqs from './faqs';
 const Hub = () => {
   const classes = useStyles();
   const { loginStatus, chainId, account, library } = useContext(Web3WalletContext)
@@ -29,13 +30,11 @@ const Hub = () => {
   }, [loginStatus, chainId, account, library])
 
   const [plans, setPlans] = useState([]);
-  const [selectedPlan, setSelectedPlan] = useState(null);
   const [ moreHours, setMoreHours ] = useState(1)
   const getPlans = async () => {
     axios.get("/api/plans")
       .then((res) => {
         setPlans(res.data.plans);
-        setSelectedPlan(res.data.plans[0]);
       }).catch((err) => {
         console.log(err);
       })
@@ -103,10 +102,14 @@ const Hub = () => {
                     padding: '5px', width: '108px',
                     height: '40px', borderRadius: '15px', paddingLeft: 10, paddingRight: 10, textAlign: 'center', border: 'dashed 1px #ff589d', alignSelf: 'center'
                   }} className='gradient-color'>Renew Plan</button>
-                  <button style={{
+                  {/* <button style={{
                     background: '#2B614C', paddingLeft: 60, paddingRight: 60, border: 'none', color: 'white', height: '40px', marginLeft: 8,
                     borderRadius: '15px'
-                  }}>Active Plan</button>
+                  }}>Active Plan</button> */}
+                  <button style={{
+                    background: '#CE4E63', paddingLeft: 60, paddingRight: 60, border: 'none', color: 'white', height: '40px', marginLeft: 8,
+                    borderRadius: '15px'
+                  }}>Inactive Plan</button>
                 </div>
               </div>
 
@@ -115,7 +118,7 @@ const Hub = () => {
                   <h3>Hours Detail</h3>
                   <div>
                     <p>Plan hours</p>
-                    <span>{getHours(user?.plan_credits) || "0h"} / {plans.length > 0 ? plans[user?.planId]?.hours : 0}h</span>
+                    <span>{getHours(user?.plan_credits) || "0h"} / {plans.length > 0 && user?.planId !== 0 ? plans[user?.planId - 1]?.hours : 0}h</span>
                   </div>
                   <div>
                     <p>Additional</p>
@@ -181,8 +184,8 @@ const Hub = () => {
                   {
                     plans.map((plan, idx) => {
                       return <>
-                        <div className={theme} onClick={() => setSelectedPlan(plan)}
-                          style={selectedPlan && plan.id === selectedPlan?.id ? { border: '1.3px solid transparent', background: 'transparent', backgroundImage: theme == 'light' ? 'linear-gradient(90deg, white, white),linear-gradient(47.43deg, #2A01FF 0%, #FF1EE1 40%, #FFB332 100%)' : 'linear-gradient(90deg, #030316, #030316),linear-gradient(47.43deg, #2A01FF 0%, #FF1EE1 40%, #FFB332 100%)', backgroundClip: 'padding-box, border-box', backgroundOrigin: 'border-box' } : {}}
+                        <div className={theme}
+                          style={user?.planId && user?.planId === plan?.id ? { border: '1.3px solid transparent', background: 'transparent', backgroundImage: theme == 'light' ? 'linear-gradient(90deg, white, white),linear-gradient(47.43deg, #2A01FF 0%, #FF1EE1 40%, #FFB332 100%)' : 'linear-gradient(90deg, #030316, #030316),linear-gradient(47.43deg, #2A01FF 0%, #FF1EE1 40%, #FFB332 100%)', backgroundClip: 'padding-box, border-box', backgroundOrigin: 'border-box' } : {}}
                         >
                           <h4>{plan.name}</h4>
                           <p>{plan.hours} hours/month</p>
@@ -196,12 +199,10 @@ const Hub = () => {
                   }
                 </div>
               </div>
-              <div style={{ display: 'block' }}>
-                <h3>Frequently Asked Questions</h3>
-                <p>Can't find the answer you're looking for? Read the <a href='' style={{ color: 'white' }}><u>Quick Start Guide</u></a> or visit the <a href='' style={{ color: 'white' }}><u>Telegram Group</u></a> to ask for help.</p>
-              </div>
             </div>
           </div>
+          
+          <Faqs/>
         </div>
       </div>
     </>

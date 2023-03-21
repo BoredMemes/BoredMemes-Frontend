@@ -363,7 +363,7 @@ const PropertyCard1 = ({ item, setSelectedItems, onCreateNFT, selectable, profil
   };
 
   const onDownload = () => {
-    const fileUrl = user?.planId <= 0 && user?.additional_plans ? item.watermark : item.thumbnail;
+    const fileUrl = user?.planId <= 0 && user?.additional_credits <= 0 ? item.watermark : item.thumbnail;
     if (fileUrl.length !== 0)
       fetch(fileUrl).then(response => {
         response.blob().then(blob => {

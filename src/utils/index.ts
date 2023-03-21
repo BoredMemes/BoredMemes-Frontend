@@ -63,7 +63,7 @@ export const CONTRACTS_BY_NETWORK = {
       abi: PixiaAiPoolFactoryABI
     },
     PixiaAiDistributor: {
-      address: '0xA68A0FA353474F9839F6d7bb3baB452FDB6a6CBf',
+      address: '0xfC656cf14A973b5732E4276843e4572d626B4090',
       abi: PixiaAiDistributorABI
     }
   },
