@@ -26,9 +26,19 @@ export function Web3ReactManager({ children }) {
 
   // try to eagerly connect to an injected provider, if it exists and has granted access already
   const triedEager = useEagerConnect();
-
   // when there's no account connected, react to logins (broadly speaking) on the injected provider, if it exists
-  useInactiveListener(!triedEager);
+  //useInactiveListener();
+
+  useEffect(() => {
+    if (window.ethereum) {
+      window.ethereum.on("chainChanged", () => {
+        window.location.reload();
+      });
+      window.ethereum.on("accountsChanged", () => {
+        window.location.reload();
+      });
+    }
+  });
 
   return (
     <Web3WalletContext.Provider value={value}>

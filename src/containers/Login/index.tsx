@@ -1,8 +1,15 @@
 
+import ConnectModal from 'components/modal/connectModal/ConnectModal';
+import useAuth from 'hooks/useAuth';
+import Web3WalletContext from 'hooks/Web3ReactManager';
+import { useContext, useState } from 'react';
 import { useStyles } from './style';
 
 const Login = () => {
   const classes = useStyles();
+  const [showConnectModal, setShowConnectModal] = useState(false);
+  const { loginStatus, account, library, chainId } = useContext(Web3WalletContext)
+  const { switchNetwork } = useAuth();
 
   return (
     <>
@@ -13,9 +20,12 @@ const Login = () => {
           <p className={classes.text_2} style={{WebkitTextFillColor: 'text'}}>Potential </p>
         </div>
         <p className={classes.pixia_text}>To start using Pixia</p>
-        <button className={classes.connect_btn_wallet}>Connect Wallet</button>
+        <button className={classes.connect_btn_wallet}
+          onClick={() => setShowConnectModal(true)}
+        >Connect Wallet</button>
         <p className={classes.pixia_text_mobile}>To start using Pixia</p>
       </div>
+      <ConnectModal showConnectModal={showConnectModal} setShowConnectModal={setShowConnectModal} />
     </>
   );
 };

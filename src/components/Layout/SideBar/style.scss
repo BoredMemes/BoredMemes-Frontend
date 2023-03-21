@@ -163,6 +163,58 @@
     }
   }
 
+  .sideIncome {
+    display: flex;
+
+    flex-direction: column;
+    width: 100%;
+    padding: 20px;
+    margin-bottom: 20px;
+    border-radius: 25px;
+    background: linear-gradient(47.43deg, #2A01FF44 0%, #FF1EE144 57%, #FFB33244 100%);
+    justify-content: center;
+    align-items: center;
+    gap: 14px;
+
+    .sideStake {
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      align-items: center;
+      width: 100%;
+
+      p {
+        font-weight: 400;
+        font-style: normal;
+        line-height: 13px;
+        font-family: "Josefin Sans";
+        color: #1846E8 !important;
+        margin-bottom: 10px;
+      }
+
+      div {
+        width: 63px;
+        height: 20px;
+
+        font-family: 'Josefin Sans';
+        font-style: normal;
+        font-weight: 500;
+        font-size: 16px;
+        line-height: 16px;
+        display: flex;
+        align-items: center;
+        text-align: right;
+
+        /* Gradient Pixia 2 */
+
+        background: linear-gradient(47.43deg, #2A01FF 0%, #FF1EE1 57%, #FFB332 100%);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        background-clip: text;
+      }
+    }
+  }
+
   .stakeInfo {
     display: flex;
 
@@ -183,6 +235,7 @@
 
       p {
         font-weight: 400;
+        font-size: 14px;
         font-style: normal;
         line-height: 13px;
         font-family: "Josefin Sans";
@@ -190,17 +243,11 @@
       }
 
       div {
-        width: 63px;
-        height: 20px;
-
-        font-family: 'Josefin Sans';
+        font-weight: 400;
+        font-size: 14px;
         font-style: normal;
-        font-weight: 500;
-        font-size: 16px;
-        line-height: 16px;
-        display: flex;
-        align-items: center;
-        text-align: right;
+        line-height: 13px;
+        font-family: "Josefin Sans";
 
         /* Gradient Pixia 2 */
 

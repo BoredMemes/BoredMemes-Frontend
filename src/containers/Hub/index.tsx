@@ -73,6 +73,7 @@ const Hub = () => {
 
   const getHours = (credit_) => {
     try{
+      if (!credit_)return "0h";
       const _hour = Math.floor(credit_ / 60);
       const _second = credit_ % 60;
       return _second <= 0 ? `${_hour}h` : `${_hour}h ${_second}m`;

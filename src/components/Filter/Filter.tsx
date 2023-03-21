@@ -1,5 +1,6 @@
 import { makeStyles } from '@material-ui/core/styles';
-import { useEffect, useState } from 'react';
+import Web3WalletContext from 'hooks/Web3ReactManager';
+import { useContext, useEffect, useState } from 'react';
 
 interface PropsType {
   feedMode?: number;
@@ -296,7 +297,7 @@ const useStyles = makeStyles(theme => ({
 
 const Filter = ({ feedMode, isLoading, setLoading, filter, setFilter, setPrivateType, setSearchStr, selectable, setSelectable, emoticonId, setEmoticonId, fetchItems }: PropsType) => {
   const classes = useStyles();
-
+  const { loginStatus, account } = useContext(Web3WalletContext)
   const [searchTxt, setSearchTxt] = useState("");
   const [stateShowImage, setStateShowImage] = useState(0)
   const onShowImages = () => {
@@ -331,7 +332,7 @@ const Filter = ({ feedMode, isLoading, setLoading, filter, setFilter, setPrivate
               <input type="text" placeholder="Search" value={searchTxt} onChange={(e) => setSearchTxt(e.target.value)} />
             </span>
             <div className="btns">
-              <img className={`loadingImg ${isLoading && "rotateBtns"}`} src="/assets/icons/refresh_icon.svg" alt=""/>
+              <img className={`loadingImg ${isLoading && "rotateBtns"}`} src="/assets/icons/refresh_icon.svg" alt="" />
               <button onClick={() => setSelectable(!selectable)} style={{ borderColor: selectable ? '#F400F5' : '#F400F500' }}><img src="/assets/icons/select_icon.svg" alt="" /></button>
             </div>
           </div>
@@ -359,18 +360,23 @@ const Filter = ({ feedMode, isLoading, setLoading, filter, setFilter, setPrivate
               </button>
             }
 
-            <button className={`${emoticonId === 0 ? "activeLikeBtn" : "likeBtn"}`} onClick={() => setEmoticonId(emoticonId === 0 ? -1 : 0)}>
-              <img src="/assets/icons/image 185.png" alt="" />
-            </button>
-            <button className={`${emoticonId === 1 ? "activeLikeBtn" : "likeBtn"}`} onClick={() => setEmoticonId(emoticonId === 1 ? -1 : 1)}>
-              <img src="/assets/icons/Grimacing Face.png" alt="" />
-            </button>
-            <button className={`${emoticonId === 2 ? "activeLikeBtn" : "likeBtn"}`} onClick={() => setEmoticonId(emoticonId === 2 ? -1 : 2)}>
-              <img src="/assets/icons/Star-Struck.png" alt="" />
-            </button>
-            <button className={`${emoticonId === 3 ? "activeLikeBtn" : "likeBtn"}`} onClick={() => setEmoticonId(emoticonId === 3 ? -1 : 3)}>
-              <img src="/assets/icons/Smiling Face with Heart-Eyes.png" alt="" />
-            </button>
+            {
+              loginStatus && account && <>
+                <button className={`${emoticonId === 0 ? "activeLikeBtn" : "likeBtn"}`} onClick={() => setEmoticonId(emoticonId === 0 ? -1 : 0)}>
+                  <img src="/assets/icons/image 185.png" alt="" />
+                </button>
+                <button className={`${emoticonId === 1 ? "activeLikeBtn" : "likeBtn"}`} onClick={() => setEmoticonId(emoticonId === 1 ? -1 : 1)}>
+                  <img src="/assets/icons/Grimacing Face.png" alt="" />
+                </button>
+                <button className={`${emoticonId === 2 ? "activeLikeBtn" : "likeBtn"}`} onClick={() => setEmoticonId(emoticonId === 2 ? -1 : 2)}>
+                  <img src="/assets/icons/Star-Struck.png" alt="" />
+                </button>
+                <button className={`${emoticonId === 3 ? "activeLikeBtn" : "likeBtn"}`} onClick={() => setEmoticonId(emoticonId === 3 ? -1 : 3)}>
+                  <img src="/assets/icons/Smiling Face with Heart-Eyes.png" alt="" />
+                </button>
+              </>
+            }
+
           </div>
         </div>
       </div>

@@ -37,22 +37,20 @@ const ViewArt = () => {
   }, [location.location.pathname])
 
   useEffect(() => {
-    if (loginStatus) {
+    if (isNew && itemId){
       fetchItems();
       fetchDefaultCollection();
     }
-  }, [loginStatus, isNew, itemId])
+  }, [loginStatus, account, isNew, itemId])
 
   const fetchItems = async () => {
     let paramsData = {
       emoticonAddr: loginStatus ? account?.toLowerCase() : undefined,
-      owner: account?.toLowerCase(),
       itemId: itemId,
       itemCollection: itemCollection,
     }
     axios.get(isNew ? "/api/artdetail" : "/api/itemdetail", { params: paramsData })
       .then((res) => {
-        console.log(res.data.item)
         setItem(res.data.item);
       }).catch((e) => {
         console.log(e.message);
@@ -160,8 +158,9 @@ const ViewArt = () => {
   };
 
   const onDownload = () => {
-    if (item?.thumbnail !== "")
-      fetch(item?.thumbnail).then(response => {
+    const fileUrl = user?.planId <= 0 && user?.additional_plans ? item.watermark : item.thumbnail;
+    if (fileUrl !== "")
+      fetch(fileUrl).then(response => {
         response.blob().then(blob => {
           // Creating new object of PDF file
           const fileURL = window.URL.createObjectURL(blob);
@@ -169,7 +168,7 @@ const ViewArt = () => {
           let alink = document.createElement('a');
           alink.href = fileURL;
           alink.setAttribute('target', '_blank');
-          alink.download = item?.thumbnail.split('/')[item?.thumbnail.split('/').length - 1];
+          alink.download = fileUrl.split('/')[fileUrl.split('/').length - 1];
           alink.click();
           // Append to html link element page
           document.body.appendChild(alink);
@@ -214,7 +213,7 @@ const ViewArt = () => {
               <div className="avatar">
                 <img src={item?.ownerUser?.logo_url} alt="" />
                 <p>{item?.ownerUser?.name}</p>
-                <button onClick={onFollow}>{user?.followers.includes(item?.ownerUser?.address.toLowerCase()) ? "Unfollow" : "Follow"}</button>
+                {loginStatus && account && <button onClick={onFollow}>{user?.followers.includes(item?.ownerUser?.address.toLowerCase()) ? "Unfollow" : "Follow"}</button>}
               </div>
               <div className="btns">
 
@@ -231,55 +230,58 @@ const ViewArt = () => {
                       </div>
                     </div>
                     {
-                      account?.toLowerCase() !== item?.ownerUser?.address.toLowerCase() && <div className="menuItem" onClick={() => onFollow()}>
+                      loginStatus && account && account?.toLowerCase() !== item?.ownerUser?.address.toLowerCase() && <div className="menuItem" onClick={() => onFollow()}>
                         <img src="/assets/icons/follow_icon.svg" alt="" /> {user?.followers.includes(item?.ownerUser?.address.toLowerCase()) ? "Unfollow" : "Follow"} {item?.ownerUser?.name.length > 6 ? item?.ownerUser?.name.substring(0, 6) + "..." : item?.ownerUser?.name}
                       </div>
                     }
                   </div>
                 </div>
-                <div className="smallBtn ml-3" onClick={() => onDownload()}>
-                  <img src="/assets/icons/download_icon.svg" alt="" />
-                </div>
-                {item?.emoticonId === 0 &&
-                  <div className="smallBtn ml-3">
-                    <img src="/assets/icons/image 185.png" alt="" />
-                  </div>}
-                {item?.emoticonId === 1 &&
-                  <div className="smallBtn ml-3">
-                    <img src="/assets/icons/Grimacing Face.png" alt="" />
-                  </div>}
-                {item?.emoticonId === 2 &&
-                  <div className="smallBtn ml-3">
-                    <img src="/assets/icons/Star-Struck.png" alt="" />
-                  </div>}
-                {item?.emoticonId === 3 &&
-                  <div className="smallBtn ml-3">
-                    <img src="/assets/icons/Smiling Face with Heart-Eyes.png" alt="" />
-                  </div>}
-
-                <div className="smallBtn ml-3" onClick={() => handleBookmark(item)}>
-                  {(item?.bookmarks && item?.bookmarks.includes(account?.toLowerCase())) ?
-                    <img src="/assets/icons/bookmark_full_icon.svg" alt="" /> :
-                    <img src="/assets/icons/bookmark_line_icon.svg" alt="" />}
-                </div>
-
-                <div className="smallBtn ml-3 dropdown">
-                  <img src="/assets/icons/face_icon.svg" alt="" />
-                  <div className="drodownMenu1">
-                    <div className="menuItem" onClick={() => handleEmoticon(0)}>
+                {loginStatus && account && <>
+                  <div className="smallBtn ml-3" onClick={() => onDownload()}>
+                    <img src="/assets/icons/download_icon.svg" alt="" />
+                  </div>
+                  {item?.emoticonId === 0 &&
+                    <div className="smallBtn ml-3">
                       <img src="/assets/icons/image 185.png" alt="" />
-                    </div>
-                    <div className="menuItem" onClick={() => handleEmoticon(1)}>
+                    </div>}
+                  {item?.emoticonId === 1 &&
+                    <div className="smallBtn ml-3">
                       <img src="/assets/icons/Grimacing Face.png" alt="" />
-                    </div>
-                    <div className="menuItem" onClick={() => handleEmoticon(2)}>
+                    </div>}
+                  {item?.emoticonId === 2 &&
+                    <div className="smallBtn ml-3">
                       <img src="/assets/icons/Star-Struck.png" alt="" />
-                    </div>
-                    <div className="menuItem" onClick={() => handleEmoticon(3)}>
+                    </div>}
+                  {item?.emoticonId === 3 &&
+                    <div className="smallBtn ml-3">
                       <img src="/assets/icons/Smiling Face with Heart-Eyes.png" alt="" />
+                    </div>}
+
+                  <div className="smallBtn ml-3" onClick={() => handleBookmark(item)}>
+                    {(item?.bookmarks && item?.bookmarks.includes(account?.toLowerCase())) ?
+                      <img src="/assets/icons/bookmark_full_icon.svg" alt="" /> :
+                      <img src="/assets/icons/bookmark_line_icon.svg" alt="" />}
+                  </div>
+
+                  <div className="smallBtn ml-3 dropdown">
+                    <img src="/assets/icons/face_icon.svg" alt="" />
+                    <div className="drodownMenu1">
+                      <div className="menuItem" onClick={() => handleEmoticon(0)}>
+                        <img src="/assets/icons/image 185.png" alt="" />
+                      </div>
+                      <div className="menuItem" onClick={() => handleEmoticon(1)}>
+                        <img src="/assets/icons/Grimacing Face.png" alt="" />
+                      </div>
+                      <div className="menuItem" onClick={() => handleEmoticon(2)}>
+                        <img src="/assets/icons/Star-Struck.png" alt="" />
+                      </div>
+                      <div className="menuItem" onClick={() => handleEmoticon(3)}>
+                        <img src="/assets/icons/Smiling Face with Heart-Eyes.png" alt="" />
+                      </div>
                     </div>
                   </div>
-                </div>
+                </>}
+
               </div>
             </div>
             <div className="desc">
@@ -292,7 +294,7 @@ const ViewArt = () => {
                 <span>{item?.name}</span>
               </div>
               {
-                isNew && <div className={classes.modalBtnsDetail}>
+                loginStatus && account && isNew && <div className={classes.modalBtnsDetail}>
                   <FilledButton label={'Create NFT'} icon={<img src="/assets/icons/add_icon_01.svg" alt="" />} iconPosition='end' handleClick={() => setShowEditCollectionModal(true)} />
                 </div>
               }

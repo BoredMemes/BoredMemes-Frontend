@@ -195,7 +195,7 @@ const useStyles = makeStyles(theme => ({
           bottom: '100%',
           padding: 7,
           borderRadius: 5,
-          zIndex: 2,
+          zIndex: 20,
           transition: 'all 0.3s ease',
           '& .menuItem': {
             display: 'flex',
@@ -234,7 +234,7 @@ const useStyles = makeStyles(theme => ({
               flexDirection: 'column',
               position: 'absolute',
               backgroundColor: '#fff',
-              left: '100%',
+              left: '-110%',
               bottom: 0,
               padding: 7,
               borderRadius: 5,
@@ -346,7 +346,7 @@ const PropertyCard1 = ({ item, setSelectedItems, onCreateNFT, selectable, profil
     let textarea = document.createElement("textarea");
     textarea.textContent = type === 0 ? item?.fullCommand :
       type === 1 ? item?.description :
-      user?.planId <= 0 && user?.additional_plans ? item.watermark : item.thumbnail;
+        user?.planId <= 0 && user?.additional_plans ? item.watermark : item.thumbnail;
     //textarea.textContent = "dfghjkl;";
     textarea.style.position = "fixed"; // Prevent scrolling to bottom of page in Microsoft Edge.
     document.body.appendChild(textarea);
@@ -433,19 +433,18 @@ const PropertyCard1 = ({ item, setSelectedItems, onCreateNFT, selectable, profil
   }
 
   const gotoProfile = (account) => {
-    window.open(`/my_art/${account}`, "_blank");
+    window.open(`/art/${account}`, "_blank");
   }
-
 
   return (
     <div className={`${classes.productWrapper} ${isSelected ? 'selected' : ''} card1`} ref={ref} style={divStyle} onClick={onClick}>
-      { user?.planId <= 0 && user?.additional_plans && 
+      {user?.planId <= 0 && user?.additional_credits === 0 &&
         <img src={'/assets/imgs/pixia-icon.png'} style={{ position: 'absolute', zIndex: 10, margin: 8 }} width={50} alt="" />
       }
-      
+
       <div className="top" >
         {
-          item?.assetUrl && item?.assetUrl !== "" ? <img src={item?.assetUrl} alt="" onClick={() => !selectable && onGotoPage(`/view_art/${isNew ? "new" : "items"}/${isNew ? item?.id + "/art" : item?.itemCollection + "/" + item?.tokenId}`)}/> :
+          item?.assetUrl && item?.assetUrl !== "" ? <img src={item?.assetUrl} alt="" onClick={() => !selectable && onGotoPage(`/view_art/${isNew ? "new" : "items"}/${isNew ? item?.id + "/art" : item?.itemCollection + "/" + item?.tokenId}`)} /> :
             <div>
               Awaiting Design
             </div>
@@ -474,7 +473,7 @@ const PropertyCard1 = ({ item, setSelectedItems, onCreateNFT, selectable, profil
                   </div>
                 </div>
                 {
-                  isNew && <div className="menuItem" onClick={() => { setSelectedItems(item); onCreateNFT() }}>
+                  loginStatus && account && isNew && <div className="menuItem" onClick={() => { setSelectedItems(item); onCreateNFT() }}>
                     <img src="/assets/icons/createNFT_icon.svg" alt="" /> Create NFT
                   </div>
                 }
@@ -484,15 +483,18 @@ const PropertyCard1 = ({ item, setSelectedItems, onCreateNFT, selectable, profil
                   <img src="/assets/icons/newTab_icon.svg" alt="" /> Open new tab
                 </div>
                 {
-                  loginStatus && account && user && user.planId === 3 && item?.owner.includes(account.toLowerCase()) && 
-                    <div className="menuItem" onClick={() => onPublish(item?.privateType === 0, [item])}>
-                      <img src={item?.privateType === 1 ? "/assets/icons/unpublish.svg" : "/assets/icons/publish.svg"} alt="" /> 
-                      { item?.privateType === 1 ? "Unpublish" : "Publish"}
-                    </div>
+                  loginStatus && account && user && user.planId === 3 && item?.owner.includes(account.toLowerCase()) &&
+                  <div className="menuItem" onClick={() => onPublish(item?.privateType === 0, [item])}>
+                    <img src={item?.privateType === 1 ? "/assets/icons/unpublish.svg" : "/assets/icons/publish.svg"} alt="" />
+                    {item?.privateType === 1 ? "Unpublish" : "Publish"}
+                  </div>
                 }
-                <div className="menuItem" onClick={() => onDownload()}>
-                  <img src="/assets/icons/download_icon.svg" alt="" /> Save image
-                </div>
+                {
+                  loginStatus && account && <div className="menuItem" onClick={() => onDownload()}>
+                    <img src="/assets/icons/download_icon.svg" alt="" /> Save image
+                  </div>
+                }
+
                 {
                   loginStatus && account?.toLowerCase() !== item?.ownerUser?.address.toLowerCase() && <div className="menuItem" onClick={() => onFollow()}>
                     <img src="/assets/icons/follow_icon.svg" alt="" /> {user?.followers.includes(item?.ownerUser?.address.toLowerCase()) ? "Unfollow" : "Follow"} {item?.ownerUser?.name.length > 6 ? item?.ownerUser?.name.substring(0, 6) + "..." : item?.ownerUser?.name}

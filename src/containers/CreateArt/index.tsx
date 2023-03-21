@@ -215,7 +215,7 @@ const CreateArt = () => {
 
   const onGotoMyArt = () => {
     setResultModal(false)
-    history.push('/my_art' + account)
+    history.push('/art' + account)
   }
 
   const onGotoCommunityFeed = () => {

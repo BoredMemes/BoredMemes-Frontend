@@ -18,7 +18,7 @@ import { arrayify, hashMessage } from 'ethers/lib/utils';
 import { createNewCollection, isAddress, onMintArt } from 'utils/contracts';
 import { useHistory, useLocation } from 'react-router-dom';
 import { CONTRACTS_BY_NETWORK, Networks } from 'utils';
-import { useAuthState } from 'context/authContext';
+import { getUser, useAuthDispatch, useAuthState } from 'context/authContext';
 type PropsType = {
   feedMode?: number//0- My Arts, 1- Community Feed, 2- Personal Feed, 3- Bookmarks
 }
@@ -27,6 +27,7 @@ const MyArt = ({ feedMode }: PropsType) => {
   const classes = useStyles();
   const { loginStatus, account, library, chainId } = useContext(Web3WalletContext)
   const { user } = useAuthState();
+  const dispatch = useAuthDispatch();
 
   const MAX_MINT_CNT = 30;
   const history = useHistory();
@@ -65,12 +66,12 @@ const MyArt = ({ feedMode }: PropsType) => {
   const [selectedChainId, setSelectedChainId] = useState(process.env.REACT_APP_NODE_ENV === "production" ? 1 : 5);
 
   useEffect(() => {
-    if (!loginStatus || !account) {
-      return;
-    }
+    // if (feedMode !== 2  && (!loginStatus || !account)) {
+    //   return;
+    // }
     if (feedMode === 2 && !user) return;
     if (feedMode === 0 && loginStatus && account && owner === "undefined") {
-      history.push("/my_art/" + account);
+      history.push("/art/" + account);
       window.location.reload();
       return;
     }
@@ -429,9 +430,9 @@ const MyArt = ({ feedMode }: PropsType) => {
     const load_toast_id = toast.loading("Please wait...")
     axios.post("/api/publish", paramsData)
       .then((res) => {
-        for (const art of myArt){
-          for (const _item of res.data.items){
-            if ((filter !== "nft" && _item.id === art.id) || (filter === "nft" && _item.tokenId === art.tokenId && _item.itemCollection === art.itemCollection)){
+        for (const art of myArt) {
+          for (const _item of res.data.items) {
+            if ((filter !== "nft" && _item.id === art.id) || (filter === "nft" && _item.tokenId === art.tokenId && _item.itemCollection === art.itemCollection)) {
               art.privateType = _item.privateType;
             }
           }
@@ -520,6 +521,25 @@ const MyArt = ({ feedMode }: PropsType) => {
         history.push('/bookmarks');
   }
 
+  const onFollow = async () => {
+    if (!loginStatus) {
+      return toast.error("Please connect your wallet correctly.");
+    }
+    if (account?.toLowerCase() === profile?.address.toLowerCase()) {
+      return toast.error("You can not follow yourself.");
+    }
+    let paramsData = {
+      address: account?.toLowerCase(),
+      toAddress: profile?.address.toLowerCase()
+    }
+    axios.post("/api/user/follow", paramsData)
+      .then(async (res) => {
+        getUser(dispatch, account);
+      }).catch((e) => {
+        console.log(e);
+      })
+  }
+
   return (
     <>
       <div className={`${classes.root} mainContainer`}>
@@ -534,6 +554,11 @@ const MyArt = ({ feedMode }: PropsType) => {
                       <h3>{profile?.name}</h3>
                       <div className="follows">
                         <p>{profile?.followers.length || 0} Following</p>
+                        {
+                          loginStatus && account && account?.toLowerCase() !== profile?.address.toLowerCase() && user && 
+                          <button onClick={onFollow}>{user?.followers.includes(profile?.address.toLowerCase()) ? "Unfollow" : "Follow"}</button>
+                        }
+                        
                       </div>
                     </span>
                   </div>
@@ -594,8 +619,10 @@ const MyArt = ({ feedMode }: PropsType) => {
           feedMode !== 0 && <div className={classes.top}>
             <h2>{feedMode === 1 ? "Community Feed" : feedMode === 2 ? "Your Feed" : "Bookmarks"}</h2>
             <div>
-              <span className={feedMode === 3 ? "activeFeedBtns" : "feedBtns"} onClick={() => gotoTab(3)}>Bookmarks</span>
-              <span className={feedMode === 2 ? "activeFeedBtns" : "feedBtns"} onClick={() => gotoTab(2)}>Your Feed</span>
+              {loginStatus && account && <>
+                <span className={feedMode === 3 ? "activeFeedBtns" : "feedBtns"} onClick={() => gotoTab(3)}>Bookmarks</span>
+                <span className={feedMode === 2 ? "activeFeedBtns" : "feedBtns"} onClick={() => gotoTab(2)}>Your Feed</span>
+              </>}
               <span className={feedMode === 1 ? "activeFeedBtns" : "feedBtns"} onClick={() => gotoTab(1)}>Community</span>
             </div>
           </div>

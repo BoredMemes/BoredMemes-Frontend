@@ -175,7 +175,7 @@ export const useStyles = makeStyles(theme => ({
                 flexDirection: 'column',
                 position: 'absolute',
                 backgroundColor: '#fff',
-                left: '100%',
+                left: '-110%',
                 bottom : 0,
                 padding: 7,
                 borderRadius: 5,

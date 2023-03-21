@@ -61,6 +61,16 @@ export const useStyles = makeStyles(theme => ({
             fontSize: 12,
           },
         },
+        '& button': {
+          cursor: 'pointer',
+          background: '#d2c4f5', 
+          color: 'rgba(73, 5, 251, 1)', 
+          fontWeight: 600, 
+          borderRadius: 10, 
+          border: 'none', 
+          padding: '3px 10px', 
+          marginLeft: 20,
+        }
       },
     },
     '& .right': {

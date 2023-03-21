@@ -46,20 +46,27 @@ export async function getBalanceOfBNB(library, account) {
 
 export async function getDistributorInfo(chainId) {
   const jsonProvider = new ethers.providers.JsonRpcProvider(networks[chainId].NODES);
-  const _contract = getContractObj("PixiaDistributor", chainId, jsonProvider);
+  const _contract = getContractObj("PixiaAiDistributor", chainId, jsonProvider);
   try {
-    const LPBurn = await _contract.getAvailableEthAutoLPandBuyBackBurn();
-    const StakingCaller = await _contract.getAvailableEthtPerWallet();
+    const [LPBurn, StakingCaller, totalForLP, totalETH] = await Promise.all([
+      _contract.getAvailableEthAutoLPandBuyBackBurn(),
+      _contract.getAvailableEthtPerWallet(),
+      _contract.getTotalEthForAutoLPandBuyback(),
+      _contract.getTotalEthSentToWallets()
+    ]);
+    
     return [
-      ethers.utils.formatEther(LPBurn[0]),
-      ethers.utils.formatEther(LPBurn[1]),
-      ethers.utils.formatEther(StakingCaller[1]),
-      ethers.utils.formatEther(StakingCaller[3])
+      parseFloat(ethers.utils.formatEther(LPBurn[0])),
+      parseFloat(ethers.utils.formatEther(LPBurn[1])),
+      parseFloat(ethers.utils.formatEther(StakingCaller[1])),
+      parseFloat(ethers.utils.formatEther(StakingCaller[3])),
+      parseFloat(ethers.utils.formatEther(totalForLP[0] + totalForLP[1] + totalETH[0] + totalETH[1] + totalETH[2] + totalETH[3]))
     ];
   } catch (e) {
+    console.log(e);
     const revertMsg = JSON.parse(JSON.stringify(e))["reason"];
     if (revertMsg) toast.error(revertMsg.replace("execution reverted: ", ""));
-    return ["0", "0", "0", "0"];
+    return ["0", "0", "0", "0", "0"];
   }
 }
 

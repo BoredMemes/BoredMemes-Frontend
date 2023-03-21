@@ -22,7 +22,7 @@ let isChecked = window.localStorage.getItem("themeId") == 'dark' ? true : false
 
 const MaterialUISwitch = styled(Switch)(({ theme }) => ({
   width: 60,
-  height:36,
+  height: 36,
   padding: 7,
   '& .MuiSwitch-switchBase': {
     margin: 1,
@@ -42,8 +42,8 @@ const MaterialUISwitch = styled(Switch)(({ theme }) => ({
     },
   },
   '& .MuiSwitch-thumb': {
-    background:'transparent',
-    boxShadow:'none',
+    background: 'transparent',
+    boxShadow: 'none',
     width: 23,
     height: 23,
     marginTop: 8,
@@ -66,7 +66,7 @@ const MaterialUISwitch = styled(Switch)(({ theme }) => ({
     borderRadius: 16,
   },
   '& .MuiFormControlLabel-label': {
-    color:'#aaa'
+    color: '#aaa'
   }
 }));
 
@@ -79,7 +79,6 @@ export default function SideBar({ menuOpen, setMenuOpen }: MenuType) {
   const path = search.pathname.replace('/', '');
   const history = useHistory();
 
-  const [switchLabel, setSwitchLabel] = useState('Dark Mode');
   const { theme, setTheme } = useContext(ThemeContext)
   const onChangeRoute = (route) => {
     history.push(route);
@@ -95,42 +94,31 @@ export default function SideBar({ menuOpen, setMenuOpen }: MenuType) {
     getDistriInfo();
   }, [loginStatus, chainId, account]);
 
-  const [ distributorInfo, setDistributorInfo] = useState(null);
+  const [distributorInfo, setDistributorInfo] = useState(null);
   const getDistriInfo = async () => {
-    if (loginStatus && account){
+    if (loginStatus && account) {
       const _info = await getDistributorInfo(chainId);
+      console.log(typeof _info[3]);
       setDistributorInfo(_info);
     }
   }
 
-  const onChangeTheme = (_theme) => {
-    window.localStorage.setItem("themeId", _theme);
-    setTheme(_theme);
-  }
-
   const onChangeHandler = (e) => {
-    let theme = ''
-    if (e.target.checked) {
-      theme = 'dark'
-      setSwitchLabel('Dark Mode');
-    } else {
-      setSwitchLabel('Light Mode');
-      theme = 'light'
-    }
+    let theme = e.target.checked ? "light" : "dark"
     window.localStorage.setItem("themeId", theme);
     setTheme(theme);
   }
 
   const fuelUp = async () => {
-    if (loginStatus && chainId && account){
+    if (loginStatus && chainId && account) {
       const isSuccess = await onFuelUp(chainId, library.getSigner())
-      if (isSuccess){
+      if (isSuccess) {
         toast.success("Triggered Successfully")
       }
-    }else{
+    } else {
       toast.error("Please connect your wallet.")
     }
-    
+
   }
 
   return (
@@ -139,13 +127,13 @@ export default function SideBar({ menuOpen, setMenuOpen }: MenuType) {
       <div className="navList" onClick={() => setMenuOpen(false)}>
         <h3>PIXIA AI</h3>
         <ul className='bbr'>
-          {loginStatus && <></>}
-          <li className={path.indexOf('my_art') >= 0 ? 'selected' : ''}>
-            <div onClick={() => onChangeRoute("/my_art/" + account)}>
+          {loginStatus && <li className={path.indexOf('art') >= 0 ? 'selected' : ''}>
+            <div onClick={() => onChangeRoute("/art/" + account)}>
               {/* <img src="/assets/icons/home_icon.svg" alt="" /> */}
               <i className="fas fa-home"></i>
               My Art</div>
-          </li>
+          </li>}
+
           {/* <li className={path.indexOf('create_art') >= 0 ? 'selected' : ''}>
             <div onClick={() => onChangeRoute("/create_art")}><img src="/assets/icons/create_icon.svg" alt="" /> Create Art</div>
           </li> */}
@@ -163,56 +151,64 @@ export default function SideBar({ menuOpen, setMenuOpen }: MenuType) {
               Bookmarks</div>
           </li> */}
         </ul>
-
-        <h3>Rewards</h3>
-        <ul>
-          <li className={path === 'miner' ? 'selected' : ''}>
-            <div onClick={() => onChangeRoute("/staking")}><img src="/assets/icons/farms_icon.svg" alt="" /> Farms</div>
-          </li>
-          <li className={path === '' ? 'selected' : ''}>
-            <div onClick={() => onChangeRoute("")}><img src="/assets/icons/manage_hub_icon.svg" alt="" /> Manage Hub</div>
-          </li>
-        </ul>
+        {
+          loginStatus && account && <>
+            <h3>Rewards</h3>
+            <ul>
+              <li className={path === 'miner' ? 'selected' : ''}>
+                <div onClick={() => onChangeRoute("/staking")}><img src="/assets/icons/farms_icon.svg" alt="" /> Farms</div>
+              </li>
+              <li className={path === '' ? 'selected' : ''}>
+                <div onClick={() => onChangeRoute("")}><img src="/assets/icons/manage_hub_icon.svg" alt="" /> Manage Hub</div>
+              </li>
+            </ul>
+          </>
+        }
       </div>
-
-      <div className="stakeInfo">
+      {loginStatus && account && <div className="sideIncome">
+        <div className="sideStake">
+          <p>Total Revenues</p>
+          <div>{distributorInfo ? distributorInfo[4].toLocaleString(undefined, { maximumFractionDigits: 2 }) : 0} {chainId === (process.env.REACT_APP_NODE_ENV === "development" ? Networks.ETH_TestNet : Networks.ETH_MainNet) ? "ETH" : "BNB"}</div>
+        </div>
+      </div>}
+      {loginStatus && account && <div className="stakeInfo">
         <div className="sideStake">
           <p>PIXIA Liquidity</p>
-          <div>{distributorInfo ? distributorInfo[0].toLocaleString(undefined, { maximumFractionDigits: 2 }) : 0} {chainId === (process.env.REACT_APP_NODE_ENV === "development" ? Networks.ETH_TestNet : Networks.ETH_MainNet) ? "ETH" : "BNB"}</div>
+          <div>{distributorInfo ? distributorInfo[0].toLocaleString(undefined, { maximumFractionDigits: 4 }) : 0} {chainId === (process.env.REACT_APP_NODE_ENV === "development" ? Networks.ETH_TestNet : Networks.ETH_MainNet) ? "ETH" : "BNB"}</div>
         </div>
         <div className="sideStake">
           <p>PIXIA Burn</p>
-          <div>{distributorInfo ? distributorInfo[1].toLocaleString(undefined, { maximumFractionDigits: 2 }) : 0} {chainId === (process.env.REACT_APP_NODE_ENV === "development" ? Networks.ETH_TestNet : Networks.ETH_MainNet) ? "ETH" : "BNB"}</div>
+          <div>{distributorInfo ? distributorInfo[1].toLocaleString(undefined, { maximumFractionDigits: 4 }) : 0} {chainId === (process.env.REACT_APP_NODE_ENV === "development" ? Networks.ETH_TestNet : Networks.ETH_MainNet) ? "ETH" : "BNB"}</div>
         </div>
         <div className="sideStake">
           <p>Staking Reward</p>
-          <div>{distributorInfo ? distributorInfo[2].toLocaleString(undefined, { maximumFractionDigits: 2 }) : 0} {chainId === (process.env.REACT_APP_NODE_ENV === "development" ? Networks.ETH_TestNet : Networks.ETH_MainNet) ? "ETH" : "BNB"}</div>
+          <div>{distributorInfo ? distributorInfo[2].toLocaleString(undefined, { maximumFractionDigits: 4 }) : 0} {chainId === (process.env.REACT_APP_NODE_ENV === "development" ? Networks.ETH_TestNet : Networks.ETH_MainNet) ? "ETH" : "BNB"}</div>
         </div>
         <div className="sideStake">
           <p>Caller Reward</p>
-          <div>{distributorInfo ? distributorInfo[3].toLocaleString(undefined, { maximumFractionDigits: 2 }) : 0} {chainId === (process.env.REACT_APP_NODE_ENV === "development" ? Networks.ETH_TestNet : Networks.ETH_MainNet) ? "ETH" : "BNB"}</div>
+          <div>{distributorInfo ? distributorInfo[3].toLocaleString(undefined, { maximumFractionDigits: 4 }) : 0} {chainId === (process.env.REACT_APP_NODE_ENV === "development" ? Networks.ETH_TestNet : Networks.ETH_MainNet) ? "ETH" : "BNB"}</div>
         </div>
         <div className='fuelup' onClick={() => fuelUp()}>FUEL UP</div>
-      </div>
+      </div>}
 
       <div className="sideFooter" onClick={() => setMenuOpen(false)}>
-        <ul>
+        {loginStatus && account && <ul>
           <li className={path.indexOf('edit_profile') >= 0 ? 'selected' : ''}>
             <div onClick={() => onChangeRoute("/edit_profile")}>
               {/* <img src="/assets/icons/setting_icon.svg" alt="" />  */}
               <i className="fas fa-cog"></i>
               Settings</div>
           </li>
-        </ul>
+        </ul>}
         {/* <div className={`change_theme`}>
           <button onClick={() => onChangeTheme("light")} className={`${theme === 'light' ? "activeThemeBtn themeBtn" : "themeBtn"}`}><img src="/assets/icons/light_icon.svg" alt="" /> Light</button>
           <button onClick={() => onChangeTheme("dark")} className={`${theme === 'dark' ? "activeThemeBtn themeBtn" : "themeBtn"}`}><img src="/assets/icons/dark_icon.svg" alt="" /> Dark</button>
         </div> */}
         <FormControlLabel
           control={<MaterialUISwitch sx={{ m: 1 }} defaultChecked={isChecked} />}
-          label={switchLabel}
+          label={theme === "dark" ? "Light Mode" : "Dark Mode"}
           onChange={(e) => onChangeHandler(e)}
-          className={switchLabel == 'Dark Mode' ? 'black' : 'white'}
+          className={theme == 'dark' ? 'black' : 'white'}
         />
         <div className="socialLinks">
           <a href="https://twitter.com/pixiaai" className="twitter" target="_blank" rel="noreferrer">
