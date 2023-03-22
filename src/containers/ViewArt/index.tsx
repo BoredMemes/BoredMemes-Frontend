@@ -37,7 +37,7 @@ const ViewArt = () => {
   }, [location.location.pathname])
 
   useEffect(() => {
-    if (isNew && itemId){
+    if (isNew && itemId) {
       fetchItems();
       fetchDefaultCollection();
     }
@@ -141,8 +141,8 @@ const ViewArt = () => {
   const copyHandle = (type) => {
     if (item?.description === "") return;
     let textarea = document.createElement("textarea");
-    textarea.textContent = type === 0 ? item?.fullCommand : type === 1 ? item?.description : "Item Link";
-    //textarea.textContent = "dfghjkl;";
+    textarea.textContent = type === 0 ? item?.fullCommand : type === 1 ? item?.description :
+      user?.planId <= 0 && user?.additional_credits <= 0 ? item.watermark : item.thumbnail;
     textarea.style.position = "fixed"; // Prevent scrolling to bottom of page in Microsoft Edge.
     document.body.appendChild(textarea);
     textarea.select();
@@ -158,6 +158,7 @@ const ViewArt = () => {
   };
 
   const onDownload = () => {
+    const load_toast_id = toast.loading("Downloading...");
     const fileUrl = user?.planId <= 0 && user?.additional_credits <= 0 ? item.watermark : item.thumbnail;
     if (fileUrl !== "")
       fetch(fileUrl).then(response => {
@@ -174,6 +175,7 @@ const ViewArt = () => {
           document.body.appendChild(alink);
           // Clean up and remove the link
           alink.parentNode.removeChild(alink);
+          toast.dismiss(load_toast_id);
         })
       })
   }
@@ -205,8 +207,13 @@ const ViewArt = () => {
       <div className={`${classes.root} mainContainer`}>
 
         <div className={classes.content}>
-          <div className="art_div">
+          <div className="art_div" style={{position:'relative'}}>
             <img src={item?.assetUrl} alt="" />
+            <div style={{ width: '100%', height: '100%' }}>
+              {user?.planId <= 0 && user?.additional_credits <= 0 &&
+                <img src={'/assets/imgs/pixia-icon-watermark.png'} style={{ position: 'absolute', left: 16, bottom: 26, width: 200, borderRadius:0 }} alt="" />
+              }
+            </div>
           </div>
           <div className="info_div">
             <div className="row">

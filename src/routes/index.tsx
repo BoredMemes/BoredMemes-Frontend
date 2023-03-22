@@ -20,18 +20,16 @@ const Routes = () => {
   let location = useLocation();
   const pathname = location.pathname;
   // useEffect(() => {
-  //   if (!loginStatus) history.push("/connect");
-    
-  //     history.push(pathname);
+  //   if (!loginStatus) history.push("/");
   // }, [loginStatus])
   return (
     <>
       <Switch>
-        {
-         !loginStatus && <Route exact path="/connect" component={Login} />
+        {/* {
+         !loginStatus && <Route exact path="/" component={Login} />
         }
         {
-          loginStatus &&
+          loginStatus && */}
           <Layout>
             <ScrollToTop />
             <Route exact path="/" component={Hub} />
@@ -49,7 +47,7 @@ const Routes = () => {
             {/* <Route exact path="/" render={() => <Redirect to="/home" />} /> */}
 
           </Layout>
-        }
+        {/* } */}
       </Switch>
     </>
   )

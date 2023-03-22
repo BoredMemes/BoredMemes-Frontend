@@ -346,7 +346,7 @@ const PropertyCard1 = ({ item, setSelectedItems, onCreateNFT, selectable, profil
     let textarea = document.createElement("textarea");
     textarea.textContent = type === 0 ? item?.fullCommand :
       type === 1 ? item?.description :
-        user?.planId <= 0 && user?.additional_plans ? item.watermark : item.thumbnail;
+        user?.planId <= 0 && user?.additional_credits <= 0 ? item.watermark : item.thumbnail;
     //textarea.textContent = "dfghjkl;";
     textarea.style.position = "fixed"; // Prevent scrolling to bottom of page in Microsoft Edge.
     document.body.appendChild(textarea);
@@ -363,6 +363,7 @@ const PropertyCard1 = ({ item, setSelectedItems, onCreateNFT, selectable, profil
   };
 
   const onDownload = () => {
+    const load_toast_id = toast.loading("Downloading...")
     const fileUrl = user?.planId <= 0 && user?.additional_credits <= 0 ? item.watermark : item.thumbnail;
     if (fileUrl.length !== 0)
       fetch(fileUrl).then(response => {
@@ -379,6 +380,7 @@ const PropertyCard1 = ({ item, setSelectedItems, onCreateNFT, selectable, profil
           document.body.appendChild(alink);
           // Clean up and remove the link
           alink.parentNode.removeChild(alink);
+          toast.dismiss(load_toast_id);
         })
       })
   }
@@ -438,8 +440,8 @@ const PropertyCard1 = ({ item, setSelectedItems, onCreateNFT, selectable, profil
 
   return (
     <div className={`${classes.productWrapper} ${isSelected ? 'selected' : ''} card1`} ref={ref} style={divStyle} onClick={onClick}>
-      {user?.planId <= 0 && user?.additional_credits === 0 &&
-        <img src={'/assets/imgs/pixia-icon.png'} style={{ position: 'absolute', zIndex: 10, margin: 8 }} width={50} alt="" />
+      {user?.planId <= 0 && user?.additional_credits <= 0 &&
+        <img src={'/assets/imgs/pixia-icon-watermark.png'} style={{ position: 'absolute', zIndex: 10, marginLeft: 8, bottom: 8, width: 100 }} alt="" />
       }
 
       <div className="top" >

@@ -147,7 +147,7 @@ const Hub = () => {
                         0.005 ETH
                       </span>
                       <span>
-                        ≈ {ethPrice * 0.005} USD
+                        ≈ {(ethPrice * 0.005).toLocaleString(undefined, {maximumFractionDigits: 2})} USD
                       </span>
                     </div>
                   </div>
