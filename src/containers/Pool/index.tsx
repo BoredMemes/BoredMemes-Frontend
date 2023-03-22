@@ -149,8 +149,10 @@ const Miner = () => {
   useEffect(() => {
     if (loginStatus && account && items.length > 0 && pools.length > 0) {
       for (const pool of pools) {
-        pool.stakedItems = items.filter((item) => pool.tokenIds.include(item.tokenId))
-        pool.unstakedItems = items.filter((item) => !pool.tokenIds.include(item.tokenId))
+        if (pool.tokenIds && pool.tokenIds.length > 0){
+          pool.stakedItems = items.filter((item) => pool.tokenIds.include(item.tokenId))
+          pool.unstakedItems = items.filter((item) => !pool.tokenIds.include(item.tokenId))
+        }
       }
     }
   }, [loginStatus, account, items, pools])

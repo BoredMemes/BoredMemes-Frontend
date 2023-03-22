@@ -610,7 +610,7 @@ export async function getPoolInfo(pool, account, chainId) {
       return index === self.indexOf(elem);
     });
     const emission = parseFloat(ethers.utils.formatUnits(_emission, _rDecimals));
-    pool.tokenIds = nftTokenIds;
+    pool.tokenIds = [];
     pool.tStakedSupply = parseFloat(ethers.utils.formatUnits(tStakedSupply, _sDecimals));
     //pool.tBoostedSupply = parseFloat(ethers.utils.formatUnits(tBoostedSupply, _sDecimals));
     pool.rewardSupply = (emission * (Date.now() / 1000 - startAt));
