@@ -1,17 +1,6 @@
 [
     {
-        "inputs": [
-            {
-                "internalType": "address",
-                "name": "defaultAdmin_",
-                "type": "address"
-            },
-            {
-                "internalType": "address",
-                "name": "nftImpl_",
-                "type": "address"
-            }
-        ],
+        "inputs": [],
         "stateMutability": "nonpayable",
         "type": "constructor"
     },
@@ -229,19 +218,6 @@
             }
         ],
         "name": "setMintPrice",
-        "outputs": [],
-        "stateMutability": "nonpayable",
-        "type": "function"
-    },
-    {
-        "inputs": [
-            {
-                "internalType": "address",
-                "name": "_nftImpl",
-                "type": "address"
-            }
-        ],
-        "name": "setNftImpl",
         "outputs": [],
         "stateMutability": "nonpayable",
         "type": "function"
