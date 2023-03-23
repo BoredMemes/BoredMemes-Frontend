@@ -856,7 +856,7 @@ const MyArt = ({ feedMode }: PropsType) => {
               <button className="closeBtn" onClick={() => setShowCreateColllectionModal(false)}><img src="/assets/icons/close_icon_01.svg" alt="" /></button>
             </div>
             <div className={`${classes.modalAddContent} modalContent`}>
-              <p>Your NFTs are created for free, part of BoredMemesAi Collection. only network fees are applie on creation, and a 10% fee on buy/sell.</p>
+              <p>NFT minting within the PIXIAI platform is - ETH</p>
 
               <div className="chooseBtns">
                 <h4>Choose Your Network</h4>

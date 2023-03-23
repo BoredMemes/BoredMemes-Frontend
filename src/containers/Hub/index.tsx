@@ -4,7 +4,7 @@ import { useContext, useEffect, useState } from 'react';
 import Expand from 'react-expand-animated';
 import Modal from 'components/modal';
 import CheckLock from 'components/Forms/CheckLock';
-import { getBalanceOfBoredM, getBNBStakingInfo, getStakingInfo, onRewardClaim, onBoredMStake, onBoredMUnStake, onMoreHours } from 'utils/contracts';
+import { getBalanceOfBoredM, getBNBStakingInfo, getStakingInfo, onRewardClaim, onBoredMStake, onBoredMUnStake, onMoreHours, getPixiaPoolInfo } from 'utils/contracts';
 import Web3WalletContext from 'hooks/Web3ReactManager';
 import { toast } from 'react-toastify';
 import { NFTStakingInfo } from 'utils/types';
@@ -15,11 +15,13 @@ import MyTooltip from 'components/Widgets/MyTooltip';
 import moment from 'moment';
 import { useAuthState } from 'context/authContext';
 import Faqs from './faqs';
+import { useHistory } from 'react-router-dom';
 const Hub = () => {
   const classes = useStyles();
   const { loginStatus, chainId, account, library } = useContext(Web3WalletContext)
   const { theme } = useContext(ThemeContext)
   const { user } = useAuthState();
+  const history = useHistory();
 
   useEffect(() => {
     if (account) {
@@ -62,6 +64,7 @@ const Hub = () => {
       const isBought = await onMoreHours(moreHours, chainId, library.getSigner());
       if (isBought) {
         toast.success("Bought Hours Successfully");
+        window.location.reload();
       } else toast.error("Failed");
       toast.dismiss(load_toast_id);
 
@@ -94,16 +97,23 @@ const Hub = () => {
             <div className='plan_card'>
               <div className='card_header'>
                 <div>
-                  <h4>Your Plan</h4>
-                  <p>Relock your $PIXIA before 16 november 2023, 13:07 to continue using PIXIA.</p>
+                  {
+                    user?.planId > 0 && <>
+                      <h4>Your Plan</h4>
+                      <p>Relock your $PIXIA before {moment((user?.last_deposit + user?.lockTime) * 1000).format("MMM DD, YYYY, hh:mm")} to continue using PIXIA.</p>
+                    </>
+                  }
+
                 </div>
                 <div style={{ width: '100%', textAlign: 'right' }}>
-                  <button style={{
-                    padding: '5px', width: '108px',
-                    height: '40px', borderRadius: '15px', paddingLeft: 10, paddingRight: 10, textAlign: 'center', border: 'dashed 1px #ff589d', alignSelf: 'center'
-                  }} className='gradient-color'>Renew Plan</button>
                   {
-                    user?.planId > 0 ? <button style={{
+                    user?.isReNew && <button style={{
+                      padding: '5px', width: '108px',
+                      height: '40px', borderRadius: '15px', paddingLeft: 10, paddingRight: 10, textAlign: 'center', border: 'dashed 1px #ff589d', alignSelf: 'center'
+                    }} className='gradient-color'>Renew Plan</button>
+                  }
+                  {
+                    user?.planId === 0 ? <button style={{
                       background: '#CE4E63', paddingLeft: 60, paddingRight: 60, border: 'none', color: 'white', height: '40px', marginLeft: 8,
                       borderRadius: '15px'
                     }}>Inactive Plan</button> :
@@ -175,11 +185,17 @@ const Hub = () => {
                       height: '45px', borderRadius: '15px', textAlign: 'center', border: 'dashed 1px #ff589d', color: '#be16d2', alignSelf: 'center', background: 'linear-gradient(47.43deg, #2A01FF 0%, #FF1EE1 57%, #FFB332 100%);',
                       WebkitBackgroundClip: 'text',
                       WebkitTextFillColor: 'transparent',
-                    }} className='relock-btn'>Relock $PIXIA</button>
+                      cursor: 'pointer'
+                    }} className='relock-btn'
+                    onClick={() => history.push("/staking")}
+                    >Relock $PIXIA</button>
                     <button style={{
                       padding: '5px', background: 'linear-gradient(47.43deg, #2A01FF 0%, #FF1EE1 57%, #FFB332 100%)',
-                      height: '45px', borderRadius: '15px', textAlign: 'center', border: 'none', color: 'white', alignSelf: 'center'
-                    }}>Stake $PIXIA</button>
+                      height: '45px', borderRadius: '15px', textAlign: 'center', border: 'none', color: 'white', alignSelf: 'center',
+                      cursor: 'pointer'
+                    }}
+                    onClick={() => history.push("/staking")}
+                    >Stake $PIXIA</button>
                   </div>
                 </div>
                 <div className='sub_cards'>

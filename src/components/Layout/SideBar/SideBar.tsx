@@ -82,7 +82,7 @@ export default function SideBar({ menuOpen, setMenuOpen }: MenuType) {
   const { theme, setTheme } = useContext(ThemeContext)
   const onChangeRoute = (route) => {
     history.push(route);
-    window.location.reload();
+    if (route.indexOf('art') >= 0)window.location.reload();
   }
 
   useEffect(() => {
@@ -155,7 +155,7 @@ export default function SideBar({ menuOpen, setMenuOpen }: MenuType) {
           loginStatus && account && <>
             <h3>Rewards</h3>
             <ul>
-              <li className={path === 'miner' ? 'selected' : ''}>
+              <li className={path === 'staking' ? 'selected' : ''}>
                 <div onClick={() => onChangeRoute("/staking")}><img src="/assets/icons/farms_icon.svg" alt="" /> Farms</div>
               </li>
               <li className={path === '' ? 'selected' : ''}>

@@ -350,6 +350,23 @@ export async function createNewCollection(plan, colId, chainId, provider) {
   }
 }
 
+// ERC20 Token Management
+
+export async function getDecimal(tokenAddress, chainId){
+  try{
+    const jsonProvider = new ethers.providers.JsonRpcProvider(networks[chainId].NODES);
+    const tokenContract = getERC20ContractObj(tokenAddress, jsonProvider);
+    if (tokenContract){
+      const decimals = await tokenContract.decimals();
+      return decimals;
+    }
+    return 
+  }catch(e){
+    console.log(e);
+    return 0;
+  }
+}
+
 //NFT Management
 
 export async function getNFTInfo(nftAddress, chainId) {
@@ -632,7 +649,38 @@ export async function getPoolInfo(pool, account, chainId) {
   }
 }
 
-
+export async function getPixiaPoolInfo(pool, account, chainId) {
+  try {
+    const jsonProvider = new ethers.providers.JsonRpcProvider(networks[chainId].NODES);
+    const sTokenContract = getERC20ContractObj(pool.s_address, jsonProvider);
+    const _sDecimals = await sTokenContract.decimals();
+    const rTokenContract = getERC20ContractObj(pool.r_address, jsonProvider);
+    const _rDecimals = await rTokenContract.decimals();
+    const poolContract = getContract(pool.address, jsonProvider);
+    const stakingIds = await poolContract.viewUserInfo(account);
+    let stakingInfo: any;
+    if (stakingIds && stakingIds.length > 0){
+      const lastStakingId = stakingIds[stakingIds.length - 1];
+      const _stakingInfo = await poolContract.viewStakingInfo(lastStakingId);
+      stakingInfo = { ..._stakingInfo }
+      stakingInfo.stakingId = lastStakingId;
+      stakingInfo.tokenAmount = parseFloat(ethers.utils.formatUnits(_stakingInfo.tokenAmount.toString(), _sDecimals));
+      stakingInfo.boostedAmount = parseFloat(ethers.utils.formatUnits(_stakingInfo.boostedAmount.toString(), _sDecimals));;
+      stakingInfo.lastDepositAt = _stakingInfo.lastDepositAt.toNumber();
+      stakingInfo.lockTime = _stakingInfo.lockTime.toNumber();
+      stakingInfo.rewardAmount = await poolContract['pendingReward(bytes32)'](lastStakingId);
+      stakingInfo.rewardAmount = parseFloat(ethers.utils.formatUnits(stakingInfo.rewardAmount.toString(), _rDecimals));;
+    }
+    pool.stakingInfo = stakingInfo;
+    console.log(pool);
+    return pool;
+  } catch (e) {
+    console.log(e);
+    const revertMsg = JSON.parse(JSON.stringify(e))["reason"];
+    if (revertMsg) toast.error(revertMsg.replace("execution reverted: ", ""));
+    return false;
+  }
+}
 //Pool Factory Management
 
 /**

@@ -8,7 +8,6 @@ import Staking from 'containers/Pool';
 import Hub from 'containers/Hub';
 import Login from 'containers/Login';
 import EditProfile from 'containers/EditProfile';
-import CreateNFTCollection from 'containers/CreateNFTCollection';
 import ViewArt from 'containers/ViewArt';
 import { useContext, useEffect } from 'react';
 import Web3WalletContext from 'hooks/Web3ReactManager';

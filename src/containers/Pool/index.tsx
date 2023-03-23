@@ -6,7 +6,7 @@ import Web3WalletContext from 'hooks/Web3ReactManager';
 import { toast } from 'react-toastify';
 import ThemeContext from "theme/ThemeContext"
 import { ethers } from 'ethers';
-import { addReward, createNewPool, getBalanceOf, getPoolInfo, harvest, isAddress, stakeBoostNFT, stakeToken, unlockToken, unstakeToken } from 'utils/contracts';
+import { addReward, createNewPool, getBalanceOf, getDecimal, getPoolInfo, harvest, isAddress, stakeBoostNFT, stakeToken, unlockToken, unstakeToken } from 'utils/contracts';
 import axios from 'axios';
 import MyTooltip from 'components/Widgets/MyTooltip';
 import moment from 'moment';
@@ -430,7 +430,9 @@ const Miner = () => {
         toast.error("Your Reward Token has not marketed on CoinGecko MarketCap");
         return;
       }
-      console.log(sSymbol, sPrice, sImage, rSymbol, rPrice, rImage);
+      const sDecimal = await getDecimal(stakingToken, chainId);
+      const rDecimal = stakingToken.toLowerCase() === rewardToken.toLowerCase() ? sDecimal : await getDecimal(rewardToken, chainId);
+      console.log(sSymbol, sDecimal, sPrice, sImage, rSymbol, rDecimal, rPrice, rImage);
 
       const provider = new ethers.providers.Web3Provider(window?.ethereum);
       const nftResult = await provider.getCode(boostingNft);
@@ -447,10 +449,12 @@ const Miner = () => {
           owner: account.toLowerCase(),
           s_address: stakingToken.toLowerCase(),
           s_symbol: sSymbol,
+          s_decimal: sDecimal,
           s_price: sPrice,
           s_image: sImage,
           r_address: rewardToken.toLowerCase(),
           r_symbol: sSymbol,
+          r_decimal: rDecimal,
           r_price: rPrice,
           r_image: sImage,
           nft_address: boostingNft.toLowerCase(),
