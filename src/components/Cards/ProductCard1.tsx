@@ -101,6 +101,7 @@ const useStyles = makeStyles(theme => ({
       borderRadius: 16,
       opacity: 0,
       transition: 'all 0.3s ease',
+      zIndex: 10,
       [theme.breakpoints.down('xs')]: {
         width: '100% !important',
       },
@@ -441,7 +442,7 @@ const PropertyCard1 = ({ item, setSelectedItems, onCreateNFT, selectable, profil
   return (
     <div className={`${classes.productWrapper} ${isSelected ? 'selected' : ''} card1`} ref={ref} style={divStyle} onClick={onClick}>
       {user?.planId <= 0 && user?.additional_credits <= 0 &&
-        <img src={'/assets/imgs/pixia-icon-watermark.png'} style={{ position: 'absolute', zIndex: 10, marginLeft: 8, bottom: 8, width: 100 }} alt="" />
+        <img src={'/assets/imgs/pixia-icon-watermark.png'} style={{ position: 'absolute', zIndex: 1, marginLeft: 8, bottom: 8, width: 100 }} alt="" />
       }
 
       <div className="top" >
@@ -475,7 +476,7 @@ const PropertyCard1 = ({ item, setSelectedItems, onCreateNFT, selectable, profil
                   </div>
                 </div>
                 {
-                  loginStatus && account && isNew && <div className="menuItem" onClick={() => { setSelectedItems(item); onCreateNFT() }}>
+                  loginStatus && account && isNew && <div className="menuItem" onClick={() => { onCreateNFT([item]) }}>
                     <img src="/assets/icons/createNFT_icon.svg" alt="" /> Create NFT
                   </div>
                 }

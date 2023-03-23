@@ -312,11 +312,12 @@ const MyArt = ({ feedMode }: PropsType) => {
     }
   }
 
-  const onMintArts = async (collection) => {
+  const onMintArts = async (collection, _selectedItems) => {
     if (!loginStatus || !account) {
       return toast.error("Please connect your wallet correctly.")
     }
-    if (!collection || !selectedItems) {
+    console.log(_selectedItems);
+    if (!collection || !_selectedItems || _selectedItems.length <= 0) {
       return toast.error("You have to choose items to mint.")
     }
 
@@ -325,7 +326,7 @@ const MyArt = ({ feedMode }: PropsType) => {
     }
     const load_toast_id = toast.loading("Please wait");
     try {
-      const _artIds = [...selectedItems.map((_item) => _item.id), ...collection.artIds];
+      const _artIds = [..._selectedItems.map((_item) => _item.id), ...collection.artIds];
       const artIds = _artIds.reduce((acc, current) => {
         if (!acc.includes(current)) {
           acc.push(current);
@@ -350,9 +351,9 @@ const MyArt = ({ feedMode }: PropsType) => {
         toast.warn("Some Arts are not minted.");
       };
       toast.dismiss(load_toast_id);
-      setTimeout(() => {
-        window.location.reload();
-      }, 1000)
+      // setTimeout(() => {
+      //   window.location.reload();
+      // }, 1000)
     } catch (e) {
       console.log(e);
       toast.dismiss(load_toast_id);
@@ -409,10 +410,10 @@ const MyArt = ({ feedMode }: PropsType) => {
   const onAdd = () => {
     setShowAddColllectionModal(true)
   }
-  const onCreateNFT = () => {
+  const onCreateNFT = (_selectedItems) => {
     //setShowCreateColllectionModal(false)
     if (defaultCollection) {
-      onMintArts(defaultCollection);
+      onMintArts(defaultCollection, _selectedItems);
     }
   }
 
@@ -604,7 +605,7 @@ const MyArt = ({ feedMode }: PropsType) => {
                     }
                     {
                       isAddress(selectedCollection?.address) &&
-                      <button onClick={() => onMintArts(selectedCollection)}>
+                      <button onClick={() => onMintArts(selectedCollection, selectedItems)}>
                         <p>Mint Added Arts to Collection</p>
                         <img src="/assets/icons/add_icon_01.svg" alt="" />
                       </button>
@@ -866,7 +867,7 @@ const MyArt = ({ feedMode }: PropsType) => {
               </div>
             </div>
             <div className={classes.modalBtns} style={{ justifyContent: 'center' }}>
-              <FilledButton label={'Create NFTs'} icon={<img src="/assets/icons/add_icon_01.svg" alt="" />} iconPosition='start' handleClick={onCreateNFT} />
+              <FilledButton label={'Create NFTs'} icon={<img src="/assets/icons/add_icon_01.svg" alt="" />} iconPosition='start' handleClick={() => onCreateNFT(selectedItems)} />
             </div>
           </div>
         </>}

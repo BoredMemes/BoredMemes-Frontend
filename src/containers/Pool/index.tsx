@@ -24,10 +24,12 @@ const Miner = () => {
   const [selectedPool, setSelectedPool] = useState(null);
   const [switchStake, setSwitchStake] = useState(0);
   const [selectedStakingInfo, setSelectedStakingInfo] = useState(undefined);
+  const [selectedBoostNFTs, setSelectedBoostNFTs] = useState([]);
   const [wooAddress, setWooAddress] = useState("");
 
   const handleSelectChange = (event) => {
     if (selectedPool && event.target.value.length !== 0) {
+      setSelectedBoostNFTs([]);
       const _stakingInfo = selectedPool.stakingInfos.filter((info) => info.stakingId === event.target.value);
       setSelectedStakingInfo(_stakingInfo[0]);
     }
@@ -149,9 +151,9 @@ const Miner = () => {
   useEffect(() => {
     if (loginStatus && account && items.length > 0 && pools.length > 0) {
       for (const pool of pools) {
-        if (pool.tokenIds && pool.tokenIds.length > 0){
-          pool.stakedItems = items.filter((item) => pool.tokenIds.include(item.tokenId))
-          pool.unstakedItems = items.filter((item) => !pool.tokenIds.include(item.tokenId))
+        if (pool.tokenIds && pool.tokenIds.length >= 0) {
+          pool.stakedItems = pool.tokenIds.length === 0 ? [] : items.filter((item) => pool.tokenIds.include(item.tokenId))
+          pool.unstakedItems = pool.tokenIds.length === 0 ? items : items.filter((item) => !pool.tokenIds.include(item.tokenId))
         }
       }
     }
@@ -200,6 +202,7 @@ const Miner = () => {
     setSelectedStakingInfo(undefined);
     setAmount(0);
     setLockDays(0);
+    fetchItems();
   }
 
   const onUpdatePoolExpand = async (pool_) => {
@@ -213,13 +216,28 @@ const Miner = () => {
 
   //-------------NFT Boost Part-----------------------// By God Crypto
 
-  const onStakeBoostNFT = async (isStake, stakingId, nftIds) => {
+  const onChangeBoost = async (_tokenId) => {
     try {
-      if (nftIds.length <= 0) return;
+      if (selectedBoostNFTs.includes(_tokenId)) {
+        selectedBoostNFTs.splice(selectedBoostNFTs.indexOf(_tokenId), 1)
+      } else {
+        selectedBoostNFTs.push(_tokenId);
+      }
+      console.log(selectedBoostNFTs);
+      setSelectedBoostNFTs([...selectedBoostNFTs])
+    } catch (e) {
+      console.log(e);
+    }
+  }
+
+  const onStakeBoostNFT = async (isStake, stakingId) => {
+    try {
+      if (!selectedBoostNFTs || selectedBoostNFTs.length <= 0) return toast.error("You need to select 1 nft item at least!");
       setProcessingModal(true);
-      const isBoosted = await stakeBoostNFT(isStake, selectedPool?.address, stakingId, nftIds, library.getSigner());
+      const isBoosted = await stakeBoostNFT(isStake, selectedPool?.address, stakingId, selectedBoostNFTs, library.getSigner());
       if (isBoosted) {
         toast.success("Boosted Successfully");
+        setSelectedBoostNFTs([]);
         onSyncPool(selectedPool);
         setSuccessTrans(true);
       } else {
@@ -1221,10 +1239,10 @@ const Miner = () => {
                   </span>
                 </div>
                 <div className="customSwitchText">
-                  <div onClick={() => setSwitchStake(1)} className={`${switchStake === 1 && 'actived'}`}>
+                  <div onClick={() => { setSelectedBoostNFTs([]); setSwitchStake(1)}} className={`${switchStake === 1 && 'actived'}`}>
                     Stake
                   </div>
-                  <div onClick={() => setSwitchStake(0)} className={`${switchStake === 0 && 'deactived'}`}>
+                  <div onClick={() => { setSelectedBoostNFTs([]); setSwitchStake(0)}} className={`${switchStake === 0 && 'deactived'}`}>
                     Unstake
                   </div>
                 </div>
@@ -1259,13 +1277,22 @@ const Miner = () => {
                   switchStake === 1 ? selectedPool?.unstakedItems && selectedPool?.unstakedItems
                     .map((item, idx) => {
                       return (
-                        <img src={item?.assetUrl} />
+                        <>
+                          {
+                            <img className={selectedBoostNFTs.includes(item.tokenId) && "selected"} src={item?.assetUrl} onClick={() => onChangeBoost(item.tokenId)} />
+                          }
+                        </>
+
                       )
                     }) : selectedPool?.stakedItems && selectedPool?.stakedItems
                       .filter((item) => item.tokenId)
                       .map((item, idx) => {
                         return (
-                          <img src={item?.assetUrl} />
+                          <>
+                            {
+                              <img className={selectedBoostNFTs.includes(item.tokenId) && "selected"} src={item?.assetUrl} onClick={() => onChangeBoost(item.tokenId)} />
+                            }
+                          </>
                         )
                       })
                 }
@@ -1294,6 +1321,7 @@ const Miner = () => {
                 setBoostModal(false);
                 setSelectedPool(undefined);
                 setSelectedStakingInfo(undefined);
+                setSelectedBoostNFTs([]);
               }}
                 className="cancel-btn">
                 Cancel
@@ -1302,7 +1330,7 @@ const Miner = () => {
                 padding: '5px', background: 'linear-gradient(47.43deg, #2A01FF 0%, #FF1EE1 57%, #FFB332 100%)', width: '50%',
                 height: '45px', borderRadius: '15px', textAlign: 'center', border: 'none', color: 'white', alignSelf: 'center', cursor: 'pointer'
               }}
-                onClick={() => onStakeBoostNFT(switchStake === 1, selectedStakingInfo?.stakingId, [])}
+                onClick={() => onStakeBoostNFT(switchStake === 1, selectedStakingInfo?.stakingId)}
               > {switchStake === 1 ? "Stake" : "Unstake"}</button>
             </div>
           </div>
@@ -1357,7 +1385,7 @@ const Miner = () => {
                     }} onClick={() => {
                       setSuccessTrans(false);
                       setProcessingModal(false);
-                      history.push("/art/"+ account);
+                      history.push("/art/" + account);
                     }}
                       className="cancel-btn">
                       My Art

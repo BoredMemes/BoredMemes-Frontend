@@ -1567,8 +1567,8 @@ export const useStyles = makeStyles(theme => ({
         marginTop: 20,
         display: 'block',
         cursor: 'pointer',
-        '&.selected': {
-          border: 'solid 1px black'
+        '& .selected': {
+          border: 'solid 1px red'
         },
         '& img': {
           margin: 4

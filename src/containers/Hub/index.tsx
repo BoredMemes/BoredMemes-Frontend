@@ -22,15 +22,15 @@ const Hub = () => {
   const { user } = useAuthState();
 
   useEffect(() => {
-    if (account){
+    if (account) {
       getPlans();
     }
     fetchRates();
-    
+
   }, [loginStatus, chainId, account, library])
 
   const [plans, setPlans] = useState([]);
-  const [ moreHours, setMoreHours ] = useState(1)
+  const [moreHours, setMoreHours] = useState(1)
   const getPlans = async () => {
     axios.get("/api/plans")
       .then((res) => {
@@ -40,10 +40,10 @@ const Hub = () => {
       })
   }
 
-  const [ ethPrice, setEthPrice ] = useState(0);
-  const [ pixiaPrice, setPixiaPrice ] = useState(0);
+  const [ethPrice, setEthPrice] = useState(0);
+  const [pixiaPrice, setPixiaPrice] = useState(0);
   const fetchRates = async () => {
-    axios.get("/api/getrates", { params: {}})
+    axios.get("/api/getrates", { params: {} })
       .then((res) => {
         setEthPrice(res.data.eth);
         setPixiaPrice(res.data.boredm);
@@ -54,29 +54,29 @@ const Hub = () => {
   }
 
   const getMoreHours = async () => {
-    try{
-      if (!loginStatus || !account){
+    try {
+      if (!loginStatus || !account) {
         return toast.error("Connect your wallet");
       }
       const load_toast_id = toast.loading("Buying More Hours");
       const isBought = await onMoreHours(moreHours, chainId, library.getSigner());
-      if (isBought){
+      if (isBought) {
         toast.success("Bought Hours Successfully");
-      }else toast.error("Failed");
+      } else toast.error("Failed");
       toast.dismiss(load_toast_id);
 
-    }catch(e){
+    } catch (e) {
       console.log(e)
     }
   }
 
   const getHours = (credit_) => {
-    try{
-      if (!credit_)return "0h";
+    try {
+      if (!credit_) return "0h";
       const _hour = Math.floor(credit_ / 60);
       const _second = credit_ % 60;
       return _second <= 0 ? `${_hour}h` : `${_hour}h ${_second}m`;
-    }catch(e){
+    } catch (e) {
       console.log(e);
     }
   }
@@ -102,14 +102,16 @@ const Hub = () => {
                     padding: '5px', width: '108px',
                     height: '40px', borderRadius: '15px', paddingLeft: 10, paddingRight: 10, textAlign: 'center', border: 'dashed 1px #ff589d', alignSelf: 'center'
                   }} className='gradient-color'>Renew Plan</button>
-                  {/* <button style={{
-                    background: '#2B614C', paddingLeft: 60, paddingRight: 60, border: 'none', color: 'white', height: '40px', marginLeft: 8,
-                    borderRadius: '15px'
-                  }}>Active Plan</button> */}
-                  <button style={{
-                    background: '#CE4E63', paddingLeft: 60, paddingRight: 60, border: 'none', color: 'white', height: '40px', marginLeft: 8,
-                    borderRadius: '15px'
-                  }}>Inactive Plan</button>
+                  {
+                    user?.planId > 0 ? <button style={{
+                      background: '#CE4E63', paddingLeft: 60, paddingRight: 60, border: 'none', color: 'white', height: '40px', marginLeft: 8,
+                      borderRadius: '15px'
+                    }}>Inactive Plan</button> :
+                      <button style={{
+                        background: '#2B614C', paddingLeft: 60, paddingRight: 60, border: 'none', color: 'white', height: '40px', marginLeft: 8,
+                        borderRadius: '15px'
+                      }}>Active Plan</button>
+                  }
                 </div>
               </div>
 
@@ -147,7 +149,7 @@ const Hub = () => {
                         0.005 ETH
                       </span>
                       <span>
-                        ≈ {(ethPrice * 0.005).toLocaleString(undefined, {maximumFractionDigits: 2})} USD
+                        ≈ {(ethPrice * 0.005).toLocaleString(undefined, { maximumFractionDigits: 2 })} USD
                       </span>
                     </div>
                   </div>
@@ -201,8 +203,8 @@ const Hub = () => {
               </div>
             </div>
           </div>
-          
-          <Faqs/>
+
+          <Faqs />
         </div>
       </div>
     </>

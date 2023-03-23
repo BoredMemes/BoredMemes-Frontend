@@ -422,6 +422,7 @@ export async function approveTokenForPool(poolAddress, tokenAddress, provider) {
 export async function stakeBoostNFT(isStake, poolAddress, stakingId, nftTokenIds, provider) {
   try {
     const poolContract = getContract(poolAddress, provider);
+    console.log(isStake, poolAddress, stakingId, nftTokenIds)
     const tx = isStake ? await poolContract.stakeBoostNft(stakingId, nftTokenIds) :
       await poolContract.unstakeBoostNft(stakingId, nftTokenIds);
     const receipt = await tx.wait(1);
