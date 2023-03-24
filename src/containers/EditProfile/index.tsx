@@ -486,7 +486,7 @@ const EditProfile = () => {
           <div className={classes.modal}>
             <div className={classes.modalTop}>
               <span>
-                <img src="/assets/logo.png" alt="" />
+                <img src="/assets/imgs/logo.png" alt="" />
                 <h4>Sign the message in your wallet to continue</h4>
               </span>
               <button className="closeBtn" onClick={() => setSignModal(false)}><img src="/assets/icons/close_icon.svg" alt="" /></button>
