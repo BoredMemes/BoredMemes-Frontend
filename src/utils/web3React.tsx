@@ -2,12 +2,10 @@ import { InjectedConnector } from "@web3-react/injected-connector";
 import { WalletConnectConnector } from "@web3-react/walletconnect-connector";
 import { ethers } from "ethers";
 import { WalletLinkConnector } from "@web3-react/walletlink-connector";
-import { getCurrentNetwork, networks } from "utils";
+import { getCurrentNetwork, Networks, networks } from "utils";
 
 const POLLING_INTERVAL = 12000;
 const chainId = parseInt(getCurrentNetwork(), 10);
-console.log(chainId);
-console.log(networks[chainId]);
 const rpcUrl = networks[chainId].NODES;
 
 export enum ConnectorNames {
@@ -16,10 +14,17 @@ export enum ConnectorNames {
   WalletLink = "WalletLink",
 }
 
-export const injected = new InjectedConnector({ supportedChainIds: [chainId] });
+export const injected = new InjectedConnector({ supportedChainIds: process.env.REACT_APP_NODE_ENV === "production" ? [Networks.ETH_MainNet, Networks.BSC_Mainnet] : [Networks.ETH_TestNet, Networks.BSC_Testnet]});
 
 export const walletconnect = new WalletConnectConnector({
-  rpc: { [chainId]: rpcUrl },
+  rpc: process.env.REACT_APP_NODE_ENV === "production" ? {
+    [Networks.ETH_MainNet]: networks[Networks.ETH_MainNet].NODES,
+    [Networks.BSC_Mainnet]: networks[Networks.BSC_Mainnet].NODES,
+  } : {
+    [Networks.ETH_MainNet]: networks[Networks.ETH_TestNet].NODES,
+    [Networks.BSC_Mainnet]: networks[Networks.BSC_Testnet].NODES
+  },
+  chainId: chainId,
   bridge: "https://bridge.walletconnect.org",
   qrcode: true,
 });
@@ -39,7 +44,7 @@ export const connectorsByName = {
 };
 
 export const connectors =
-[
+  [
     {
       title: "Metamask",
       connectorId: "Injected",
@@ -52,8 +57,8 @@ export const connectors =
       title: "WalletLink",
       connectorId: "WalletLink",
     },
-]
-    
+  ]
+
 
 export const getLibrary = (provider) => {
   const library = new ethers.providers.Web3Provider(provider);

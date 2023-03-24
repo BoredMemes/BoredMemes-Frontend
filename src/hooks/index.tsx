@@ -26,7 +26,7 @@ export function useEagerConnect() {
     if (connector && connector !== "") {
       const currentConnector = connectorsByName[connector];
       if (!window.ethereum) {
-        window.open("https://metamask.app.link/dapp/app.boredmemes.ai/", "_blank", "noopener noreferrer");
+        window.open(`https://metamask.app.link/dapp/${process.env.REACT_APP_NODE_ENV === "development" ? "dev.pixia.ai/" : "app.pixia.ai/"}`, "_blank", "noopener noreferrer");
         setTried(true);
       } else {
         if (connector === ConnectorNames.Injected) {
@@ -39,7 +39,7 @@ export function useEagerConnect() {
                       if (hasSetup) activate(currentConnector);
                     });
                   } else {
-                    window.localStorage.removeItem(connectorLocalStorageKey)
+                    // window.localStorage.removeItem(connectorLocalStorageKey)
                   }
                   setTried(true);
                 });

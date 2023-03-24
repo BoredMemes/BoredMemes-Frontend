@@ -30,7 +30,7 @@ body {
   font-family: 'Roboto', 'Ubuntu', 'Helvetica Neue', sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
-  background-color: #000;
+  background-color: #121317;
 }
 
 code {
@@ -48,8 +48,49 @@ a {
 .owl-carousel .owl-item .icon-img {
   width: auto;
 }
+
 .MuiButton-root {
   text-transform: none !important;
+}
+
+.gradient-color {
+  background: linear-gradient(47.43deg, #2A01FF 0%, #FF1EE1 57%, #FFB332 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  width: 100%;
+  color: #262626;
+  text-align: center;
+}
+
+.newCollectionCard {
+  background: linear-gradient(#fff 0 0) padding-box, linear-gradient(47.43deg, #2A01FF 0%, #FF1EE1 57%, #FFB332 100%) border-box;
+  border: 2px dashed #fff;
+  height: 45px;
+  border-radius: 8px;
+
+  // [theme.breakpoints.down('xs')]: {
+  //   width: '100%',
+  //   height: 60,
+  // },
+  img {
+    margin-right: 10,
+    // [theme.breakpoints.down('xs')]: {
+    //   width: 20,
+    // },
+  }
+
+  p,
+  h6 {
+    background: linear-gradient(47.43deg, #2A01FF 0%, #FF1EE1 57%, #FFB332 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    width: 100%;
+    color: #262626;
+    text-align: center;
+    // [theme.breakpoints.down('xs')]: {
+    //   fontSize: 12,
+    // },
+  }
 }
 
 .disabled {
@@ -66,323 +107,814 @@ hr {
 .MuiFormControlLabel-root {
   margin: 0 !important;
 }
-p{
+
+p {
   color: #727272;
 }
-h1{
+
+h1 {
   color: #262626;
 }
+
+.light {
+  .top-lq-content {
+    background: linear-gradient(47.43deg, #c2b6fa 0%, #f8bff1 57%, #f3ddb7 100%);
+  }
+  .updated-multiplier {
+    div{
+      background: #F4F4F4;
+      p{
+        clear: white !important;
+      }
+    }
+  }
+  .MuiSwitch-track {
+    background: white !important;
+  }
+
+  select {
+    background: white;
+    color: grey !important;
+  }
+
+  a {
+    color: black !important
+  }
+
+  // p {
+  //   color: rgb(14, 14, 14) !important;
+  // }
+
+  .btns {
+    a {
+      background: transparent;
+      border: 2px solid transparent;
+      border-radius: 50%;
+      background-clip: padding-box, border-box !important;
+      background-image: linear-gradient(90deg, white, white), linear-gradient(47.43deg, #2A01FF 0%, #FF1EE1 40%, #FFB332 100%) !important;
+      background-origin: border-box !important;
+
+    }
+
+    .select-gray {
+
+      .css-1xub5kc-control,
+      .css-zjhzo0-control {
+        background: linear-gradient(47.43deg, #c2b6fa 0%, #f8bff1 57%, #f3ddb7 100%) !important;
+      }
+    }
+
+    .connectBtn {
+      background: linear-gradient(47.43deg, #c2b6fa 0%, #f8bff1 57%, #f3ddb7 100%) !important;
+    }
+
+
+  }
+
+  .stake_card {
+    background: #F4F4F4 !important;
+
+    div {
+
+      h4,
+      p {
+        color: #000 !important;
+      }
+    }
+  }
+
+  .stake_withdraw_body {
+    background: linear-gradient(47.43deg, #b5a8f8 0%, #fab6f1 57%, #f7ddb2 100%) !important;
+  }
+
+  .MuiDialogContent-root {
+    .input-span {
+      background-color: #F4F4F4 !important;
+    }
+  }
+}
+
+.MuiButton-label {
+  color: white !important;
+  font-size: 12px !important;
+}
+
+.vs {
+  color: black;
+  width: fit-content !important;
+}
+
+.updated-multiplier {
+  justify-content: space-between;
+  display: flex;
+  margin-Bottom: 20px;
+  div {
+    width: 50%;
+    background: #030316;
+    padding: 10px;
+    margin: 4px;
+    border-radius: 6px;
+    text-align: center;
+    p {
+      font-size: 14px;
+    }
+    h6 {
+      margin-top: 20px;
+      background: linear-gradient(47.43deg, #2A01FF 0%, #FF1EE1 40%, #FFB332 100%);
+      letter-spacing: -0.005em;
+      background-clip: text;
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+  }
+}
+
 .dark {
-  .nav-background{
-    background-color: #1e1e1e !important;
+  .btns {
+    a {
+      background: transparent;
+      border: 2px solid transparent;
+      border-radius: 50%;
+      background-clip: padding-box, border-box !important;
+      background-image: linear-gradient(90deg, white, white), linear-gradient(47.43deg, #2A01FF 0%, #FF1EE1 40%, #FFB332 100%) !important;
+      background-origin: border-box !important;
+
+    }
   }
-  .sideBarMenu{
-    background-color: #1e1e1e !important;
+
+  select {
+    background: #030316;
+    color: #ddd !important;
   }
-  .mainContainer{
-    background-color: #1e1e1e !important;
+
+  .MuiFormControlLabel-label {
+    color: white !important;
   }
-  h3, h1{
+
+  .nav-background {
+    background-color: #030316 !important;
+  }
+
+  .prog-1 {
+    background: linear-gradient(47.43deg, #1b0e5e 0%, #440b3c 57%, #49320b 100%) !important;
+  }
+
+  .prog-2 {
+    background: #2e3757 !important;
+    color: #1846e8 !important;
+  }
+
+  .vs {
+    color: white
+  }
+
+  .col_info {
+    span {
+      background: #12013b !important;
+    }
+  }
+
+  .follow {
+    background: #12013b !important;
+  }
+
+  .sticky,
+  .overly {
+    background: #555 !important;
+  }
+
+  .newCollectionCard {
+    background: linear-gradient(#1c1c1c 0 0) padding-box, linear-gradient(47.43deg, #2A01FF 0%, #FF1EE1 57%, #FFB332 100%) border-box;
+    border: 2px dashed #121111;
+  }
+
+  .plan_card {
+    background: linear-gradient(47.43deg, #190f50 0%, #4c1044 57%, #46310d 100%) !important;
+
+    .card_header {
+      div {
+        h4 {
+          color: white !important;
+        }
+      }
+    }
+
+    .card_body {
+      .card {
+        background: #0d0423 !important;
+
+        div {
+          span {
+            color: white !important;
+          }
+        }
+
+        .card_wrapper {
+          .card_com {
+            background: #030316 !important;
+
+            h5,
+            h6,
+            button {
+              color: white !important;
+            }
+          }
+        }
+      }
+    }
+  }
+
+  .card1 .overly .dropdown .drodownMenu .menuItem:hover {
+    background-image: linear-gradient(90deg, #030316, #030316), linear-gradient(47.43deg, #2A01FF 0%, #FF1EE1 40%, #FFB332 100%) !important;
+  }
+
+  .card1 .overly .dropdown .drodownMenu .menuItem:hover {
+    background-image: linear-gradient(90deg, #030316, #030316), linear-gradient(47.43deg, #2A01FF 0%, #FF1EE1 40%, #FFB332 100%) !important;
+  }
+
+  .card1 .overly .dropdown .drodownMenu .menuItem .subDrodownMenu {
+    background: #555 !important;
+  }
+
+  .card2 .sticky .btns .pink .drodownMenu .menuItem {
+    color: #a3a3a3 !important;
+  }
+
+  .card2 .sticky .btns .pink .drodownMenu {
+    background: #555 !important;
+  }
+
+  .card2 .sticky .btns .pink .drodownMenu .menuItem:hover {
+    background-image: linear-gradient(90deg, #030316, #030316), linear-gradient(47.43deg, #2A01FF 0%, #FF1EE1 40%, #FFB332 100%) !important;
+  }
+
+  .card1 .overly .avatar:hover {
+    background: #3f3e3e;
+  }
+
+  .plan_question {
+    strong {
+      color: white !important;
+    }
+  }
+
+  .sub_cards {
+    div {
+      span {
+        color: white !important;
+      }
+    }
+  }
+
+  .sideBarMenu {
+    background-color: #030316 !important;
+  }
+
+  .mainContainer {
+    background-color: #030316 !important;
+  }
+
+  h3,
+  h1 {
     color: #fff !important;
   }
-  .card1{
-    background-color: #ffffff22 !important;
-    .smallBtn{
-      &:hover{
-        background-color: #ffffff33 !important;
-      }
-      
-    }
-    .drodownMenu{
-      background-color: #555 !important;
-      .menuItem{
-        color : #aaa !important;
-      }
-      
-    }
-    .drodownMenu1{
-      background-color: #555 !important;
-      .menuItem{
-        color : #aaa !important;
-      }
-      
-    }
-  }
-  
-  .themeBtn{
+
+  .modalTop {
     background-color: #1e1e1e !important;
   }
-  .connectBtn{
-    background-color: #F400F5 !important;
-    color : #fff !important;
-  }
-  .filterBtn, .edit_profile, .addBtn{
-    background-color: #ffffff33 !important;
-    color : #aaa !important;
-  }
-  .activeBtn {
-    background: #F400F5 !important;
-    color : #fff;
-  }
-  .change_theme{
-    background-color: #ffffff33 !important;
-  }
-  .search-input{
-    background-color: #ffffff33 !important;
-    input{
+
+  .modalContent {
+    input {
+      color: #fff !important;
+      background-color: #1e1e1e !important;
+    }
+
+    textarea {
+      color: #fff !important;
+      background-color: #1e1e1e !important;
+    }
+
+    p {
       color: #fff !important;
     }
   }
-  .activeThemeBtn{
+
+  .imgBtn {
+    img {
+      filter: brightness(3) !important;
+    }
+
+  }
+
+  .card1 {
+    background-color: #ffffff22 !important;
+
+    .smallBtn {
+      &:hover {
+        background-color: #ffffff33 !important;
+      }
+
+    }
+
+    .drodownMenu {
+      background-color: #555 !important;
+
+      .menuItem {
+        color: #aaa !important;
+      }
+
+    }
+
+    .drodownMenu1 {
+      background-color: #555 !important;
+
+      .menuItem {
+        color: #aaa !important;
+      }
+
+    }
+  }
+
+  .themeBtn {
+    background-color: #1e1e1e !important;
+  }
+
+  .connectBtn {
+    background-color: #F400F5 !important;
+    color: #fff !important;
+  }
+
+  .filterBtn,
+  .edit_profile,
+  .addBtn {
+    background-color: #ffffff33 !important;
+    color: #aaa !important;
+  }
+
+  .activeBtn {
+    background: #F400F5 !important;
+    color: #fff;
+  }
+
+  .change_theme {
+    background-color: #ffffff33 !important;
+  }
+
+  .search-input {
+    background-color: #ffffff33 !important;
+
+    input {
+      color: #fff !important;
+    }
+
+    img {
+      filter: brightness(3) !important;
+    }
+  }
+
+  .search {
+
+    img {
+      filter: brightness(3) !important;
+    }
+  }
+
+  .activeThemeBtn {
     background-color: #ffffff33 !important;
     color: #0841D4;
-    img{
+
+    img {
       filter: grayscale(0);
       opacity: 1;
     }
   }
-  .medium{
+
+  .medium {
     color: #fff !important;
   }
-  p{
-    color: #aaa !important;
+
+  p {
+    color: rgb(255, 255, 255) !important;
   }
-  h1{
+
+  h1 {
     color: #262626;
   }
-  .stakeCard{
+
+  .stakeCard {
     background-color: #06364a33 !important;
-    p{
-      color: #aaa !important;
+
+    p {
+      color: rgb(59, 59, 59) !important;
     }
-    h5{
+
+    h5 {
       color: #ddd !important;
     }
-    h4{
+
+    h4 {
       color: #c6e4f7 !important;
     }
-    .top{
+
+    .top {
       background-color: #333 !important;
     }
   }
-  .rewardCard{
+
+  .rewardCard {
     background-color: #333 !important;
-    p{
+
+    p {
       color: #fff !important;
     }
-    h5{
+
+    h5 {
       color: #ddd !important;
     }
-    h4{
+
+    h4 {
       color: #c6e4f7 !important;
     }
-    .top{
+
+    .top {
       background-color: #555 !important;
     }
   }
-  .myCheck{
+
+  .myCheck {
     background-color: #333 !important;
-    p{
+
+    p {
       color: #fff !important;
     }
-    h5{
+
+    h5 {
       color: #ddd !important;
     }
-    h4{
+
+    h4 {
       color: #c6e4f7 !important;
     }
-    .top{
+
+    .top {
       background-color: #555 !important;
     }
   }
-  .dropzone{
+
+  .dropzone {
     background-color: #333 !important;
-    p{
+
+    p {
       color: #fff !important;
     }
-    h5{
+
+    h5 {
       color: #ddd !important;
     }
-    h4{
+
+    h4 {
       color: #c6e4f7 !important;
     }
-    .top{
+
+    .top {
       background-color: #555 !important;
     }
   }
-  .panel{
+
+  .panel {
     background-color: #333 !important;
-    p{
+
+    p {
       color: #fff !important;
     }
-    h3{
-      span{
+
+    h3 {
+      span {
         color: #ddd !important;
       }
     }
-    h2{
+
+    h2 {
       color: #c6e4f7 !important;
     }
-    .top{
+
+    .top {
       background-color: #555 !important;
     }
-    .MuiOutlinedInput-root{
+
+    .MuiOutlinedInput-root {
       background-color: #3a2452 !important;
     }
-    input{
+
+    input {
       background-color: #555 !important;
       border-color: #262626 !important;
       color: #fff !important;
-      &::placeholder{
+
+      &::placeholder {
         color: #aaa !important;
       }
     }
-    textarea{
+
+    textarea {
       background-color: #555 !important;
       border-color: #262626 !important;
       color: #fff !important;
-      &::placeholder{
+
+      &::placeholder {
         color: #aaa !important;
       }
     }
   }
-  .step{
-    p{
+
+  .step {
+    p {
       color: #aaa !important;
     }
-    h3{
-      span{
+
+    h3 {
+      span {
         color: #ddd !important;
       }
     }
-    h2, h4{
+
+    h2,
+    h4 {
       color: #c6e4f7 !important;
     }
-    .top{
+
+    .top {
       background-color: #555 !important;
     }
-    label{
+
+    label {
       color: #ddd !important;
     }
-    .MuiOutlinedInput-root{
+
+    .MuiOutlinedInput-root {
       background-color: #333 !important;
       border-radius: 7px;
     }
+
     .Mui-focused fieldset {
       border-color: #333 !important;
     }
-    input{
+
+    input {
       background-color: #333 !important;
       border-color: #262626 !important;
       color: #fff !important;
-      &::placeholder{
+
+      &::placeholder {
         color: #aaa !important;
       }
     }
-    textarea{
+
+    textarea {
       background-color: #333 !important;
       border-color: #262626 !important;
       color: #fff !important;
-      &::placeholder{
+
+      &::placeholder {
         color: #aaa !important;
       }
     }
-    .ratioContent{
+
+    .ratioContent {
       background: #333 !important;
     }
-    .card{
+
+    .card {
       background: #333 !important;
     }
-    .circle{
+
+    .circle {
       color: #000;
     }
   }
+
   .select-gray {
-    &>div{
+    &>div {
       background: #333 !important;
-      color : #aaa !important;
+      color: #aaa !important;
     }
-    &>div:first-of-type{
-        border: 1px solid #fff;
-        
-        div{
+
+    &>div:first-of-type {
+      border: 1px solid #fff;
+
+      div {
+        color: #ffffff !important;
+      }
+
+      div {
+        div {
           color: #ffffff !important;
         }
-        
-        div{
-            div{
-              color: #ffffff !important;
-            }
-        }
+      }
     }
   }
-  .modelContent, .MuiDialogContent-root{
-    background-color: #333 !important;
-    .warning {
-      p {
-        color : #F3AC3D !important;
+
+  .modelContent,
+  .MuiDialogContent-root {
+    background: #333333;
+
+    h3 {
+      color: rgb(248, 245, 245) !important
+    }
+
+    div {
+      .customModalTop {
+        background: #2e2c2c;
+      }
+
+      div {
+        span {
+          h4 {
+            color: white;
+          }
+        }
       }
     }
-    .addressInput{
+
+    // background-color: #333 !important;
+    .warning {
+      background: #29292d !important;
+
+      p {
+        color: rgba(24, 70, 232, 1) !important;
+      }
+    }
+
+    .addressInput {
       color: #ddd !important;
     }
-    .coppyAddressButton{
+
+    .coppyAddressButton {
       color: #ddd !important;
     }
-    .modalBtns{
-      a{
+
+    .modalBtns {
+      a {
         color: #c6e4f7 !important;
       }
-      .disconnect{
+
+      .disconnect {
         background-color: #F400F5 !important;
-        color : #fff !important;
+        color: #fff !important;
       }
     }
+
     .input-span {
-      background-color: #555 !important;
-      input{
+      background-color: #030316 !important;
+
+      input {
         color: #ddd !important;
-        &::placeholder{
+
+        &::placeholder {
           color: #aaa !important;
         }
       }
+
       button {
-        background : #7A00F5;
-        color: #fff !important;
-        &:hover{
-          background : #9633f9!important;
+        background: #071040;
+        color: #1846e8 !important;
+
+        &:hover {
+          background: #9633f9 !important;
         }
       }
     }
-    h2, h5{
+
+    h2,
+    h5 {
       color: #ddd !important;
     }
-    .label{
+
+    .label {
       color: #ddd !important;
     }
-    h4{
-      color: #c6e4f7 !important;
+
+    h4 {
+      // color: #c6e4f7 !important;
     }
-    .connectModalCloseButton{
+
+    .connectModalCloseButton {
       color: #fff !important;
     }
+
     .closeBtn {
       color: #fff !important;
-      &:hover{
+
+      &:hover {
         background: #555 !important;
       }
     }
   }
 }
 
+.MuiDialog-paperWidthSm {
+  max-width: 636px !important;
+}
+
+.MuiButton-contained {
+  border: none !important;
+}
+
+.accordion_panel_block {
+  display: '';
+}
+
+.accordion_panel_none {
+  display: none !important;
+}
+
+.stake_withdraw_body {
+  margin-bottom: 10px;
+  background: linear-gradient(47.43deg, #0a0136 0%, #36002f 57%, #352201 100%);
+  box-shadow: 10px 24px 54px rgba(0, 0, 0, 0.03);
+  border-radius: 16px;
+}
+
+.createCustomModal {
+  padding: 10px 20px !important;
+}
+
+.miner-stake-btns {
+  padding-top: 16px;
+
+  .boost {
+    margin: 8px !important;
+    -webkit-background-clip: text !important;
+    -webkit-text-fill-color: transparent;
+    background: linear-gradient(47.43deg, #2A01FF 0%, #FF1EE1 57%, #FFB332 100%);
+    padding: 5px;
+    width: 108px;
+    height: 45px;
+    border-radius: 15px;
+    text-align: center;
+    border: dashed 1px #ff589d;
+    color: #be16d2;
+    align-self: center;
+    font-weight: 700;
+  }
+
+  .panelBtn {
+    cursor: pointer;
+
+    i {
+      font-size: 25px;
+      color: rgba(114, 114, 114, 1);
+    }
+  }
+
+  div {
+    display: inline-block;
+    padding-left: 10px;
+    text-align: center;
+  }
+
+  .stake {
+    margin: 8px !important;
+    background: linear-gradient(47.43deg, #2A01FF 0%, #FF1EE1 57%, #FFB332 100%);
+    padding: 5px;
+    width: 108px;
+    height: 45px;
+    border-radius: 15px;
+    text-align: center;
+    border: dashed 1px #ff589d;
+    color: white;
+    align-self: center;
+    font-weight: 700;
+  }
+
+  .withdraw {
+    margin: 8px !important;
+    background: #4905FB;
+    padding: 5px;
+    width: 108px;
+    height: 45px;
+    border-radius: 15px;
+    text-align: center;
+    border: none;
+    color: white;
+    align-self: center;
+    font-weight: 700;
+  }
+
+  img {
+    cursor: pointer;
+  }
+}
+
 @keyframes loadingAni {
-  0%{
+  0% {
     transform: rotate(0deg);
   }
+
   // 50%{
   //   transform: rotate(-180deg);
   // }
-  100%{
-    transform: rotate(-360deg);
+  100% {
+    transform: rotate(360deg);
   }
 }

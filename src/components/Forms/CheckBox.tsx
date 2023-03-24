@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import clsx from 'clsx';
-import PropTypes, { bool } from 'prop-types';
+import PropTypes from 'prop-types';
 import { makeStyles } from '@material-ui/core/styles';
 import FormControlLabel from '@material-ui/core/FormControlLabel';
 import Checkbox from '@material-ui/core/Checkbox';
@@ -59,7 +59,7 @@ const CheckBox = ({
       setChecked(value);
       onChange(value);
     }
-  }, [value])
+  }, [onChange, value])
 
   return (
     <FormControlLabel

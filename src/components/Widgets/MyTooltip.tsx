@@ -18,6 +18,7 @@ const useStyles = makeStyles(theme => ({
     backgroundColor : '#ffffff00',
     padding : 0,
     color : '#727272',
+    WebkitTextFillColor:'grey'
   },
   
 }));
@@ -32,7 +33,7 @@ const HtmlTooltip = styled(({ className, ...props }: TooltipProps) => (
       border: '1px solid #ccc',
       margin : '0px 5px',
       '& p': {
-        color : '#fff',
+        color : '#000',
       },
       
     },
@@ -53,7 +54,7 @@ const MyTooltip = ({ text }) => {
         </>
       }
     >
-      <button className={classes.root} onClick={() => setShowTooltip(!showTooltip)}><i className="fas fa-exclamation-circle"></i></button>
+      <button className={classes.root} onClick={() => setShowTooltip(!showTooltip)}><img src="/assets/icons/tooltip-icon.svg" alt="" /></button>
     </HtmlTooltip>
   );
 };

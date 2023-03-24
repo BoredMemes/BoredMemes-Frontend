@@ -20,7 +20,7 @@ export const initialState = {
  */
 
 const AuthStateContext = createContext(initialState);
-const AuthDispatchContext = createContext({});
+const AuthDispatchContext = createContext(undefined);
 
 export function useAuthState() {
     const context = React.useContext(AuthStateContext);
@@ -104,7 +104,7 @@ export async function loginUser(dispatch, account, nonce, signer) {
 
 export async function logout(dispatch) {
     dispatch({ type: 'LOGOUT' });
-    localStorage.removeItem('token');
+    // localStorage.removeItem('token');
 }
 
 export const AuthReducer = (initialState, action) => {

@@ -1,0 +1,1179 @@
+[
+    {
+        "inputs": [],
+        "name": "InsufficientAmount",
+        "type": "error"
+    },
+    {
+        "inputs": [],
+        "name": "InvalidAddresses",
+        "type": "error"
+    },
+    {
+        "inputs": [],
+        "name": "InvalidEndTime",
+        "type": "error"
+    },
+    {
+        "inputs": [],
+        "name": "InvalidLockTime",
+        "type": "error"
+    },
+    {
+        "inputs": [],
+        "name": "InvalidOperation",
+        "type": "error"
+    },
+    {
+        "inputs": [],
+        "name": "InvalidStartTime",
+        "type": "error"
+    },
+    {
+        "inputs": [],
+        "name": "InvalidZeroAddress",
+        "type": "error"
+    },
+    {
+        "inputs": [],
+        "name": "OverflowNftLimit",
+        "type": "error"
+    },
+    {
+        "inputs": [],
+        "name": "PoolNotOpened",
+        "type": "error"
+    },
+    {
+        "inputs": [
+            {
+                "internalType": "bytes32",
+                "name": "stakingId",
+                "type": "bytes32"
+            }
+        ],
+        "name": "StakingDuplicated",
+        "type": "error"
+    },
+    {
+        "inputs": [],
+        "name": "StillLocked",
+        "type": "error"
+    },
+    {
+        "inputs": [],
+        "name": "Unpermitted",
+        "type": "error"
+    },
+    {
+        "inputs": [
+            {
+                "internalType": "uint16",
+                "name": "expected",
+                "type": "uint16"
+            },
+            {
+                "internalType": "uint16",
+                "name": "value",
+                "type": "uint16"
+            }
+        ],
+        "name": "ValueOverflow",
+        "type": "error"
+    },
+    {
+        "inputs": [],
+        "name": "WrongUsage",
+        "type": "error"
+    },
+    {
+        "anonymous": false,
+        "inputs": [
+            {
+                "indexed": false,
+                "internalType": "bytes32",
+                "name": "stakingId",
+                "type": "bytes32"
+            },
+            {
+                "indexed": false,
+                "internalType": "address",
+                "name": "user",
+                "type": "address"
+            },
+            {
+                "indexed": false,
+                "internalType": "uint64",
+                "name": "nftAmount",
+                "type": "uint64"
+            },
+            {
+                "indexed": false,
+                "internalType": "uint256",
+                "name": "tokenAmount",
+                "type": "uint256"
+            }
+        ],
+        "name": "EmergencyWithdrawn",
+        "type": "event"
+    },
+    {
+        "anonymous": false,
+        "inputs": [
+            {
+                "indexed": false,
+                "internalType": "address",
+                "name": "user",
+                "type": "address"
+            },
+            {
+                "indexed": false,
+                "internalType": "uint256",
+                "name": "amount",
+                "type": "uint256"
+            }
+        ],
+        "name": "Harvested",
+        "type": "event"
+    },
+    {
+        "anonymous": false,
+        "inputs": [
+            {
+                "indexed": false,
+                "internalType": "uint8",
+                "name": "version",
+                "type": "uint8"
+            }
+        ],
+        "name": "Initialized",
+        "type": "event"
+    },
+    {
+        "anonymous": false,
+        "inputs": [
+            {
+                "indexed": false,
+                "internalType": "bytes32",
+                "name": "stakingId",
+                "type": "bytes32"
+            },
+            {
+                "indexed": false,
+                "internalType": "address",
+                "name": "user",
+                "type": "address"
+            },
+            {
+                "indexed": false,
+                "internalType": "uint256",
+                "name": "amount",
+                "type": "uint256"
+            }
+        ],
+        "name": "NftStaked",
+        "type": "event"
+    },
+    {
+        "anonymous": false,
+        "inputs": [
+            {
+                "indexed": false,
+                "internalType": "bytes32",
+                "name": "stakingId",
+                "type": "bytes32"
+            },
+            {
+                "indexed": false,
+                "internalType": "address",
+                "name": "user",
+                "type": "address"
+            },
+            {
+                "indexed": false,
+                "internalType": "uint256",
+                "name": "amount",
+                "type": "uint256"
+            }
+        ],
+        "name": "NftUnstaked",
+        "type": "event"
+    },
+    {
+        "anonymous": false,
+        "inputs": [
+            {
+                "indexed": false,
+                "internalType": "address",
+                "name": "user",
+                "type": "address"
+            },
+            {
+                "indexed": false,
+                "internalType": "uint256",
+                "name": "amount",
+                "type": "uint256"
+            },
+            {
+                "indexed": false,
+                "internalType": "uint64",
+                "name": "nftAmount",
+                "type": "uint64"
+            }
+        ],
+        "name": "TokenAndNftReleased",
+        "type": "event"
+    },
+    {
+        "anonymous": false,
+        "inputs": [
+            {
+                "indexed": false,
+                "internalType": "address",
+                "name": "user",
+                "type": "address"
+            },
+            {
+                "indexed": false,
+                "internalType": "uint256",
+                "name": "amount",
+                "type": "uint256"
+            },
+            {
+                "indexed": false,
+                "internalType": "uint64",
+                "name": "nftAmount",
+                "type": "uint64"
+            },
+            {
+                "indexed": false,
+                "internalType": "uint64",
+                "name": "lockTime",
+                "type": "uint64"
+            }
+        ],
+        "name": "TokenRelocked",
+        "type": "event"
+    },
+    {
+        "anonymous": false,
+        "inputs": [
+            {
+                "indexed": false,
+                "internalType": "address",
+                "name": "user",
+                "type": "address"
+            },
+            {
+                "indexed": false,
+                "internalType": "uint256",
+                "name": "amount",
+                "type": "uint256"
+            },
+            {
+                "indexed": false,
+                "internalType": "uint64",
+                "name": "lockTime",
+                "type": "uint64"
+            }
+        ],
+        "name": "TokenStaked",
+        "type": "event"
+    },
+    {
+        "anonymous": false,
+        "inputs": [
+            {
+                "indexed": false,
+                "internalType": "bytes32",
+                "name": "stakingId",
+                "type": "bytes32"
+            },
+            {
+                "indexed": false,
+                "internalType": "address",
+                "name": "user",
+                "type": "address"
+            },
+            {
+                "indexed": false,
+                "internalType": "uint256",
+                "name": "amount",
+                "type": "uint256"
+            }
+        ],
+        "name": "TokenUnstaked",
+        "type": "event"
+    },
+    {
+        "anonymous": false,
+        "inputs": [
+            {
+                "indexed": false,
+                "internalType": "address",
+                "name": "user",
+                "type": "address"
+            },
+            {
+                "indexed": false,
+                "internalType": "uint16",
+                "name": "nftAmount",
+                "type": "uint16"
+            },
+            {
+                "indexed": false,
+                "internalType": "uint256",
+                "name": "tokenAmount",
+                "type": "uint256"
+            }
+        ],
+        "name": "Withdrawn",
+        "type": "event"
+    },
+    {
+        "inputs": [],
+        "name": "MAX_FEE",
+        "outputs": [
+            {
+                "internalType": "uint16",
+                "name": "",
+                "type": "uint16"
+            }
+        ],
+        "stateMutability": "view",
+        "type": "function"
+    },
+    {
+        "inputs": [],
+        "name": "PRECISION_FACTOR",
+        "outputs": [
+            {
+                "internalType": "uint256",
+                "name": "",
+                "type": "uint256"
+            }
+        ],
+        "stateMutability": "view",
+        "type": "function"
+    },
+    {
+        "inputs": [],
+        "name": "accRewardPerShare",
+        "outputs": [
+            {
+                "internalType": "uint256",
+                "name": "",
+                "type": "uint256"
+            }
+        ],
+        "stateMutability": "view",
+        "type": "function"
+    },
+    {
+        "inputs": [
+            {
+                "internalType": "uint256",
+                "name": "amount_",
+                "type": "uint256"
+            }
+        ],
+        "name": "addReward",
+        "outputs": [],
+        "stateMutability": "payable",
+        "type": "function"
+    },
+    {
+        "inputs": [],
+        "name": "boostedSupply",
+        "outputs": [
+            {
+                "internalType": "uint256",
+                "name": "",
+                "type": "uint256"
+            }
+        ],
+        "stateMutability": "view",
+        "type": "function"
+    },
+    {
+        "inputs": [],
+        "name": "boostingNft",
+        "outputs": [
+            {
+                "internalType": "address",
+                "name": "",
+                "type": "address"
+            }
+        ],
+        "stateMutability": "view",
+        "type": "function"
+    },
+    {
+        "inputs": [],
+        "name": "commissionToken",
+        "outputs": [
+            {
+                "internalType": "address",
+                "name": "",
+                "type": "address"
+            }
+        ],
+        "stateMutability": "view",
+        "type": "function"
+    },
+    {
+        "inputs": [],
+        "name": "defaultAdmin",
+        "outputs": [
+            {
+                "internalType": "address",
+                "name": "",
+                "type": "address"
+            }
+        ],
+        "stateMutability": "view",
+        "type": "function"
+    },
+    {
+        "inputs": [],
+        "name": "depositFee",
+        "outputs": [
+            {
+                "internalType": "uint16",
+                "name": "",
+                "type": "uint16"
+            }
+        ],
+        "stateMutability": "view",
+        "type": "function"
+    },
+    {
+        "inputs": [],
+        "name": "dexRouter",
+        "outputs": [
+            {
+                "internalType": "address",
+                "name": "",
+                "type": "address"
+            }
+        ],
+        "stateMutability": "view",
+        "type": "function"
+    },
+    {
+        "inputs": [],
+        "name": "earlyFeeTime",
+        "outputs": [
+            {
+                "internalType": "uint64",
+                "name": "",
+                "type": "uint64"
+            }
+        ],
+        "stateMutability": "view",
+        "type": "function"
+    },
+    {
+        "inputs": [],
+        "name": "earlyWithdrawFee",
+        "outputs": [
+            {
+                "internalType": "uint16",
+                "name": "",
+                "type": "uint16"
+            }
+        ],
+        "stateMutability": "view",
+        "type": "function"
+    },
+    {
+        "inputs": [
+            {
+                "internalType": "bytes32",
+                "name": "stakingId_",
+                "type": "bytes32"
+            }
+        ],
+        "name": "emergencyWithdraw",
+        "outputs": [],
+        "stateMutability": "nonpayable",
+        "type": "function"
+    },
+    {
+        "inputs": [],
+        "name": "emission",
+        "outputs": [
+            {
+                "internalType": "uint256",
+                "name": "",
+                "type": "uint256"
+            }
+        ],
+        "stateMutability": "view",
+        "type": "function"
+    },
+    {
+        "inputs": [],
+        "name": "endAt",
+        "outputs": [
+            {
+                "internalType": "uint64",
+                "name": "",
+                "type": "uint64"
+            }
+        ],
+        "stateMutability": "view",
+        "type": "function"
+    },
+    {
+        "inputs": [],
+        "name": "ethPlugin",
+        "outputs": [
+            {
+                "internalType": "address",
+                "name": "",
+                "type": "address"
+            }
+        ],
+        "stateMutability": "view",
+        "type": "function"
+    },
+    {
+        "inputs": [
+            {
+                "internalType": "uint64",
+                "name": "nftAmount_",
+                "type": "uint64"
+            },
+            {
+                "internalType": "uint64",
+                "name": "lockTime_",
+                "type": "uint64"
+            }
+        ],
+        "name": "getBooster",
+        "outputs": [
+            {
+                "internalType": "uint256",
+                "name": "",
+                "type": "uint256"
+            }
+        ],
+        "stateMutability": "view",
+        "type": "function"
+    },
+    {
+        "inputs": [],
+        "name": "harvest",
+        "outputs": [],
+        "stateMutability": "nonpayable",
+        "type": "function"
+    },
+    {
+        "inputs": [
+            {
+                "internalType": "enum ICommon.LaunchPlan",
+                "name": "plan_",
+                "type": "uint8"
+            },
+            {
+                "internalType": "address",
+                "name": "ethPlugin_",
+                "type": "address"
+            },
+            {
+                "internalType": "uint256",
+                "name": "numbers_",
+                "type": "uint256"
+            },
+            {
+                "internalType": "uint64",
+                "name": "early_period_",
+                "type": "uint64"
+            },
+            {
+                "internalType": "uint256",
+                "name": "emission_",
+                "type": "uint256"
+            },
+            {
+                "internalType": "bytes",
+                "name": "addresses_",
+                "type": "bytes"
+            }
+        ],
+        "name": "initialize",
+        "outputs": [],
+        "stateMutability": "nonpayable",
+        "type": "function"
+    },
+    {
+        "inputs": [],
+        "name": "lastRewardAt",
+        "outputs": [
+            {
+                "internalType": "uint64",
+                "name": "",
+                "type": "uint64"
+            }
+        ],
+        "stateMutability": "view",
+        "type": "function"
+    },
+    {
+        "inputs": [],
+        "name": "launchPlan",
+        "outputs": [
+            {
+                "internalType": "enum ICommon.LaunchPlan",
+                "name": "",
+                "type": "uint8"
+            }
+        ],
+        "stateMutability": "view",
+        "type": "function"
+    },
+    {
+        "inputs": [
+            {
+                "internalType": "uint256",
+                "name": "amount_",
+                "type": "uint256"
+            },
+            {
+                "internalType": "uint64",
+                "name": "lockTime_",
+                "type": "uint64"
+            }
+        ],
+        "name": "lockToken",
+        "outputs": [],
+        "stateMutability": "payable",
+        "type": "function"
+    },
+    {
+        "inputs": [],
+        "name": "maxLockMultiplier",
+        "outputs": [
+            {
+                "internalType": "uint32",
+                "name": "",
+                "type": "uint32"
+            }
+        ],
+        "stateMutability": "view",
+        "type": "function"
+    },
+    {
+        "inputs": [],
+        "name": "maxLockTime",
+        "outputs": [
+            {
+                "internalType": "uint64",
+                "name": "",
+                "type": "uint64"
+            }
+        ],
+        "stateMutability": "view",
+        "type": "function"
+    },
+    {
+        "inputs": [],
+        "name": "nftMultiplier",
+        "outputs": [
+            {
+                "internalType": "uint16",
+                "name": "",
+                "type": "uint16"
+            }
+        ],
+        "stateMutability": "view",
+        "type": "function"
+    },
+    {
+        "inputs": [
+            {
+                "internalType": "address",
+                "name": "",
+                "type": "address"
+            },
+            {
+                "internalType": "address",
+                "name": "",
+                "type": "address"
+            },
+            {
+                "internalType": "uint256",
+                "name": "",
+                "type": "uint256"
+            },
+            {
+                "internalType": "bytes",
+                "name": "",
+                "type": "bytes"
+            }
+        ],
+        "name": "onERC721Received",
+        "outputs": [
+            {
+                "internalType": "bytes4",
+                "name": "",
+                "type": "bytes4"
+            }
+        ],
+        "stateMutability": "nonpayable",
+        "type": "function"
+    },
+    {
+        "inputs": [],
+        "name": "owner",
+        "outputs": [
+            {
+                "internalType": "address",
+                "name": "",
+                "type": "address"
+            }
+        ],
+        "stateMutability": "view",
+        "type": "function"
+    },
+    {
+        "inputs": [
+            {
+                "internalType": "bytes32",
+                "name": "stakingId_",
+                "type": "bytes32"
+            }
+        ],
+        "name": "pendingReward",
+        "outputs": [
+            {
+                "internalType": "uint256",
+                "name": "",
+                "type": "uint256"
+            }
+        ],
+        "stateMutability": "view",
+        "type": "function"
+    },
+    {
+        "inputs": [
+            {
+                "internalType": "address",
+                "name": "user_",
+                "type": "address"
+            }
+        ],
+        "name": "pendingReward",
+        "outputs": [
+            {
+                "internalType": "uint256",
+                "name": "",
+                "type": "uint256"
+            }
+        ],
+        "stateMutability": "view",
+        "type": "function"
+    },
+    {
+        "inputs": [],
+        "name": "poolFactory",
+        "outputs": [
+            {
+                "internalType": "address",
+                "name": "",
+                "type": "address"
+            }
+        ],
+        "stateMutability": "view",
+        "type": "function"
+    },
+    {
+        "inputs": [
+            {
+                "internalType": "address",
+                "name": "token_",
+                "type": "address"
+            },
+            {
+                "internalType": "uint256",
+                "name": "amount_",
+                "type": "uint256"
+            }
+        ],
+        "name": "recoverTokens",
+        "outputs": [],
+        "stateMutability": "nonpayable",
+        "type": "function"
+    },
+    {
+        "inputs": [],
+        "name": "renounceOwnership",
+        "outputs": [],
+        "stateMutability": "nonpayable",
+        "type": "function"
+    },
+    {
+        "inputs": [],
+        "name": "rewardSupply",
+        "outputs": [
+            {
+                "internalType": "uint256",
+                "name": "",
+                "type": "uint256"
+            }
+        ],
+        "stateMutability": "view",
+        "type": "function"
+    },
+    {
+        "inputs": [],
+        "name": "rewardToken",
+        "outputs": [
+            {
+                "internalType": "address",
+                "name": "",
+                "type": "address"
+            }
+        ],
+        "stateMutability": "view",
+        "type": "function"
+    },
+    {
+        "inputs": [
+            {
+                "internalType": "bytes32",
+                "name": "stakingId_",
+                "type": "bytes32"
+            },
+            {
+                "internalType": "uint256[]",
+                "name": "nftIds_",
+                "type": "uint256[]"
+            }
+        ],
+        "name": "stakeBoostNft",
+        "outputs": [],
+        "stateMutability": "nonpayable",
+        "type": "function"
+    },
+    {
+        "inputs": [
+            {
+                "internalType": "uint256",
+                "name": "amount_",
+                "type": "uint256"
+            }
+        ],
+        "name": "stakeToken",
+        "outputs": [],
+        "stateMutability": "payable",
+        "type": "function"
+    },
+    {
+        "inputs": [],
+        "name": "stakedSupply",
+        "outputs": [
+            {
+                "internalType": "uint256",
+                "name": "",
+                "type": "uint256"
+            }
+        ],
+        "stateMutability": "view",
+        "type": "function"
+    },
+    {
+        "inputs": [],
+        "name": "stakingToken",
+        "outputs": [
+            {
+                "internalType": "address",
+                "name": "",
+                "type": "address"
+            }
+        ],
+        "stateMutability": "view",
+        "type": "function"
+    },
+    {
+        "inputs": [],
+        "name": "startAt",
+        "outputs": [
+            {
+                "internalType": "uint64",
+                "name": "",
+                "type": "uint64"
+            }
+        ],
+        "stateMutability": "view",
+        "type": "function"
+    },
+    {
+        "inputs": [],
+        "name": "stopPool",
+        "outputs": [],
+        "stateMutability": "nonpayable",
+        "type": "function"
+    },
+    {
+        "inputs": [
+            {
+                "internalType": "address",
+                "name": "admin_",
+                "type": "address"
+            }
+        ],
+        "name": "transferOwnership",
+        "outputs": [],
+        "stateMutability": "nonpayable",
+        "type": "function"
+    },
+    {
+        "inputs": [],
+        "name": "treasury",
+        "outputs": [
+            {
+                "internalType": "address payable",
+                "name": "",
+                "type": "address"
+            }
+        ],
+        "stateMutability": "view",
+        "type": "function"
+    },
+    {
+        "inputs": [
+            {
+                "internalType": "bytes32",
+                "name": "stakingId_",
+                "type": "bytes32"
+            },
+            {
+                "internalType": "uint64",
+                "name": "newLockTime_",
+                "type": "uint64"
+            },
+            {
+                "internalType": "bool",
+                "name": "isWithdrawing_",
+                "type": "bool"
+            }
+        ],
+        "name": "unlockToken",
+        "outputs": [],
+        "stateMutability": "nonpayable",
+        "type": "function"
+    },
+    {
+        "inputs": [
+            {
+                "internalType": "bytes32",
+                "name": "stakingId_",
+                "type": "bytes32"
+            },
+            {
+                "internalType": "uint256[]",
+                "name": "nftIds_",
+                "type": "uint256[]"
+            }
+        ],
+        "name": "unstakeBoostNft",
+        "outputs": [],
+        "stateMutability": "nonpayable",
+        "type": "function"
+    },
+    {
+        "inputs": [
+            {
+                "internalType": "uint256",
+                "name": "amount_",
+                "type": "uint256"
+            }
+        ],
+        "name": "unstakeToken",
+        "outputs": [],
+        "stateMutability": "nonpayable",
+        "type": "function"
+    },
+    {
+        "inputs": [
+            {
+                "internalType": "address",
+                "name": "dexRouter_",
+                "type": "address"
+            },
+            {
+                "internalType": "address",
+                "name": "commissionToken_",
+                "type": "address"
+            }
+        ],
+        "name": "updateCommissionProps",
+        "outputs": [],
+        "stateMutability": "nonpayable",
+        "type": "function"
+    },
+    {
+        "inputs": [
+            {
+                "internalType": "uint16",
+                "name": "fee_",
+                "type": "uint16"
+            }
+        ],
+        "name": "updateDepositFee",
+        "outputs": [],
+        "stateMutability": "nonpayable",
+        "type": "function"
+    },
+    {
+        "inputs": [
+            {
+                "internalType": "uint64",
+                "name": "timeline_",
+                "type": "uint64"
+            }
+        ],
+        "name": "updateEarlyFeeTime",
+        "outputs": [],
+        "stateMutability": "nonpayable",
+        "type": "function"
+    },
+    {
+        "inputs": [
+            {
+                "internalType": "uint16",
+                "name": "fee_",
+                "type": "uint16"
+            }
+        ],
+        "name": "updateEarlyWithdawFee",
+        "outputs": [],
+        "stateMutability": "nonpayable",
+        "type": "function"
+    },
+    {
+        "inputs": [
+            {
+                "internalType": "uint256",
+                "name": "emission_",
+                "type": "uint256"
+            }
+        ],
+        "name": "updateEmission",
+        "outputs": [],
+        "stateMutability": "nonpayable",
+        "type": "function"
+    },
+    {
+        "inputs": [],
+        "name": "updatePool",
+        "outputs": [],
+        "stateMutability": "nonpayable",
+        "type": "function"
+    },
+    {
+        "inputs": [
+            {
+                "internalType": "uint256",
+                "name": "startAt_",
+                "type": "uint256"
+            },
+            {
+                "internalType": "uint256",
+                "name": "endAt_",
+                "type": "uint256"
+            }
+        ],
+        "name": "updateRewardTime",
+        "outputs": [],
+        "stateMutability": "nonpayable",
+        "type": "function"
+    },
+    {
+        "inputs": [
+            {
+                "internalType": "address payable",
+                "name": "treasury_",
+                "type": "address"
+            }
+        ],
+        "name": "updateTreasury",
+        "outputs": [],
+        "stateMutability": "nonpayable",
+        "type": "function"
+    },
+    {
+        "inputs": [
+            {
+                "internalType": "bytes32",
+                "name": "stakingId_",
+                "type": "bytes32"
+            }
+        ],
+        "name": "viewStakingInfo",
+        "outputs": [
+            {
+                "internalType": "address",
+                "name": "account",
+                "type": "address"
+            },
+            {
+                "internalType": "uint256",
+                "name": "tokenAmount",
+                "type": "uint256"
+            },
+            {
+                "internalType": "uint256",
+                "name": "boostedAmount",
+                "type": "uint256"
+            },
+            {
+                "internalType": "uint256[]",
+                "name": "nftIds",
+                "type": "uint256[]"
+            },
+            {
+                "internalType": "uint64",
+                "name": "lastDepositAt",
+                "type": "uint64"
+            },
+            {
+                "internalType": "uint64",
+                "name": "lockTime",
+                "type": "uint64"
+            },
+            {
+                "internalType": "bool",
+                "name": "isLocked",
+                "type": "bool"
+            }
+        ],
+        "stateMutability": "view",
+        "type": "function"
+    },
+    {
+        "inputs": [
+            {
+                "internalType": "address",
+                "name": "account_",
+                "type": "address"
+            }
+        ],
+        "name": "viewUserInfo",
+        "outputs": [
+            {
+                "internalType": "bytes32[]",
+                "name": "stakingIds",
+                "type": "bytes32[]"
+            }
+        ],
+        "stateMutability": "view",
+        "type": "function"
+    },
+    {
+        "stateMutability": "payable",
+        "type": "receive"
+    }
+]

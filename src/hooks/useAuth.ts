@@ -17,20 +17,22 @@ const useAuth = () => {
   const { activate, deactivate } = useWeb3React()
 
   const login = useCallback((connectorID: ConnectorNames) => {
-    console.log("Login");
     const connector = connectorsByName[connectorID]
+    console.log(connector);
     if (connector) {
       activate(connector, async (error: Error) => {
         if (error instanceof UnsupportedChainIdError) {
+          
+          console.log(error);
           setupNetwork().then((hasSetup) => {
             if (hasSetup) {
               activate(connector);
-              window.localStorage.setItem(connectorLocalStorageKey, connectorID);
-            }
+              // window.localStorage.setItem(connectorLocalStorageKey, connectorID);
+            }else toast.error("Unsupported Network.");
           });
         } else if (error instanceof NoEthereumProviderError) {
           toast.error('No provider was found!')
-          window.localStorage.removeItem(connectorLocalStorageKey)
+          // window.localStorage.removeItem(connectorLocalStorageKey)
         } else if (
           error instanceof UserRejectedRequestErrorInjected ||
           error instanceof UserRejectedRequestErrorWalletConnect
@@ -41,11 +43,11 @@ const useAuth = () => {
           }
           toast.error('Authorization Error, Please authorize to access your account')
           console.log('Authorization Error, Please authorize to access your account')
-          window.localStorage.removeItem(connectorLocalStorageKey)
+          // window.localStorage.removeItem(connectorLocalStorageKey)
         } else {
           toast.error(error.message)
           console.log(error.name, error.message)
-          window.localStorage.removeItem(connectorLocalStorageKey)
+          // window.localStorage.removeItem(connectorLocalStorageKey)
         }
       })
     } else {

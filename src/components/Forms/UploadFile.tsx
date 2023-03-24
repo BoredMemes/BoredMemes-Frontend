@@ -2,6 +2,7 @@ import React, { forwardRef, Ref, useEffect, useState } from 'react';
 import { makeStyles, Theme } from '@material-ui/core/styles';
 import CloudUploadIcon from '@material-ui/icons/CloudUpload';
 import clsx from 'clsx';
+import { toast } from 'react-toastify';
 
 interface FileInputProps {
   info?: string;
@@ -162,6 +163,10 @@ const UploadFile = forwardRef<Ref<any>, FileInputProps>(
     }
 
     const onChangeFile = (e: React.ChangeEvent<HTMLInputElement>) => {
+      if (e.target.files[0].size > 2 * 1024 * 1024){
+        toast.error("File Size is too big!");
+        return;
+      }
       onChange && onChange(e);
       e.target.files.length > 0 && setFileAsset(URL.createObjectURL(e.target.files[0]));
       e.target.files.length > 0 && setFileAssetType(getAssetType(e.target.files[0].name));

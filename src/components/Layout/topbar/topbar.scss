@@ -1,4 +1,5 @@
 @import '../../../global.scss';
+
 .nav-background {
   height: 5rem;
   width: 100%;
@@ -11,6 +12,7 @@
   box-shadow: 0px 16px 60px #00000008;
   border-radius: 20px;
   margin-bottom: 15px;
+
   @include mobile_potrait {
     position: fixed;
     width: 100vw;
@@ -19,6 +21,7 @@
     backdrop-filter: blur(5px);
   }
 }
+
 .topbar {
   margin: 0 auto;
   display: flex;
@@ -27,10 +30,84 @@
   width: 100%;
   position: relative;
   padding: 0px 10px;
+
+  .top-lq-content {
+    width: 468px;
+    height: 53px;
+    left: 0px;
+    top: 11px;
+
+    /* Gradient Pixia 2 */
+    display: flex;
+    background: linear-gradient(47.43deg, #0e024d 0%, #4d0243 57%, #442b00 100%);
+    border-radius: 42px;
+    margin-left: auto;
+    margin-right: 10px;
+    padding: 4px 12px;
+
+    div {
+      width: fit-content;
+
+      span {
+        font-family: 'Josefin Sans';
+        font-style: normal;
+        font-weight: 400;
+        font-size: 12px;
+        line-height: 13px;
+        display: flex;
+        align-items: center;
+        text-align: center;
+        color: #1846E8;
+        padding: 3px;
+      }
+
+      p {
+
+        font-family: 'Josefin Sans';
+        font-style: normal;
+        font-weight: 500;
+        font-size: 16px;
+        line-height: 16px;
+        align-items: center;
+        text-align: center;
+        padding-top: 4px;
+        /* Gradient Pixia 2 */
+        background: #fe1de1;
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        background-clip: text;
+        text-fill-color: transparent;
+      }
+
+      @include mobile_potrait {
+        display: none;
+      }
+    }
+
+    button {
+      margin-left: auto;
+      display: flex;
+      flex-direction: row;
+      justify-content: center;
+      align-items: center;
+      padding: 5px;
+      gap: 10px;
+
+      width: 108px;
+      height: 45px;
+      color: white;
+      /* Gradient Pixia 2 */
+      border: none;
+      background: linear-gradient(47.43deg, #2A01FF 0%, #FF1EE1 57%, #FFB332 100%);
+      border-radius: 25px;
+    }
+  }
+
   @media screen and (max-width: 1440px) {
     width: 100%;
     padding: 0px 20px;
   }
+
   @include mobile_potrait {
     width: 100%;
   }
@@ -40,81 +117,136 @@
     display: flex;
     align-items: center;
     justify-content: center;
+
     @include mobile_potrait {
       margin-left: 1.8rem;
       height: auto;
     }
+
     @include mobile_landscape {
       margin-left: 0.5rem;
     }
+
     a {
       height: 100%;
       display: flex;
       align-items: center;
       justify-content: center;
       text-decoration: none;
+
       @include mobile_potrait {
         font-size: 2rem;
       }
+
       @include mobile_landscape {
         font-size: 2rem;
       }
+
       img {
         height: 4rem;
+        margin-left: 20px;
+
         @include mobile_potrait {
           height: 3rem;
         }
       }
-      .textLogo{
+
+      .textLogo {
         height: 32px;
+
         @include mobile_potrait {
           display: none;
         }
       }
     }
   }
+
   .btns {
     display: flex;
     align-items: center;
     justify-content: center;
+
+
     .connectBtn {
       border: none;
-      background-color: #7A00F533;
-      margin: 10px;
+      // background-color: #7A00F533;
+      background: linear-gradient(47.43deg, #0e024d 0%, #4d0243 57%, #442b00 100%);
+      margin-left: 10px;
+      margin-right: -30px;
       padding: 10px 20px;
-      color: #7A00F5;
+      border-radius: 50px;
+      width: 120px;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      font-size: 16px;
+      color: #1846E8 !important;
+      @include mobile_potrait {
+        font-size: 14px;
+        margin: 0px;
+        margin-right: 10px;
+      }
+
+      &:hover {
+        // opacity: 0.6;
+        color: #597dff !important;
+      }
+    }
+
+    ._connectBtn {
+      border: none;
+      background: linear-gradient(47.43deg, #0e024d 0%, #4d0243 57%, #442b00 100%);
+      margin-left: 10px;
+      padding: 10px 20px;
       border-radius: 50px;
       cursor: pointer;
       transition: all 0.3s ease;
-      font-size: 0.8vw;
+      font-size: 16px;
+      color: #1846E8 !important;
       @include mobile_potrait {
         font-size: 14px;
         margin: 0px;
         margin-right: 10px;
       }
       &:hover {
-        opacity: 0.6;
+        color: #597dff !important;
       }
     }
-    .select-gray{
+
+    .select-gray {
+      cursor: pointer;
       @include mobile_potrait {
         display: none;
       }
+      .css-1xub5kc-control, .css-zjhzo0-control{
+        border: none !important;
+        background: linear-gradient(47.43deg, #0e024d 0%, #4d0243 57%, #442b00 100%) !important;
+        padding: 6px 10px;
+      }
+
+      .css-1xub5kc-control div div , .css-zjhzo0-control div div {
+        color: #1846E8 !important;
+      }
+
+      .css-1xub5kc-control div .css-1okebmr-indicatorSeparator, .css-zjhzo0-control div .css-1okebmr-indicatorSeparator{
+        display: none;
+      }
     }
-    
-    a{
+
+    a {
       margin: 0;
-      height: 40px;
-      width: 40px;
+      height: 55px;
+      width: 55px;
       object-fit: cover;
       border-radius: 50%;
       overflow: hidden;
-      .avatar{
-        height: 40px;
-        width: 40px;
+
+      .avatar {
+        height: 55px;
+        width: 55px;
+        z-index: 5;
       }
     }
-   
+
   }
 
   .hamburger {
@@ -130,6 +262,7 @@
     z-index: 3;
     overflow: hidden;
     transform: scale(0.9);
+
     @include mobile_potrait {
       display: flex;
       width: 25px;
@@ -151,22 +284,28 @@
       transform-origin: left;
       transition: all 1s ease;
     }
+
     &.active {
       z-index: 1;
+
       span {
         &:first-child {
           width: 28px;
           transform: rotate(40deg);
+
           @include mobile_potrait {
             transform: rotate(35deg);
           }
         }
+
         &:nth-child(2) {
           opacity: 0;
         }
+
         &:last-child {
           width: 28px;
           transform: rotate(-40deg);
+
           @include mobile_potrait {
             transform: rotate(-35deg);
           }

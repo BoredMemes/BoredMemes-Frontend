@@ -1,0 +1,259 @@
+.answer {
+  white-space: pre-line;
+}
+
+.wrapper {
+  display: flex;
+  justify-content: center;
+  justify-content: center;
+  width: 100%;
+  padding: 100px 100px 0px 100px;
+}
+
+.wrapperInner {
+  width: 100%;
+  max-width: 1500px;
+  display: flex;
+  flex-flow: row nowrap;
+  justify-content: space-between;
+  align-items: flex-start;
+}
+
+.left {
+  max-width: 551px;
+  width: 30%;
+}
+
+.left h2 {
+  font-family: "Inter";
+  font-style: normal;
+  font-weight: 600;
+  font-size: 21px;
+  line-height: 160%;
+  background: linear-gradient(47.43deg, #2a01ff 0%, #ff1ee1 57%, #ffb332 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  text-fill-color: transparent;
+  width: max-content;
+}
+
+.left h3 {
+  font-family: "Inter";
+  font-style: normal;
+  font-weight: 700;
+  font-size: 84px;
+  line-height: 120%;
+  color: #ffffff;
+  max-width: 564px;
+  margin-top: 12px;
+}
+
+.left h3 span {
+  /* PixiaAi 3 */
+
+  background: linear-gradient(47.43deg, #2a01ff 0%, #ff1ee1 57%, #ffb332 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  text-fill-color: transparent;
+}
+
+.left p {
+  font-family: "Inter";
+  font-style: normal;
+  font-weight: 400;
+  font-size: 21px;
+  line-height: 160%;
+  color: #ededf5;
+  margin-top: 10px;
+}
+
+.left p:first-child {
+  margin-top: 16px;
+}
+
+.left .btnsCont {
+  margin-top: 32px;
+  margin-bottom: 24px;
+}
+
+.left .twitterTelegram {
+  display: flex;
+  flex-flow: row nowrap;
+  justify-content: space-between;
+  align-items: center;
+  grid-gap: 8px;
+  width: max-content;
+}
+
+.left .twitterTelegram p {
+  margin: 0px;
+}
+
+.left .twitterTelegram .separator {
+  display: inline-block;
+  width: 11.22px;
+  height: 3px;
+  transform: rotate(0.7deg);
+  background-image: linear-gradient(
+    85.29deg,
+    #6609f7 0%,
+    #f400f5 50.52%,
+    #ff7a75 100%
+  );
+}
+
+.right {
+  max-width: 1000px;
+  width: 60%;
+}
+
+.right .questionCont {
+  padding: 52px 60px;
+  position: relative;
+}
+
+.right .questionCont .question {
+  font-family: "Inter";
+  font-style: normal;
+  font-weight: 700;
+  font-size: 32px;
+  line-height: 120%;
+  color: #ffffff;
+  display: flex;
+  flex-flow: row nowrap;
+  justify-content: space-between;
+  align-items: center;
+  grid-gap: 50px;
+}
+
+.right .questionCont .answer {
+  margin-top: 24px;
+  font-family: "Inter";
+  font-style: normal;
+  font-weight: 400;
+  font-size: 25px;
+  line-height: 155%;
+  color: #ffffff;
+}
+
+.controllerIcon {
+  right: 0px;
+  top: 0px;
+  cursor: pointer;
+}
+
+/* separator */
+.separator {
+  height: 1px;
+  width: 100%;
+  background: linear-gradient(
+    85.29deg,
+    #6609f7 0%,
+    #f400f5 50.52%,
+    #ff7a75 100%
+  );
+}
+
+.dotsFrame {
+  margin-top: 50px;
+  padding-right: 50px;
+}
+
+.dotsFrame img {
+  width: 100%;
+  height: auto;
+}
+
+@media screen and (max-width: 1536px) {
+  .right .questionCont {
+    padding: 32px 20px;
+    position: relative;
+  }
+
+  .right .questionCont .question {
+    font-size: 24px;
+  }
+
+  .right .questionCont .answer {
+    font-size: 18px;
+  }
+  .left h2 {
+    font-size: 18px;
+  }
+
+  .left h3 {
+    font-size: 58px;
+  }
+
+  .left p {
+    font-size: 18px;
+  }
+}
+
+@media screen and (max-width: 1280px) {
+  .wrapper {
+    padding: 200px 50px 0px 50px;
+  }
+
+  .wrapperInner {
+    max-width: 900px;
+  }
+  .right .questionCont .question {
+    font-size: 18px;
+  }
+
+  .right .questionCont .answer {
+    font-size: 16px;
+  }
+
+  .left h2 {
+    font-size: 16px;
+  }
+
+  .left h3 {
+    font-size: 48px;
+    max-width: none;
+  }
+
+  .left p {
+    font-size: 16px;
+  }
+}
+
+@media screen and (max-width: 768px) {
+  .wrapper {
+    padding: 150px 30px 0px 30px;
+  }
+  .wrapperInner {
+    flex-flow: column nowrap;
+  }
+
+  .left {
+    width: 100%;
+    max-width: none;
+    margin-bottom: 60px;
+  }
+
+  .right {
+    width: 100%;
+    max-width: none;
+  }
+
+  .right .questionCont {
+    padding: 16px 10px;
+  }
+
+  .left h3 {
+    font-size: 28px;
+  }
+
+  .controllerIcon img {
+    max-width: 32px;
+  }
+
+  .dotsFrame {
+    display: none;
+  }
+}

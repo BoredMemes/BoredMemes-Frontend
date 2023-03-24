@@ -13,6 +13,17 @@ export const setupNetwork = async () => {
     const chainId = parseInt(getCurrentNetwork(), 10);
     try {
       await provider.request({
+        method: "wallet_switchEthereumChain",
+        params: [
+          {
+            chainId: `0x${chainId.toString(16)}`,
+          },
+        ],
+      });
+      return true;
+    } catch (error) {
+      console.log(networks[chainId]);
+      await provider.request({
         method: "wallet_addEthereumChain",
         params: [
           {
@@ -28,17 +39,6 @@ export const setupNetwork = async () => {
           },
         ],
       });
-      return true;
-    } catch (error) {
-      await provider.request({
-        method: "wallet_switchEthereumChain",
-        params: [
-          {
-            chainId: `0x${chainId.toString(16)}`,
-          },
-        ],
-      });
-      return true;
     }
   } else {
     console.error(
