@@ -1580,7 +1580,8 @@ export const useStyles = makeStyles(theme => ({
   img_list: {
     maxWidth: 145, overflowX: 'scroll',
     '& img': {
-      margin: 2
+      margin: 2,
+      width: 50
     },
   },
   stake_card: {

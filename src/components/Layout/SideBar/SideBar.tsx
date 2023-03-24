@@ -137,7 +137,7 @@ export default function SideBar({ menuOpen, setMenuOpen }: MenuType) {
           {/* <li className={path.indexOf('create_art') >= 0 ? 'selected' : ''}>
             <div onClick={() => onChangeRoute("/create_art")}><img src="/assets/icons/create_icon.svg" alt="" /> Create Art</div>
           </li> */}
-          <li className={path.indexOf('community_feed') >= 0 || path.indexOf('personal_feed') >= 0 || path.indexOf('bookmarks') >= 0 ? 'selected' : ''}>
+          <li className={path === "" || path.indexOf('community_feed') >= 0 || path.indexOf('personal_feed') >= 0 || path.indexOf('bookmarks') >= 0 ? 'selected' : ''}>
             <div onClick={() => onChangeRoute("/community_feed")}><img src="/assets/icons/community_icon.svg" alt="" /> Explorer</div>
           </li>
           {/* <li className={path.indexOf('personal_feed') >= 0 ? 'selected' : ''}>
@@ -158,8 +158,8 @@ export default function SideBar({ menuOpen, setMenuOpen }: MenuType) {
               <li className={path === 'staking' ? 'selected' : ''}>
                 <div onClick={() => onChangeRoute("/staking")}><img src="/assets/icons/farms_icon.svg" alt="" /> Farms</div>
               </li>
-              <li className={path === '' ? 'selected' : ''}>
-                <div onClick={() => onChangeRoute("")}><img src="/assets/icons/manage_hub_icon.svg" alt="" /> Manage Hub</div>
+              <li className={path === 'hub' ? 'selected' : ''}>
+                <div onClick={() => onChangeRoute("/hub")}><img src="/assets/icons/manage_hub_icon.svg" alt="" /> Manage Hub</div>
               </li>
             </ul>
           </>

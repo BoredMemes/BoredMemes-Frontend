@@ -5,6 +5,7 @@ import { useContext, useEffect, useState } from 'react';
 interface PropsType {
   feedMode?: number;
   isLoading?: boolean;
+  profile?: any;
   setLoading?: any;
   filter?: string;
   setFilter?: any;
@@ -295,7 +296,7 @@ const useStyles = makeStyles(theme => ({
 
 }));
 
-const Filter = ({ feedMode, isLoading, setLoading, filter, setFilter, setPrivateType, setSearchStr, selectable, setSelectable, emoticonId, setEmoticonId, fetchItems }: PropsType) => {
+const Filter = ({ feedMode, isLoading, setLoading, profile, filter, setFilter, setPrivateType, setSearchStr, selectable, setSelectable, emoticonId, setEmoticonId, fetchItems }: PropsType) => {
   const classes = useStyles();
   const { loginStatus, account } = useContext(Web3WalletContext)
   const [searchTxt, setSearchTxt] = useState("");
@@ -351,7 +352,7 @@ const Filter = ({ feedMode, isLoading, setLoading, filter, setFilter, setPrivate
           </span>
           <div className="smalBtns">
             {
-              feedMode === 0 && <button onClick={() => onShowImages()} className={`imgBtn`}>
+              feedMode === 0 && loginStatus && account && profile?.address.toLowerCase() === account?.toLowerCase() && <button onClick={() => onShowImages()} className={`imgBtn`}>
                 {stateShowImage === 0 ?
                   <img src="/assets/icons/show_all_icon.svg" alt="" /> :
                   stateShowImage === 1 ?

@@ -54,12 +54,12 @@ export async function getDistributorInfo(chainId) {
       _contract.getTotalEthForAutoLPandBuyback(),
       _contract.getTotalEthSentToWallets()
     ]);
-    const totalEvenue = 
-      parseFloat(ethers.utils.formatEther(totalForLP[0])) + 
-      parseFloat(ethers.utils.formatEther(totalForLP[1])) + 
-      parseFloat(ethers.utils.formatEther(totalETH[0])) + 
-      parseFloat(ethers.utils.formatEther(totalETH[1])) + 
-      parseFloat(ethers.utils.formatEther(totalETH[2])) + 
+    const totalEvenue =
+      parseFloat(ethers.utils.formatEther(totalForLP[0])) +
+      parseFloat(ethers.utils.formatEther(totalForLP[1])) +
+      parseFloat(ethers.utils.formatEther(totalETH[0])) +
+      parseFloat(ethers.utils.formatEther(totalETH[1])) +
+      parseFloat(ethers.utils.formatEther(totalETH[2])) +
       parseFloat(ethers.utils.formatEther(totalETH[3]))
     return [
       parseFloat(ethers.utils.formatEther(LPBurn[0])),
@@ -352,16 +352,16 @@ export async function createNewCollection(plan, colId, chainId, provider) {
 
 // ERC20 Token Management
 
-export async function getDecimal(tokenAddress, chainId){
-  try{
+export async function getDecimal(tokenAddress, chainId) {
+  try {
     const jsonProvider = new ethers.providers.JsonRpcProvider(networks[chainId].NODES);
     const tokenContract = getERC20ContractObj(tokenAddress, jsonProvider);
-    if (tokenContract){
+    if (tokenContract) {
       const decimals = await tokenContract.decimals();
       return decimals;
     }
-    return 
-  }catch(e){
+    return
+  } catch (e) {
     console.log(e);
     return 0;
   }
@@ -371,7 +371,7 @@ export async function getDecimal(tokenAddress, chainId){
 
 export async function getNFTInfo(nftAddress, chainId) {
   const jsonProvider = new ethers.providers.JsonRpcProvider(networks[chainId].NODES);
-  const nftContract = getNFTContract( nftAddress, jsonProvider);
+  const nftContract = getNFTContract(nftAddress, jsonProvider);
   try {
     const packPrice = await nftContract._PRICE();
     return ethers.utils.formatEther(packPrice);
@@ -383,10 +383,10 @@ export async function getNFTInfo(nftAddress, chainId) {
 }
 
 export async function onMintArt(nftAddress, ids, provider) {
-  const nftContract = getNFTContract( nftAddress, provider);
+  const nftContract = getNFTContract(nftAddress, provider);
   const packPrice = await nftContract._PRICE();
   try {
-    const tx = await nftContract.mintPack(ids, { value: packPrice * ids.length});
+    const tx = await nftContract.mintPack(ids, { value: packPrice * ids.length });
     await tx.wait(1);
     return true;
   } catch (e) {
@@ -436,16 +436,43 @@ export async function approveTokenForPool(poolAddress, tokenAddress, provider) {
   }
 }
 
-export async function stakeBoostNFT(isStake, poolAddress, stakingId, nftTokenIds, provider) {
+export async function isNFTApprovedForPool(poolAddress, collection, account, provider) {
+  const poolContract = getContract(poolAddress, provider);
+  const nftToken = getNFTContract(collection, provider);
+
+  return await nftToken.isApprovedForAll(account, poolContract.address);
+}
+
+export async function setNFTApprovalForPool(poolAddress, collection, approved, provider) {
+  const poolContract = getContract(poolAddress, provider);
+  const nftToken = getNFTContract(collection, provider);
   try {
-    const poolContract = getContract(poolAddress, provider);
-    console.log(isStake, poolAddress, stakingId, nftTokenIds)
-    const tx = isStake ? await poolContract.stakeBoostNft(stakingId, nftTokenIds) :
-      await poolContract.unstakeBoostNft(stakingId, nftTokenIds);
-    const receipt = await tx.wait(1);
-    if (receipt.confirmations) {
-      return true;
+    const tx = await nftToken.setApprovalForAll(
+      poolContract.address,
+      approved
+    );
+    await tx.wait(1);
+    return true;
+  } catch (e) {
+    console.log(e);
+  }
+  return false;
+}
+
+export async function stakeBoostNFT(isStake, poolAddress, stakingId, collection, nftTokenIds, account, provider) {
+  try {
+    let isApproved = await isNFTApprovedForPool(poolAddress, collection, account, provider);
+    if (!isApproved) isApproved = await setNFTApprovalForPool(poolAddress, collection, true, provider);
+    if (isApproved) {
+      const poolContract = getContract(poolAddress, provider);
+      const tx = isStake ? await poolContract.stakeBoostNft(stakingId, nftTokenIds) :
+        await poolContract.unstakeBoostNft(stakingId, nftTokenIds);
+      const receipt = await tx.wait(1);
+      if (receipt.confirmations) {
+        return true;
+      }
     }
+
     return false;
   } catch (e) {
     console.log(e);
@@ -606,7 +633,6 @@ export async function getPoolInfo(pool, account, chainId) {
       poolContract.emission()
     ]);
     const stakingInfos = [];
-    let nftTokenIds = [];
     let mStakedAmount = 0;
     let myReward = 0;
     for (const stakingId of stakingIds) {
@@ -621,16 +647,11 @@ export async function getPoolInfo(pool, account, chainId) {
       stakingInfo.rewardAmount = await poolContract['pendingReward(bytes32)'](stakingId);
       stakingInfo.rewardAmount = parseFloat(ethers.utils.formatUnits(stakingInfo.rewardAmount.toString(), _rDecimals));;
       myReward += stakingInfo.rewardAmount;
-      if (stakingInfo.nftIds.length > 0)nftTokenIds = [...nftTokenIds, ...stakingInfo.nftIds];
       stakingInfos.push(stakingInfo);
     }
-    if (nftTokenIds.length > 0) nftTokenIds = nftTokenIds.filter((elem, index, self) => {
-      return index === self.indexOf(elem);
-    });
     const emission = parseFloat(ethers.utils.formatUnits(_emission, _rDecimals));
-    pool.tokenIds = [];
+    
     pool.tStakedSupply = parseFloat(ethers.utils.formatUnits(tStakedSupply, _sDecimals));
-    //pool.tBoostedSupply = parseFloat(ethers.utils.formatUnits(tBoostedSupply, _sDecimals));
     pool.rewardSupply = (emission * (Date.now() / 1000 - startAt));
     pool.nftMultiplier = nftMultiplier / 100;
     pool.maxLockTime = maxLockTime.toNumber() / 24 / 3600;
@@ -659,7 +680,7 @@ export async function getPixiaPoolInfo(pool, account, chainId) {
     const poolContract = getContract(pool.address, jsonProvider);
     const stakingIds = await poolContract.viewUserInfo(account);
     let stakingInfo: any;
-    if (stakingIds && stakingIds.length > 0){
+    if (stakingIds && stakingIds.length > 0) {
       const lastStakingId = stakingIds[stakingIds.length - 1];
       const _stakingInfo = await poolContract.viewStakingInfo(lastStakingId);
       stakingInfo = { ..._stakingInfo }

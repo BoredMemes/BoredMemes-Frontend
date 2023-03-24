@@ -22,7 +22,7 @@ const Miner = () => {
   const [items, setItems] = useState([]);
   const [pools, setPools] = useState([]);
   const [selectedPool, setSelectedPool] = useState(null);
-  const [switchStake, setSwitchStake] = useState(0);
+  const [switchStake, setSwitchStake] = useState(1);
   const [selectedStakingInfo, setSelectedStakingInfo] = useState(undefined);
   const [selectedBoostNFTs, setSelectedBoostNFTs] = useState([]);
   const [wooAddress, setWooAddress] = useState("");
@@ -134,7 +134,7 @@ const Miner = () => {
 
   const fetchItems = async () => {
     let paramsData = {
-      owner: account.toLowerCase()
+      itemOwner: account.toLowerCase()
     }
     axios.get("/api/item", { params: paramsData })
       .then((res) => {
@@ -151,10 +151,9 @@ const Miner = () => {
   useEffect(() => {
     if (loginStatus && account && items.length > 0 && pools.length > 0) {
       for (const pool of pools) {
-        if (pool.tokenIds && pool.tokenIds.length >= 0) {
-          pool.stakedItems = pool.tokenIds.length === 0 ? [] : items.filter((item) => pool.tokenIds.include(item.tokenId))
-          pool.unstakedItems = pool.tokenIds.length === 0 ? items : items.filter((item) => !pool.tokenIds.include(item.tokenId))
-        }
+          pool.stakedItems = items.filter((item) => item.owner.toLowerCase() === pool.address.toLowerCase() && item.itemCollection.toLowerCase() === pool.nft_address.toLowerCase())
+          pool.unstakedItems = items.filter((item) => item.owner.toLowerCase() !== pool.address.toLowerCase() && item.itemCollection.toLowerCase() === pool.nft_address.toLowerCase())
+          console.log(pool.stakedItems, pool.unstakedItems);
       }
     }
   }, [loginStatus, account, items, pools])
@@ -232,14 +231,19 @@ const Miner = () => {
 
   const onStakeBoostNFT = async (isStake, stakingId) => {
     try {
+      if (!selectedStakingInfo) return toast.error("You need to select 1 lock.")
       if (!selectedBoostNFTs || selectedBoostNFTs.length <= 0) return toast.error("You need to select 1 nft item at least!");
       setProcessingModal(true);
-      const isBoosted = await stakeBoostNFT(isStake, selectedPool?.address, stakingId, selectedBoostNFTs, library.getSigner());
+      const isBoosted = await stakeBoostNFT(isStake, selectedPool?.address, stakingId, selectedPool?.nft_address, selectedBoostNFTs, account, library.getSigner());
       if (isBoosted) {
         toast.success("Boosted Successfully");
-        setSelectedBoostNFTs([]);
         onSyncPool(selectedPool);
         setSuccessTrans(true);
+        setWithdrawModal(0);
+        setBoostModal(false);
+        setSelectedPool(undefined);
+        setSelectedStakingInfo(undefined);
+        setSelectedBoostNFTs([]);
       } else {
         toast.error("NFT Boosting is failed")
         setProcessingModal(false)
@@ -611,10 +615,10 @@ const Miner = () => {
                       />
                     </h5>
                     <div>
-                      <span>{pool.tokenIds ? pool.tokenIds.length : 0}</span>
+                      <span>{pool?.stakedItems ? pool.stakedItems.length : 0}</span>
                       <div className={classes.img_list}>
                         {
-                          pool?.tokenIds && pool?.stakedItems && pool?.stakedItems.map((item, idx) => {
+                          pool?.stakedItems && pool?.stakedItems.map((item, idx) => {
                             return (
                               <img src={item.assetUrl} />
                             )
@@ -1234,7 +1238,7 @@ const Miner = () => {
               <span className='topTitle'>
                 <img src="/assets/imgs/farm-stake-avatar1.png" alt="" />
                 <div>
-                  <h4>Withdraw from ${selectedPool?.r_symbol} in Farm</h4>
+                  <h4>Boost ${selectedPool?.s_symbol} with NFTs</h4>
                   <span style={{ color: '#aaa', fontSize: 14 }}>
                     NFT Balance: {switchStake === 0 ?
                       (selectedPool?.stakedItems ? selectedPool?.stakedItems.length : 0) :
@@ -1243,10 +1247,18 @@ const Miner = () => {
                   </span>
                 </div>
                 <div className="customSwitchText">
-                  <div onClick={() => { setSelectedBoostNFTs([]); setSwitchStake(1)}} className={`${switchStake === 1 && 'actived'}`}>
+                  <div onClick={() => { 
+                      setSelectedStakingInfo(undefined);
+                      setSelectedBoostNFTs([]); 
+                      setSwitchStake(1);
+                  }} className={`${switchStake === 1 && 'actived'}`}>
                     Stake
                   </div>
-                  <div onClick={() => { setSelectedBoostNFTs([]); setSwitchStake(0)}} className={`${switchStake === 0 && 'deactived'}`}>
+                  <div onClick={() => { 
+                    setSelectedStakingInfo(undefined);
+                    setSelectedBoostNFTs([]); 
+                    setSwitchStake(0) 
+                  }} className={`${switchStake === 0 && 'deactived'}`}>
                     Unstake
                   </div>
                 </div>

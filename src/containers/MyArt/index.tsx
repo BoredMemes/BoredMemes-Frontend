@@ -109,7 +109,7 @@ const MyArt = ({ feedMode }: PropsType) => {
       searchTxt: searchStr,
       emoticonId: emoticonId,
       progress: filter === "nft" ? undefined : 0,
-      privateType: filter === "nft" ? undefined : feedMode === 0 ? privateType : 1,
+      privateType: filter === "nft" ? undefined : profile?.address.toLowerCase() === account?.toLowerCase() ? privateType : 1,
       filter: filter,
       itemCollection: filter === "nft" && selectedCollection && isDetail ? selectedCollection.address : undefined,
       collectionId: filter !== "nft" && selectedCollection && isDetail ? selectedCollection.id : undefined,
@@ -632,6 +632,7 @@ const MyArt = ({ feedMode }: PropsType) => {
           feedMode={feedMode}
           isLoading={isLoading}
           setLoading={setLoading}
+          profile={profile}
           filter={filter}
           setFilter={setFilter}
           setPrivateType={setPrivateType}
