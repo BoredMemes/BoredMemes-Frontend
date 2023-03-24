@@ -156,10 +156,12 @@ const Hub = () => {
                     </div>
                     <div className='right-card'>
                       <span>
-                        0.005 ETH
+                        {
+                          moreHours * 0.005
+                        } ETH
                       </span>
                       <span>
-                        ≈ {(ethPrice * 0.005).toLocaleString(undefined, { maximumFractionDigits: 2 })} USD
+                        ≈ {(moreHours * ethPrice * 0.005).toLocaleString(undefined, { maximumFractionDigits: 2 })} USD
                       </span>
                     </div>
                   </div>
