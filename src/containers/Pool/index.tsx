@@ -463,7 +463,7 @@ const Miner = () => {
           s_price: sPrice,
           s_image: sImage,
           r_address: rewardToken.toLowerCase(),
-          r_symbol: sSymbol,
+          r_symbol: rSymbol,
           r_decimal: rDecimal,
           r_price: rPrice,
           r_image: sImage,
