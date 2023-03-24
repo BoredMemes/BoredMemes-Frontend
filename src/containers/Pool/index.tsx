@@ -380,7 +380,6 @@ const Miner = () => {
     }
 
     try {
-      setProcessingModal(true)
       const startTime = Math.floor(Date.now() / 1000) + 3000;
       const endTime = startTime + 10 * 365 * 24 * 60 * 60; //startTime + 10 years
       //Keep above startTime and endTime, these 2 values are not got from frontend.
@@ -408,9 +407,14 @@ const Miner = () => {
         [stakingToken, rewardToken, boostingNft, dexRouter, commissionToken, treasury, admin])
       console.log(addresses);
       const _emission = emission + ""; //Emission 0.01 ether
-      const tokenAddresses = [stakingToken, rewardToken];
-      const url = `https://api.coingecko.com/api/v3/coins/markets?vs_currency=usd&ids=ethereum&contract_addresses=${tokenAddresses.join(",")}&order=market_cap_desc&per_page=100&page=1&sparkline=false`;
 
+      const sIdResult = await axios.get("https://api.coingecko.com/api/v3/coins/pixiaai/contract/" + stakingToken);
+      const sId = sIdResult.data.id;
+      const rIdResult = await axios.get("https://api.coingecko.com/api/v3/coins/pixiaai/contract/" + rewardToken);
+      const rId = rIdResult.data.id;
+      const tokenAddresses = [stakingToken, rewardToken];
+      const ids=[sId, rId];
+      const url = `https://api.coingecko.com/api/v3/coins/markets?vs_currency=usd&ids=${ids.join(",")}&contract_addresses=${tokenAddresses.join(",")}&order=market_cap_desc&per_page=100&page=1&sparkline=false`;
       const tokenResponse = await axios.get(url);
       const tokenInfos = tokenResponse.data;
       if (tokenInfos.length <= 0) {
@@ -444,6 +448,8 @@ const Miner = () => {
         toast.error("Contract does not exist");
         return;
       }
+      
+      setProcessingModal(true)
       const poolAddress = await createNewPool(creationPlan, numbers, _early_period, ethers.utils.parseEther(_emission), addresses, chainId, library.getSigner())
       //const poolAddress = "0xb117330d04a008f5dec5e195124f70590eb9d737";
       console.log(poolAddress);
@@ -530,7 +536,7 @@ const Miner = () => {
                           </>}
                       /> */}
                     </div>
-                    <p> {`${pool?.apr ? pool?.apr.toLocaleString(undefined, { maximumFractionDigits: 2 }) : 0}%`}</p>
+                    <p> {`${pool?.apr ? pool?.apr.toLocaleString(undefined, { maximumFractionDigits: 2 }) : 0}/${pool?.myapr ? pool?.myapr.toLocaleString(undefined, { maximumFractionDigits: 2 }) : 0}%`}</p>
                   </div>
                   {/* <div>
                     <h5>Total NFT Staked</h5>

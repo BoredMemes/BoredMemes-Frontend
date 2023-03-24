@@ -659,6 +659,7 @@ export async function getPoolInfo(pool, account, chainId) {
     pool.myReward = myReward;
     pool.myStakedAmount = mStakedAmount;
     pool.apr = pool.tStakedSupply === 0 ? 0 : emission * (365 * 24 * 3600) * pool.r_price / (pool.tStakedSupply * pool.s_price);
+    pool.myapr = pool.mStakedAmount === 0 ? 0 : emission * (365 * 24 * 3600) * pool.r_price / (pool.mStakedAmount * pool.s_price);
     console.log(pool);
     //pool.apr = emission * seconds_per_year * reward token price / (total staked token amount * staking token price)
     return pool;
