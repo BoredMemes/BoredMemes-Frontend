@@ -204,12 +204,12 @@ export default function SideBar({ menuOpen, setMenuOpen }: MenuType) {
           <button onClick={() => onChangeTheme("light")} className={`${theme === 'light' ? "activeThemeBtn themeBtn" : "themeBtn"}`}><img src="/assets/icons/light_icon.svg" alt="" /> Light</button>
           <button onClick={() => onChangeTheme("dark")} className={`${theme === 'dark' ? "activeThemeBtn themeBtn" : "themeBtn"}`}><img src="/assets/icons/dark_icon.svg" alt="" /> Dark</button>
         </div> */}
-        <FormControlLabel
+        {/* <FormControlLabel
           control={<MaterialUISwitch sx={{ m: 1 }} defaultChecked={isChecked} />}
           label={theme === "dark" ? "Light Mode" : "Dark Mode"}
           onChange={(e) => onChangeHandler(e)}
           className={theme == 'dark' ? 'black' : 'white'}
-        />
+        /> */}
         <div className="socialLinks">
           <a href="https://twitter.com/pixiaai" className="twitter" target="_blank" rel="noreferrer">
             <i className="fab fa-twitter"></i>
