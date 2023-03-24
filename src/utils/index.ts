@@ -17,27 +17,27 @@ export const Networks = {
 export const CONTRACTS_BY_NETWORK = {
   [Networks.ETH_MainNet]: {
     PixiaAi: {
-      address: '0x4f8f53E17Ce053C5877eb17A2DAC2BA3d786b70c',
+      address: '0x67675239Fa58c84e75f947c14f566842Dccb69Ae',
       abi: PixiaAiABI
     },
     PixiaNFT: {
-      address: '0x0a871ace85e1B3fbAe54B742BCA9624fB9250eD5',
+      address: '0x4F195071AC30Bfb02Ec516a8848ae46999a56cA6',
       abi: PixiaNFTABI,
     },
     PixiaNFTFactory: {
-      address: '0x75a00d8b1Aa32B04E33E6FDDBa65010CA95a58a9',
+      address: '0x95DB74Ed1170845d08DDCbD10DD386dBC769d34A',
       abi: PixiaNFTFactoryABI
     },
     PixiaAiPool: {
-      address: '',
+      address: '0xa69Ad7f1Aab326026D7cC06679E7D3CF92De7F1b',
       abi: PixiaAiPoolABI
     },
     PixiaAiPoolFactory: {
-      address: '',
+      address: '0xB8050b78A589c91E4de7CA79B5bf0fC21a673f5A',
       abi: PixiaAiPoolFactoryABI
     },
     PixiaAiDistributor: {
-      address: '',
+      address: '0xBB0364A5E9754f676C93731301C25858A5FCCAbD',
       abi: PixiaAiDistributorABI
     }
   },
