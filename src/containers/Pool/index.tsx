@@ -341,7 +341,7 @@ const Miner = () => {
     try {
       if (selectedPool) {
         setProcessingModal(true)
-        const isAdded = await addReward(selectedPool.address, selectedPool.r_address, amountReward, library.getSigner());
+        const isAdded = await addReward(selectedPool.address, selectedPool.r_address, account, amountReward, library.getSigner());
         if (isAdded) {
           toast.success("Added The Reward Successfully");
           setSuccessTrans(true);

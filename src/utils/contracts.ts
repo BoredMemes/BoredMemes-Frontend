@@ -579,16 +579,21 @@ export async function unlockToken(poolAddress, stakingId, newLockTime, isWithdra
   }
 }
 
-export async function addReward(poolAddress, r_address, amount, provider) {
+export async function addReward(poolAddress, r_address, account, amount, provider) {
   try {
     const poolContract = getContract(poolAddress, provider);
     const rTokenContract = getERC20ContractObj(r_address, provider);
     const _rDecimals = await rTokenContract.decimals();
-    const tx = await poolContract.addReward(ethers.utils.parseUnits(amount.toString(), _rDecimals));
-    const receipt = await tx.wait(1);
-    if (receipt.confirmations) {
-      return true;
+    let isApproved = await isTokenApprovedForPool(poolAddress, r_address, account, amount, provider);
+    if (!isApproved) isApproved = await approveTokenForPool(poolAddress, r_address, provider);
+    if (isApproved) {
+      const tx = await poolContract.addReward(ethers.utils.parseUnits(amount.toString(), _rDecimals));
+      const receipt = await tx.wait(1);
+      if (receipt.confirmations) {
+        return true;
+      }
     }
+    
     return false;
   } catch (e) {
     console.log(e);
