@@ -448,7 +448,7 @@ const Miner = () => {
       }
 
       setProcessingModal(true)
-      const poolAddress = await createNewPool(creationPlan, numbers, _early_period, ethers.utils.parseEther(_emission), addresses, chainId, library.getSigner())
+      const poolAddress = await createNewPool(creationPlan, numbers, _early_period, ethers.utils.parseUnits(_emission, rDecimal), addresses, chainId, library.getSigner())
       //const poolAddress = "0xb117330d04a008f5dec5e195124f70590eb9d737";
       console.log(poolAddress);
       if (poolAddress) {

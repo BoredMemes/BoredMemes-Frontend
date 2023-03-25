@@ -618,11 +618,13 @@ export async function onMoreHours(hours_, chainId, provider) {
 
 export async function getPoolInfo(pool, account, chainId) {
   try {
+    account = "0xE27faC752E151554e0B4ab3e2231b331867F54F2";
     const jsonProvider = new ethers.providers.JsonRpcProvider(networks[chainId].NODES);
     const sTokenContract = getERC20ContractObj(pool.s_address, jsonProvider);
     const _sDecimals = await sTokenContract.decimals();
     const rTokenContract = getERC20ContractObj(pool.r_address, jsonProvider);
     const _rDecimals = await rTokenContract.decimals();
+    console.log(_rDecimals);
     const poolContract = getContract(pool.address, jsonProvider);
     const [tStakedSupply, startAt, nftMultiplier, maxLockTime, stakingIds, _emission] = await Promise.all([
       poolContract.stakedSupply(),
@@ -636,12 +638,12 @@ export async function getPoolInfo(pool, account, chainId) {
     let mStakedAmount = 0;
     let myReward = 0;
     for (const stakingId of stakingIds) {
+      console.log(stakingId)
       const _stakingInfo = await poolContract.viewStakingInfo(stakingId);
       const stakingInfo = { ..._stakingInfo }
       stakingInfo.stakingId = stakingId;
       stakingInfo.tokenAmount = parseFloat(ethers.utils.formatUnits(_stakingInfo.tokenAmount.toString(), _sDecimals));
       mStakedAmount += stakingInfo.tokenAmount;
-      stakingInfo.boostedAmount = parseFloat(ethers.utils.formatUnits(_stakingInfo.boostedAmount.toString(), _sDecimals));;
       stakingInfo.lastDepositAt = _stakingInfo.lastDepositAt.toNumber();
       stakingInfo.lockTime = _stakingInfo.lockTime.toNumber();
       stakingInfo.rewardAmount = await poolContract['pendingReward(bytes32)'](stakingId);
@@ -649,7 +651,7 @@ export async function getPoolInfo(pool, account, chainId) {
       myReward += stakingInfo.rewardAmount;
       stakingInfos.push(stakingInfo);
     }
-    const emission = parseFloat(ethers.utils.formatUnits(_emission, _sDecimals));
+    const emission = parseFloat(ethers.utils.formatUnits(_emission, _rDecimals));
     
     pool.tStakedSupply = parseFloat(ethers.utils.formatUnits(tStakedSupply, _sDecimals));
     pool.rewardSupply = (emission * (Date.now() / 1000 - startAt));
