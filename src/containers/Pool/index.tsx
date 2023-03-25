@@ -536,7 +536,7 @@ const Miner = () => {
                           </>}
                       /> */}
                     </div>
-                    <p> {`${pool?.apr ? pool?.apr.toLocaleString(undefined, { maximumFractionDigits: 2 }) : 0}/${pool?.myapr ? pool?.myapr.toLocaleString(undefined, { maximumFractionDigits: 2 }) : 0}%`}</p>
+                    <p> {`${pool?.myapr ? pool?.myapr.toLocaleString(undefined, { maximumFractionDigits: 2 }) : 0}/${pool?.apr ? pool?.apr.toLocaleString(undefined, { maximumFractionDigits: 2 }) : 0}%`}</p>
                   </div>
                   {/* <div>
                     <h5>Total NFT Staked</h5>

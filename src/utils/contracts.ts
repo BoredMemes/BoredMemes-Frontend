@@ -649,11 +649,11 @@ export async function getPoolInfo(pool, account, chainId) {
       myReward += stakingInfo.rewardAmount;
       stakingInfos.push(stakingInfo);
     }
-    const emission = parseFloat(ethers.utils.formatUnits(_emission, _rDecimals));
+    const emission = parseFloat(ethers.utils.formatUnits(_emission, _sDecimals));
     
     pool.tStakedSupply = parseFloat(ethers.utils.formatUnits(tStakedSupply, _sDecimals));
-    //pool.rewardSupply = (emission * (Date.now() / 1000 - startAt));
-    pool.rewardSupply = 0;
+    pool.rewardSupply = (emission * (Date.now() / 1000 - startAt));
+    //pool.rewardSupply = 0;
     pool.nftMultiplier = nftMultiplier / 100;
     pool.maxLockTime = maxLockTime.toNumber() / 24 / 3600;
     pool.stakingInfos = stakingInfos;
