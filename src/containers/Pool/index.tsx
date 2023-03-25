@@ -151,9 +151,9 @@ const Miner = () => {
   useEffect(() => {
     if (loginStatus && account && items.length > 0 && pools.length > 0) {
       for (const pool of pools) {
-          pool.stakedItems = items.filter((item) => item.owner.toLowerCase() === pool.address.toLowerCase() && item.itemCollection.toLowerCase() === pool.nft_address.toLowerCase())
-          pool.unstakedItems = items.filter((item) => item.owner.toLowerCase() !== pool.address.toLowerCase() && item.itemCollection.toLowerCase() === pool.nft_address.toLowerCase())
-          console.log(pool.stakedItems, pool.unstakedItems);
+        pool.stakedItems = items.filter((item) => item.owner.toLowerCase() === pool.address.toLowerCase() && item.itemCollection.toLowerCase() === pool.nft_address.toLowerCase())
+        pool.unstakedItems = items.filter((item) => item.owner.toLowerCase() !== pool.address.toLowerCase() && item.itemCollection.toLowerCase() === pool.nft_address.toLowerCase())
+        console.log(pool.stakedItems, pool.unstakedItems);
       }
     }
   }, [loginStatus, account, items, pools])
@@ -413,7 +413,7 @@ const Miner = () => {
       const rIdResult = await axios.get("https://api.coingecko.com/api/v3/coins/pixiaai/contract/" + rewardToken);
       const rId = rIdResult.data.id;
       const tokenAddresses = [stakingToken, rewardToken];
-      const ids=[sId, rId];
+      const ids = [sId, rId];
       const url = `https://api.coingecko.com/api/v3/coins/markets?vs_currency=usd&ids=${ids.join(",")}&contract_addresses=${tokenAddresses.join(",")}&order=market_cap_desc&per_page=100&page=1&sparkline=false`;
       const tokenResponse = await axios.get(url);
       const tokenInfos = tokenResponse.data;
@@ -422,21 +422,19 @@ const Miner = () => {
         return;
       }
       console.log(tokenInfos);
-      const sSymbol = tokenInfos[0].symbol.toUpperCase();
-      const sPrice = tokenInfos[0].current_price;
-      const sImage = tokenInfos[0].image;
+      let sSymbol = "", sPrice = 0, sImage = "";
       let rSymbol = "", rPrice = 0, rImage = "";
-      if (stakingToken.toLowerCase() !== rewardToken.toLowerCase() && tokenInfos.length === 2) {
-        rSymbol = tokenInfos[1].symbol.toUpperCase();
-        rPrice = tokenInfos[1].current_price;
-        rImage = tokenInfos[1].image;
-      } else if (stakingToken.toLowerCase() === rewardToken.toLowerCase() && tokenInfos.length === 1) {
-        rSymbol = sSymbol;
-        rPrice = sPrice;
-        rImage = sImage;
-      } else {
-        toast.error("Your Reward Token has not marketed on CoinGecko MarketCap");
-        return;
+      for (const tokenInfo of tokenInfos) {
+        if (tokenInfo.id === sId) {
+          sSymbol = tokenInfo.symbol.toUpperCase();
+          sImage = tokenInfo.image;
+          sPrice = tokenInfo.current_price;
+        }
+        if (tokenInfo.id === rId) {
+          rSymbol = tokenInfo.symbol.toUpperCase();
+          rImage = tokenInfo.image;
+          rPrice = tokenInfo.current_price;
+        }
       }
       const sDecimal = await getDecimal(stakingToken, chainId);
       const rDecimal = stakingToken.toLowerCase() === rewardToken.toLowerCase() ? sDecimal : await getDecimal(rewardToken, chainId);
@@ -448,7 +446,7 @@ const Miner = () => {
         toast.error("Contract does not exist");
         return;
       }
-      
+
       setProcessingModal(true)
       const poolAddress = await createNewPool(creationPlan, numbers, _early_period, ethers.utils.parseEther(_emission), addresses, chainId, library.getSigner())
       //const poolAddress = "0xb117330d04a008f5dec5e195124f70590eb9d737";
@@ -1253,17 +1251,17 @@ const Miner = () => {
                   </span>
                 </div>
                 <div className="customSwitchText">
-                  <div onClick={() => { 
-                      setSelectedStakingInfo(undefined);
-                      setSelectedBoostNFTs([]); 
-                      setSwitchStake(1);
+                  <div onClick={() => {
+                    setSelectedStakingInfo(undefined);
+                    setSelectedBoostNFTs([]);
+                    setSwitchStake(1);
                   }} className={`${switchStake === 1 && 'actived'}`}>
                     Stake
                   </div>
-                  <div onClick={() => { 
+                  <div onClick={() => {
                     setSelectedStakingInfo(undefined);
-                    setSelectedBoostNFTs([]); 
-                    setSwitchStake(0) 
+                    setSelectedBoostNFTs([]);
+                    setSwitchStake(0)
                   }} className={`${switchStake === 0 && 'deactived'}`}>
                     Unstake
                   </div>
