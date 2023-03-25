@@ -414,7 +414,8 @@ export async function isTokenApprovedForPool(poolAddress, tokenAddress, account,
   const poolContract = getContract(poolAddress, provider);
   const tokenContract = getERC20ContractObj(tokenAddress, provider);
   const allowance = await tokenContract.allowance(account, poolContract.address);
-  if (BigNumber.from(toWei(amount)).gt(allowance)) {
+  const decimals = await tokenContract.decimals()
+  if (amount > parseFloat(ethers.utils.formatUnits(allowance, decimals))) {
     return false;
   }
   return true;
@@ -623,13 +624,11 @@ export async function onMoreHours(hours_, chainId, provider) {
 
 export async function getPoolInfo(pool, account, chainId) {
   try {
-    account = "0xE27faC752E151554e0B4ab3e2231b331867F54F2";
     const jsonProvider = new ethers.providers.JsonRpcProvider(networks[chainId].NODES);
     const sTokenContract = getERC20ContractObj(pool.s_address, jsonProvider);
     const _sDecimals = await sTokenContract.decimals();
     const rTokenContract = getERC20ContractObj(pool.r_address, jsonProvider);
     const _rDecimals = await rTokenContract.decimals();
-    console.log(_rDecimals);
     const poolContract = getContract(pool.address, jsonProvider);
     const [tStakedSupply, startAt, nftMultiplier, maxLockTime, stakingIds, _emission] = await Promise.all([
       poolContract.stakedSupply(),
@@ -643,7 +642,6 @@ export async function getPoolInfo(pool, account, chainId) {
     let mStakedAmount = 0;
     let myReward = 0;
     for (const stakingId of stakingIds) {
-      console.log(stakingId)
       const _stakingInfo = await poolContract.viewStakingInfo(stakingId);
       const stakingInfo = { ..._stakingInfo }
       stakingInfo.stakingId = stakingId;

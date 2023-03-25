@@ -98,7 +98,6 @@ export default function SideBar({ menuOpen, setMenuOpen }: MenuType) {
   const getDistriInfo = async () => {
     if (loginStatus && account) {
       const _info = await getDistributorInfo(chainId);
-      console.log(typeof _info[3]);
       setDistributorInfo(_info);
     }
   }
