@@ -126,7 +126,12 @@ const CollectionLIst = ({ collections, onEditCollection, onDetailCollection }: P
         columnClassName={classes.gridColumn}
       >
         {collections?.map((collection, key) => (
-          <div className={`${classes.collectionCard} collectionCard`} key={key} onClick={() => onDetailCollection(collection)}>
+          <div 
+            className={`${classes.collectionCard} collectionCard`} 
+            key={key} 
+            style={collection?.background && collection?.background.length > 0 ? { backgroundImage: `url('${collection?.background}')` } : {}}
+            onClick={() => onDetailCollection(collection)}
+          >
             <p>{collection?.name.length > 18 ? collection?.name.substring(0,17) + "..." : collection?.name}</p>
           </div>
         ))}

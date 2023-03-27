@@ -580,7 +580,7 @@ const MyArt = ({ feedMode }: PropsType) => {
                     </div>
                   </div>
                 </div> :
-                <div className={classes.topdetail} style={myArt.length > 0 ? { backgroundImage: `url('${myArt[0]?.assetUrl}')` } : {}}>
+                <div className={classes.topdetail} style={selectedCollection?.background && selectedCollection?.background.length > 0 ? { backgroundImage: `url('${selectedCollection?.background}')` } : {}}>
                   <div className="avatar">
                     <img src={profile?.logo_url} alt="" />
                     <span>

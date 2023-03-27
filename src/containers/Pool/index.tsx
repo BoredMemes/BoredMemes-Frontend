@@ -408,34 +408,34 @@ const Miner = () => {
       console.log(addresses);
       const _emission = emission + ""; //Emission 0.01 ether
 
-      const sIdResult = await axios.get("https://api.coingecko.com/api/v3/coins/pixiaai/contract/" + stakingToken);
-      const sId = sIdResult.data.id;
-      const rIdResult = await axios.get("https://api.coingecko.com/api/v3/coins/pixiaai/contract/" + rewardToken);
-      const rId = rIdResult.data.id;
-      const tokenAddresses = [stakingToken, rewardToken];
-      const ids = [sId, rId];
-      const url = `https://api.coingecko.com/api/v3/coins/markets?vs_currency=usd&ids=${ids.join(",")}&contract_addresses=${tokenAddresses.join(",")}&order=market_cap_desc&per_page=100&page=1&sparkline=false`;
-      const tokenResponse = await axios.get(url);
-      const tokenInfos = tokenResponse.data;
-      if (tokenInfos.length <= 0) {
-        toast.error("Your Staking Token has not marketed on CoinGecKo MarketCap");
-        return;
-      }
-      console.log(tokenInfos);
+      // const sIdResult = await axios.get("https://api.coingecko.com/api/v3/coins/pixiaai/contract/" + stakingToken);
+      // const sId = sIdResult.data.id;
+      // const rIdResult = await axios.get("https://api.coingecko.com/api/v3/coins/pixiaai/contract/" + rewardToken);
+      // const rId = rIdResult.data.id;
+      // const tokenAddresses = [stakingToken, rewardToken];
+      // const ids = [sId, rId];
+      // const url = `https://api.coingecko.com/api/v3/coins/markets?vs_currency=usd&ids=${ids.join(",")}&contract_addresses=${tokenAddresses.join(",")}&order=market_cap_desc&per_page=100&page=1&sparkline=false`;
+      // const tokenResponse = await axios.get(url);
+      // const tokenInfos = tokenResponse.data;
+      // if (tokenInfos.length <= 0) {
+      //   toast.error("Your Staking Token has not marketed on CoinGecKo MarketCap");
+      //   return;
+      // }
+      // console.log(tokenInfos);
       let sSymbol = "", sPrice = 0, sImage = "";
       let rSymbol = "", rPrice = 0, rImage = "";
-      for (const tokenInfo of tokenInfos) {
-        if (tokenInfo.id === sId) {
-          sSymbol = tokenInfo.symbol.toUpperCase();
-          sImage = tokenInfo.image;
-          sPrice = tokenInfo.current_price;
-        }
-        if (tokenInfo.id === rId) {
-          rSymbol = tokenInfo.symbol.toUpperCase();
-          rImage = tokenInfo.image;
-          rPrice = tokenInfo.current_price;
-        }
-      }
+      // for (const tokenInfo of tokenInfos) {
+      //   if (tokenInfo.id === sId) {
+      //     sSymbol = tokenInfo.symbol.toUpperCase();
+      //     sImage = tokenInfo.image;
+      //     sPrice = tokenInfo.current_price;
+      //   }
+      //   if (tokenInfo.id === rId) {
+      //     rSymbol = tokenInfo.symbol.toUpperCase();
+      //     rImage = tokenInfo.image;
+      //     rPrice = tokenInfo.current_price;
+      //   }
+      // }
       const sDecimal = await getDecimal(stakingToken, chainId);
       const rDecimal = stakingToken.toLowerCase() === rewardToken.toLowerCase() ? sDecimal : await getDecimal(rewardToken, chainId);
       console.log(sSymbol, sDecimal, sPrice, sImage, rSymbol, rDecimal, rPrice, rImage);
