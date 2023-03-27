@@ -130,7 +130,7 @@ const Miner = () => {
     setProgress3(100);
   }
 
-  const [lockDays, setLockDays] = useState(0);
+  const [lockDays, setLockDays] = useState(30);
 
   const fetchItems = async () => {
     let paramsData = {
@@ -200,7 +200,7 @@ const Miner = () => {
     setSelectedPool(undefined);
     setSelectedStakingInfo(undefined);
     setAmount(0);
-    setLockDays(0);
+    setLockDays(30);
     fetchItems();
   }
 
@@ -780,7 +780,7 @@ const Miner = () => {
                 setStakeModal(false);
                 setSelectedPool(undefined);
                 setAmount(0);
-                setLockDays(0);
+                setLockDays(30);
               }} className="cancel-btn">Cancel</button>
               <button style={{
                 padding: '5px', background: 'linear-gradient(47.43deg, #2A01FF 0%, #FF1EE1 57%, #FFB332 100%)', width: '50%',
@@ -807,7 +807,7 @@ const Miner = () => {
               </span>
             </div>
             <div className={classes.modalContent}>
-              <h3 className='w-100 mt-2'>Enter ${selectedPool?.r_symbol} Amount to withdraw</h3>
+              <h3 className='w-100 mt-2'>Enter ${selectedPool?.r_symbol} Amount to add rewards</h3>
               <span className='input-span'>
                 <input type="number" onChange={e => onChangeReward(e)} placeholder={"Amount"} value={amountReward === 0 ? "Amount" : amountReward} />
                 <button onClick={onMaxReward}>Max</button>
