@@ -134,7 +134,7 @@ const MyArt = ({ feedMode }: PropsType) => {
   const fetchCollections = async () => {
     let paramsData = {
       owner: owner?.toLowerCase(),
-      //isPublic: true,
+      isPublic: owner?.toLowerCase() === account?.toLowerCase() ? undefined : true,
     }
     axios.get('/api/collection', { params: paramsData })
       .then((res) => {
