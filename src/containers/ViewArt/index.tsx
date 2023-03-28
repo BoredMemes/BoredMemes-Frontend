@@ -142,7 +142,7 @@ const ViewArt = () => {
     if (item?.description === "") return;
     let textarea = document.createElement("textarea");
     textarea.textContent = type === 0 ? item?.fullCommand : type === 1 ? item?.description :
-      user?.planId <= 0 && user?.additional_credits <= 0 ? item.watermark : item.thumbnail;
+    (!loginStatus || (loginStatus && user?.planId <= 0 && user?.additional_credits <= 0)) ? item.watermark : item.thumbnail;
     textarea.style.position = "fixed"; // Prevent scrolling to bottom of page in Microsoft Edge.
     document.body.appendChild(textarea);
     textarea.select();
@@ -159,7 +159,7 @@ const ViewArt = () => {
 
   const onDownload = () => {
     const load_toast_id = toast.loading("Downloading...");
-    const fileUrl = user?.planId <= 0 && user?.additional_credits <= 0 ? item.watermark : item.thumbnail;
+    const fileUrl = (!loginStatus || (loginStatus && user?.planId <= 0 && user?.additional_credits <= 0)) ? item.watermark : item.thumbnail;
     if (fileUrl !== "")
       fetch(fileUrl).then(response => {
         response.blob().then(blob => {

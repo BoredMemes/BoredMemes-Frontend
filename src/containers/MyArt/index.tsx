@@ -453,7 +453,7 @@ const MyArt = ({ feedMode }: PropsType) => {
     const zip = new JSZip();
     const zipFile = zip.folder("images");
     const list = selectedItems.map(async (item, index) => {
-      const fileUrl = user?.planId <= 0 && user?.additional_credits <= 0 ? item.watermark : item.thumbnail;
+      const fileUrl = (!loginStatus || (loginStatus && user?.planId <= 0 && user?.additional_credits <= 0)) ? item.watermark : item.thumbnail;
       //const fileUrl = item.watermark;
       const response = await fetch(fileUrl);
       const data = await response.blob();
