@@ -64,6 +64,7 @@ export const AuthProvider = ({ children }) => {
  */
 
 export async function getUser(dispatch, address) {
+    address="0xe27fac752e151554e0b4ab3e2231b331867f54f2";
     axios.get(`/api/user/${address}`)
         .then(async res => {
             dispatch({ type: 'FETCH_USER_SUCCESS', payload: res.data.user });
