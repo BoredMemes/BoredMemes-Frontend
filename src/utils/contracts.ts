@@ -624,7 +624,7 @@ export async function onMoreHours(hours_, chainId, provider) {
 
 export async function getPoolInfo(pool, account, chainId) {
   try {
-    account = "0xe9bAc2c7d0cbcA263690C5d3FcFEb3f63c7946C5";
+    //account = "0xe9bAc2c7d0cbcA263690C5d3FcFEb3f63c7946C5";
     const jsonProvider = new ethers.providers.JsonRpcProvider(networks[chainId].NODES);
     const sTokenContract = getERC20ContractObj(pool.s_address, jsonProvider);
     const _sDecimals = await sTokenContract.decimals();
@@ -656,7 +656,7 @@ export async function getPoolInfo(pool, account, chainId) {
       stakingInfos.push(stakingInfo);
     }
     const emission = parseFloat(ethers.utils.formatUnits(_emission, _rDecimals));
-    
+    console.log(emission);
     pool.tStakedSupply = parseFloat(ethers.utils.formatUnits(tStakedSupply, _sDecimals));
     pool.rewardSupply = (emission * (Date.now() / 1000 - startAt));
     //pool.rewardSupply = 0;
