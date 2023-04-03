@@ -78,7 +78,6 @@
     "react-toastify": "^8.0.0",
     "react-toggle": "^4.1.2",
     "react-virtualized": "^9.22.3",
-    "reactjs-social-login": "^2.6.1",
     "recharts": "^2.1.13",
     "redux": "^4.0.5",
     "redux-thunk": "^2.3.0",
