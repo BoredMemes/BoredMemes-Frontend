@@ -34,7 +34,8 @@ const EditProfile = () => {
   const [name, setName] = useState("");
   const [userName, setUserName] = useState("");
   const [description, setNFTDescription] = useState("");
-  const [twitter, setTwitter] = useState("");
+  const [twitter, setTwitter] = useState(undefined);
+  const [twitterId, setTwitterId] = useState("");
   const [telegram, setTelegram] = useState("");
   const [email, setEmail] = useState("");
 
@@ -120,6 +121,7 @@ const EditProfile = () => {
     formData.append("username", userName === "" ? user?.username : userName);
     formData.append("description", description);
     formData.append("twitter", twitter);
+    formData.append("twitterId", twitterId);
     formData.append("telegram", telegram);
     formData.append("email", email);
     formData.append("notifyIds", JSON.stringify(notifyIds));
@@ -297,9 +299,9 @@ const EditProfile = () => {
                 <p>Show the Pixia Ai community that your profile is authentic.</p>
               </Grid>
               <Grid item md={8} xs={12}>
-                <div id="telegramButton">
+                {/* <div id="telegramButton">
                   <TelegramLoginButton dataOnauth={handleTelegramResponse} botName="PixiaLoginBot" language="en" />
-                </div>
+                </div> */}
 
                 <TextInput
                   name="twitter"
@@ -312,26 +314,29 @@ const EditProfile = () => {
                   endIcon={
                     <LoginSocialTwitter
                       client_id={process.env.REACT_APP_TWITTER_CLIENT_ID || ""}
-                      client_secret={process.env.REACT_APP_TWITTER_CLIENT_SECRET || ""}
                       redirect_uri={window.location.href}
                       onLoginStart={onLoginStart}
                       onResolve={({ provider, data }) => {
                         console.log("On Resolve");
-                        console.log(data);
-                        setTwitter(data.name);
+                        if (data.name && data.id) {
+                          toast.success("Connected your twitter account sucessfully");
+                          setTwitter(data.name);
+                          setTwitterId(data.id);
+                        }
                       }}
                       onReject={(err: any) => {
                         console.log(err)
+                        toast.error(err);
                       }}
                     >
-                      <span style={{cursor:'pointer'}}><i className="fab fa-twitter"></i>&nbsp; Connect</span>
+                      <span style={{ cursor: 'pointer' }}><i className="fab fa-twitter"></i>&nbsp; Connect</span>
                     </LoginSocialTwitter>
                   }
                   label={<> <span></span> <span>Recommended</span></>}
                   placeholder={'Twitter'}
-                  value={user?.social_twitter_id}
+                  value={twitter || user?.social_twitter_name}
                   onChangeData={val => {
-                    
+
                   }}
                 />
                 <TextInput

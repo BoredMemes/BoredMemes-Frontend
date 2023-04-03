@@ -10,7 +10,6 @@ import React, { memo, useCallback, useEffect } from 'react';
 
 interface Props {
     client_id: string;
-    client_secret: string;
     className?: string;
     redirect_uri: string;
     state?: string;
@@ -41,7 +40,6 @@ const PREVENT_CORS_URL: string = 'https://cors.bridged.cc';
 
 export const LoginSocialTwitter = ({
     client_id,
-    client_secret,
     className = '',
     redirect_uri,
     children,
@@ -85,38 +83,75 @@ export const LoginSocialTwitter = ({
         [fields, onReject, onResolve],
     );
 
+    // const getAccessToken = useCallback(
+    //     async (code: string) => {
+    //         if (isOnlyGetCode) onResolve({ provider: 'twitter', data: { code } });
+    //         else {
+    //             var details = new URLSearchParams({
+    //                 code,
+    //                 redirect_uri,
+    //                 client_id,
+    //                 grant_type: `authorization_code`,
+    //                 code_verifier: 'challenge',
+    //             });
+
+    //             const requestOAuthURL = `${PREVENT_CORS_URL}/${TWITTER_API_URL}/2/oauth2/token`;
+    //             //const requestOAuthURL = `${TWITTER_API_URL}/2/oauth2/token`;
+    //             const data = await fetch(requestOAuthURL, {
+    //                 method: 'POST',
+    //                 body: details,
+    //                 headers: {
+    //                     'Content-Type': 'application/x-www-form-urlencoded',
+    //                     'Authorization': `Basic ${Buffer.from(`${client_id}:${client_secret}`).toString(
+    //                         "base64"
+    //                     )}`,
+    //                     'x-cors-grida-api-key': PASS_CORS_KEY,
+    //                 },
+    //                 timeout: 60000,
+    //             })
+    //                 .then(data => data.json())
+    //                 .catch(err => onReject(err));
+    //             console.log(data);
+    //             if (data.access_token) {
+    //                 if (isOnlyGetToken) onResolve({ provider: 'twitter', data });
+    //                 else getProfile(data);
+    //             }
+    //         }
+    //     },
+    //     [
+    //         onReject,
+    //         getProfile,
+    //         onResolve,
+    //         client_id,
+    //         redirect_uri,
+    //         isOnlyGetCode,
+    //         isOnlyGetToken,
+    //     ],
+    // );
+
     const getAccessToken = useCallback(
         async (code: string) => {
             if (isOnlyGetCode) onResolve({ provider: 'twitter', data: { code } });
             else {
                 var details = new URLSearchParams({
                     code,
-                    redirect_uri,
-                    client_id,
-                    grant_type: `authorization_code`,
-                    code_verifier: 'challenge',
+                    redirect_uri
                 });
-
-                const requestOAuthURL = `${PREVENT_CORS_URL}/${TWITTER_API_URL}/2/oauth2/token`;
-                //const requestOAuthURL = `${TWITTER_API_URL}/2/oauth2/token`;
-                const data = await fetch(requestOAuthURL, {
+                const requestOAuthURL = `${process.env.REACT_APP_API_URL}api/user/twitter_token`;
+                const res = await fetch(requestOAuthURL, {
                     method: 'POST',
                     body: details,
                     headers: {
-                        'Content-Type': 'application/x-www-form-urlencoded',
-                        'Authorization': `Basic ${Buffer.from(`${client_id}:${client_secret}`).toString(
-                            "base64"
-                        )}`,
-                        'x-cors-grida-api-key': PASS_CORS_KEY,
+                        'Content-Type': 'application/x-www-form-urlencoded'
                     },
-                    timeout: 60000,
                 })
                     .then(data => data.json())
                     .catch(err => onReject(err));
-                console.log(data);
-                if (data.access_token) {
-                    if (isOnlyGetToken) onResolve({ provider: 'twitter', data });
-                    else getProfile(data);
+                console.log(res);
+                if (res.message === "Success") {
+                    onResolve({ provider: 'twitter', data: res });
+                }else{
+                    onReject(res.message);
                 }
             }
         },
