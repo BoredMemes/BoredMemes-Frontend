@@ -15,8 +15,8 @@ import { ethers } from 'ethers';
 import Web3WalletContext from 'hooks/Web3ReactManager';
 import { useAuthState } from 'context/authContext';
 import TelegramLoginButton from 'react-telegram-login';
-import { LoginSocialTwitter } from 'reactjs-social-login';
 import { TwitterLoginButton } from 'react-social-login-buttons';
+import LoginSocialTwitter from './LoginSocialTwitter';
 
 const EditProfile = () => {
 
@@ -34,7 +34,8 @@ const EditProfile = () => {
   const [name, setName] = useState("");
   const [userName, setUserName] = useState("");
   const [description, setNFTDescription] = useState("");
-  const [twitter, setTwitter] = useState("");
+  const [twitter, setTwitter] = useState(undefined);
+  const [twitterId, setTwitterId] = useState("");
   const [telegram, setTelegram] = useState("");
   const [email, setEmail] = useState("");
 
@@ -120,6 +121,7 @@ const EditProfile = () => {
     formData.append("username", userName === "" ? user?.username : userName);
     formData.append("description", description);
     formData.append("twitter", twitter);
+    formData.append("twitterId", twitterId);
     formData.append("telegram", telegram);
     formData.append("email", email);
     formData.append("notifyIds", JSON.stringify(notifyIds));
@@ -178,7 +180,7 @@ const EditProfile = () => {
   };
 
   const onLoginStart = useCallback(() => {
-    alert('login start')
+    alert('Are you sure to connect your twitter account to platform?')
   }, [])
 
   return (
@@ -299,36 +301,42 @@ const EditProfile = () => {
               <Grid item md={8} xs={12}>
                 {/* <div id="telegramButton">
                   <TelegramLoginButton dataOnauth={handleTelegramResponse} botName="PixiaLoginBot" language="en" />
-                </div>
-                <LoginSocialTwitter
-                  isOnlyGetToken
-                  // client_id={process.env.REACT_APP_TWITTER_V2_APP_KEY || ''}
-                  client_id={"VHBVMHpCOFU2dVRmNi1RV3FpZXE6MTpjaQ"}
-                  redirect_uri={window.location.href}
-                  onLoginStart={onLoginStart}
-                  onResolve={({ provider, data }) => {
-                    console.log("On Resolve");
-                    console.log(data);
-                  }}
-                  onReject={(err: any) => {
-                    console.log(err)
-                  }}
-                >
-                  <TwitterLoginButton />
-                </LoginSocialTwitter> */}
+                </div> */}
+
                 <TextInput
                   name="twitter"
-                  disabled={!loginStatus}
+                  //disabled={!loginStatus}
+                  disabled={true}
                   className={classes.myInput}
                   error={formSubmit && !twitter}
                   wrapperClass={classes.formWrapper}
                   startIcon={"@"}
-                  endIcon={<i className="fab fa-twitter"></i>}
+                  endIcon={
+                    <LoginSocialTwitter
+                      client_id={process.env.REACT_APP_TWITTER_CLIENT_ID || ""}
+                      redirect_uri={window.location.href}
+                      onLoginStart={onLoginStart}
+                      onResolve={({ provider, data }) => {
+                        console.log("On Resolve");
+                        if (data.name && data.id) {
+                          toast.success("Connected your twitter account sucessfully");
+                          setTwitter(data.name);
+                          setTwitterId(data.id);
+                        }
+                      }}
+                      onReject={(err: any) => {
+                        console.log(err)
+                        toast.error(err);
+                      }}
+                    >
+                      <span style={{ cursor: 'pointer' }}><i className="fab fa-twitter"></i>&nbsp; Connect</span>
+                    </LoginSocialTwitter>
+                  }
                   label={<> <span></span> <span>Recommended</span></>}
                   placeholder={'Twitter'}
-                  value={user?.social_twitter_id}
+                  value={twitter || user?.social_twitter_name}
                   onChangeData={val => {
-                    setTwitter(val);
+
                   }}
                 />
                 <TextInput
@@ -516,3 +524,52 @@ const EditProfile = () => {
 };
 
 export default EditProfile;
+
+
+// {
+//   "token_type": "bearer",
+//   "expires_in": 7200,
+//   "access_token": "dVBCLWJ0MlFzeXNBaDIwdVJJYmFyaEp2V1N0NEVMYTdxeHlFc0ctVC1fMmFHOjE2ODA0OTQxNTk1ODM6MToxOmF0OjE",
+//   "scope": "users.read tweet.read",
+//   "created_at": "2022-06-22T13:31:20.000Z",
+//   "protected": false,
+//   "public_metrics": {
+//       "followers_count": 52,
+//       "following_count": 108,
+//       "tweet_count": 60,
+//       "listed_count": 0
+//   },
+//   "description": "Building DeFi. NFT marketplace, Dex with farming & liquidity pools, P2E Games and much more!\n\nProjects - https://t.co/iZksXMqOEY\n\nDiscord : God Crypto#9258",
+//   "profile_image_url": "https://pbs.twimg.com/profile_images/1588005641578196993/mb87DJJV_normal.jpg",
+//   "pinned_tweet_id": "1550277064892514304",
+//   "id": "1539601897929068546",
+//   "location": "The Blockchain",
+//   "name": "GodCrypto",
+//   "username": "GodCrypto0616",
+//   "entities": {
+//       "url": {
+//           "urls": [
+//               {
+//                   "start": 0,
+//                   "end": 23,
+//                   "url": "https://t.co/Qnx1QLC3w9",
+//                   "expanded_url": "https://t.me/godcryptodev",
+//                   "display_url": "t.me/godcryptodev"
+//               }
+//           ]
+//       },
+//       "description": {
+//           "urls": [
+//               {
+//                   "start": 105,
+//                   "end": 128,
+//                   "url": "https://t.co/iZksXMqOEY",
+//                   "expanded_url": "http://linktr.ee/godcrypto",
+//                   "display_url": "linktr.ee/godcrypto"
+//               }
+//           ]
+//       }
+//   },
+//   "verified": false,
+//   "url": "https://t.co/Qnx1QLC3w9"
+// }
