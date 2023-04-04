@@ -13,7 +13,7 @@ import axios from 'axios';
 import { arrayify, hashMessage } from 'ethers/lib/utils';
 import { ethers } from 'ethers';
 import Web3WalletContext from 'hooks/Web3ReactManager';
-import { useAuthState } from 'context/authContext';
+import { getUser, useAuthDispatch, useAuthState } from 'context/authContext';
 import TelegramLoginButton from 'react-telegram-login';
 import { TwitterLoginButton } from 'react-social-login-buttons';
 import LoginSocialTwitter from './LoginSocialTwitter';
@@ -22,6 +22,7 @@ const EditProfile = () => {
 
   const { loginStatus, account, library } = useContext(Web3WalletContext)
   const { user } = useAuthState();
+  const dispatch = useAuthDispatch();
   const classes = useStyles();
 
   const [telegramChecked, setTelegramChecked] = useState(false);
@@ -132,6 +133,7 @@ const EditProfile = () => {
     })
       .then((res) => {
         closeProfile();
+        getUser(dispatch, account);
         if (res.data.message === "success") {
           toast.success("Saved Successfully.")
           window.location.href = "/";
