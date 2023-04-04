@@ -40,6 +40,13 @@ const EditProfile = () => {
   const [telegram, setTelegram] = useState("");
   const [email, setEmail] = useState("");
 
+  useEffect(() => {
+    if (user){
+      setTwitter(user?.social_twitter_name)
+      setTwitterId(user?.social_twitter_id)
+    }
+  }, [user])
+
   const [signModal, setSignModal] = useState(false);
 
   function getExtension(filename) {
