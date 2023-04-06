@@ -58,10 +58,39 @@ export const LoginSocialTwitter = ({
         const code = popupWindowURL.searchParams.get('code');
         const state = popupWindowURL.searchParams.get('state');
         if (state && code) {
-            localStorage.setItem('twitter', `${code}`);
-            window.close();
+            if (!window.ethereum){
+                onSendCode(code);
+            }else{
+                localStorage.setItem('twitter', `${code}`);
+                window.close();
+            }
         }
     }, []);
+
+    const onSendCode = async (code) => {
+
+        var details = new URLSearchParams({
+            code,
+            redirect_uri : redirect_uri.split("?")[0]
+        });
+        const requestOAuthURL = `${process.env.REACT_APP_API_URL}api/user/twitter_token`;
+        const res = await fetch(requestOAuthURL, {
+            method: 'POST',
+            body: details,
+            headers: {
+                'Content-Type': 'application/x-www-form-urlencoded'
+            },
+        })
+            .then(data => data.json())
+            .catch(err => onReject(err));
+        console.log(res);
+        if (res.message === "Success") {
+            onResolve({ provider: 'twitter', data: res });
+        }else{
+            onReject(res.message);
+        }
+        //window.close();
+    }
 
     const getProfile = useCallback(
         (data: objectType) => {
