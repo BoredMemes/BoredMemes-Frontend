@@ -36,7 +36,7 @@ const EditProfile = () => {
   const [userName, setUserName] = useState("");
   const [description, setNFTDescription] = useState("");
   const [twitter, setTwitter] = useState(undefined);
-  const [twitterId, setTwitterId] = useState("");
+  const [twitterId, setTwitterId] = useState(undefined);
   const [telegram, setTelegram] = useState("");
   const [email, setEmail] = useState("");
 
@@ -53,7 +53,7 @@ const EditProfile = () => {
     var parts = filename.split('.');
     return parts[parts.length - 1];
   }
-
+console.log(twitterId, typeof twitterId)
   function getAssetType(filename) {
     var ext = getExtension(filename);
     switch (ext.toLowerCase()) {
@@ -192,6 +192,11 @@ const EditProfile = () => {
     alert('Are you sure to connect your twitter account to platform?')
   }, [])
 
+  const onDisconnectFromTwitter = () => {
+    setTwitter(undefined)
+    setTwitterId(undefined)
+  }
+
   return (
     <>
       <div className={classes.root}>
@@ -321,6 +326,7 @@ const EditProfile = () => {
                   wrapperClass={classes.formWrapper}
                   startIcon={"@"}
                   endIcon={
+                    !twitterId ? 
                     <LoginSocialTwitter
                       client_id={process.env.REACT_APP_TWITTER_CLIENT_ID || ""}
                       redirect_uri={window.location.href}
@@ -338,8 +344,8 @@ const EditProfile = () => {
                         toast.error(err);
                       }}
                     >
-                      <span style={{ cursor: 'pointer' }}><i className="fab fa-twitter"></i>&nbsp; Connect</span>
-                    </LoginSocialTwitter>
+                      {<span style={{ cursor: 'pointer' }}><i className="fab fa-twitter"></i>&nbsp; Connect</span>}
+                    </LoginSocialTwitter>:<span style={{ cursor: 'pointer' }} onClick={onDisconnectFromTwitter}><i className="fab fa-twitter"></i>&nbsp; Disconnect</span>
                   }
                   label={<> <span></span> <span>Recommended</span></>}
                   placeholder={'Twitter'}
