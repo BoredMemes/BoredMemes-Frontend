@@ -25,6 +25,8 @@ const EditProfile = () => {
   const dispatch = useAuthDispatch();
   const classes = useStyles();
 
+  const isMobile = (/Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent));
+
   const [telegramChecked, setTelegramChecked] = useState(false);
   const [twitterChecked, setTwitterChecked] = useState(false);
   const [emailChecked, setEmailChecked] = useState(false);
@@ -328,11 +330,14 @@ const EditProfile = () => {
                     !twitterId ?
                       <LoginSocialTwitter
                         client_id={process.env.REACT_APP_TWITTER_CLIENT_ID || ""}
-                        redirect_uri={window.location.href}
+                        redirect_uri={window.location.href.includes("?") ? window.location.href.split("?")[0] : window.location.href}
                         onLoginStart={onLoginStart}
+                        mobile={isMobile}
                         onResolve={({ provider, data }) => {
                           console.log("On Resolve");
                           if (data.name && data.id) {
+                            //if (isMobile) window.location.replace(window.location.href.includes("?") ? window.location.href.split("?")[0] : window.location.href)
+                            if (isMobile) window.history.replaceState(null, '', "/edit_profile")
                             toast.success("Connected your twitter account sucessfully");
                             setTwitter(data.name);
                             setTwitterId(data.id);
