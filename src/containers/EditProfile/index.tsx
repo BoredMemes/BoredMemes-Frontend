@@ -41,7 +41,7 @@ const EditProfile = () => {
   const [email, setEmail] = useState("");
 
   useEffect(() => {
-    if (user){
+    if (user) {
       setTwitter(user?.social_twitter_name)
       setTwitterId(user?.social_twitter_id)
     }
@@ -53,7 +53,6 @@ const EditProfile = () => {
     var parts = filename.split('.');
     return parts[parts.length - 1];
   }
-console.log(twitterId, typeof twitterId)
   function getAssetType(filename) {
     var ext = getExtension(filename);
     switch (ext.toLowerCase()) {
@@ -326,26 +325,26 @@ console.log(twitterId, typeof twitterId)
                   wrapperClass={classes.formWrapper}
                   startIcon={"@"}
                   endIcon={
-                    !twitterId ? 
-                    <LoginSocialTwitter
-                      client_id={process.env.REACT_APP_TWITTER_CLIENT_ID || ""}
-                      redirect_uri={window.location.href}
-                      onLoginStart={onLoginStart}
-                      onResolve={({ provider, data }) => {
-                        console.log("On Resolve");
-                        if (data.name && data.id) {
-                          toast.success("Connected your twitter account sucessfully");
-                          setTwitter(data.name);
-                          setTwitterId(data.id);
-                        }
-                      }}
-                      onReject={(err: any) => {
-                        console.log(err)
-                        toast.error(err);
-                      }}
-                    >
-                      {<span style={{ cursor: 'pointer' }}><i className="fab fa-twitter"></i>&nbsp; Connect</span>}
-                    </LoginSocialTwitter>:<span style={{ cursor: 'pointer' }} onClick={onDisconnectFromTwitter}><i className="fab fa-twitter"></i>&nbsp; Disconnect</span>
+                    !twitterId ?
+                      <LoginSocialTwitter
+                        client_id={process.env.REACT_APP_TWITTER_CLIENT_ID || ""}
+                        redirect_uri={window.location.href}
+                        onLoginStart={onLoginStart}
+                        onResolve={({ provider, data }) => {
+                          console.log("On Resolve");
+                          if (data.name && data.id) {
+                            toast.success("Connected your twitter account sucessfully");
+                            setTwitter(data.name);
+                            setTwitterId(data.id);
+                          }
+                        }}
+                        onReject={(err: any) => {
+                          console.log(err)
+                          toast.error(err);
+                        }}
+                      >
+                        {<span style={{ cursor: 'pointer' }}><i className="fab fa-twitter"></i>&nbsp; Connect</span>}
+                      </LoginSocialTwitter> : <span style={{ cursor: 'pointer' }} onClick={onDisconnectFromTwitter}><i className="fab fa-twitter"></i>&nbsp; Disconnect</span>
                   }
                   label={<> <span></span> <span>Recommended</span></>}
                   placeholder={'Twitter'}
