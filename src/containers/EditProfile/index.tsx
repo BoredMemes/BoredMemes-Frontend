@@ -14,11 +14,11 @@ import { arrayify, hashMessage } from 'ethers/lib/utils';
 import { ethers } from 'ethers';
 import Web3WalletContext from 'hooks/Web3ReactManager';
 import { getUser, useAuthDispatch, useAuthState } from 'context/authContext';
-//import TelegramLoginButton from 'react-telegram-login';
+import TelegramLoginButton from 'react-telegram-login';
 //import TelegramLoginButton from './LoginSocialTelegram';
 import { TwitterLoginButton } from 'react-social-login-buttons';
 import LoginSocialTwitter from './LoginSocialTwitter';
-import { TelegramLoginButton } from './LoginSocialTelegram';
+//import { TelegramLoginButton } from './LoginSocialTelegram';
 
 const EditProfile = () => {
 
@@ -111,7 +111,17 @@ const EditProfile = () => {
   }
 
   useEffect(() => {
-    postscribe('#root', '<script async src="https://telegram.org/js/telegram-widget.js?22" data-telegram-login="PixiaAiBot" data-size="large" data-onauth="onTelegramAuth(user)" data-request-access="write"></script>');
+    postscribe('#root', `<script 
+    async src="https://telegram.org/js/telegram-widget.js?22" 
+    data-telegram-login="PixiaLoginBot" 
+    data-size="large" 
+    data-onauth="onTelegramAuth(user)" 
+    data-request-access="write"></script>
+    <script type="text/javascript">
+      function onTelegramAuth(user) {
+        alert('Logged in as ' + user.first_name + ' ' + user.last_name + ' (' + user.id + (user.username ? ', @' + user.username : '') + ')');
+      }
+    </script>`);
   }, [])
 
   const updateProfile = async () => {
@@ -318,16 +328,9 @@ const EditProfile = () => {
               <Grid item md={8} xs={12}>
                 <div id="telegramButton">
                   <TelegramLoginButton
-                    className=''
                     dataOnauth={handleTelegramResponse}
-                    botName="PixiaAiBot"
+                    botName="PixiaLoginBot"
                     lang="en"
-                    buttonSize="small"
-                    cornerRadius={5}
-                    requestAccess={"write"}
-                    usePic={true}
-                    dataAuthUrl={undefined}
-                    children={undefined}
                   />
                 </div>
 
