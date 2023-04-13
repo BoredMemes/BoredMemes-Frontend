@@ -147,6 +147,7 @@ const EditProfile = () => {
     formData.append("twitter", twitter);
     formData.append("twitterId", twitterId);
     formData.append("telegram", telegram);
+    formData.append("telegramId", telegramId);
     formData.append("email", email);
     formData.append("notifyIds", JSON.stringify(notifyIds));
     axios.post("/api/user/update", formData, {
