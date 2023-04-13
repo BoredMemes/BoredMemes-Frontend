@@ -41,13 +41,16 @@ const EditProfile = () => {
   const [description, setNFTDescription] = useState("");
   const [twitter, setTwitter] = useState(undefined);
   const [twitterId, setTwitterId] = useState(undefined);
-  const [telegram, setTelegram] = useState("");
+  const [telegram, setTelegram] = useState(undefined);
+  const [telegramId, setTelegramId] = useState(undefined);
   const [email, setEmail] = useState("");
 
   useEffect(() => {
     if (user) {
       setTwitter(user?.social_twitter_name)
       setTwitterId(user?.social_twitter_id)
+      setTelegram(user?.social_telegram_name)
+      setTelegramId(user?.social_telegram_id)
     }
   }, [user])
 
@@ -194,6 +197,11 @@ const EditProfile = () => {
   const handleTelegramResponse = response => {
     console.log("Telegram Response");
     console.log(response);
+    if (response.id && response.username){
+      toast.success("Connected your telegram account sucessfully");
+      setTelegram(response.username)
+      setTwitterId(response.id);
+    }
     console.log("Telegram Response End");
   };
 
@@ -326,13 +334,13 @@ const EditProfile = () => {
                 <p>Show the Pixia Ai community that your profile is authentic.</p>
               </Grid>
               <Grid item md={8} xs={12}>
-                <div id="telegramButton">
+                {/* <div id="telegramButton">
                   <TelegramLoginButton
                     dataOnauth={handleTelegramResponse}
                     botName="PixiaLoginBot"
                     lang="en"
                   />
-                </div>
+                </div> */}
 
                 <TextInput
                   name="twitter"
@@ -372,6 +380,23 @@ const EditProfile = () => {
                   value={twitter || user?.social_twitter_name}
                   onChangeData={val => {
 
+                  }}
+                />
+                <TextInput
+                  name="telegram"
+                  disabled={true}
+                  className={classes.myInput}
+                  error={formSubmit && !telegram}
+                  wrapperClass={classes.formWrapper}
+                  startIcon={"@"}
+                  endIcon={<TelegramLoginButton
+                    dataOnauth={handleTelegramResponse}
+                    botName="PixiaLoginBot"
+                    lang="en"
+                  />}
+                  placeholder={'Telegram'}
+                  value={telegram || user?.social_telegram_name}
+                  onChangeData={val => {
                   }}
                 />
                 {/* <TextInput
