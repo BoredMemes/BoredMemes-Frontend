@@ -201,7 +201,7 @@ const EditProfile = () => {
     if (response.id && response.username){
       toast.success("Connected your telegram account sucessfully");
       setTelegram(response.username)
-      setTwitterId(response.id);
+      setTelegramId(response.id);
     }
     console.log("Telegram Response End");
   };
