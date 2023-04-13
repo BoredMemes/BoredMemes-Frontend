@@ -14,9 +14,11 @@ import { arrayify, hashMessage } from 'ethers/lib/utils';
 import { ethers } from 'ethers';
 import Web3WalletContext from 'hooks/Web3ReactManager';
 import { getUser, useAuthDispatch, useAuthState } from 'context/authContext';
-import TelegramLoginButton from 'react-telegram-login';
+//import TelegramLoginButton from 'react-telegram-login';
+//import TelegramLoginButton from './LoginSocialTelegram';
 import { TwitterLoginButton } from 'react-social-login-buttons';
 import LoginSocialTwitter from './LoginSocialTwitter';
+import { TelegramLoginButton } from './LoginSocialTelegram';
 
 const EditProfile = () => {
 
@@ -109,7 +111,7 @@ const EditProfile = () => {
   }
 
   useEffect(() => {
-    postscribe('#root', '<script async src="https://telegram.org/js/telegram-widget.js?21" data-telegram-login="PixiaLoginBot" data-size="large" data-onauth="onTelegramAuth(user)" data-request-access="write"></script>');
+    postscribe('#root', '<script async src="https://telegram.org/js/telegram-widget.js?22" data-telegram-login="PixiaAiBot" data-size="large" data-onauth="onTelegramAuth(user)" data-request-access="write"></script>');
   }, [])
 
   const updateProfile = async () => {
@@ -314,9 +316,20 @@ const EditProfile = () => {
                 <p>Show the Pixia Ai community that your profile is authentic.</p>
               </Grid>
               <Grid item md={8} xs={12}>
-                {/* <div id="telegramButton">
-                  <TelegramLoginButton dataOnauth={handleTelegramResponse} botName="PixiaLoginBot" language="en" />
-                </div> */}
+                <div id="telegramButton">
+                  <TelegramLoginButton
+                    className=''
+                    dataOnauth={handleTelegramResponse}
+                    botName="PixiaAiBot"
+                    lang="en"
+                    buttonSize="small"
+                    cornerRadius={5}
+                    requestAccess={"write"}
+                    usePic={true}
+                    dataAuthUrl={undefined}
+                    children={undefined}
+                  />
+                </div>
 
                 <TextInput
                   name="twitter"
@@ -358,7 +371,7 @@ const EditProfile = () => {
 
                   }}
                 />
-                <TextInput
+                {/* <TextInput
                   name="telegram"
                   disabled={!loginStatus}
                   className={classes.myInput}
@@ -371,7 +384,7 @@ const EditProfile = () => {
                   onChangeData={val => {
                     setTelegram(val);
                   }}
-                />
+                /> */}
                 {/* <TextInput
                   name="email"
                   disabled={!loginStatus}
