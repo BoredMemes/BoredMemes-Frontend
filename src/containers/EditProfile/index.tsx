@@ -219,6 +219,11 @@ const EditProfile = () => {
     setTwitterId(undefined)
   }
 
+  const onDisconnectFromTelegram = () => {
+    setTelegram(undefined)
+    setTelegramId(undefined)
+  }
+
   return (
     <>
       <div className={classes.root}>
@@ -390,11 +395,11 @@ const EditProfile = () => {
                   error={formSubmit && !telegram}
                   wrapperClass={classes.formWrapper}
                   startIcon={"@"}
-                  endIcon={<TelegramLoginButton
+                  endIcon={!telegramId ? <TelegramLoginButton
                     dataOnauth={handleTelegramResponse}
                     botName="PixiaLoginBot"
                     lang="en"
-                  />}
+                  /> : <span style={{ cursor: 'pointer' }} onClick={onDisconnectFromTelegram}><i className="fab fa-telegram"></i>&nbsp; Disconnect</span>}
                   placeholder={'Telegram'}
                   value={telegram || user?.social_telegram_name}
                   onChangeData={val => {
