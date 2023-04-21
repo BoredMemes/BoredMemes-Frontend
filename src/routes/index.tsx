@@ -2,7 +2,7 @@ import { BrowserRouter as Switch, Route, useHistory, useLocation  } from 'react-
 import Layout from 'components/Layout';
 
 import MyArt from 'containers/MyArt';
-
+import BlindMint from 'containers/BlindMint';
 import ScrollToTop from 'utils/scrollToTop';
 import Staking from 'containers/Pool';
 import Hub from 'containers/Hub';
@@ -37,6 +37,7 @@ const Routes = () => {
             <Route exact path="/community_feed" render={() => <MyArt feedMode={1}/>}/>
             <Route exact path="/personal_feed" render={() => <MyArt feedMode={2}/>}/>
             <Route exact path="/bookmarks" render={() => <MyArt feedMode={3}/>}/>
+            <Route exact path="/blind_mint" render={() => <BlindMint/>}/>
             <Route exact path="/staking" component={Staking} />
             <Route exact path="/settings" component={EditProfile} />
             <Route exact path="/edit_profile" component={EditProfile} />

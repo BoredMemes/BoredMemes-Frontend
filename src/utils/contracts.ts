@@ -322,11 +322,15 @@ export async function onInvest(refAddress, chainId, provider) {
   }
 }
 
-export async function createNewCollection(plan, colId, chainId, provider) {
-  const factoryContract = getContractObj("PixiaNFTFactory", chainId, provider);
-  const factoryContractInfo = getContractInfo("PixiaNFTFactory", chainId);
+export async function createNewCollection(plan, isBlind, mint_price, token_addr, revealUri, revealTime, colId, chainId, provider) {
+  const factoryContract = getContractObj(isBlind ? "PixiaBlindNFTFactory" : "PixiaNFTFactory", chainId, provider);
+  const factoryContractInfo = getContractInfo(isBlind ? "PixiaBlindNFTFactory" : "PixiaNFTFactory", chainId);
   try {
-    const tx = await factoryContract.createCollection(plan, colId, {
+    const price = isBlind ? token_addr === ethers.constants.AddressZero ? ethers.utils.parseEther(mint_price + "") : ethers.utils.parseUnits(mint_price + "", await getDecimal(token_addr, chainId)) : 0;
+    const tx = isBlind ? await factoryContract.createCollection(plan, price, revealUri, Math.floor(revealTime / 1000), colId, {
+      value: ethers.utils.parseEther(plan === 0 ? "0" : chainId === Networks.BSC_Testnet || chainId === Networks.ETH_TestNet ? "0.001" :
+        chainId === Networks.BSC_Mainnet ? "15" : "10")
+    }) : await factoryContract.createCollection(plan, colId, {
       value: ethers.utils.parseEther(plan === 0 ? "0" : chainId === Networks.BSC_Testnet || chainId === Networks.ETH_TestNet ? "0.001" :
         chainId === Networks.BSC_Mainnet ? "15" : "3")
     });

@@ -2,7 +2,7 @@ import { MaterialUISwitch, useStyles } from './style';
 import Masonry from 'react-masonry-css';
 import ProductCard1 from 'components/Cards/ProductCard1';
 import Filter from 'components/Filter/Filter';
-import { useContext, useEffect, useState } from 'react';
+import { useContext, useEffect, useRef, useState } from 'react';
 import { HashLink } from 'react-router-hash-link';
 import JSZip from "jszip";
 import FileSaver from "file-saver";
@@ -19,6 +19,11 @@ import { createNewCollection, isAddress, onMintArt } from 'utils/contracts';
 import { useHistory, useLocation } from 'react-router-dom';
 import { CONTRACTS_BY_NETWORK, Networks } from 'utils';
 import { getUser, useAuthDispatch, useAuthState } from 'context/authContext';
+import ThemeContext from 'theme/ThemeContext';
+import moment from 'moment';
+import { Grid } from '@material-ui/core';
+import UploadFile from 'components/Forms/UploadFile';
+import { ethers } from 'ethers';
 type PropsType = {
   feedMode?: number//0- My Arts, 1- Community Feed, 2- Personal Feed, 3- Bookmarks
 }
@@ -27,6 +32,7 @@ const MyArt = ({ feedMode }: PropsType) => {
   const classes = useStyles();
   const { loginStatus, account, library, chainId } = useContext(Web3WalletContext)
   const { user } = useAuthState();
+  const { theme } = useContext(ThemeContext);
   const dispatch = useAuthDispatch();
 
   const MAX_MINT_CNT = 30;
@@ -45,6 +51,7 @@ const MyArt = ({ feedMode }: PropsType) => {
     768: 2,
     450: 1,
   };
+  const dateRef = useRef();
   const [isLoading, setLoading] = useState(false);
   const [profile, setProfile] = useState(null);
   const [filter, setFilter] = useState('new');
@@ -58,11 +65,18 @@ const MyArt = ({ feedMode }: PropsType) => {
 
   // Edit collection
   const [showEditCollectionModal, setShowEditCollectionModal] = useState(false)
+  const [showCollectionTypeModal, setShowCollectionTypeModal] = useState(false)
   const [showPublishCollectionModal, setShowPublishCollectionModal] = useState(false)
+  const [showMintCollectionModal, setShowMintCollectionModal] = useState(false)
+  const [showBlindCollectionModal, setShowBlindCollectionModal] = useState(false)
+  const [processingModal, setProcessingModal] = useState(false);
+  const [successTrans, setSuccessTrans] = useState(false);
   const [isDetail, setIsDetail] = useState(false);
   const [isPublicCollection, setIsPublicCollection] = useState(true)
   const [title, setTitle] = useState('')
   const [description, setDescription] = useState('')
+  const [mintPrice, setMintPrice] = useState(0)
+  const [revealDate, setRevealDate] = useState(Date.now())
   const [selectedChainId, setSelectedChainId] = useState(process.env.REACT_APP_NODE_ENV === "production" ? 1 : 5);
 
   useEffect(() => {
@@ -135,6 +149,7 @@ const MyArt = ({ feedMode }: PropsType) => {
     let paramsData = {
       owner: owner?.toLowerCase(),
       isPublic: owner?.toLowerCase() === account?.toLowerCase() ? undefined : true,
+      isBlind: false
     }
     axios.get('/api/collection', { params: paramsData })
       .then((res) => {
@@ -187,6 +202,42 @@ const MyArt = ({ feedMode }: PropsType) => {
       setDescription(e);
     }
   }
+  
+  const [nftAsset, setNFTAsset] = useState(undefined);
+  const [nftAssetType, setNFTAssetType] = useState('image');
+
+  function getExtension(filename) {
+    var parts = filename.split('.');
+    return parts[parts.length - 1];
+  }
+  function getAssetType(filename) {
+    var ext = getExtension(filename);
+    switch (ext.toLowerCase()) {
+      case 'jpg':
+      case 'jpeg':
+      case 'gif':
+      case 'bmp':
+      case 'png':
+      case 'heif':
+      case 'heic':
+      case 'tiff':
+      case 'raw':
+        return 'Image';
+      case 'm4v':
+      case 'avi':
+      case 'mpg':
+      case 'mp4':
+        return 'Video';
+      case 'mp3':
+        return 'Audio';
+    }
+    return '';
+  }
+
+  const onChangeNFTAsset = async asset => {
+    setNFTAsset(asset);
+    setNFTAssetType(getAssetType(asset.name));
+  };
 
   const onSave = async () => {
     if (!loginStatus || !account) {
@@ -273,13 +324,50 @@ const MyArt = ({ feedMode }: PropsType) => {
     setIsDetail(true);
 
   }
-  const onCreateNFTCollection = async (plan) => {
+  const onCreateNFTCollection = async (plan, isBlind) => {
     if (!loginStatus || !account) {
       return toast.error("Please connect your wallet correctly.");
     }
+    if (isAddress(selectedCollection.address)){
+      return toast.error("Your collection is already on chain.")
+    }
+    if (isBlind){
+      if (!mintPrice){
+        return toast.error("You must set the mint price.")
+      }
+      if (!nftAsset){
+        return toast.error("You must select the reveal art");
+      }
+      if (!revealDate || revealDate <= Date.now()){
+        return toast.error("The reveal date should be later than current date and time");
+      }
+    }
     const load_toast_id = toast.loading("Please wait...");
+    setSuccessTrans(false);
+    setProcessingModal(true);
     try {
-      const colAddr = await createNewCollection(plan, selectedCollection.id, chainId, library.getSigner());
+      let revealUri = "";
+      if (isBlind && nftAsset){
+        let formData = new FormData();
+        formData.append('file', nftAsset);
+        const revealData = await axios.post("/api/upload_reveal", formData, {
+          headers: {
+            "Content-Type": "multipart/form-data"
+          }
+        })
+        if (revealData && revealData.data.message == "success"){
+          revealUri = revealData.data.url;
+          console.log("Reveal URI ", revealUri);
+        }
+      }
+      const colAddr = await createNewCollection(
+        plan, 
+        isBlind,
+        mintPrice,
+        ethers.constants.AddressZero,
+        revealUri,
+        revealDate,
+        selectedCollection.id, chainId, library.getSigner());
       if (isAddress(colAddr)) {
         let metadata = {
           isOnChain: true,
@@ -288,11 +376,17 @@ const MyArt = ({ feedMode }: PropsType) => {
           itemCollection: colAddr.toString().toLowerCase(),
           name: title,
           description: description,
+          isBlind: isBlind,
+          mint_price: mintPrice,
+          token_addr: ethers.constants.AddressZero,
+          reveal_date: revealDate,
+          reveal_uri: revealUri
         }
         await axios
           .post('/api/collection/update/', metadata)
           .then((res) => {
             toast.success("NFT Collection is created successfully.")
+            setSuccessTrans(true);
             toast.dismiss(load_toast_id);
             setSelectedCollection(res.data.collection);
             setShowPublishCollectionModal(false)
@@ -300,18 +394,25 @@ const MyArt = ({ feedMode }: PropsType) => {
           .catch((err) => {
             console.log(err);
             toast.dismiss(load_toast_id);
+            setSuccessTrans(false);
+            setProcessingModal(false);
             toast.error("NFT Collection Creation is failed");
           });
       } else {
         toast.dismiss(load_toast_id);
         toast.error("NFT Collection Creation is failed");
+        setSuccessTrans(false);
+        setProcessingModal(false);
       }
     } catch (e) {
       console.log(e);
       toast.dismiss(load_toast_id);
+      setSuccessTrans(false);
+      setProcessingModal(false);
     }
   }
 
+  const [mintCnt, setMintCnt] = useState(0);
   const onMintArts = async (collection, _selectedItems) => {
     if (!loginStatus || !account) {
       return toast.error("Please connect your wallet correctly.")
@@ -325,6 +426,8 @@ const MyArt = ({ feedMode }: PropsType) => {
       return toast.error("You can not mint the existed nft items again.");
     }
     const load_toast_id = toast.loading("Please wait");
+    setSuccessTrans(false);
+    setProcessingModal(true);
     try {
       const _artIds = [..._selectedItems.map((_item) => _item.id), ...collection.artIds];
       const artIds = _artIds.reduce((acc, current) => {
@@ -351,12 +454,15 @@ const MyArt = ({ feedMode }: PropsType) => {
         toast.warn("Some Arts are not minted.");
       };
       toast.dismiss(load_toast_id);
+      setSuccessTrans(true);
       // setTimeout(() => {
       //   window.location.reload();
       // }, 1000)
     } catch (e) {
       console.log(e);
       toast.dismiss(load_toast_id);
+      setSuccessTrans(false);
+      setProcessingModal(false);
     }
   }
 
@@ -556,10 +662,10 @@ const MyArt = ({ feedMode }: PropsType) => {
                       <div className="follows">
                         <p>{profile?.followers.length || 0} Following</p>
                         {
-                          loginStatus && account && account?.toLowerCase() !== profile?.address.toLowerCase() && user && 
+                          loginStatus && account && account?.toLowerCase() !== profile?.address.toLowerCase() && user &&
                           <button onClick={onFollow}>{user?.followers.includes(profile?.address.toLowerCase()) ? "Unfollow" : "Follow"}</button>
                         }
-                        
+
                       </div>
                     </span>
                   </div>
@@ -598,14 +704,25 @@ const MyArt = ({ feedMode }: PropsType) => {
                       Edit Collection
                     </div>
                     {
-                      !isAddress(selectedCollection?.address) && <button onClick={() => setShowPublishCollectionModal(true)}>
+                      !isAddress(selectedCollection?.address) && <button onClick={() => setShowCollectionTypeModal(true)}>
                         <p>Create NFT Collection</p>
                         <img src="/assets/icons/add_icon_01.svg" alt="" />
                       </button>
                     }
                     {
                       isAddress(selectedCollection?.address) &&
-                      <button onClick={() => onMintArts(selectedCollection, selectedItems)}>
+                      // <button onClick={() => onMintArts(selectedCollection, selectedItems)}>
+                      <button onClick={() => {
+                        const _artIds = [...selectedItems.map((_item) => _item.id), ...selectedCollection.artIds];
+                        const artIds = _artIds.reduce((acc, current) => {
+                          if (!acc.includes(current)) {
+                            acc.push(current);
+                          }
+                          return acc;
+                        }, []);
+                        setMintCnt(artIds.length);
+                        setShowMintCollectionModal(true);
+                      }}>
                         <p>Mint Added Arts to Collection</p>
                         <img src="/assets/icons/add_icon_01.svg" alt="" />
                       </button>
@@ -744,6 +861,45 @@ const MyArt = ({ feedMode }: PropsType) => {
 
         </>}
       />
+
+      <Modal
+        show={showCollectionTypeModal}
+        maxWidth='sm'
+        contentClass={classes.modalRootContent}
+        children={<>
+          <div className={classes.modal}>
+            <div className={`${classes.modalTop} customModalTop`}>
+              <span className='topTitle'>
+                <div>
+                  <h4>{"Personal or Blind Mint Collection?"}</h4>
+                </div>
+              </span>
+              <button className="closeBtn" onClick={() => setShowCollectionTypeModal(false)}><img src="/assets/icons/close_icon_01.svg" alt="" /></button>
+            </div>
+            <div className={classes.modalContent}>
+              <p>You can Either create A Personal NFT Collection or A Blind Mint Collection.</p>
+              <h4>Personal Collection:</h4>
+              <p>Your Art Pieces Will Be Later Minted, And You Can Mint New Pieces At Any Time.</p>
+              <h4>Blind Mint Collection:</h4>
+              <p>Offer your community with a blind minting option to launch your NFT collection and start generating revenues. Choose your custom minting price and mint ending time. the reveal is made after all NFTs are minted or sale has ended.</p>
+            </div>
+            <div className={classes.modalBtns}>
+              {/* <FilledButton color='custom' handleClick={() => setShowEditCollectionModal(false)} /> */}
+              <button className='newCollectionCard' onClick={() => {
+                setShowCollectionTypeModal(false);
+                setShowBlindCollectionModal(true)
+              }}>
+                <p>Blind Mint NFT Collection</p>
+              </button>
+              <FilledButton label={'Personal NFT Collection'} handleClick={() => {
+                setShowPublishCollectionModal(true);
+                setShowCollectionTypeModal(false);
+              }} />
+            </div>
+          </div>
+
+        </>}
+      />
       <Modal
         show={showPublishCollectionModal}
         maxWidth='sm'
@@ -753,7 +909,7 @@ const MyArt = ({ feedMode }: PropsType) => {
             <div className={`${classes.modalTop} customModalTop`}>
               <span className='topTitle'>
                 <div>
-                  <h4>{"Create NFT Collection"}</h4>
+                  <h4>{"Create Personal NFT Collection"}</h4>
                 </div>
               </span>
               <button className="closeBtn" onClick={() => setShowPublishCollectionModal(false)}><img src="/assets/icons/close_icon_01.svg" alt="" /></button>
@@ -762,15 +918,105 @@ const MyArt = ({ feedMode }: PropsType) => {
               <TextInput label={'Title'} wrapperClass={classes.myInputWrap} value={!isDetail ? title : selectedCollection?.name} placeholder='First Collection' onChangeData={(d) => onChangeTitle(d)} />
 
               <TextInput isMulti label={<>{'Description'} <span>Optional</span></>} wrapperClass={classes.myInputWrap} placeholder='Elon Musk as Santa Floki' value={!isDetail ? description : selectedCollection?.description} onChangeData={(d) => onChangeDescription(d)} />
-              <p className={classes.text_number}>1/255</p>
+              <p className={classes.text_number}>0/250</p>
             </div>
             <div className={classes.modalBtns}>
               {/* <FilledButton color='custom' handleClick={() => setShowEditCollectionModal(false)} /> */}
-              <button className='newCollectionCard' onClick={() => onCreateNFTCollection(1)}>
-                <p>3 ETH NFT Collection</p>
-                <h6>No fees</h6>
+              <button className='newCollectionCard' onClick={() => onCreateNFTCollection(1, false)}>
+                <p>Payed NFT Collection</p>
+                <h6>3 ETH Creation && No fees</h6>
               </button>
-              <FilledButton label={'Free NFT Collection 3% Buy/Sell Fee'} handleClick={() => onCreateNFTCollection(0)} />
+              <FilledButton label={'Free NFT Collection 3% Trading Fee'} handleClick={() => onCreateNFTCollection(0, false)} />
+            </div>
+          </div>
+
+        </>}
+      />
+      <Modal
+        show={showBlindCollectionModal}
+        maxWidth='sm'
+        contentClass={classes.modalRootContent}
+        children={<>
+          <div className={classes.modal}>
+            <div className={`${classes.modalTop} customModalTop`}>
+              <span className='topTitle'>
+                <div>
+                  <h4>{"Create Blind Mint NFT Collection"}</h4>
+                </div>
+              </span>
+              <button className="closeBtn" onClick={() => setShowBlindCollectionModal(false)}><img src="/assets/icons/close_icon_01.svg" alt="" /></button>
+            </div>
+            <div className={classes.modalContent}>
+              <p>Once the blind mint has started, no additional art pieces can be added. Make sure to have added the correct number of art pieces before continuing.</p>
+              <p>Your Blind mint collection includes a maximum of 30 NFT</p>
+              <TextInput label={'Title'} wrapperClass={classes.myInputWrap} value={!isDetail ? title : selectedCollection?.name} placeholder='First Collection' onChangeData={(d) => onChangeTitle(d)} />
+
+              <TextInput isMulti label={<>{'Description'} <span>Optional</span></>} wrapperClass={classes.myInputWrap} placeholder='Elon Musk as Santa Floki' value={!isDetail ? description : selectedCollection?.description} onChangeData={(d) => onChangeDescription(d)} />
+              <p className={classes.text_number}>0/250</p>
+              <TextInput label={'Mint Price'} type='number' wrapperClass={classes.myInputWrap} placeholder='0.1' onChangeData={(d) => setMintPrice(parseFloat(d))}
+                endIcon={<span>ETH</span>} />
+              <div style={{width:'100%'}} >
+                <h3 className={classes.label}>Profile image</h3>
+                <UploadFile
+                  label="Upload"
+                  dispalyAsset
+                  fileName={nftAsset?.name}
+                  fileSize={nftAsset?.size}
+                  onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
+                    if (e.target.files && e.target.files[0]) {
+                      onChangeNFTAsset(e.target.files[0]);
+                    }
+                  }}
+                />
+              </div>
+              <TextInput
+                type="datetime-local"
+                label={'Minting Ends, Date and time'}
+                wrapperClass={classes.myInputWrap}
+
+                onChangeData={(d) => setRevealDate(new Date(d).getTime())} />
+            </div>
+            <div className={classes.modalBtns}>
+              {/* <FilledButton color='custom' handleClick={() => setShowEditCollectionModal(false)} /> */}
+              <button className='newCollectionCard' onClick={() => onCreateNFTCollection(1, true)}>
+                <p>Payed Blind Mint</p>
+                <h6>10 ETH Creation && No fees</h6>
+              </button>
+              <FilledButton label={'Free Blind Mint 3% Minting & Trading Fee'} handleClick={() => onCreateNFTCollection(0, true)} />
+            </div>
+          </div>
+
+        </>}
+      />
+      <Modal
+        show={showMintCollectionModal}
+        maxWidth='sm'
+        contentClass={classes.modalRootContent}
+        children={<>
+          <div className={classes.modal}>
+            <div className={`${classes.modalTop} customModalTop`}>
+              <span className='topTitle'>
+                <div>
+                  <h4>{"Mint Added Images to NFT Collection"}</h4>
+                </div>
+              </span>
+              <button className="closeBtn" onClick={() => setShowMintCollectionModal(false)}><img src="/assets/icons/close_icon_01.svg" alt="" /></button>
+            </div>
+            <div className={classes.modalContent}>
+              <p>We are optimising the number of transactions that will be Processing to mint all your newly added Images.</p>
+              <p>You have {mintCnt} Pieces that will be minted in {Math.ceil(mintCnt / MAX_MINT_CNT)} transactions.</p>
+            </div>
+            <div className={classes.modalBtns}>
+              {/* <FilledButton color='custom' handleClick={() => setShowEditCollectionModal(false)} /> */}
+              <button className='newCollectionCard' onClick={() => {
+
+              }}>
+                <p>Cancel</p>
+              </button>
+              <FilledButton label={'Start Minting'} handleClick={() => {
+                onMintArts(selectedCollection, selectedItems)
+                setShowMintCollectionModal(false);
+              }} />
             </div>
           </div>
 
@@ -870,6 +1116,76 @@ const MyArt = ({ feedMode }: PropsType) => {
             <div className={classes.modalBtns} style={{ justifyContent: 'center' }}>
               <FilledButton label={'Create NFTs'} icon={<img src="/assets/icons/add_icon_01.svg" alt="" />} iconPosition='start' handleClick={() => onCreateNFT(selectedItems)} />
             </div>
+          </div>
+        </>}
+      />
+      <Modal
+        show={processingModal}
+        contentClass={classes.processModalRoot}
+        maxWidth='sm'
+        children={<>
+          <div className={classes.processModal}>
+            {!successTrans
+              ?
+              <>
+                <div className={classes.processModalTop}>
+                  <span>
+                    {theme === 'dark' ? <img src="/assets/imgs/logo.png" alt="" /> : <img src="/assets/logo.png" alt="" />}
+                    <h4>Your transaction is beeing processed</h4>
+                  </span>
+                </div>
+                <div className={classes.processModalContent}>
+                  <span>
+                    <img src="/assets/icons/2.png" alt="" />
+                  </span>
+                  <div className="warning">
+                    <img src="/assets/icons/warning_icon.png" alt="" />
+                    <p>Validate your transaction to continue.</p>
+                  </div>
+                </div>
+              </>
+              :
+              <>
+                <div className={classes.processModalTop}>
+                  <span className='topTitle'>
+                    {theme === 'dark' ? <img src="/assets/imgs/logo.png" alt="" /> : <img src="/assets/logo.png" alt="" />}
+                    <div>
+                      <h3>Wooohoooo! </h3>
+                    </div>
+                  </span>
+                  <button className="closeBtn" onClick={() => { setProcessingModal(false); setSuccessTrans(false); }}><img src="/assets/icons/close_icon_01.svg" alt="" /></button>
+                </div>
+                <p className="success-transaction">{showBlindCollectionModal ? "Your Blind Mint is Live" : "Your transaction was successful"}</p>
+                <div className={classes.processModalContent}>
+                  <div className={classes.modalBtns}>
+                    <button style={{
+                      padding: '5px', width: '50%',
+                      background: 'linear-gradient(47.43deg, #2A01FF 0%, #FF1EE1 57%, #FFB332 100%);',
+                      WebkitBackgroundClip: 'text',
+                      WebkitTextFillColor: 'transparent',
+                      height: '45px', borderRadius: '15px', textAlign: 'center', border: 'dashed 1px #ff589d', color: '#be16d2', alignSelf: 'center', cursor: 'pointer'
+                    }} onClick={() => {
+                      setSuccessTrans(false);
+                      setProcessingModal(false);
+                      history.push("/blind_mint")
+                    }}
+                      className="cancel-btn">
+                      My Art
+                    </button>
+                    <button style={{
+                      padding: '5px', background: 'linear-gradient(47.43deg, #2A01FF 0%, #FF1EE1 57%, #FFB332 100%)', width: '50%',
+                      height: '45px', borderRadius: '15px', textAlign: 'center', border: 'none', color: 'white', alignSelf: 'center', cursor: 'pointer'
+                    }}
+                      onClick={() => {
+                        setSuccessTrans(false);
+                        setProcessingModal(false);
+                        history.push("/staking")
+                      }}
+                    > Staking Pools </button>
+                  </div>
+                </div>
+              </>
+            }
           </div>
         </>}
       />

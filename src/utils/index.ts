@@ -1,7 +1,10 @@
 import { Contract } from '@ethersproject/contracts';
+import ERC20ABI from 'contracts/ERC20ABI.json';
 import PixiaAiABI from 'contracts/PixiaAiABI.json';
 import PixiaNFTABI from 'contracts/PixiaNFTABI.json';
 import PixiaNFTFactoryABI from 'contracts/PixiaNFTFactoryABI.json';
+import PixiaBlindNFTABI from 'contracts/PixiaBlindNFTABI.json';
+import PixiaBlindNFTFactoryABI from 'contracts/PixiaBlindNFTFactoryABI.json';
 import PixiaAiPoolABI from 'contracts/PixiaAiPoolABI.json';
 import PixiaAiPoolFactoryABI from 'contracts/PixiaAiPoolFactoryABI.json';
 import PixiaAiDistributorABI from 'contracts/PixiaAiDistributorABI.json';
@@ -19,6 +22,14 @@ export const CONTRACTS_BY_NETWORK = {
     PixiaAi: {
       address: '0x67675239Fa58c84e75f947c14f566842Dccb69Ae',
       abi: PixiaAiABI
+    },
+    PixiaBlindNFT: {
+      address: '',
+      abi: PixiaBlindNFTABI,
+    },
+    PixiaBlindNFTFactory: {
+      address: '',
+      abi: PixiaBlindNFTFactoryABI
     },
     PixiaNFT: {
       address: '0x4F195071AC30Bfb02Ec516a8848ae46999a56cA6',
@@ -45,6 +56,14 @@ export const CONTRACTS_BY_NETWORK = {
     PixiaAi: {
       address: '0x4f8f53E17Ce053C5877eb17A2DAC2BA3d786b70c',
       abi: PixiaAiABI
+    },
+    PixiaBlindNFT: {
+      address: '0x3cb39fe475919c257703c722954d9ffc66f46bc6',
+      abi: PixiaBlindNFTABI,
+    },
+    PixiaBlindNFTFactory: {
+      address: '0x8EC91b87efB71B95775B79078cE507e98291dcbE',
+      abi: PixiaBlindNFTFactoryABI
     },
     PixiaNFT: {
       address: '0x180aFE538f6D5f5B5db88F821506ECFEd195DC18',
