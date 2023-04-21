@@ -15,8 +15,10 @@ import { ethers } from 'ethers';
 import Web3WalletContext from 'hooks/Web3ReactManager';
 import { getUser, useAuthDispatch, useAuthState } from 'context/authContext';
 import TelegramLoginButton from 'react-telegram-login';
+//import TelegramLoginButton from './LoginSocialTelegram';
 import { TwitterLoginButton } from 'react-social-login-buttons';
 import LoginSocialTwitter from './LoginSocialTwitter';
+//import { TelegramLoginButton } from './LoginSocialTelegram';
 
 const EditProfile = () => {
 
@@ -24,6 +26,8 @@ const EditProfile = () => {
   const { user } = useAuthState();
   const dispatch = useAuthDispatch();
   const classes = useStyles();
+
+  const isMobile = (/Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent));
 
   const [telegramChecked, setTelegramChecked] = useState(false);
   const [twitterChecked, setTwitterChecked] = useState(false);
@@ -36,14 +40,17 @@ const EditProfile = () => {
   const [userName, setUserName] = useState("");
   const [description, setNFTDescription] = useState("");
   const [twitter, setTwitter] = useState(undefined);
-  const [twitterId, setTwitterId] = useState("");
-  const [telegram, setTelegram] = useState("");
+  const [twitterId, setTwitterId] = useState(undefined);
+  const [telegram, setTelegram] = useState(undefined);
+  const [telegramId, setTelegramId] = useState(undefined);
   const [email, setEmail] = useState("");
 
   useEffect(() => {
-    if (user){
+    if (user) {
       setTwitter(user?.social_twitter_name)
       setTwitterId(user?.social_twitter_id)
+      setTelegram(user?.social_telegram_name)
+      setTelegramId(user?.social_telegram_id)
     }
   }, [user])
 
@@ -53,7 +60,6 @@ const EditProfile = () => {
     var parts = filename.split('.');
     return parts[parts.length - 1];
   }
-
   function getAssetType(filename) {
     var ext = getExtension(filename);
     switch (ext.toLowerCase()) {
@@ -108,7 +114,17 @@ const EditProfile = () => {
   }
 
   useEffect(() => {
-    postscribe('#root', '<script async src="https://telegram.org/js/telegram-widget.js?21" data-telegram-login="PixiaLoginBot" data-size="large" data-onauth="onTelegramAuth(user)" data-request-access="write"></script>');
+    postscribe('#root', `<script 
+    async src="https://telegram.org/js/telegram-widget.js?22" 
+    data-telegram-login="PixiaLoginBot" 
+    data-size="large" 
+    data-onauth="onTelegramAuth(user)" 
+    data-request-access="write"></script>
+    <script type="text/javascript">
+      function onTelegramAuth(user) {
+        alert('Logged in as ' + user.first_name + ' ' + user.last_name + ' (' + user.id + (user.username ? ', @' + user.username : '') + ')');
+      }
+    </script>`);
   }, [])
 
   const updateProfile = async () => {
@@ -131,6 +147,7 @@ const EditProfile = () => {
     formData.append("twitter", twitter);
     formData.append("twitterId", twitterId);
     formData.append("telegram", telegram);
+    formData.append("telegramId", telegramId);
     formData.append("email", email);
     formData.append("notifyIds", JSON.stringify(notifyIds));
     axios.post("/api/user/update", formData, {
@@ -181,6 +198,11 @@ const EditProfile = () => {
   const handleTelegramResponse = response => {
     console.log("Telegram Response");
     console.log(response);
+    if (response.id && response.username){
+      toast.success("Connected your telegram account sucessfully");
+      setTelegram(response.username)
+      setTelegramId(response.id);
+    }
     console.log("Telegram Response End");
   };
 
@@ -191,6 +213,16 @@ const EditProfile = () => {
   const onLoginStart = useCallback(() => {
     alert('Are you sure to connect your twitter account to platform?')
   }, [])
+
+  const onDisconnectFromTwitter = () => {
+    setTwitter(undefined)
+    setTwitterId(undefined)
+  }
+
+  const onDisconnectFromTelegram = () => {
+    setTelegram(undefined)
+    setTelegramId(undefined)
+  }
 
   return (
     <>
@@ -309,7 +341,11 @@ const EditProfile = () => {
               </Grid>
               <Grid item md={8} xs={12}>
                 {/* <div id="telegramButton">
-                  <TelegramLoginButton dataOnauth={handleTelegramResponse} botName="PixiaLoginBot" language="en" />
+                  <TelegramLoginButton
+                    dataOnauth={handleTelegramResponse}
+                    botName="PixiaLoginBot"
+                    lang="en"
+                  />
                 </div> */}
 
                 <TextInput
@@ -321,25 +357,29 @@ const EditProfile = () => {
                   wrapperClass={classes.formWrapper}
                   startIcon={"@"}
                   endIcon={
-                    <LoginSocialTwitter
-                      client_id={process.env.REACT_APP_TWITTER_CLIENT_ID || ""}
-                      redirect_uri={window.location.href}
-                      onLoginStart={onLoginStart}
-                      onResolve={({ provider, data }) => {
-                        console.log("On Resolve");
-                        if (data.name && data.id) {
-                          toast.success("Connected your twitter account sucessfully");
-                          setTwitter(data.name);
-                          setTwitterId(data.id);
-                        }
-                      }}
-                      onReject={(err: any) => {
-                        console.log(err)
-                        toast.error(err);
-                      }}
-                    >
-                      <span style={{ cursor: 'pointer' }}><i className="fab fa-twitter"></i>&nbsp; Connect</span>
-                    </LoginSocialTwitter>
+                    !twitterId ?
+                      <LoginSocialTwitter
+                        client_id={process.env.REACT_APP_TWITTER_CLIENT_ID || ""}
+                        redirect_uri={window.location.href.includes("?") ? window.location.href.split("?")[0] : window.location.href}
+                        onLoginStart={onLoginStart}
+                        mobile={isMobile}
+                        onResolve={({ provider, data }) => {
+                          console.log("On Resolve");
+                          if (data.name && data.id) {
+                            //if (isMobile) window.location.replace(window.location.href.includes("?") ? window.location.href.split("?")[0] : window.location.href)
+                            if (isMobile) window.history.replaceState(null, '', "/edit_profile")
+                            toast.success("Connected your twitter account sucessfully");
+                            setTwitter(data.name);
+                            setTwitterId(data.id);
+                          }
+                        }}
+                        onReject={(err: any) => {
+                          console.log(err)
+                          toast.error(err);
+                        }}
+                      >
+                        {<span style={{ cursor: 'pointer' }}><i className="fab fa-twitter"></i>&nbsp; Connect</span>}
+                      </LoginSocialTwitter> : <span style={{ cursor: 'pointer' }} onClick={onDisconnectFromTwitter}><i className="fab fa-twitter"></i>&nbsp; Disconnect</span>
                   }
                   label={<> <span></span> <span>Recommended</span></>}
                   placeholder={'Twitter'}
@@ -349,6 +389,23 @@ const EditProfile = () => {
                   }}
                 />
                 <TextInput
+                  name="telegram"
+                  disabled={true}
+                  className={classes.myInput}
+                  error={formSubmit && !telegram}
+                  wrapperClass={classes.formWrapper}
+                  startIcon={"@"}
+                  endIcon={!telegramId ? <TelegramLoginButton
+                    dataOnauth={handleTelegramResponse}
+                    botName="PixiaLoginBot"
+                    lang="en"
+                  /> : <span style={{ cursor: 'pointer' }} onClick={onDisconnectFromTelegram}><i className="fab fa-telegram"></i>&nbsp; Disconnect</span>}
+                  placeholder={'Telegram'}
+                  value={telegram || user?.social_telegram_name}
+                  onChangeData={val => {
+                  }}
+                />
+                {/* <TextInput
                   name="telegram"
                   disabled={!loginStatus}
                   className={classes.myInput}
@@ -361,7 +418,7 @@ const EditProfile = () => {
                   onChangeData={val => {
                     setTelegram(val);
                   }}
-                />
+                /> */}
                 {/* <TextInput
                   name="email"
                   disabled={!loginStatus}

@@ -12,6 +12,7 @@ interface Props {
     client_id: string;
     className?: string;
     redirect_uri: string;
+    mobile?: boolean;
     state?: string;
     fields?: string;
     scope?: string;
@@ -42,6 +43,7 @@ export const LoginSocialTwitter = ({
     client_id,
     className = '',
     redirect_uri,
+    mobile,
     children,
     fields = 'created_at,description,entities,id,location,name,pinned_tweet_id,profile_image_url,protected,public_metrics,url,username,verified,withheld',
     state = 'state',
@@ -58,10 +60,38 @@ export const LoginSocialTwitter = ({
         const code = popupWindowURL.searchParams.get('code');
         const state = popupWindowURL.searchParams.get('state');
         if (state && code) {
-            localStorage.setItem('twitter', `${code}`);
-            window.close();
+            if (mobile) {
+                onSendCode(code);
+            } else {
+                localStorage.setItem('twitter', `${code}`);
+                window.close();
+            }
         }
     }, []);
+
+    const onSendCode = async (code) => {
+
+        var details = new URLSearchParams({
+            code,
+            redirect_uri: redirect_uri.split("?")[0]
+        });
+        const requestOAuthURL = `${process.env.REACT_APP_API_URL}api/user/twitter_token`;
+        const res = await fetch(requestOAuthURL, {
+            method: 'POST',
+            body: details,
+            headers: {
+                'Content-Type': 'application/x-www-form-urlencoded'
+            },
+        })
+            .then(data => data.json())
+            .catch(err => onReject(err));
+        if (res.message === "Success") {
+            onResolve({ provider: 'twitter', data: res });
+        } else {
+            onReject(res.message);
+        }
+        //window.close();
+    }
 
     const getProfile = useCallback(
         (data: objectType) => {
@@ -150,7 +180,7 @@ export const LoginSocialTwitter = ({
                 console.log(res);
                 if (res.message === "Success") {
                     onResolve({ provider: 'twitter', data: res });
-                }else{
+                } else {
                     onReject(res.message);
                 }
             }
@@ -187,22 +217,27 @@ export const LoginSocialTwitter = ({
         window.addEventListener('storage', onChangeLocalStorage, false);
         const oauthUrl = `${TWITTER_URL}/i/oauth2/authorize?response_type=code&client_id=${client_id}&redirect_uri=${redirect_uri}&scope=${scope}&state=${state}&code_challenge=challenge&code_challenge_method=plain`;
         //const oauthUrl = `http://192.241.150.95:8000/`;
-        const width = 450;
-        const height = 730;
-        const left = window.screen.width / 2 - width / 2;
-        const top = window.screen.height / 2 - height / 2;
-        window.open(
-            oauthUrl,
-            'twitter',
-            'menubar=no,location=no,resizable=no,scrollbars=no,status=no, width=' +
-            width +
-            ', height=' +
-            height +
-            ', top=' +
-            top +
-            ', left=' +
-            left,
-        );
+        if (mobile) {
+            window.open(oauthUrl, "_self");
+        } else {
+            const width = 450;
+            const height = 730;
+            const left = window.screen.width / 2 - width / 2;
+            const top = window.screen.height / 2 - height / 2;
+            window.open(
+                oauthUrl,
+                'twitter',
+                'menubar=no,location=no,resizable=no,scrollbars=no,status=no, width=' +
+                width +
+                ', height=' +
+                height +
+                ', top=' +
+                top +
+                ', left=' +
+                left,
+            );
+        }
+
     }, [
         scope,
         state,

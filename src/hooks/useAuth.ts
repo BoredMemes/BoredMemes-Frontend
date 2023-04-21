@@ -12,6 +12,7 @@ import { connectorsByName, ConnectorNames, injected } from '../utils/web3React'
 import { connectorLocalStorageKey } from '.'
 import { toast } from "react-toastify";
 import { setupNetwork } from 'utils/wallet'
+import { baseApiUrl } from 'utils'
 
 const useAuth = () => {
   const { activate, deactivate } = useWeb3React()
@@ -19,41 +20,47 @@ const useAuth = () => {
   const login = useCallback((connectorID: ConnectorNames) => {
     const connector = connectorsByName[connectorID]
     console.log(connector);
-    if (connector) {
-      activate(connector, async (error: Error) => {
-        if (error instanceof UnsupportedChainIdError) {
-          
-          console.log(error);
-          setupNetwork().then((hasSetup) => {
-            if (hasSetup) {
-              activate(connector);
-              // window.localStorage.setItem(connectorLocalStorageKey, connectorID);
-            }else toast.error("Unsupported Network.");
-          });
-        } else if (error instanceof NoEthereumProviderError) {
-          toast.error('No provider was found!')
-          // window.localStorage.removeItem(connectorLocalStorageKey)
-        } else if (
-          error instanceof UserRejectedRequestErrorInjected ||
-          error instanceof UserRejectedRequestErrorWalletConnect
-        ) {
-          if (connector instanceof WalletConnectConnector) {
-            const walletConnector = connector as WalletConnectConnector
-            walletConnector.walletConnectProvider = null
+    // if (!window.ethereum){
+    //   const url = "https://metamask.app.link/dapp/" + baseApiUrl;
+    //   window.open(url, "_blank", "noopener noreferrer");
+    // }else{
+
+      if (connector) {
+        activate(connector, async (error: Error) => {
+          if (error instanceof UnsupportedChainIdError) {
+            
+            console.log(error);
+            setupNetwork().then((hasSetup) => {
+              if (hasSetup) {
+                activate(connector);
+                // window.localStorage.setItem(connectorLocalStorageKey, connectorID);
+              }else toast.error("Unsupported Network.");
+            });
+          } else if (error instanceof NoEthereumProviderError) {
+            toast.error('No provider was found!')
+            // window.localStorage.removeItem(connectorLocalStorageKey)
+          } else if (
+            error instanceof UserRejectedRequestErrorInjected ||
+            error instanceof UserRejectedRequestErrorWalletConnect
+          ) {
+            if (connector instanceof WalletConnectConnector) {
+              const walletConnector = connector as WalletConnectConnector
+              walletConnector.walletConnectProvider = null
+            }
+            toast.error('Authorization Error, Please authorize to access your account')
+            console.log('Authorization Error, Please authorize to access your account')
+            // window.localStorage.removeItem(connectorLocalStorageKey)
+          } else {
+            toast.error(error.message)
+            console.log(error.name, error.message)
+            // window.localStorage.removeItem(connectorLocalStorageKey)
           }
-          toast.error('Authorization Error, Please authorize to access your account')
-          console.log('Authorization Error, Please authorize to access your account')
-          // window.localStorage.removeItem(connectorLocalStorageKey)
-        } else {
-          toast.error(error.message)
-          console.log(error.name, error.message)
-          // window.localStorage.removeItem(connectorLocalStorageKey)
-        }
-      })
-    } else {
-      toast.error("Can't find connector, The connector config is wrong")
-      console.log("Can't find connector", 'The connector config is wrong')
-    }
+        })
+      } else {
+        toast.error("Can't find connector, The connector config is wrong")
+        console.log("Can't find connector", 'The connector config is wrong')
+      }
+    // }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
 
