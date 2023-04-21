@@ -1,23 +1,9 @@
-import { MaterialUISwitch, useStyles } from './style';
-import Masonry from 'react-masonry-css';
-import ProductCard1 from 'components/Cards/ProductCard1';
-import Filter from 'components/Filter/Filter';
+import { useStyles } from './style';
 import { useContext, useEffect, useState } from 'react';
-import { HashLink } from 'react-router-hash-link';
-import JSZip from "jszip";
-import FileSaver from "file-saver";
-import ViewModal from 'components/modal/viewModal/ViewModal';
 import Web3WalletContext from 'hooks/Web3ReactManager';
 import axios from 'axios';
 import { toast } from 'react-toastify';
-import CollectionLIst from 'components/CollectionLIst/CollectionLIst';
-import Modal from 'components/modal';
-import FilledButton from 'components/Buttons/FilledButton';
-import TextInput from 'components/Forms/TextInput';
-import { arrayify, hashMessage } from 'ethers/lib/utils';
-import { createNewCollection, isAddress, onMintArt } from 'utils/contracts';
 import { useHistory, useLocation } from 'react-router-dom';
-import { CONTRACTS_BY_NETWORK, Networks } from 'utils';
 import { getUser, useAuthDispatch, useAuthState } from 'context/authContext';
 import BlindFilter from 'components/Filter/BlindFilter';
 import CollectionCard from 'components/Cards/CollectionCard';
@@ -33,7 +19,7 @@ const BlindMint = () => {
 
   const history = useHistory();
   const location = useLocation();
-  
+
   const [collections, setCollections] = useState(undefined);
   const [isLoading, setLoading] = useState(false);
   const [filter, setFilter] = useState('new');
@@ -65,8 +51,6 @@ const BlindMint = () => {
       setData(d)
     }
   }
-
-
   return (
     <>
       <div className={`${classes.root} mainContainer`}>
@@ -84,12 +68,32 @@ const BlindMint = () => {
         />
 
         <div className={`${classes.content} card2`}>
-          {collections && collections.length > 0 && collections.map((collection, idx) => (
-            <CollectionCard 
-              key="idx" 
-              collection={collection}
-            />
-          ))}
+          <div className={classes.cardContainer}>
+            {collections && collections.length > 0 && collections.map((collection, idx) => (
+              <CollectionCard
+                key="idx"
+                collection={collection}
+              />
+            ))}
+            {collections && collections.length > 0 && collections.map((collection, idx) => (
+              <CollectionCard
+                key="idx"
+                collection={collection}
+              />
+            ))}
+            {collections && collections.length > 0 && collections.map((collection, idx) => (
+              <CollectionCard
+                key="idx"
+                collection={collection}
+              />
+            ))}
+            {collections && collections.length > 0 && collections.map((collection, idx) => (
+              <CollectionCard
+                key="idx"
+                collection={collection}
+              />
+            ))}
+          </div>
         </div>
       </div>
     </>

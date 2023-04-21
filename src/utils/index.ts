@@ -123,6 +123,7 @@ export const networks = {
   }
 }
 export function getCurrentNetwork() {
+  console.log(window.localStorage.getItem(chainIdLocalStorageKey) || process.env.REACT_APP_ETH_NETWORK_ID)
   return window.localStorage.getItem(chainIdLocalStorageKey) || process.env.REACT_APP_ETH_NETWORK_ID;
 }
 

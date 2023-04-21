@@ -16,7 +16,6 @@ interface StyleType {
 const useStyles = makeStyles(theme => ({
   productWrapper: {
     maxWidth: 454,
-    cursor: 'pointer',
     background: '#F0F2F5',
     borderRadius: 18,
     border: '3px #F400F500 solid',
@@ -25,7 +24,7 @@ const useStyles = makeStyles(theme => ({
     position: 'relative',
     [theme.breakpoints.down('xs')]: {
       maxWidth: '90vw',
-      width: '70vw',
+      width: '80vw',
     },
     '& .top': {
       display: 'flex',
@@ -76,22 +75,21 @@ const useStyles = makeStyles(theme => ({
 
     '& .overly': {
       padding: '10px 10px',
-      justifyContent: 'space-between',
       display: 'flex',
       alignItems: 'center',
       flexDirection: 'column',
       position: 'absolute',
-      width: 'calc(100% - 10px)',
-      height: 100,
+      width: 'calc(100%-30px)',
+      height: 190,
       left: 5,
       bottom: 5,
-      background: '#F0F2F5',
+      background: '#333333 !important',
       borderRadius: 16,
       opacity: 0,
       transition: 'all 0.3s ease',
       zIndex: 10,
       [theme.breakpoints.down('xs')]: {
-        width: '100% !important',
+        width: 'calc(100%-50px)',
       },
       '& .desc': {
         display: 'flex',
@@ -110,11 +108,41 @@ const useStyles = makeStyles(theme => ({
           fontSize: 12,
         }
       },
+      '& .sub-div1': {
+        display: 'flex', width: '100%', justifyContent: 'space-between', fontSize: 12, marginTop: 10
+      },
+      '& .sub-div2': {
+        display: 'flex', width: '100%', justifyContent: 'space-between', fontSize: 12
+      },
       '& .footer': {
-        justifyContent: 'space-between',
         display: 'flex',
         alignItems: 'center',
         width: '100%',
+        marginTop: 10,
+        '& .custom-input': {
+          width: '50%', display: 'flex', justifyContent: 'space-between', position: 'relative', background: '#030316', border: 'solid 1px #727272', borderRadius: 8, padding: '4px 8px',
+          '& input': {
+            width: '80%', background: 'transparent', border: 'none', outline: 'none', color: '#727272'
+          }
+        },
+        '& .buttons': {
+          width: '50%', display: 'flex', justifyContent: 'space-between', position: 'relative', marginLeft: 5,
+          '& button': {
+            width: '50%', borderRadius: 8, padding: '4px 8px', marginLeft: 4, cursor: 'pointer',
+            border: '1px solid transparent',
+            background: 'transparent', backgroundImage: 'linear-gradient(90deg, #333, #333),linear-gradient(47.43deg, #2A01FF 0%, #FF1EE1 40%, #FFB332 100%)',
+            backgroundClip: 'padding-box, border-box', backgroundOrigin: 'border-box',
+            '& span': {
+              background: 'linear-gradient(47.43deg, #2A01FF 0%, #FF1EE1 57%, #FFB332 100%)', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent',
+            }
+          },
+          '& div': {
+            '& div': {
+              background: 'linear-gradient(47.43deg, #2A01FF 0%, #FF1EE1 57%, #FFB332 100%)', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent',
+              textAlign: 'center', width: '100%', fontSize: 14
+            }
+          }
+        }
       },
       '& .avatar': {
         display: 'flex',
@@ -129,8 +157,8 @@ const useStyles = makeStyles(theme => ({
         },
         '& img': {
           marginRight: 7,
-          height: 35,
-          width: 35,
+          height: 28,
+          width: 28,
           objectfit: 'cover',
           borderRadius: 35,
         },
@@ -145,12 +173,7 @@ const useStyles = makeStyles(theme => ({
           fontSize: 12,
         }
       },
-      '& .btns': {
-        display: 'flex',
-        justifyContent: 'center',
-        alignItems: 'center',
-        flexDirection: 'row',
-      },
+
       '& .smallBtn': {
         width: 25,
         height: 25,
@@ -295,23 +318,43 @@ const CollectionCard = ({ collection }: PropsType) => {
   const dispatch = useAuthDispatch();
 
   const ref = useRef(null)
-
+  console.log(collection);
   return (
     <div className={`${classes.productWrapper} card1`} ref={ref} >
       <div className="top" >
-          <img src={collection?.reveal_uri} alt="" />
+        <img src={collection?.reveal_uri} alt="" />
       </div>
-      <div className="overly">
-        <div className="desc">
-          <p>{collection.description} </p>
-        </div>
-        <div className="footer">
-          <div className="avatar">
-            <img src={collection?.ownerUser.logo_url} alt="" />
-            <p>{collection?.ownerUser.name}</p>
+      <div style={{ padding: 4 }}>
+        <div className="overly">
+          <div style={{ display: 'flex', width: '100%', justifyContent: 'space-between' }}>
+            <p style={{ fontWeight: 500, paddingTop: 10, fontSize: 14 }}>{collection?.name}</p>
+            <div className="avatar">
+              <img src={collection?.ownerUser.logo_url} alt="" width={16} />
+              <p>{collection?.ownerUser.name}</p>
+            </div>
           </div>
-          <div className="btns">
-
+          <div className="desc">
+            <p>{collection.description} </p>
+          </div>
+          <div className='sub-div1'>
+            <p>Maximum NFT pieces: <strong>10,000</strong></p>
+            <p style={{ textAlign: 'right' }}>Remaining NFT to Mint: <strong>1,000</strong></p>
+          </div>
+          <div className='sub-div2'>
+            <p>Minting Price: <strong>0.1 ETH</strong></p>
+            <p style={{ textAlign: 'right' }}>Ends in <strong>12h : 15m : 30s</strong></p>
+          </div>
+          <div className="footer">
+            <div className='custom-input'>
+              <input placeholder='1' />
+              <p style={{ position: 'absolute', right: 8, fontSize: 14 }}>NFT</p>
+            </div>
+            <div className='buttons'>
+              <div style={{ width: '50%', background: '#030316', borderRadius: 8, padding: '4px 8px', }}>
+                <div>0.1 ETH</div>
+              </div>
+              <button><span>Mint</span></button>
+            </div>
           </div>
         </div>
       </div>
