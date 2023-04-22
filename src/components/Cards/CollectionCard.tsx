@@ -79,10 +79,9 @@ const useStyles = makeStyles(theme => ({
       alignItems: 'center',
       flexDirection: 'column',
       position: 'absolute',
-      width: 'calc(100%-30px)',
-      height: 190,
-      left: 5,
-      bottom: 5,
+      width: '100%',
+      height: 180,
+      bottom: 0,
       background: '#333333 !important',
       borderRadius: 16,
       opacity: 0,
@@ -324,37 +323,35 @@ const CollectionCard = ({ collection }: PropsType) => {
       <div className="top" >
         <img src={collection?.reveal_uri} alt="" />
       </div>
-      <div style={{ padding: 4 }}>
-        <div className="overly">
-          <div style={{ display: 'flex', width: '100%', justifyContent: 'space-between' }}>
-            <p style={{ fontWeight: 500, paddingTop: 10, fontSize: 14 }}>{collection?.name}</p>
-            <div className="avatar">
-              <img src={collection?.ownerUser.logo_url} alt="" width={16} />
-              <p>{collection?.ownerUser.name}</p>
+      <div className="overly">
+        <div style={{ display: 'flex', width: '100%', justifyContent: 'space-between' }}>
+          <p style={{ fontWeight: 500, paddingTop: 10, fontSize: 14 }}>{collection?.name}</p>
+          <div className="avatar">
+            <img src={collection?.ownerUser.logo_url} alt="" width={16} />
+            <p>{collection?.ownerUser.name}</p>
+          </div>
+        </div>
+        <div className="desc">
+          <p>{collection.description} </p>
+        </div>
+        <div className='sub-div1'>
+          <p>Maximum NFT pieces: <strong>10,000</strong></p>
+          <p style={{ textAlign: 'right' }}>Remaining NFT to Mint: <strong>1,000</strong></p>
+        </div>
+        <div className='sub-div2'>
+          <p>Minting Price: <strong>0.1 ETH</strong></p>
+          <p style={{ textAlign: 'right' }}>Ends in <strong>12h : 15m : 30s</strong></p>
+        </div>
+        <div className="footer">
+          <div className='custom-input'>
+            <input placeholder='1' />
+            <p style={{ position: 'absolute', right: 8, fontSize: 14 }}>NFT</p>
+          </div>
+          <div className='buttons'>
+            <div style={{ width: '50%', background: '#030316', borderRadius: 8, padding: '4px 8px', }}>
+              <div>0.1 ETH</div>
             </div>
-          </div>
-          <div className="desc">
-            <p>{collection.description} </p>
-          </div>
-          <div className='sub-div1'>
-            <p>Maximum NFT pieces: <strong>10,000</strong></p>
-            <p style={{ textAlign: 'right' }}>Remaining NFT to Mint: <strong>1,000</strong></p>
-          </div>
-          <div className='sub-div2'>
-            <p>Minting Price: <strong>0.1 ETH</strong></p>
-            <p style={{ textAlign: 'right' }}>Ends in <strong>12h : 15m : 30s</strong></p>
-          </div>
-          <div className="footer">
-            <div className='custom-input'>
-              <input placeholder='1' />
-              <p style={{ position: 'absolute', right: 8, fontSize: 14 }}>NFT</p>
-            </div>
-            <div className='buttons'>
-              <div style={{ width: '50%', background: '#030316', borderRadius: 8, padding: '4px 8px', }}>
-                <div>0.1 ETH</div>
-              </div>
-              <button><span>Mint</span></button>
-            </div>
+            <button><span>Mint</span></button>
           </div>
         </div>
       </div>
