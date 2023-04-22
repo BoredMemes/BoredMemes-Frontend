@@ -24,7 +24,7 @@ const useStyles = makeStyles(theme => ({
     position: 'relative',
     [theme.breakpoints.down('xs')]: {
       maxWidth: '90vw',
-      width: '80vw',
+      width: '90vw',
     },
     '& .top': {
       display: 'flex',
@@ -80,7 +80,7 @@ const useStyles = makeStyles(theme => ({
       flexDirection: 'column',
       position: 'absolute',
       width: '100%',
-      height: 180,
+      minHeight: 160,
       bottom: 0,
       background: '#333333 !important',
       borderRadius: 16,

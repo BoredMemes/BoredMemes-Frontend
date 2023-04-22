@@ -292,7 +292,9 @@ export const useStyles = makeStyles(theme => ({
   },
   cardContainer: {
     display: 'grid',
-    gap:'10px',
+    gap: '10px',
+    width: '100%',
+    padding:'0px 16px',
     gridTemplateColumns: 'repeat(3, 1fr)',
     [theme.breakpoints.down('xs')]: {
       gridTemplateColumns: 'repeat(1, 1fr)',
