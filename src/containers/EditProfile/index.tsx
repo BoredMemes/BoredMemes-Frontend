@@ -160,7 +160,7 @@ const EditProfile = () => {
         getUser(dispatch, account);
         if (res.data.message === "success") {
           toast.success("Saved Successfully.")
-          //window.location.href = "/";
+          window.location.href = "/";
         }
       }).catch((err) => {
         console.log(err);
