@@ -39,10 +39,10 @@ const EditProfile = () => {
   const [name, setName] = useState("");
   const [userName, setUserName] = useState("");
   const [description, setNFTDescription] = useState("");
-  const [twitter, setTwitter] = useState(undefined);
-  const [twitterId, setTwitterId] = useState(undefined);
-  const [telegram, setTelegram] = useState(undefined);
-  const [telegramId, setTelegramId] = useState(undefined);
+  const [twitter, setTwitter] = useState("");
+  const [twitterId, setTwitterId] = useState("");
+  const [telegram, setTelegram] = useState("");
+  const [telegramId, setTelegramId] = useState("");
   const [email, setEmail] = useState("");
 
   useEffect(() => {
@@ -215,13 +215,13 @@ const EditProfile = () => {
   }, [])
 
   const onDisconnectFromTwitter = () => {
-    setTwitter(undefined)
-    setTwitterId(undefined)
+    setTwitter("")
+    setTwitterId("")
   }
 
   const onDisconnectFromTelegram = () => {
-    setTelegram(undefined)
-    setTelegramId(undefined)
+    setTelegram("")
+    setTelegramId("")
   }
 
   return (
@@ -357,7 +357,7 @@ const EditProfile = () => {
                   wrapperClass={classes.formWrapper}
                   startIcon={"@"}
                   endIcon={
-                    !twitterId ?
+                    !twitterId || twitterId.length === 0 ?
                       <LoginSocialTwitter
                         client_id={process.env.REACT_APP_TWITTER_CLIENT_ID || ""}
                         redirect_uri={window.location.href.includes("?") ? window.location.href.split("?")[0] : window.location.href}
@@ -395,7 +395,7 @@ const EditProfile = () => {
                   error={formSubmit && !telegram}
                   wrapperClass={classes.formWrapper}
                   startIcon={"@"}
-                  endIcon={!telegramId ? <TelegramLoginButton
+                  endIcon={!telegramId || telegramId.length === 0 ? <TelegramLoginButton
                     dataOnauth={handleTelegramResponse}
                     botName="PixiaLoginBot"
                     lang="en"
