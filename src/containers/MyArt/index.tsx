@@ -149,7 +149,7 @@ const MyArt = ({ feedMode }: PropsType) => {
     let paramsData = {
       owner: owner?.toLowerCase(),
       isPublic: owner?.toLowerCase() === account?.toLowerCase() ? undefined : true,
-      isBlind: false
+      //isBlind: false
     }
     axios.get('/api/collection', { params: paramsData })
       .then((res) => {

@@ -43,14 +43,15 @@ const BlindMint = () => {
       })
   }
 
-  const [showModal, setShowModal] = useState(false)
-  const [data, setData] = useState(null)
-  const onShow = (d: any) => {
-    if (d?.itemStatus && d?.isRequested) {
-      setShowModal(true)
-      setData(d)
+  const onMint = (_collection) => {
+    if ( !loginStatus || !account){
+      return toast.error("Please connect your wallet.")
+    }
+    if (_collection.saleCnt){
+
     }
   }
+
   return (
     <>
       <div className={`${classes.root} mainContainer`}>
@@ -71,26 +72,30 @@ const BlindMint = () => {
           <div className={classes.cardContainer}>
             {collections && collections.length > 0 && collections.map((collection, idx) => (
               <CollectionCard
-                key="idx"
+                key={idx}
                 collection={collection}
+                onMint={onMint}
               />
             ))}
             {collections && collections.length > 0 && collections.map((collection, idx) => (
               <CollectionCard
-                key="idx"
+                key={idx}
                 collection={collection}
+                onMint={onMint}
               />
             ))}
             {collections && collections.length > 0 && collections.map((collection, idx) => (
               <CollectionCard
-                key="idx"
+                key={idx}
                 collection={collection}
+                onMint={onMint}
               />
             ))}
             {collections && collections.length > 0 && collections.map((collection, idx) => (
               <CollectionCard
-                key="idx"
+                key={idx}
                 collection={collection}
+                onMint={onMint}
               />
             ))}
           </div>

@@ -5,6 +5,7 @@ import { getUser, useAuthDispatch, useAuthState } from 'context/authContext';
 import { useContext, useLayoutEffect, useRef, useState } from 'react';
 import { toast } from 'react-toastify';
 import { useDispatch } from 'react-redux';
+import moment from 'moment';
 
 interface PropsType {
 }
@@ -308,50 +309,59 @@ const useStyles = makeStyles(theme => ({
 
 interface PropsType {
   collection?: any;
+  onMint?: any;
 }
 
-const CollectionCard = ({ collection }: PropsType) => {
+const CollectionCard = ({ collection, onMint }: PropsType) => {
   const classes = useStyles();
   const { loginStatus, account } = useContext(Web3WalletContext)
   const { user } = useAuthState();
   const dispatch = useAuthDispatch();
 
+  const [ _collection, setCollection ] = useState(collection);
+
   const ref = useRef(null)
-  console.log(collection);
   return (
     <div className={`${classes.productWrapper} card1`} ref={ref} >
       <div className="top" >
-        <img src={collection?.reveal_uri} alt="" />
+        <img src={_collection?.reveal_uri} alt="" />
       </div>
       <div className="overly">
         <div style={{ display: 'flex', width: '100%', justifyContent: 'space-between' }}>
-          <p style={{ fontWeight: 500, paddingTop: 10, fontSize: 14 }}>{collection?.name}</p>
+          <p style={{ fontWeight: 500, paddingTop: 10, fontSize: 14 }}>{_collection?.name}</p>
           <div className="avatar">
-            <img src={collection?.ownerUser.logo_url} alt="" width={16} />
-            <p>{collection?.ownerUser.name}</p>
+            <img src={_collection?.ownerUser.logo_url} alt="" width={16} />
+            <p>{_collection?.ownerUser.name}</p>
           </div>
         </div>
         <div className="desc">
-          <p>{collection.description} </p>
+          <p>{_collection.description} </p>
         </div>
         <div className='sub-div1'>
           <p>Maximum NFT pieces: <strong>10,000</strong></p>
           <p style={{ textAlign: 'right' }}>Remaining NFT to Mint: <strong>1,000</strong></p>
         </div>
         <div className='sub-div2'>
-          <p>Minting Price: <strong>0.1 ETH</strong></p>
-          <p style={{ textAlign: 'right' }}>Ends in <strong>12h : 15m : 30s</strong></p>
+          <p>Minting Price: <strong>{_collection?.mint_price} ETH</strong></p>
+          {/* <p style={{ textAlign: 'right' }}>Ends in <strong>12h : 15m : 30s</strong></p> */}
+          <p style={{ textAlign: 'right' }}>Ends <strong>{moment(_collection.reveal_date).fromNow()}</strong></p>
         </div>
         <div className="footer">
           <div className='custom-input'>
-            <input placeholder='1' />
+            <input 
+              min="1" 
+              step="1" 
+              placeholder='1' 
+              onKeyDown={ (e) => !((e.keyCode > 95 && e.keyCode < 106) || (e.keyCode > 47 && e.keyCode < 58) || e.keyCode === 8) && e.preventDefault() } 
+              type='number' 
+              onChange={(e) => setCollection({..._collection, saleCnt: parseInt(e.target.value)})}/>
             <p style={{ position: 'absolute', right: 8, fontSize: 14 }}>NFT</p>
           </div>
           <div className='buttons'>
             <div style={{ width: '50%', background: '#030316', borderRadius: 8, padding: '4px 8px', }}>
-              <div>0.1 ETH</div>
+              <div>{!_collection?.saleCnt ? 0 : _collection?.saleCnt * _collection?.mint_price} ETH</div>
             </div>
-            <button><span>Mint</span></button>
+            <button onClick={() => onMint(_collection)}><span>Mint</span></button>
           </div>
         </div>
       </div>
