@@ -202,7 +202,7 @@ const MyArt = ({ feedMode }: PropsType) => {
       setDescription(e);
     }
   }
-  
+
   const [nftAsset, setNFTAsset] = useState(undefined);
   const [nftAssetType, setNFTAssetType] = useState('image');
 
@@ -328,17 +328,17 @@ const MyArt = ({ feedMode }: PropsType) => {
     if (!loginStatus || !account) {
       return toast.error("Please connect your wallet correctly.");
     }
-    if (isAddress(selectedCollection.address)){
+    if (isAddress(selectedCollection.address)) {
       return toast.error("Your collection is already on chain.")
     }
-    if (isBlind){
-      if (!mintPrice){
+    if (isBlind) {
+      if (!mintPrice) {
         return toast.error("You must set the mint price.")
       }
-      if (!nftAsset){
+      if (!nftAsset) {
         return toast.error("You must select the reveal art");
       }
-      if (!revealDate || revealDate <= Date.now()){
+      if (!revealDate || revealDate <= Date.now()) {
         return toast.error("The reveal date should be later than current date and time");
       }
     }
@@ -347,7 +347,7 @@ const MyArt = ({ feedMode }: PropsType) => {
     setProcessingModal(true);
     try {
       let revealUri = "";
-      if (isBlind && nftAsset){
+      if (isBlind && nftAsset) {
         let formData = new FormData();
         formData.append('file', nftAsset);
         const revealData = await axios.post("/api/upload_reveal", formData, {
@@ -355,13 +355,13 @@ const MyArt = ({ feedMode }: PropsType) => {
             "Content-Type": "multipart/form-data"
           }
         })
-        if (revealData && revealData.data.message == "success"){
+        if (revealData && revealData.data.message == "success") {
           revealUri = revealData.data.url;
           console.log("Reveal URI ", revealUri);
         }
       }
       const colAddr = await createNewCollection(
-        plan, 
+        plan,
         isBlind,
         mintPrice,
         ethers.constants.AddressZero,
@@ -441,6 +441,7 @@ const MyArt = ({ feedMode }: PropsType) => {
       const transResults = [];
       for (let i = 0; i < transCnt; i++) {
         const isMinted = await onMintArt(
+          collection.isBlind,
           collection.address,
           artIds.slice(i * MAX_MINT_CNT, i * MAX_MINT_CNT + (i === transCnt - 1 && lastCount !== 0 ? lastCount : MAX_MINT_CNT)),
           library.getSigner()
@@ -713,18 +714,25 @@ const MyArt = ({ feedMode }: PropsType) => {
                       isAddress(selectedCollection?.address) &&
                       // <button onClick={() => onMintArts(selectedCollection, selectedItems)}>
                       <button onClick={() => {
-                        const _artIds = [...selectedItems.map((_item) => _item.id), ...selectedCollection.artIds];
-                        const artIds = _artIds.reduce((acc, current) => {
-                          if (!acc.includes(current)) {
-                            acc.push(current);
-                          }
-                          return acc;
-                        }, []);
-                        setMintCnt(artIds.length);
-                        setShowMintCollectionModal(true);
+                        if (!selectedCollection.isBlind) {
+                          const _artIds = [...selectedItems.map((_item) => _item.id), ...selectedCollection.artIds];
+                          const artIds = _artIds.reduce((acc, current) => {
+                            if (!acc.includes(current)) {
+                              acc.push(current);
+                            }
+                            return acc;
+                          }, []);
+                          setMintCnt(artIds.length);
+                          setShowMintCollectionModal(true);
+                        }else{
+                          //Blind Reveal Function
+                        }
+
                       }}>
-                        <p>Mint Added Arts to Collection</p>
-                        <img src="/assets/icons/add_icon_01.svg" alt="" />
+                        <p>{selectedCollection.isBlind ? "Reveal Images" : "Mint Added Arts to Collection"}</p>
+                        {
+                          !selectedCollection.isBlind && <img src="/assets/icons/add_icon_01.svg" alt="" />
+                        }
                       </button>
                     }
                   </div>
@@ -955,7 +963,7 @@ const MyArt = ({ feedMode }: PropsType) => {
               <p className={classes.text_number}>0/250</p>
               <TextInput label={'Mint Price'} type='number' wrapperClass={classes.myInputWrap} placeholder='0.1' onChangeData={(d) => setMintPrice(parseFloat(d))}
                 endIcon={<span>ETH</span>} />
-              <div style={{width:'100%'}} >
+              <div style={{ width: '100%' }} >
                 <h3 className={classes.label}>Profile image</h3>
                 <UploadFile
                   label="Upload"

@@ -338,8 +338,8 @@ const CollectionCard = ({ collection, onMint }: PropsType) => {
           <p>{_collection.description} </p>
         </div>
         <div className='sub-div1'>
-          <p>Maximum NFT pieces: <strong>10,000</strong></p>
-          <p style={{ textAlign: 'right' }}>Remaining NFT to Mint: <strong>1,000</strong></p>
+          <p>Maximum NFT pieces: <strong>{_collection?.artIds.length + _collection?.itemCount}</strong></p>
+          <p style={{ textAlign: 'right' }}>Remaining NFT to Mint: <strong>{_collection?.artIds.length}</strong></p>
         </div>
         <div className='sub-div2'>
           <p>Minting Price: <strong>{_collection?.mint_price} ETH</strong></p>

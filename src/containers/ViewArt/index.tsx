@@ -76,6 +76,7 @@ const ViewArt = () => {
     const load_toast_id = toast.loading("Please wait");
     try {
       const isMinted = await onMintArt(
+        defaultCollection.isBlind,
         defaultCollection.address,
         [item.id],
         library.getSigner()

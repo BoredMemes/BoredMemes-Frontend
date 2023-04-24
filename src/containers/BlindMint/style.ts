@@ -299,7 +299,184 @@ export const useStyles = makeStyles(theme => ({
     [theme.breakpoints.down('xs')]: {
       gridTemplateColumns: 'repeat(1, 1fr)',
     },
-  }
+  },
+  modalBtns: {
+    display: 'flex',
+    alignItems: 'center',
+    width: '100%',
+    gridTemplateColumns: 'auto auto auto',
+    gap: 20,
+    padding: '20px 70px 20px ',
+    [theme.breakpoints.down('xs')]: {
+      gap: 10,
+    },
+    [theme.breakpoints.down('xs')]: {
+      padding: '10px 30px 10px ',
+      display: 'block',
+    },
+    '& button': {
+      width: '227px',
+      [theme.breakpoints.down('xs')]: {
+        fontSize: 12,
+        marginTop: 5,
+        // width: '100%',
+        borderRadius: '9px !important'
+      },
+    },
+  },
+  
+  processModalRoot: {
+    margin: '0px !important',
+    padding: 0,
+    paddingTop: '0px !important',
+  },
+  processModal: {
+    width: '550px',
+    paddingBottom: 10,
+    [theme.breakpoints.down('xs')]: {
+      width: '270px',
+    },
+    '& .success-transaction': {
+      background: 'linear-gradient(47.43deg, #2A01FF 0%, #FF1EE1 57%, #FFB332 100%);',
+      WebkitBackgroundClip: 'text',
+      WebkitTextFillColor: 'transparent',
+      color: '#262626',
+      fontWeight: 500,
+      fontSize: 20,
+      marginTop: 50,
+      marginBottom: 70,
+      textAlign: 'center',
+      width: '100%',
+      [theme.breakpoints.down('xs')]: {
+        marginTop: 30,
+        marginBottom: 30,
+      },
+    }
+  },
+  processModalTop: {
+    display: 'flex',
+    width: '100%',
+    padding: '22px 34px',
+    justifyContent: 'space-between',
+    [theme.breakpoints.down('xs')]: {
+      padding: '8px 12px',
+    },
+    '& .topTitle': {
+      color: '#343A69',
+      '& p': {
+        color: '#343A69',
+      }
+    },
+    '& span': {
+      display: 'flex',
+      alignItems: 'center',
+      '& img': {
+        width: 60,
+        height: 60,
+        marginRight: 10,
+        [theme.breakpoints.down('xs')]: {
+          marginRight: 7,
+          width: 50,
+          height: 50,
+        },
+      },
+      '& h4': {
+        fontWeight: 700,
+        fontSize: 16,
+        color: '#343A69',
+        width: 350,
+        [theme.breakpoints.down('xs')]: {
+          fontSize: 12,
+          width: 180,
+        },
+      },
+    },
+    '& button': {
+      width: 30,
+      height: 30,
+      display: 'flex',
+      alignItems: 'center',
+      justifyContent: 'center',
+      border: 'none',
+      cursor: 'pointer',
+      transition: 'all 0.3s ease',
+      background: 'rgba(127, 129, 158, 0.8)',
+      borderRadius: 30,
+      '&:hover': {
+        background: '#727272aa'
+      },
+      [theme.breakpoints.down('xs')]: {
+        marginTop: 4,
+        width: 25,
+        height: 25,
+      },
+      '& img': {
+        width: 15,
+        height: 15,
+        [theme.breakpoints.down('xs')]: {
+          width: 18,
+          height: 18,
+        },
+      },
+    },
+  },
+  processModalContent: {
+    display: 'flex',
+    alignItems: 'center',
+    justifyContent: 'center',
+    flexDirection: 'column',
+    width: '100%',
+    padding: '20px 40px',
+    [theme.breakpoints.down('xs')]: {
+      padding: '8px 12px',
+    },
+    '& span': {
+      display: 'flex',
+      alignItems: 'center',
+      margin: 20,
+
+      '& img': {
+        width: 60,
+        height: 60,
+        marginRight: 10,
+        animation: 'loadingAni 1s linear 0s infinite forwards',
+        [theme.breakpoints.down('xs')]: {
+          width: 30,
+          height: 30,
+        },
+      },
+      '& p': {
+        fontSize: 14,
+        color: '#343A69',
+        [theme.breakpoints.down('xs')]: {
+          fontSize: 12,
+        },
+      },
+
+    },
+    '& .warning': {
+      display: 'flex',
+      alignItems: 'center',
+      width: '100%',
+      border: '3px solid #703afb',
+      borderRadius: 7,
+      marginBottom: 20,
+      padding: '20px 10px',
+      background: 'white !important',
+      '& img': {
+        marginRight: 10,
+      },
+      '& p': {
+        fontSize: 14,
+        fontWeight: 500,
+        color: '#4905FB',
+        fontFamily: "'Josefin Sans', sans-serif",
+        [theme.breakpoints.down('xs')]: {
+          fontSize: 12,
+        },
+      },
+    },
+  },
 }));
 
 

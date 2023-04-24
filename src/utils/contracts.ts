@@ -2,7 +2,7 @@ import '@ethersproject/shims';
 import axios from 'axios';
 import { BigNumber, ethers } from 'ethers';
 import { toast } from 'react-toastify';
-import { getContract, getContractInfo, getContractObj, getERC20ContractObj, getNFTContract, Networks, networks } from '.';
+import { getBlindNFTContract, getContract, getContractInfo, getContractObj, getERC20ContractObj, getNFTContract, Networks, networks } from '.';
 import { BNBStakingInfo, NFTStakingInfo } from './types';
 
 export function isAddress(address) {
@@ -386,8 +386,8 @@ export async function getNFTInfo(nftAddress, chainId) {
   }
 }
 
-export async function onMintArt(nftAddress, ids, provider) {
-  const nftContract = getNFTContract(nftAddress, provider);
+export async function onMintArt(isBlind, nftAddress, ids, provider) {
+  const nftContract = isBlind ? getBlindNFTContract(nftAddress, provider) : getNFTContract(nftAddress, provider);
   const packPrice = await nftContract._PRICE();
   try {
     const tx = await nftContract.mintPack(ids, { value: packPrice * ids.length });
