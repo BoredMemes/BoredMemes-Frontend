@@ -119,27 +119,6 @@ const BlindMint = () => {
                 onMint={onMint}
               />
             ))}
-            {collections && collections.length > 0 && collections.map((collection, idx) => (
-              <CollectionCard
-                key={idx}
-                collection={collection}
-                onMint={onMint}
-              />
-            ))}
-            {collections && collections.length > 0 && collections.map((collection, idx) => (
-              <CollectionCard
-                key={idx}
-                collection={collection}
-                onMint={onMint}
-              />
-            ))}
-            {collections && collections.length > 0 && collections.map((collection, idx) => (
-              <CollectionCard
-                key={idx}
-                collection={collection}
-                onMint={onMint}
-              />
-            ))}
           </div>
         </div>
       </div>

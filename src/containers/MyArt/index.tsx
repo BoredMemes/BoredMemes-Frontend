@@ -647,6 +647,7 @@ const MyArt = ({ feedMode }: PropsType) => {
           toast.success("Added Successfully");
           toast.dismiss(load_toast_id);
           setShowAddColllectionModal(false);
+          setSelectedCollection(res.data.collection);
         }).catch((e) => {
           toast.error(e.message);
           toast.dismiss(load_toast_id);
