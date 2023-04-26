@@ -15,7 +15,7 @@ import Modal from 'components/modal';
 import FilledButton from 'components/Buttons/FilledButton';
 import TextInput from 'components/Forms/TextInput';
 import { arrayify, hashMessage } from 'ethers/lib/utils';
-import { createNewCollection, isAddress, onMintArt } from 'utils/contracts';
+import { createNewCollection, isAddress, onAirDrop, onMintArt, onRevealDate } from 'utils/contracts';
 import { useHistory, useLocation } from 'react-router-dom';
 import { CONTRACTS_BY_NETWORK, Networks } from 'utils';
 import { getUser, useAuthDispatch, useAuthState } from 'context/authContext';
@@ -76,6 +76,8 @@ const MyArt = ({ feedMode }: PropsType) => {
   const [title, setTitle] = useState('')
   const [description, setDescription] = useState('')
   const [mintPrice, setMintPrice] = useState(0)
+  const [mintCntWallet, setMintCntWallet] = useState(0)
+  const [ownCnt, setOwnCnt] = useState(0)
   const [revealDate, setRevealDate] = useState(Date.now())
   const [selectedChainId, setSelectedChainId] = useState(process.env.REACT_APP_NODE_ENV === "production" ? 1 : 5);
 
@@ -341,6 +343,9 @@ const MyArt = ({ feedMode }: PropsType) => {
       if (!revealDate || revealDate <= Date.now()) {
         return toast.error("The reveal date should be later than current date and time");
       }
+      if (ownCnt > selectedCollection.artIds.length || ownCnt >= mintCntWallet) {
+        return toast.error("Your mint number is too big.");
+      }
     }
     const load_toast_id = toast.loading("Please wait...");
     setSuccessTrans(false);
@@ -365,39 +370,50 @@ const MyArt = ({ feedMode }: PropsType) => {
         isBlind,
         mintPrice,
         ethers.constants.AddressZero,
+        selectedCollection.artIds.length,
+        mintCntWallet,
         revealUri,
         revealDate,
         selectedCollection.id, chainId, library.getSigner());
       if (isAddress(colAddr)) {
-        let metadata = {
-          isOnChain: true,
-          id: selectedCollection.id,
-          address: account,
-          itemCollection: colAddr.toString().toLowerCase(),
-          name: title,
-          description: description,
-          isBlind: isBlind,
-          mint_price: mintPrice,
-          token_addr: ethers.constants.AddressZero,
-          reveal_date: revealDate,
-          reveal_uri: revealUri
+        const isAirdropped = await onAirDrop(colAddr, selectedCollection.artIds.slice(0, ownCnt), library.getSigner())
+        if (isAirdropped) {
+          let metadata = {
+            isOnChain: true,
+            id: selectedCollection.id,
+            address: account,
+            itemCollection: colAddr.toString().toLowerCase(),
+            name: title,
+            description: description,
+            isBlind: isBlind,
+            mint_price: mintPrice,
+            token_addr: ethers.constants.AddressZero,
+            max_count_per_wallet: mintCntWallet,
+            reveal_date: revealDate,
+            reveal_uri: revealUri
+          }
+          await axios
+            .post('/api/collection/update/', metadata)
+            .then((res) => {
+              toast.success("NFT Collection is created successfully.")
+              setSuccessTrans(true);
+              toast.dismiss(load_toast_id);
+              setSelectedCollection(res.data.collection);
+              setShowPublishCollectionModal(false)
+            })
+            .catch((err) => {
+              console.log(err);
+              toast.dismiss(load_toast_id);
+              setSuccessTrans(false);
+              setProcessingModal(false);
+              toast.error("NFT Collection Creation is failed");
+            });
+        }else{
+          toast.dismiss(load_toast_id);
+          toast.error("Your ownable mint is failed");
+          setSuccessTrans(false);
+          setProcessingModal(false);  
         }
-        await axios
-          .post('/api/collection/update/', metadata)
-          .then((res) => {
-            toast.success("NFT Collection is created successfully.")
-            setSuccessTrans(true);
-            toast.dismiss(load_toast_id);
-            setSelectedCollection(res.data.collection);
-            setShowPublishCollectionModal(false)
-          })
-          .catch((err) => {
-            console.log(err);
-            toast.dismiss(load_toast_id);
-            setSuccessTrans(false);
-            setProcessingModal(false);
-            toast.error("NFT Collection Creation is failed");
-          });
       } else {
         toast.dismiss(load_toast_id);
         toast.error("NFT Collection Creation is failed");
@@ -409,6 +425,45 @@ const MyArt = ({ feedMode }: PropsType) => {
       toast.dismiss(load_toast_id);
       setSuccessTrans(false);
       setProcessingModal(false);
+    }
+  }
+
+  const onRevealImages = async () => {
+    if (!loginStatus || !account) {
+      return toast.error("Please connect your wallet correctly.")
+    }
+    if (!selectedCollection) {
+      return;
+    }
+    const load_toast_id = toast.loading("Please wait...");
+    try{
+      const isRevealed = await onRevealDate(selectedCollection.address, library.getSigner());
+      if (isRevealed){
+        let metadata = {
+          owner: account.toLowerCase(),
+          colAddr: selectedCollection.address
+        }
+        await axios
+            .post('/api/reveal_collection', metadata)
+            .then((res) => {
+              toast.success("Revealed Successfully")
+              toast.dismiss(load_toast_id);
+              setSelectedCollection(res.data.collection);
+            })
+            .catch((err) => {
+              console.log(err);
+              toast.dismiss(load_toast_id);
+              setSuccessTrans(false);
+              setProcessingModal(false);
+              toast.error("NFT Collection Creation is failed");
+            });
+      }else{
+        toast.dismiss(load_toast_id);
+        toast.error("Failed to reveal images.")
+      }
+    }catch(e){
+      console.log(e);
+      toast.dismiss(load_toast_id)
     }
   }
 
@@ -724,8 +779,9 @@ const MyArt = ({ feedMode }: PropsType) => {
                           }, []);
                           setMintCnt(artIds.length);
                           setShowMintCollectionModal(true);
-                        }else{
+                        } else {
                           //Blind Reveal Function
+                          onRevealImages();
                         }
 
                       }}>
@@ -983,6 +1039,8 @@ const MyArt = ({ feedMode }: PropsType) => {
                 wrapperClass={classes.myInputWrap}
 
                 onChangeData={(d) => setRevealDate(new Date(d).getTime())} />
+              <TextInput label={'Max Number of Mint per Wallet'} type='number' wrapperClass={classes.myInputWrap} placeholder='2' onChangeData={(d) => setMintCntWallet(parseFloat(d))} />
+              <TextInput label={'Number of Mint for the Owner'} type='number' wrapperClass={classes.myInputWrap} placeholder='2' onChangeData={(d) => setOwnCnt(parseFloat(d))} />
             </div>
             <div className={classes.modalBtns}>
               {/* <FilledButton color='custom' handleClick={() => setShowEditCollectionModal(false)} /> */}

@@ -104,6 +104,16 @@
             },
             {
                 "internalType": "uint256",
+                "name": "totalSupply",
+                "type": "uint256"
+            },
+            {
+                "internalType": "uint256",
+                "name": "maxOwnCnt",
+                "type": "uint256"
+            },
+            {
+                "internalType": "uint256",
                 "name": "collectionId",
                 "type": "uint256"
             }
@@ -219,12 +229,12 @@
                 "type": "address"
             },
             {
-                "internalType": "uint64",
-                "name": "_revealTime",
-                "type": "uint64"
+                "internalType": "uint256",
+                "name": "maxOwnCnt_",
+                "type": "uint256"
             }
         ],
-        "name": "setBaseURI",
+        "name": "setMaxOwnCnt",
         "outputs": [],
         "stateMutability": "nonpayable",
         "type": "function"
@@ -256,6 +266,24 @@
             }
         ],
         "name": "setPrice",
+        "outputs": [],
+        "stateMutability": "nonpayable",
+        "type": "function"
+    },
+    {
+        "inputs": [
+            {
+                "internalType": "address",
+                "name": "colAddr",
+                "type": "address"
+            },
+            {
+                "internalType": "uint64",
+                "name": "_revealTime",
+                "type": "uint64"
+            }
+        ],
+        "name": "setRevealTime",
         "outputs": [],
         "stateMutability": "nonpayable",
         "type": "function"
@@ -315,6 +343,24 @@
             }
         ],
         "name": "setRoyaltyInfos",
+        "outputs": [],
+        "stateMutability": "nonpayable",
+        "type": "function"
+    },
+    {
+        "inputs": [
+            {
+                "internalType": "address",
+                "name": "colAddr",
+                "type": "address"
+            },
+            {
+                "internalType": "uint256",
+                "name": "totalSupply_",
+                "type": "uint256"
+            }
+        ],
+        "name": "setTotalSupply",
         "outputs": [],
         "stateMutability": "nonpayable",
         "type": "function"

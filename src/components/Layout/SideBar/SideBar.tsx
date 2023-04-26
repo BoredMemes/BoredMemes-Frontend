@@ -82,7 +82,7 @@ export default function SideBar({ menuOpen, setMenuOpen }: MenuType) {
   const { theme, setTheme } = useContext(ThemeContext)
   const onChangeRoute = (route) => {
     history.push(route);
-    if (route.indexOf('art') >= 0)window.location.reload();
+    if (route.indexOf('art') >= 0) window.location.reload();
   }
 
   useEffect(() => {
@@ -139,11 +139,14 @@ export default function SideBar({ menuOpen, setMenuOpen }: MenuType) {
           <li className={path === "" || path.indexOf('community_feed') >= 0 || path.indexOf('personal_feed') >= 0 || path.indexOf('bookmarks') >= 0 ? 'selected' : ''}>
             <div onClick={() => onChangeRoute("/community_feed")}><img src="/assets/icons/community_icon.svg" alt="" /> Explorer</div>
           </li>
-          <li className={path.indexOf('blind_mint') >= 0 ? 'selected' : ''}>
-            <div onClick={() => onChangeRoute("/blind_mint")}>
-              <i className="fab fa-microsoft"></i>
-              Blind Mint</div>
-          </li>
+          {
+            loginStatus && <li className={path.indexOf('blind_mint') >= 0 ? 'selected' : ''}>
+              <div onClick={() => onChangeRoute("/blind_mint")}>
+                <i className="fab fa-microsoft"></i>
+                Blind Mint</div>
+            </li>
+          }
+
           {/* <li className={path.indexOf('bookmarks') >= 0 ? 'selected' : ''}>
             <div onClick={() => onChangeRoute("/bookmarks")}>
               <i className="fas fa-bookmark"></i>

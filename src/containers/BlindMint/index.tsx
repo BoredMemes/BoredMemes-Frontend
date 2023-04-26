@@ -77,6 +77,7 @@ const BlindMint = () => {
         if (isMinted) {
           toast.success("Minted Successfully");
           setSuccessTrans(true);
+          window.location.reload();
         } else {
           setSuccessTrans(false);
           setProcessingModal(false);
