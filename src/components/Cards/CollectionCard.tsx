@@ -366,7 +366,7 @@ const CollectionCard = ({ collection, onMint }: PropsType) => {
       </div>
       <div className="overly">
         <div style={{ display: 'flex', width: '100%', justifyContent: 'space-between' }}>
-          <p style={{ fontWeight: 500, paddingTop: 10, fontSize: 14 }}>{_collection?.name + !_collection.isRevealed ? (" - " + _collection?.total_supply + " NFT") : ""}</p>
+          <p style={{ fontWeight: 500, paddingTop: 10, fontSize: 14 }}>{_collection?.name + (!_collection.isRevealed ? (" - " + _collection?.total_supply + " NFT") : "")}</p>
           <div className="avatar">
             <img src={_collection?.ownerUser.logo_url} alt="" width={16} />
             <p>{_collection?.ownerUser.name}</p>
