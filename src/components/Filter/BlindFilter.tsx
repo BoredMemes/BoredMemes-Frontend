@@ -5,9 +5,9 @@ import { useContext, useEffect, useState } from 'react';
 interface PropsType {
   isLoading?: boolean;
   setLoading?: any;
-  filter?: string;
-  setFilter?: any;
   setSearchStr?: any;
+  setEnded?: any;
+  isEnded?: boolean;
 }
 
 const useStyles = makeStyles(theme => ({
@@ -288,7 +288,7 @@ const useStyles = makeStyles(theme => ({
 
 }));
 
-const BlindFilter = ({ isLoading, setLoading, filter, setFilter, setSearchStr}: PropsType) => {
+const BlindFilter = ({ isLoading, setLoading, setSearchStr, isEnded, setEnded}: PropsType) => {
   const classes = useStyles();
   const { loginStatus, account } = useContext(Web3WalletContext)
   const [searchTxt, setSearchTxt] = useState("");
@@ -326,10 +326,10 @@ const BlindFilter = ({ isLoading, setLoading, filter, setFilter, setSearchStr}: 
           </div>
 
           <span className="select">
-            <button onClick={() => setFilter('hot')} className={`${filter === 'hot' ? 'activeBtn filterBtn' : 'filterBtn'}`}>Active</button>
+            <button onClick={() => setEnded(false)} className={`${!isEnded? 'activeBtn filterBtn' : 'filterBtn'}`}>Active</button>
           </span>
           <span className="select">
-            <button onClick={() => setFilter('new')} className={`${filter === 'new' ? 'activeBtn filterBtn' : 'filterBtn'}`}>Ended</button>
+            <button onClick={() => setEnded(true)} className={`${isEnded? 'activeBtn filterBtn' : 'filterBtn'}`}>Ended</button>
           </span>
         </div>
       </div>

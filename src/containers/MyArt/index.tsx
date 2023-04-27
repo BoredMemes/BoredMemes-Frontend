@@ -69,6 +69,7 @@ const MyArt = ({ feedMode }: PropsType) => {
   const [showPublishCollectionModal, setShowPublishCollectionModal] = useState(false)
   const [showMintCollectionModal, setShowMintCollectionModal] = useState(false)
   const [showBlindCollectionModal, setShowBlindCollectionModal] = useState(false)
+  const [showRevealModal, setShowRevealModal] = useState(false)
   const [processingModal, setProcessingModal] = useState(false);
   const [successTrans, setSuccessTrans] = useState(false);
   const [isDetail, setIsDetail] = useState(false);
@@ -343,8 +344,11 @@ const MyArt = ({ feedMode }: PropsType) => {
       if (!revealDate || revealDate <= Date.now()) {
         return toast.error("The reveal date should be later than current date and time");
       }
-      if (ownCnt > selectedCollection.artIds.length || ownCnt >= mintCntWallet) {
-        return toast.error("Your mint number is too big.");
+      if (mintCntWallet <= 0 || mintCntWallet > 30){
+        return toast.error("Max Number of Mint per Wallet can not be more than 30 or less than 0")
+      }
+      if (ownCnt > selectedCollection.artIds.length || ownCnt > mintCntWallet) {
+        return toast.error("Your ownable number can not be more than " + Math.min(selectedCollection.artIds.length, mintCntWallet));
       }
     }
     const load_toast_id = toast.loading("Please wait...");
@@ -376,7 +380,7 @@ const MyArt = ({ feedMode }: PropsType) => {
         revealDate,
         selectedCollection.id, chainId, library.getSigner());
       if (isAddress(colAddr)) {
-        const isAirdropped = await onAirDrop(colAddr, selectedCollection.artIds.slice(0, ownCnt), library.getSigner())
+        const isAirdropped = ownCnt === 0 ? true : await onAirDrop(colAddr, selectedCollection.artIds.slice(0, ownCnt), library.getSigner())
         if (isAirdropped) {
           let metadata = {
             isOnChain: true,
@@ -386,6 +390,7 @@ const MyArt = ({ feedMode }: PropsType) => {
             name: title,
             description: description,
             isBlind: isBlind,
+            total_supply: selectedCollection.artIds.length,
             mint_price: mintPrice,
             token_addr: ethers.constants.AddressZero,
             max_count_per_wallet: mintCntWallet,
@@ -767,7 +772,7 @@ const MyArt = ({ feedMode }: PropsType) => {
                       </button>
                     }
                     {
-                      isAddress(selectedCollection?.address) &&
+                      isAddress(selectedCollection?.address) && (selectedCollection?.isBlind ? !selectedCollection?.isRevealed : true) &&
                       // <button onClick={() => onMintArts(selectedCollection, selectedItems)}>
                       <button onClick={() => {
                         if (!selectedCollection.isBlind) {
@@ -782,7 +787,7 @@ const MyArt = ({ feedMode }: PropsType) => {
                           setShowMintCollectionModal(true);
                         } else {
                           //Blind Reveal Function
-                          onRevealImages();
+                          setShowRevealModal(true);
                         }
 
                       }}>
@@ -1090,6 +1095,40 @@ const MyArt = ({ feedMode }: PropsType) => {
         </>}
       />
       <Modal
+        show={showRevealModal}
+        maxWidth='sm'
+        contentClass={classes.modalRootContent}
+        children={<>
+          <div className={classes.modal}>
+            <div className={`${classes.modalTop} customModalTop`}>
+              <span className='topTitle'>
+                <div>
+                  <h4>{"Reveal Images and burn remaining NFTs"}</h4>
+                </div>
+              </span>
+              <button className="closeBtn" onClick={() => setShowRevealModal(false)}><img src="/assets/icons/close_icon_01.svg" alt="" /></button>
+            </div>
+            <div className={classes.modalContent}>
+              <p>Make sure the Minting period has ended before confirming your action.</p>
+              <p>If the minting is still active, revealing the Images will end your sale and burn all remaining NFTs.</p>
+            </div>
+            <div className={classes.modalBtns}>
+              {/* <FilledButton color='custom' handleClick={() => setShowEditCollectionModal(false)} /> */}
+              <button className='newCollectionCard' onClick={() => {
+                setShowRevealModal(false);
+              }}>
+                <p>Cancel</p>
+              </button>
+              <FilledButton label={'Reveal Images'} handleClick={() => {
+                setShowRevealModal(false);
+                onRevealImages();
+              }} />
+            </div>
+          </div>
+
+        </>}
+      />
+      <Modal
         show={showAddColllectionModal}
         maxWidth='sm'
         contentClass={classes.modalAddRootContent}
@@ -1248,7 +1287,7 @@ const MyArt = ({ feedMode }: PropsType) => {
                         setProcessingModal(false);
                         history.push("/staking")
                       }}
-                    > Staking Pools </button>
+                    > Blind Mint </button>
                   </div>
                 </div>
               </>

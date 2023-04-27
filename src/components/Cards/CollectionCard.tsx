@@ -142,6 +142,24 @@ const useStyles = makeStyles(theme => ({
               textAlign: 'center', width: '100%', fontSize: 14
             }
           }
+        },
+        '& .tradebuttons': {
+          width: '100%', display: 'flex', justifyContent: 'space-between', position: 'relative', marginLeft: 5,
+          '& button': {
+            width: '100%', borderRadius: 8, padding: '4px 8px', marginLeft: 4, cursor: 'pointer',
+            border: '1px solid transparent',
+            background: 'transparent', backgroundImage: 'linear-gradient(90deg, #333, #333),linear-gradient(47.43deg, #2A01FF 0%, #FF1EE1 40%, #FFB332 100%)',
+            backgroundClip: 'padding-box, border-box', backgroundOrigin: 'border-box',
+            '& span': {
+              background: 'linear-gradient(47.43deg, #2A01FF 0%, #FF1EE1 57%, #FFB332 100%)', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent',
+            }
+          },
+          '& div': {
+            '& div': {
+              background: 'linear-gradient(47.43deg, #2A01FF 0%, #FF1EE1 57%, #FFB332 100%)', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent',
+              textAlign: 'center', width: '100%', fontSize: 14
+            }
+          }
         }
       },
       '& .avatar': {
@@ -318,7 +336,7 @@ const CollectionCard = ({ collection, onMint }: PropsType) => {
   const { user } = useAuthState();
   const dispatch = useAuthDispatch();
 
-  const [ _collection, setCollection ] = useState(collection);
+  const [_collection, setCollection] = useState(collection);
 
   const ref = useRef(null)
   return (
@@ -338,31 +356,46 @@ const CollectionCard = ({ collection, onMint }: PropsType) => {
           <p>{_collection.description} </p>
         </div>
         <div className='sub-div1'>
-          <p>Maximum NFT pieces: <strong>{_collection?.artIds.length + _collection?.itemCount}</strong></p>
-          <p style={{ textAlign: 'right' }}>Remaining NFT to Mint: <strong>{_collection?.artIds.length}</strong></p>
+          {
+            !_collection?.isRevealed ? <p>Maximum NFT pieces: <strong>{_collection?.total_supply}</strong></p> : 
+            <p>NFT Minted: <strong>{_collection?.itemCount}</strong></p>
+          }
+          {
+            !_collection?.isRevealed ? <p style={{ textAlign: 'right' }}>Remaining NFT to Mint: <strong>{_collection?.artIds.length}</strong></p> : 
+            <p style={{ textAlign: 'right' }}>NFT Burned: <strong>{_collection?.total_supply - _collection?.itemCount}</strong></p>
+          }
+          
         </div>
         <div className='sub-div2'>
           <p>Minting Price: <strong>{_collection?.mint_price} ETH</strong></p>
           {/* <p style={{ textAlign: 'right' }}>Ends in <strong>12h : 15m : 30s</strong></p> */}
-          <p style={{ textAlign: 'right' }}>Ends <strong>{moment(_collection.reveal_date).fromNow()}</strong></p>
+          {!_collection?.isRevealed ? <p style={{ textAlign: 'right' }}>Ends <strong>{moment(_collection.reveal_date).fromNow()}</strong></p> :
+          <p style={{ textAlign: 'right' }}>Ended <strong>{moment(_collection.reveal_date).format("MMMM DD, YYYY")}</strong></p>
+          }
         </div>
         <div className="footer">
-          <div className='custom-input'>
-            <input 
-              min="1" 
-              step="1" 
-              placeholder='1' 
-              onKeyDown={ (e) => !((e.keyCode > 95 && e.keyCode < 106) || (e.keyCode > 47 && e.keyCode < 58) || e.keyCode === 8) && e.preventDefault() } 
-              type='number' 
-              onChange={(e) => setCollection({..._collection, saleCnt: parseInt(e.target.value)})}/>
-            <p style={{ position: 'absolute', right: 8, fontSize: 14 }}>NFT</p>
-          </div>
-          <div className='buttons'>
-            <div style={{ width: '50%', background: '#030316', borderRadius: 8, padding: '4px 8px', }}>
-              <div>{!_collection?.saleCnt ? 0 : _collection?.saleCnt * _collection?.mint_price} ETH</div>
+          {
+            !_collection?.isRevealed ? <>
+              <div className='custom-input'>
+                <input
+                  min="1"
+                  step="1"
+                  placeholder='1'
+                  onKeyDown={(e) => !((e.keyCode > 95 && e.keyCode < 106) || (e.keyCode > 47 && e.keyCode < 58) || e.keyCode === 8) && e.preventDefault()}
+                  type='number'
+                  onChange={(e) => setCollection({ ..._collection, saleCnt: parseInt(e.target.value) })} />
+                <p style={{ position: 'absolute', right: 8, fontSize: 14 }}>NFT</p>
+              </div>
+              <div className='buttons'>
+                <div style={{ width: '50%', background: '#030316', borderRadius: 8, padding: '4px 8px', }}>
+                  <div>{!_collection?.saleCnt ? 0 : _collection?.saleCnt * _collection?.mint_price} ETH</div>
+                </div>
+                <button onClick={() => onMint(_collection)}><span>Mint</span></button>
+              </div>
+            </> : <div className='tradebuttons'>
+              <button onClick={() => window.open("https://testnets.opensea.io/", "_blank")}><span>Trade On Opensea</span></button>
             </div>
-            <button onClick={() => onMint(_collection)}><span>Mint</span></button>
-          </div>
+          }
         </div>
       </div>
     </div>

@@ -29,6 +29,7 @@ const BlindMint = () => {
   const [collections, setCollections] = useState(undefined);
   const [isLoading, setLoading] = useState(false);
   const [filter, setFilter] = useState('new');
+  const [isEnded, setEnded] = useState(false)
   const [searchStr, setSearchStr] = useState('');
 
   const [processingModal, setProcessingModal] = useState(false);
@@ -105,19 +106,22 @@ const BlindMint = () => {
         <BlindFilter
           isLoading={isLoading}
           setLoading={setLoading}
-          filter={filter}
-          setFilter={setFilter}
           setSearchStr={setSearchStr}
+          isEnded={isEnded}
+          setEnded={setEnded}
         />
 
         <div className={`${classes.content} card2`}>
           <div className={classes.cardContainer}>
-            {collections && collections.length > 0 && collections.map((collection, idx) => (
-              <CollectionCard
-                key={idx}
-                collection={collection}
-                onMint={onMint}
-              />
+            {collections && collections.length > 0 && 
+              collections
+              .filter((collection) => collection.isRevealed === isEnded)
+              .map((collection, idx) => (
+                <CollectionCard
+                  key={idx}
+                  collection={collection}
+                  onMint={onMint}
+                />
             ))}
           </div>
         </div>
