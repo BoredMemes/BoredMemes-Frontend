@@ -109,7 +109,7 @@
             },
             {
                 "internalType": "uint256",
-                "name": "maxMintCnt",
+                "name": "maxOwnCnt",
                 "type": "uint256"
             },
             {
@@ -230,11 +230,11 @@
             },
             {
                 "internalType": "uint256",
-                "name": "maxMintCnt_",
+                "name": "maxOwnCnt_",
                 "type": "uint256"
             }
         ],
-        "name": "setMaxMintCnt",
+        "name": "setMaxOwnCnt",
         "outputs": [],
         "stateMutability": "nonpayable",
         "type": "function"

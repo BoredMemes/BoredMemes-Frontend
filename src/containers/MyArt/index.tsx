@@ -348,6 +348,7 @@ const MyArt = ({ feedMode }: PropsType) => {
         return toast.error("Max Number of Mint per Wallet can not be more than 30 or less than 0")
       }
       if (ownCnt > selectedCollection.artIds.length || ownCnt > mintCntWallet) {
+        console.log(ownCnt, selectedCollection.artIds.length, mintCntWallet)
         return toast.error("Your ownable number can not be more than " + Math.min(selectedCollection.artIds.length, mintCntWallet));
       }
     }
@@ -651,8 +652,8 @@ const MyArt = ({ feedMode }: PropsType) => {
         .then((res) => {
           toast.success("Added Successfully");
           toast.dismiss(load_toast_id);
+          fetchCollections();
           setShowAddColllectionModal(false);
-          setSelectedCollection(res.data.collection);
         }).catch((e) => {
           toast.error(e.message);
           toast.dismiss(load_toast_id);
@@ -1273,7 +1274,7 @@ const MyArt = ({ feedMode }: PropsType) => {
                     }} onClick={() => {
                       setSuccessTrans(false);
                       setProcessingModal(false);
-                      history.push("/blind_mint")
+                      history.push("/art/" + account)
                     }}
                       className="cancel-btn">
                       My Art
@@ -1285,9 +1286,9 @@ const MyArt = ({ feedMode }: PropsType) => {
                       onClick={() => {
                         setSuccessTrans(false);
                         setProcessingModal(false);
-                        history.push("/staking")
+                        history.push("/blind_mint")
                       }}
-                    > Blind Mint </button>
+                    > Blind Mint Page</button>
                   </div>
                 </div>
               </>

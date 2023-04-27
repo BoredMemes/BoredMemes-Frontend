@@ -6,6 +6,7 @@ import { useContext, useLayoutEffect, useRef, useState } from 'react';
 import { toast } from 'react-toastify';
 import { useDispatch } from 'react-redux';
 import moment from 'moment';
+import { isAddress } from '@ethersproject/address';
 
 interface PropsType {
 }
@@ -339,6 +340,25 @@ const CollectionCard = ({ collection, onMint }: PropsType) => {
   const [_collection, setCollection] = useState(collection);
 
   const ref = useRef(null)
+
+  const copyHandle = () => {
+    if (!isAddress(_collection.address))return;
+    let textarea = document.createElement("textarea");
+    textarea.textContent = _collection.address;
+    //textarea.textContent = "dfghjkl;";
+    textarea.style.position = "fixed"; // Prevent scrolling to bottom of page in Microsoft Edge.
+    document.body.appendChild(textarea);
+    textarea.select();
+    try {
+      return document.execCommand("copy"); // Security exception may be thrown by some browsers.
+    } catch (ex) {
+      console.warn("Copy to clipboard failed.", ex);
+      return prompt("Copy to clipboard: Ctrl+C, Enter");
+    } finally {
+      toast.success("Copied to Clipboard");
+      document.body.removeChild(textarea);
+    }
+  };
   return (
     <div className={`${classes.productWrapper} card1`} ref={ref} >
       <div className="top" >
@@ -346,7 +366,7 @@ const CollectionCard = ({ collection, onMint }: PropsType) => {
       </div>
       <div className="overly">
         <div style={{ display: 'flex', width: '100%', justifyContent: 'space-between' }}>
-          <p style={{ fontWeight: 500, paddingTop: 10, fontSize: 14 }}>{_collection?.name}</p>
+          <p style={{ fontWeight: 500, paddingTop: 10, fontSize: 14 }}>{_collection?.name + !_collection.isRevealed ? (" - " + _collection?.total_supply + " NFT") : ""}</p>
           <div className="avatar">
             <img src={_collection?.ownerUser.logo_url} alt="" width={16} />
             <p>{_collection?.ownerUser.name}</p>
@@ -357,7 +377,7 @@ const CollectionCard = ({ collection, onMint }: PropsType) => {
         </div>
         <div className='sub-div1'>
           {
-            !_collection?.isRevealed ? <p>Maximum NFT pieces: <strong>{_collection?.total_supply}</strong></p> : 
+            !_collection?.isRevealed ? <p>Mintable NFT per User: <strong>{_collection?.max_count_per_wallet}</strong></p> : 
             <p>NFT Minted: <strong>{_collection?.itemCount}</strong></p>
           }
           {
@@ -393,7 +413,7 @@ const CollectionCard = ({ collection, onMint }: PropsType) => {
                 <button onClick={() => onMint(_collection)}><span>Mint</span></button>
               </div>
             </> : <div className='tradebuttons'>
-              <button onClick={() => window.open("https://testnets.opensea.io/", "_blank")}><span>Trade On Opensea</span></button>
+              <button onClick={copyHandle}><span>NFT Collection Address</span></button>
             </div>
           }
         </div>

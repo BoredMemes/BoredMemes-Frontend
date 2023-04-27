@@ -58,11 +58,11 @@ export const CONTRACTS_BY_NETWORK = {
       abi: PixiaAiABI
     },
     PixiaBlindNFT: {
-      address: '0xEcF35FeF993FA1E6474086ac3Db9A40465C0Da81',
+      address: '0xF0a4fb3a8b3C02296e26918FE066E04C2D5e1B4a',
       abi: PixiaBlindNFTABI,
     },
     PixiaBlindNFTFactory: {
-      address: '0x99aFd3ed38C97F65229d406ff5Bc2D8f436c6035',
+      address: '0x3a51408b59fA38996b3455983486b9cC3D9b3993',
       abi: PixiaBlindNFTFactoryABI
     },
     PixiaNFT: {
