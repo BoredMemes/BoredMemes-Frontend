@@ -347,7 +347,7 @@ const MyArt = ({ feedMode }: PropsType) => {
       if (mintCntWallet <= 0 || mintCntWallet > 30){
         return toast.error("Max Number of Mint per Wallet can not be more than 30 or less than 0")
       }
-      if (ownCnt > selectedCollection.total_supply || ownCnt > MAX_MINT_CNT) {
+      if (ownCnt > selectedCollection.artIds.length || ownCnt > MAX_MINT_CNT) {
         return toast.error("Your ownable number can not be more than " + Math.min(selectedCollection.total_supply, MAX_MINT_CNT));
       }
     }
