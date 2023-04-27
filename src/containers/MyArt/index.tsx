@@ -1018,7 +1018,7 @@ const MyArt = ({ feedMode }: PropsType) => {
             </div>
             <div className={classes.modalContent}>
               <p>Once the blind mint has started, no additional art pieces can be added. Make sure to have added the correct number of art pieces before continuing.</p>
-              <p>Your Blind mint collection includes a maximum of {selectedCollection?.total_supply} NFT</p>
+              <p>Your Blind mint collection includes a maximum of {selectedCollection?.artIds.length} NFT</p>
               <TextInput label={'Title'} wrapperClass={classes.myInputWrap} value={!isDetail ? title : selectedCollection?.name} placeholder='First Collection' onChangeData={(d) => onChangeTitle(d)} />
 
               <TextInput isMulti label={<>{'Description'} <span>Optional</span></>} wrapperClass={classes.myInputWrap} placeholder='Elon Musk as Santa Floki' value={!isDetail ? description : selectedCollection?.description} onChangeData={(d) => onChangeDescription(d)} />
