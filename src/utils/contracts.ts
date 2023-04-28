@@ -2,7 +2,7 @@ import '@ethersproject/shims';
 import axios from 'axios';
 import { BigNumber, ethers } from 'ethers';
 import { toast } from 'react-toastify';
-import { getContract, getContractInfo, getContractObj, getERC20ContractObj, getNFTContract, Networks, networks } from '.';
+import { getBlindNFTContract, getContract, getContractInfo, getContractObj, getERC20ContractObj, getNFTContract, Networks, networks } from '.';
 import { BNBStakingInfo, NFTStakingInfo } from './types';
 
 export function isAddress(address) {
@@ -322,11 +322,15 @@ export async function onInvest(refAddress, chainId, provider) {
   }
 }
 
-export async function createNewCollection(plan, colId, chainId, provider) {
-  const factoryContract = getContractObj("PixiaNFTFactory", chainId, provider);
-  const factoryContractInfo = getContractInfo("PixiaNFTFactory", chainId);
+export async function createNewCollection(plan, isBlind, mint_price, token_addr, totalSupply, mintCntWallet, revealUri, revealTime, colId, chainId, provider) {
+  const factoryContract = getContractObj(isBlind ? "PixiaBlindNFTFactory" : "PixiaNFTFactory", chainId, provider);
+  const factoryContractInfo = getContractInfo(isBlind ? "PixiaBlindNFTFactory" : "PixiaNFTFactory", chainId);
   try {
-    const tx = await factoryContract.createCollection(plan, colId, {
+    const price = isBlind ? token_addr === ethers.constants.AddressZero ? ethers.utils.parseEther(mint_price + "") : ethers.utils.parseUnits(mint_price + "", await getDecimal(token_addr, chainId)) : 0;
+    const tx = isBlind ? await factoryContract.createCollection(plan, price, revealUri, Math.floor(revealTime / 1000), totalSupply, mintCntWallet, colId, {
+      value: ethers.utils.parseEther(plan === 0 ? "0" : chainId === Networks.BSC_Testnet || chainId === Networks.ETH_TestNet ? "0.001" :
+        chainId === Networks.BSC_Mainnet ? "15" : "10")
+    }) : await factoryContract.createCollection(plan, colId, {
       value: ethers.utils.parseEther(plan === 0 ? "0" : chainId === Networks.BSC_Testnet || chainId === Networks.ETH_TestNet ? "0.001" :
         chainId === Networks.BSC_Mainnet ? "15" : "3")
     });
@@ -382,14 +386,41 @@ export async function getNFTInfo(nftAddress, chainId) {
   }
 }
 
-export async function onMintArt(nftAddress, ids, provider) {
-  const nftContract = getNFTContract(nftAddress, provider);
-  const packPrice = await nftContract._PRICE();
+export async function onAirDrop(nftAddress, ids, provider) {
+  const nftContract = getBlindNFTContract(nftAddress, provider);
   try {
-    const tx = await nftContract.mintPack(ids, { value: packPrice * ids.length });
+    const tx = await nftContract.airdrop(ids);
     await tx.wait(1);
     return true;
   } catch (e) {
+    const revertMsg = JSON.parse(JSON.stringify(e))["reason"];
+    if (revertMsg) toast.error(revertMsg.replace("execution reverted: ", ""));
+    return false;
+  }
+}
+
+export async function onRevealDate(nftAddress, provider) {
+  const nftContract = getBlindNFTContract(nftAddress, provider);
+  try {
+    const tx = await nftContract.setRevealTime(Date.now());
+    await tx.wait(1);
+    return true;
+  } catch (e) {
+    const revertMsg = JSON.parse(JSON.stringify(e))["reason"];
+    if (revertMsg) toast.error(revertMsg.replace("execution reverted: ", ""));
+    return false;
+  }
+}
+
+export async function onMintArt(isBlind, nftAddress, ids, provider) {
+  const nftContract = isBlind ? getBlindNFTContract(nftAddress, provider) : getNFTContract(nftAddress, provider);
+  const packPrice = await nftContract._PRICE();
+  try {
+    const tx = await nftContract.mintPack(ids, { value: BigNumber.from(String(packPrice * ids.length)) });
+    await tx.wait(1);
+    return true;
+  } catch (e) {
+    console.log(e);
     const revertMsg = JSON.parse(JSON.stringify(e))["reason"];
     if (revertMsg) toast.error(revertMsg.replace("execution reverted: ", ""));
     return false;

@@ -1,7 +1,10 @@
 import { Contract } from '@ethersproject/contracts';
+import ERC20ABI from 'contracts/ERC20ABI.json';
 import PixiaAiABI from 'contracts/PixiaAiABI.json';
 import PixiaNFTABI from 'contracts/PixiaNFTABI.json';
 import PixiaNFTFactoryABI from 'contracts/PixiaNFTFactoryABI.json';
+import PixiaBlindNFTABI from 'contracts/PixiaBlindNFTABI.json';
+import PixiaBlindNFTFactoryABI from 'contracts/PixiaBlindNFTFactoryABI.json';
 import PixiaAiPoolABI from 'contracts/PixiaAiPoolABI.json';
 import PixiaAiPoolFactoryABI from 'contracts/PixiaAiPoolFactoryABI.json';
 import PixiaAiDistributorABI from 'contracts/PixiaAiDistributorABI.json';
@@ -19,6 +22,14 @@ export const CONTRACTS_BY_NETWORK = {
     PixiaAi: {
       address: '0x67675239Fa58c84e75f947c14f566842Dccb69Ae',
       abi: PixiaAiABI
+    },
+    PixiaBlindNFT: {
+      address: '',
+      abi: PixiaBlindNFTABI,
+    },
+    PixiaBlindNFTFactory: {
+      address: '',
+      abi: PixiaBlindNFTFactoryABI
     },
     PixiaNFT: {
       address: '0x4F195071AC30Bfb02Ec516a8848ae46999a56cA6',
@@ -45,6 +56,14 @@ export const CONTRACTS_BY_NETWORK = {
     PixiaAi: {
       address: '0x4f8f53E17Ce053C5877eb17A2DAC2BA3d786b70c',
       abi: PixiaAiABI
+    },
+    PixiaBlindNFT: {
+      address: '0xAdfA1f29ee7943e533DF9E5f1897ceD99439682f',
+      abi: PixiaBlindNFTABI,
+    },
+    PixiaBlindNFTFactory: {
+      address: '0x44c06ee9d1b4C4D6108AD1a08B571d965d6Da882',
+      abi: PixiaBlindNFTFactoryABI
     },
     PixiaNFT: {
       address: '0x180aFE538f6D5f5B5db88F821506ECFEd195DC18',
@@ -104,6 +123,7 @@ export const networks = {
   }
 }
 export function getCurrentNetwork() {
+  console.log(window.localStorage.getItem(chainIdLocalStorageKey) || process.env.REACT_APP_ETH_NETWORK_ID)
   return window.localStorage.getItem(chainIdLocalStorageKey) || process.env.REACT_APP_ETH_NETWORK_ID;
 }
 
@@ -119,229 +139,6 @@ export function getContractInfo(name, chainId = null) {
     return null;
   }
 }
-
-export const ERC20_ABI = [
-  {
-      "constant": true,
-      "inputs": [],
-      "name": "name",
-      "outputs": [
-          {
-              "name": "",
-              "type": "string"
-          }
-      ],
-      "payable": false,
-      "stateMutability": "view",
-      "type": "function"
-  },
-  {
-      "constant": false,
-      "inputs": [
-          {
-              "name": "_spender",
-              "type": "address"
-          },
-          {
-              "name": "_value",
-              "type": "uint256"
-          }
-      ],
-      "name": "approve",
-      "outputs": [
-          {
-              "name": "",
-              "type": "bool"
-          }
-      ],
-      "payable": false,
-      "stateMutability": "nonpayable",
-      "type": "function"
-  },
-  {
-      "constant": true,
-      "inputs": [],
-      "name": "totalSupply",
-      "outputs": [
-          {
-              "name": "",
-              "type": "uint256"
-          }
-      ],
-      "payable": false,
-      "stateMutability": "view",
-      "type": "function"
-  },
-  {
-      "constant": false,
-      "inputs": [
-          {
-              "name": "_from",
-              "type": "address"
-          },
-          {
-              "name": "_to",
-              "type": "address"
-          },
-          {
-              "name": "_value",
-              "type": "uint256"
-          }
-      ],
-      "name": "transferFrom",
-      "outputs": [
-          {
-              "name": "",
-              "type": "bool"
-          }
-      ],
-      "payable": false,
-      "stateMutability": "nonpayable",
-      "type": "function"
-  },
-  {
-      "constant": true,
-      "inputs": [],
-      "name": "decimals",
-      "outputs": [
-          {
-              "name": "",
-              "type": "uint8"
-          }
-      ],
-      "payable": false,
-      "stateMutability": "view",
-      "type": "function"
-  },
-  {
-      "constant": true,
-      "inputs": [
-          {
-              "name": "_owner",
-              "type": "address"
-          }
-      ],
-      "name": "balanceOf",
-      "outputs": [
-          {
-              "name": "balance",
-              "type": "uint256"
-          }
-      ],
-      "payable": false,
-      "stateMutability": "view",
-      "type": "function"
-  },
-  {
-      "constant": true,
-      "inputs": [],
-      "name": "symbol",
-      "outputs": [
-          {
-              "name": "",
-              "type": "string"
-          }
-      ],
-      "payable": false,
-      "stateMutability": "view",
-      "type": "function"
-  },
-  {
-      "constant": false,
-      "inputs": [
-          {
-              "name": "_to",
-              "type": "address"
-          },
-          {
-              "name": "_value",
-              "type": "uint256"
-          }
-      ],
-      "name": "transfer",
-      "outputs": [
-          {
-              "name": "",
-              "type": "bool"
-          }
-      ],
-      "payable": false,
-      "stateMutability": "nonpayable",
-      "type": "function"
-  },
-  {
-      "constant": true,
-      "inputs": [
-          {
-              "name": "_owner",
-              "type": "address"
-          },
-          {
-              "name": "_spender",
-              "type": "address"
-          }
-      ],
-      "name": "allowance",
-      "outputs": [
-          {
-              "name": "",
-              "type": "uint256"
-          }
-      ],
-      "payable": false,
-      "stateMutability": "view",
-      "type": "function"
-  },
-  {
-      "payable": true,
-      "stateMutability": "payable",
-      "type": "fallback"
-  },
-  {
-      "anonymous": false,
-      "inputs": [
-          {
-              "indexed": true,
-              "name": "owner",
-              "type": "address"
-          },
-          {
-              "indexed": true,
-              "name": "spender",
-              "type": "address"
-          },
-          {
-              "indexed": false,
-              "name": "value",
-              "type": "uint256"
-          }
-      ],
-      "name": "Approval",
-      "type": "event"
-  },
-  {
-      "anonymous": false,
-      "inputs": [
-          {
-              "indexed": true,
-              "name": "from",
-              "type": "address"
-          },
-          {
-              "indexed": true,
-              "name": "to",
-              "type": "address"
-          },
-          {
-              "indexed": false,
-              "name": "value",
-              "type": "uint256"
-          }
-      ],
-      "name": "Transfer",
-      "type": "event"
-  }
-];
 
 export function truncateWalletString(walletAddress) {
   if (!walletAddress) return walletAddress;
@@ -378,12 +175,16 @@ export function getNFTContract(address, provider) {
   return new Contract(address, PixiaNFTABI, provider);
 }
 
+export function getBlindNFTContract(address, provider) {
+  return new Contract(address, PixiaBlindNFTABI, provider);
+}
+
 export function getContract(address, provider){
   return new Contract(address, PixiaAiPoolABI, provider);
 }
 
 export function getERC20ContractObj(token_address, provider){
-  return new Contract(token_address, ERC20_ABI, provider);
+  return new Contract(token_address, ERC20ABI, provider);
 }
 
 
