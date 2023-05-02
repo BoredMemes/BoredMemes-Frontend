@@ -20,15 +20,13 @@ const useAuth = () => {
   const login = useCallback((connectorID: ConnectorNames) => {
     const connector = connectorsByName[connectorID]
     console.log(connector);
-    // if (!window.ethereum){
-    //   const url = "https://metamask.app.link/dapp/" + baseApiUrl;
-    //   window.open(url, "_blank", "noopener noreferrer");
-    // }else{
-
+    if (!window.ethereum){
+       const url = "https://metamask.app.link/dapp/" + baseApiUrl;
+       window.open(url, "_blank", "noopener noreferrer");
+    }else{
       if (connector) {
         activate(connector, async (error: Error) => {
           if (error instanceof UnsupportedChainIdError) {
-            
             console.log(error);
             setupNetwork().then((hasSetup) => {
               if (hasSetup) {
@@ -60,8 +58,7 @@ const useAuth = () => {
         toast.error("Can't find connector, The connector config is wrong")
         console.log("Can't find connector", 'The connector config is wrong')
       }
-    // }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
+    }
   }, [])
 
   const switchNetwork = useCallback(() => {
