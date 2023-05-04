@@ -122,7 +122,7 @@ const MyArt = ({ feedMode }: PropsType) => {
     setLoading(true);
     let paramsData = {
       emoticonAddr: loginStatus && account ? owner?.toLowerCase() : undefined,
-      owner: (feedMode === 0 || feedMode === 2) ? (feedMode !== 2 ? owner?.toLowerCase() : user?.followers) : undefined,
+      owner: isDetail && selectedCollection ? undefined : (feedMode === 0 || feedMode === 2) ? (feedMode !== 2 ? owner?.toLowerCase() : user?.followers) : undefined,
       searchTxt: searchStr,
       emoticonId: emoticonId,
       progress: filter === "nft" ? undefined : 0,
