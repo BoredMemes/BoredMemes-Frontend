@@ -334,6 +334,9 @@ const MyArt = ({ feedMode }: PropsType) => {
     if (isAddress(selectedCollection.address)) {
       return toast.error("Your collection is already on chain.")
     }
+    if (selectedCollection.artIds.length === 0) {
+      return toast.error("No Additional Art Pieces.")
+    }
     if (isBlind) {
       if (!mintPrice) {
         return toast.error("You must set the mint price.")
