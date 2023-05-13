@@ -154,7 +154,7 @@ export default function SideBar({ menuOpen, setMenuOpen }: MenuType) {
           </li> */}
         </ul>
         {
-          loginStatus && account && <>
+          false && loginStatus && account && <>
             <h3>Rewards</h3>
             <ul>
               <li className={path === 'staking' ? 'selected' : ''}>
