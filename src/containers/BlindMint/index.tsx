@@ -68,22 +68,34 @@ const BlindMint = () => {
       try {
         setSuccessTrans(false);
         setProcessingModal(true);
-        const isMinted = await onMintArt(
-          _collection.isBlind,
-          _collection.address,
-          _collection.artIds.slice(0, _collection.saleCnt),
-          library.getSigner()
-        )
-        toast.dismiss(load_toast_id);
-        if (isMinted) {
-          toast.success("Minted Successfully");
-          setSuccessTrans(true);
-          window.location.reload();
+        const artRes = await axios.get("/api/collection/artIds/", { params: { colId: _collection.id, sale_cnt: _collection.saleCnt } })
+        if (artRes.data.status) {
+          console.log(artRes.data.artIds);
+          const isMinted = await onMintArt(
+            _collection.isBlind,
+            _collection.address,
+            artRes.data.artIds,
+            library.getSigner()
+          )
+          toast.dismiss(load_toast_id);
+          if (isMinted) {
+            toast.success("Minted Successfully");
+            setSuccessTrans(true);
+            window.location.reload();
+            return;
+          } else {
+            await axios.get("/api/collection/pending_art/", { params: { artIds: artRes.data.artIds } })
+            setSuccessTrans(false);
+            setProcessingModal(false);
+            toast.error("Failed to mint.")
+          }
         } else {
           setSuccessTrans(false);
           setProcessingModal(false);
-          return toast.error("Failed to mint.")
+          toast.dismiss(load_toast_id);
+          toast.error(artRes.data.message)
         }
+        
       } catch (e) {
         console.log(e);
         toast.error("Failed to mint");
@@ -91,7 +103,7 @@ const BlindMint = () => {
         setSuccessTrans(false);
         setProcessingModal(false);
       }
-
+      
     }
   }
 
@@ -113,16 +125,16 @@ const BlindMint = () => {
 
         <div className={`${classes.content} card2`}>
           <div className={classes.cardContainer}>
-            {collections && collections.length > 0 && 
+            {collections && collections.length > 0 &&
               collections
-              .filter((collection) => collection.isRevealed === isEnded)
-              .map((collection, idx) => (
-                <CollectionCard
-                  key={idx}
-                  collection={collection}
-                  onMint={onMint}
-                />
-            ))}
+                .filter((collection) => collection.isRevealed === isEnded)
+                .map((collection, idx) => (
+                  <CollectionCard
+                    key={idx}
+                    collection={collection}
+                    onMint={onMint}
+                  />
+                ))}
           </div>
         </div>
       </div>
